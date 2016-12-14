@@ -1,4 +1,9 @@
 #!/bin/bash
 
+if [ "$UID" -ne "$ROOT_UID" ] ; then
+	echo "You must be root to do that!"
+	exit 1
+fi
+
 # Launch
 exec /opt/nuts/nuts.py "$@"

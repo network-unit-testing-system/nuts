@@ -1,0 +1,23 @@
+type: seq
+sequence:
+  - type: map
+    mapping:
+      "name":
+        type: str
+        required: yes
+        unique: yes
+      "command":
+        type: str
+        required: yes
+      "devices":
+        type: str
+        required: yes
+      "parameter":
+        type: any
+        required: yes
+      "operator":
+        type: str
+        required: yes
+      "expected":
+        type: any
+        required: yes

@@ -1,0 +1,266 @@
+###
+show arp
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show arp</Name></Command>
+	<DataModel>
+		<Container name="ShowArp">
+			<Table name="ARPtable">
+				<Header name="Protocol" type="String" start="0" end="9"/>
+				<Header name="Address" type="IpAddress" start="10" end="26"/>
+				<Header name="Age (min)" type="String" start="27" end="37"/>
+				<Header name="Hardware Addr" type="String" start="38" end="53"/>
+				<Header name="Type" type="String" start="54" end="60"/>
+				<Header name="Interface" type="String" start="61" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show ip ospf neighbor
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show ip ospf neighbor</Name></Command>
+	<DataModel>
+		<Container name="ShowOspfNeighbor">
+			<Table name="OspfNeighborTable">
+				<Header name="Neighbor ID" type="String" start="0" end="15"/>
+				<Header name="Pri" type="String" start="16" end="21"/>
+				<Header name="State" type="String" start="22" end="37"/>
+				<Header name="Dead Time" type="String" start="38" end="49"/>
+				<Header name="Address" type="IpAddress" start="50" end="65"/> 
+				<Header name="Interface" type="String" start="66" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show cdp neighbors
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show cdp neighbors</Name></Command>
+	<DataModel>
+		<Container name="ShowCdpNeighbors">
+			<Table name="CdpNeighborsTable">
+				<Header name="Device ID" type="String" start="0" end="16"/>
+				<Header name="Local Intrfce" type="String" start="17" end="34"/>
+				<Header name="Holdtme" type="String" start="35" end="45"/>
+				<Header name="Capability" type="String" start="46" end="57"/>
+				<Header name="Platform" type="String" start="58" end="67"/> 
+				<Header name="Port ID" type="String" start="68" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show cdp neighbors *
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show cdp neighbors *</Name></Command>
+	<DataModel>
+		<Container name="ShowCdpNeighbors">
+			<Table name="CdpNeighborsTable">
+				<Header name="Device ID" type="String" start="0" end="16"/>
+				<Header name="Local Intrfce" type="String" start="17" end="34"/>
+				<Header name="Holdtme" type="String" start="35" end="45"/>
+				<Header name="Capability" type="String" start="46" end="57"/>
+				<Header name="Platform" type="String" start="58" end="67"/> 
+				<Header name="Port ID" type="String" start="68" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show spanning-tree
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show spanning-tree</Name></Command>
+	<DataModel>
+		<Container name="ShowSpanningtree">
+			<Container name="VLAN" alias="VLANNER" dynamic="true">
+				<Property name="VLAN" alias="VLAN" distance="0" length="1" type="String"/>
+				<Container name="Priority" alias="Root_ID" dynamic="false">
+					<Property name="Priority" alias="Root_Priority" distance="1" type="String"/>
+					<Property name="Address" alias="Root_Address" distance="1" length="1" end-delimiter="," type="String"/>
+					<Property name="This" alias="am_root" distance="4" length="1" type="String"/>
+				</Container>
+				<Container name="Priority" alias="Bridge_ID" dynamic="false">
+					<Property name="Priority" alias="Bridge_Priority" distance="1" length="1" type="String"/>
+					<Property name="Address" alias="Bridge_Address" distance="1" length="1" end-delimiter="," type="String"/>
+				</Container>
+				<Table name="Interfaces">
+					<Header name="Interface" type="String" start="0" end="18"/>
+					<Header name="Role" type="String" start="20" end="23"/>
+					<Header name="Sts" type="String" start="25" end="27"/>
+					<Header name="Cost" type="String" start="29" end="37"/>
+					<Header name="Prio.Nbr" type="String" start="39" end="46"/>
+					<Header name="Type" type="String" start="48" end="69"/>
+				</Table>
+			</Container>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show spanning-tree root
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show spanning-tree root</Name></Command>
+	<DataModel>
+		<Container name="ShowSpanningtreeRootPort">
+			<Table name="Interfaces">
+					<Header name="Vlan" type="String" start="0" end="15"/>
+					<Header name="Root ID" type="String" start="17" end="36"/>
+					<Header name="Cost" type="String" start="38" end="46"/>
+					<Header name="Time" type="String" start="48" end="52"/>
+					<Header name="Age" type="String" start="54" end="56"/>
+					<Header name="Dly" type="String" start="58" end="60"/>
+					<Header name="Root Port" type="String" start="62" end="73"/>
+				</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show spanning-tree vlan *
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show spanning-tree vlan *</Name></Command>
+	<DataModel>
+		<Container name="ShowSpanningtree">
+			<Container name="VLAN" alias="VLANNER" dynamic="true">
+				<Property name="VLAN" alias="VLAN" distance="0" length="1" type="String"/>
+				<Container name="Priority" alias="Root_ID" dynamic="false">
+					<Property name="Priority" alias="Root_Priority" distance="1" type="String"/>
+					<Property name="Address" alias="Root_Address" distance="1" length="1" end-delimiter="," type="String"/>
+					<Property name="This" alias="am_root" distance="4" length="1" type="String"/>
+				</Container>
+				<Container name="Priority" alias="Bridge_ID" dynamic="false">
+					<Property name="Priority" alias="Bridge_Priority" distance="1" length="1" type="String"/>
+					<Property name="Address" alias="Bridge_Address" distance="1" length="1" end-delimiter="," type="String"/>
+				</Container>
+				<Table name="Interfaces">
+					<Header name="Interface" type="String" start="0" end="18"/>
+					<Header name="Role" type="String" start="20" end="23"/>
+					<Header name="Sts" type="String" start="25" end="27"/>
+					<Header name="Cost" type="String" start="29" end="37"/>
+					<Header name="Prio.Nbr" type="String" start="39" end="46"/>
+					<Header name="Type" type="String" start="48" end="69"/>
+				</Table>
+			</Container>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show spanning-tree interface *
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show spanning-tree interface *</Name></Command>
+	<DataModel>
+		<Container name="ShowSpanningtree">
+			<Table name="InterfaceProperties">
+				<Header name="Vlan" type="String" start="0" end="18"/>
+				<Header name="Role" type="String" start="20" end="23"/>
+				<Header name="Sts" type="String" start="25" end="27"/>
+				<Header name="Cost" type="String" start="29" end="37"/>
+				<Header name="Prio.Nbr" type="String" start="39" end="46"/>
+				<Header name="Type" type="String" start="48" end="79"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show spanning-tree blockedports
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show spanning-tree blockedports</Name></Command>
+	<DataModel>
+		<Container name="ShowSpanningtreeBlockedPorts">
+			<Table name="BlockedPortsPerVLAN">
+				<Header name="Name" type="String" start="0" end="19"/>
+				<Header name="Blocked Interfaces List" type="String" start="21" end="56"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show vlan
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show vlan</Name></Command>
+	<DataModel>
+		<Container name="ShowVlan">
+			<Table name="Vlan">
+					<Header name="VLAN" type="String" start="0" end="3"/>
+					<Header name="Name" type="String" start="5" end="36"/>
+					<Header name="Status" type="String" start="38" end="46"/>
+					<Header name="Ports" type="String" start="48" end="-1"/>
+				</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show vlan id *
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show vlan id *</Name></Command>
+	<DataModel>
+		<Container name="ShowVlanInformation">
+			<Table name="Vlan">
+				<Header name="VLAN" type="String" start="0" end="3"/>
+				<Header name="Name" type="String" start="5" end="36"/>
+				<Header name="Status" type="String" start="38" end="46"/>
+				<Header name="Ports" type="String" start="48" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show interfaces status
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show interfaces status</Name></Command>
+	<DataModel>
+		<Container name="ShowInterfacesStatus">
+			<Table name="InterfacesStatus">
+				<Header name="Port" type="String" start="0" end="8"/>
+				<Header name="Name" type="String" start="10" end="27"/>
+				<Header name="Status" type="String" start="29" end="40"/>
+				<Header name="Vlan" type="String" start="42" end="51"/>
+				<Header name="Duplex" type="String" start="53" end="59"/>
+				<Header name="Speed" type="String" start="61" end="65"/>
+				<Header name="Type" type="String" start="67" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>
+###
+show interface * status
+<?xml version="1.0" encoding="UTF-8"?>
+<ODMSpec>
+	<SpecVersion>built-in</SpecVersion>
+	<Command><Name>show interface * status</Name></Command>
+	<DataModel>
+		<Container name="ShowInterfacesStatus">
+			<Table name="InterfacesStatus">
+				<Header name="Port" type="String" start="0" end="8"/>
+				<Header name="Name" type="String" start="10" end="27"/>
+				<Header name="Status" type="String" start="29" end="40"/>
+				<Header name="Vlan" type="String" start="42" end="51"/>
+				<Header name="Duplex" type="String" start="53" end="59"/>
+				<Header name="Speed" type="String" start="61" end="65"/>
+				<Header name="Type" type="String" start="67" end="-1"/>
+			</Table>
+		</Container>
+	</DataModel>
+</ODMSpec>

@@ -1,0 +1,16 @@
+# Arista User Test
+- name: Test 7
+  command: checkuser
+  devices: arista
+  parameter: []
+  operator: '='
+  expected: ['admin', 'eapi']
+
+
+# Arista Version Test Linux
+- name: Test 9
+  command: checkversion
+  devices: arista
+  parameter: []
+  operator: '='
+  expected: '4.14.16M'

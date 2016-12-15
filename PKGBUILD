@@ -11,9 +11,9 @@ md5sums=('c208c32239e873f333764fa1d745ddb7')
 
 
 package() {
-  	pip install jsonrpclib
-  	pip install salt
-  	pip install pykwalify
+  	pip install --user jsonrpclib
+  	pip install --user salt
+  	pip install --user pykwalify
 
   	install -d "$pkgdir"/opt/nuts/src
   	install -d "$pkgdir"/usr/bin

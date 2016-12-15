@@ -1,5 +1,5 @@
 pkgname=nuts
-pkgver=v1.0.2
+pkgver=v1.0.3
 pkgrel=1
 pkgdesc="A Network Unit Test System with Saltstack as Executor"
 arch=('x86_64')
@@ -20,10 +20,10 @@ package() {
   	install -d "$pkgdir"/srv/salt/_modules
   	install -d "$pkgdir"/var/log/nuts/
 
-  	cp -R "$srcdir"/Nuts-1.0.2/src/* "$pkgdir"/opt/nuts/src
-    cp -R "$srcdir"/Nuts-1.0.2/nuts.py "$pkgdir"/opt/nuts
-    cp -R "$srcdir"/Nuts-1.0.2/nuts "$pkgdir"/usr/bin
-    cp -R "$srcdir"/Nuts-1.0.2/_modules/* "$pkgdir"/srv/salt/_modules
+  	cp -R "$srcdir"/Nuts-1.0.3/src/* "$pkgdir"/opt/nuts/src
+    cp -R "$srcdir"/Nuts-1.0.3/nuts.py "$pkgdir"/opt/nuts
+    cp -R "$srcdir"/Nuts-1.0.3/nuts "$pkgdir"/usr/bin
+    cp -R "$srcdir"/Nuts-1.0.3/_modules/* "$pkgdir"/srv/salt/_modules
     touch "$pkgdir"/var/log/nuts/error.log
 
 }

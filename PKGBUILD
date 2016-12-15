@@ -7,7 +7,7 @@ url="https://github.com/xsicht/SA_Network-Unit-Tests"
 license=('unknown')
 depends=('salt>=2016.11.0-1' 'python>=3.5.2-3' 'python-progressbar>=2.3-7' 'python-yaml>=3.12-1' 'python-pip>=8.1.2-1' 'python-crypto>=2.6.1')
 source=("https://github.com/asta1992/Nuts/archive/"$pkgver".tar.gz")
-md5sums=('c768cd3ca79d3ec2e9b346cdda434592')
+md5sums=('c208c32239e873f333764fa1d745ddb7')
 
 
 package() {

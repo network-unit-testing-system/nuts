@@ -20,7 +20,7 @@ def __virtual__():
 def getCiscoXML(dst, param, cmd, attribut):
     value = master.cmd('cmd.run', "salt-ssh " + str(dst) + " -i -r '" + str(cmd) + " " + str(
         param) + " " + str(attribut) + " | format flash:nuts.odm' --roster-file=/etc/salt/roster")
-    xml = value[dst][value[dst].index('<'):len(value[dst])]
+    xml = value[value.index('<'):len(value)]
     return ET.fromstring(xml)
 
 
@@ -130,7 +130,7 @@ def portresponse(dst, port, param, os, user, pwd):
         return returnMultiple(resultList)
 
 
-def checkuser(dst, os, user, pwd):
+def checkuser(dst, param, os, user, pwd):
     resultList = []
     if os == "ios":
         value = master.cmd('cmd.run', "salt-ssh " + dst + " -i -r 'sh run | i username' --roster-file=/etc/salt/roster")
@@ -148,7 +148,7 @@ def checkuser(dst, os, user, pwd):
         return returnMultiple(resultList)
 
 
-def checkversion(dst, os, user, pwd):
+def checkversion(dst, param, os, user, pwd):
     if os == 'ios':
         tree = getCiscoXML(dst, "", "sh run", "")
         return returnSingle(tree[0][0].text)
@@ -158,7 +158,7 @@ def checkversion(dst, os, user, pwd):
         return returnSingle(res[0]["version"])
 
 
-def checkospfneighbors(dst, os, user, pwd):
+def checkospfneighbors(dst, param, os, user, pwd):
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_ip_ospf_neighbor}"
@@ -168,13 +168,13 @@ def checkospfneighbors(dst, os, user, pwd):
         return returnMultiple(resultList)
 
 
-def countospfneighbors(dst, os, user, pwd):
+def countospfneighbors(dst, param, os, user, pwd):
     value = checkospfneighbors(dst, os, user, pwd)
     json_data = json.loads(value[value.index('{'):(value.index('}') + 1)])
     return returnSingle(len(json_data["result"]))
 
 
-def checkospfneighborsstatus(dst, os, user, pwd):
+def checkospfneighborsstatus(dst, param, os, user, pwd):
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_ip_ospf_neighbor}"
@@ -251,7 +251,7 @@ def stpvlanblockedports(dst, param, os, user, pwd):
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_blockedports}"
-        tree = getCiscoXML(dst, param, "sh spanning-tree blockedports", "")
+        tree = getCiscoXML(dst, "", "sh spanning-tree blockedports", "")
         for id in tree.iter(tag=namespace + 'entry'):
             resultList.append(
                 id.find(namespace + 'Name').text + ":" + id.find(namespace + 'BlockedInterfacesList').text)
@@ -261,7 +261,7 @@ def stpvlanblockedports(dst, param, os, user, pwd):
 def vlanports(dst, param, os, user, pwd):
     resultList = []
     if os == 'ios':
-        namespace = "{ODM://flash:nuts.odm//show_spanning-tree_blockedports}"
+        namespace = "{ODM://flash:nuts.odm//show_vlan_id_*}"
         tree = getCiscoXML(dst, param, "sh vlan id", "")
         for id in tree.iter(tag=namespace + 'Ports'):
             resultList.append(id.text)

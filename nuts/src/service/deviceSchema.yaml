@@ -1,0 +1,17 @@
+type: seq
+sequence:
+  - type: map
+    mapping:
+      "name": { type: str, required: yes, unique: yes }
+      "os":
+        type: str
+        required: yes
+      "destination":
+        type: str
+        required: yes
+      "username":
+        type: str
+        required: yes
+      "password":
+        type: str
+        required: yes

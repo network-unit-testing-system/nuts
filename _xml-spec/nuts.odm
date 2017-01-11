@@ -264,9 +264,3 @@ show interface * status
 		</Container>
 	</DataModel>
 </ODMSpec>
-<!--
-Es wurden ganze Passagen oder Abhandlungen von diesen Links übernommen:
-http://ciscotroubles.blogspot.ch/2014/02/spanning-tree-output-formatting-to-xml.html
-http://ciscotroubles.blogspot.ch/2014/02/cisco-3750-spec-file.html
--->
-

@@ -130,23 +130,14 @@ def portresponse(param,port):
         return returnMultiple(resultList)
 
 
-def checkuser(dst, param, os, user, pwd):
+def checkuser():
     resultList = []
-    if os == "ios":
-        value = master.cmd('cmd.run', "salt-ssh " + dst + " -i -r 'sh run | i username' --roster-file=/etc/salt/roster")
-        text = bytes(value).decode(encoding="utf-8", errors='ignore')
-        regex = "username ([a-zA-Z0-9]*)"
-        for m in re.finditer(regex, text):
-            resultList.append(m.group(1))
-        return returnMultiple(resultList)
-
-    elif os == "arista":
-        switch = Server("http://" + user + ":" + pwd + "@" + dst + "/command-api")
-        res = switch.runCmds(1, ["show user-account"])
-        for users in res[0]["users"]:
-            resultList.append(users)
-        return returnMultiple(resultList)
-
+    os = __grains__['os_family']
+    if os == "proxy":
+        result = __salt__['users.config']()
+        
+        return returnMultiple(result['out'].keys())
+    
 
 def checkversion(dst, param, os, user, pwd):
     if os == 'ios':

@@ -1,49 +1,37 @@
 import subprocess
-import progressbar
+#import progressbar
 import json
 import logging
 from time import sleep
-
+from .salt_api_wrapper import SaltApi
 
 class Runner:
     def __init__(self, testSuite):
         self.testSuite = testSuite
         self.logger = logging.getLogger('error_log')
-
+        self.api = SaltApi()
 
     def run(self, testCase):
-        bar = progressbar.ProgressBar(maxval=20,
-                                      widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
-        cmd = 'salt-call ' + "nuts." + testCase.command + " " + self.testSuite.getDeviceDestination(
-            testCase) + " " + ' '.join(testCase.parameter) + " " + self.testSuite.getDeviceOS(
-            testCase) + " " + self.testSuite.getUsername(testCase) + " " + self.testSuite.getPassword(testCase)
+        self.api.connect()
         result = ''
         try:
-            proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-
-            for i in bar(range(100)):
-                if proc.poll() == 0:
-                    bar.update(100)
-                    break
-                elif proc.poll() == -1:
-
-                    break
-                else:
-                    if i == 99:
-                        if proc.poll() != 0:
-                            sleep(0.2)
-                    sleep(0.1)
-                    bar.update(i)
-
-            result = proc.communicate()[0].decode('utf-8')
+            task = {
+                'targets': self.testSuite.getDeviceDestination(testCase),
+                'function': 'nuts.{}'.format(testCase.command),
+                'arguments': testCase.parameter}
+            result = self.api.start_task(task)
+          
             if "ERROR" in result:
-                raise Exception('Ein Salt Error ist aufgetreten!\n' + result)
-
-            self.testSuite.setActualResult(testCase, json.loads(result[result.index('{'):(result.index('}') + 1)]))
+                raise Exception('A salt error occurred!\n' + result)
+            self.testSuite.setActualResult(testCase, json.loads(self._extractReturn(result)))
         except Exception as e:
             self.testSuite.setActualResult(testCase, json.loads('{"resulttype": "single", "result": "ERROR"}'))
-            print("Runner-Fehler beim Befehl: " + cmd)
-            self.logger.exception("Error beim Befehl: " + cmd + '\nSalt Error:' + result + '\n\n')
+            print("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
+            self.logger.exception("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
+    def _extractReturn(self,result):
+        '''This helper extracts the returnvalue from the result
+        At the moment it only expects one return value for each task'''
+        return result['return'][0].itervalues().next()
 
     def runAll(self):
         print("\n")

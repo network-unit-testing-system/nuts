@@ -150,6 +150,8 @@ def checkversion():
     
     
 def checkospfneighbors(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_ip_ospf_neighbor}"
@@ -157,15 +159,19 @@ def checkospfneighbors(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'NeighborID'):
             resultList.append(id.text)
         return returnMultiple(resultList)
-
+    '''
 
 def countospfneighbors(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     value = checkospfneighbors(dst, os, user, pwd)
     json_data = json.loads(value[value.index('{'):(value.index('}') + 1)])
     return returnSingle(len(json_data["result"]))
-
+    '''
 
 def checkospfneighborsstatus(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_ip_ospf_neighbor}"
@@ -173,9 +179,11 @@ def checkospfneighborsstatus(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'entry'):
             resultList.append(id.find(namespace + 'NeighborID').text + ":" + id.find(namespace + 'State').text)
         return returnMultiple(resultList)
-
+    '''
 
 def stpinterfacestate(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_interface_*}"
@@ -183,9 +191,11 @@ def stpinterfacestate(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'entry'):
             resultList.append(id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Sts').text)
         return returnMultiple(resultList)
-
+    '''
 
 def stpinterfacerole(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_interface_*}"
@@ -193,9 +203,11 @@ def stpinterfacerole(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'entry'):
             resultList.append(id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Role').text)
         return returnMultiple(resultList)
-
+    '''
 
 def stpinterfacecost(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_interface_*}"
@@ -204,9 +216,11 @@ def stpinterfacecost(dst, param, os, user, pwd):
             resultList.append(
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Cost').text)
         return returnMultiple(resultList)
-
+    '''
 
 def stprootid(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_root}"
@@ -215,9 +229,11 @@ def stprootid(dst, param, os, user, pwd):
             resultList.append(
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'RootID').text.split(' ')[1])
         return returnMultiple(resultList)
-
+    '''
 
 def stprootcost(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_root}"
@@ -226,9 +242,11 @@ def stprootcost(dst, param, os, user, pwd):
             resultList.append(
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Cost').text)
         return returnMultiple(resultList)
-
+    '''
 
 def stpvlaninterfaces(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_vlan_*}"
@@ -236,9 +254,11 @@ def stpvlaninterfaces(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'Interface'):
             resultList.append(id.text)
         return returnMultiple(resultList)
-
+    '''
 
 def stpvlanblockedports(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_spanning-tree_blockedports}"
@@ -247,9 +267,11 @@ def stpvlanblockedports(dst, param, os, user, pwd):
             resultList.append(
                 id.find(namespace + 'Name').text + ":" + id.find(namespace + 'BlockedInterfacesList').text)
         return returnMultiple(resultList)
-
+    '''
 
 def vlanports(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     resultList = []
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_vlan_id_*}"
@@ -257,7 +279,7 @@ def vlanports(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'Ports'):
             resultList.append(id.text)
         return returnMultiple(resultList)
-
+    '''
 
 def interfacestatus(dst, param, os, user, pwd):
     result = ""
@@ -270,6 +292,8 @@ def interfacestatus(dst, param, os, user, pwd):
 
 
 def interfacevlan(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     result = ""
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_interface_*_status}"
@@ -277,9 +301,11 @@ def interfacevlan(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'Vlan'):
             result = (id.text)
         return returnSingle(result)
-
+    '''
 
 def interfaceduplex(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     result = ""
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_interface_*_status}"
@@ -287,7 +313,7 @@ def interfaceduplex(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'Duplex'):
             result = id.text
         return returnSingle(result)
-
+    '''
 
 def interfacespeed(dst, param, os, user, pwd):
     result = ""
@@ -300,6 +326,8 @@ def interfacespeed(dst, param, os, user, pwd):
 
 
 def cdpneighbor(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     result = ""
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_cdp_neighbors_*}"
@@ -307,9 +335,11 @@ def cdpneighbor(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'DeviceID'):
             result = id.text
         return returnSingle(result)
-
+    '''
 
 def cdpneighborcount(dst, param, os, user, pwd):
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_cdp_neighbors}"
         tree = getCiscoXML(dst, "", "sh cdp neighbors", "")
@@ -317,7 +347,7 @@ def cdpneighborcount(dst, param, os, user, pwd):
         for id in tree.iter(tag=namespace + 'entry'):
             i += 1
         return returnSingle(i)
-
+    '''
 
 def arp(dst, param, os, user, pwd):
     resultList = []

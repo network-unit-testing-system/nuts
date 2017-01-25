@@ -74,6 +74,9 @@ def traceroute(param):
 
 
 def bandwidth(dst, host, os, user, pwd):
+    '''This function isn't working at the moment because it's not complient with the saltstack way'''
+    raise NotImplementedError('This function isn\'t implemented right now')
+    '''
     if os == "linux":
         local.cmd(dst, 'cmd.run', ['iperf3 -s -D -1'])
         result = local.cmd(host, 'cmd.run', ['iperf3 -c ' + dst])
@@ -82,7 +85,7 @@ def bandwidth(dst, host, os, user, pwd):
         r = re.compile(regex)
         m = r.search(text)
         return  returnSingle(float(m.group(1)) * 1000.0 * 1000.0)
-
+    '''
 
 def dnscheck(dst, param, os, user, pwd):
     if os == "linux":

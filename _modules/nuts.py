@@ -52,23 +52,18 @@ def connectivity(param):
         #https://github.com/saltstack/salt/pull/38577
         result = __salt__['net.ping'](param,'',255,2,100,10)
         #the absolute is needed because cisco returns -10 as packet_loss if they are not sent
-        return returnSingle(abs(result['out']['success']['packet_loss']) != 10)
+        return returnSingle(result['result'] and abs(result['out']['success']['packet_loss']) != 10)
        
-def traceroute(dst, param, os, user, pwd):
+def traceroute(param):
     json_data = {}
     resultList = []
-    if os == "ios":
-        value = master.cmd('cmd.run',
-                           ["salt-ssh " + dst + " -i -r 'traceroute '" + param + "  --roster-file=/etc/salt/roster"])
-        text = bytes(value).decode(encoding="utf-8", errors='ignore')
-        regex = "([0-9.]*)( [0-9]* msec)"
-        for m in re.finditer(regex, text):
-            resultList.append(m.group(1))
-        json_data["result"] = resultList
-        json_data["resulttype"] = "multiple"
-        return json.dumps(json_data)
-    elif os == "linux":
-        result = local.cmd(dst, 'cmd.run', ['traceroute ' + param])
+    os = __grains__['os_family']
+    if os == "proxy":
+        result = __salt__['net.traceroute'](param)
+        #TODO process resultlist
+        return returnMultiple(result['out']['success'])
+    elif os == "Debian":
+        result = __salt__['cmd.run']('traceroute {}'.format(param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "[0-9]*  ([0-9\.]*) \("
         for m in re.finditer(regex, text):

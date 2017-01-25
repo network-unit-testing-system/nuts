@@ -1,14 +1,14 @@
-from django.conf import settings
 from pepper import Pepper
-
+from .settings import Settings
 
 class SaltApi(object):
     def __init__(self):
-        self.api = Pepper(settings.OSR_SALT_REST_API_URL)
+        self.settings = Settings()
+        self.api = Pepper(self.settings.getVariable('NUTS_SALT_REST_API_URL'))
 
     def connect(self):
-        self.api.login(settings.OSR_SALT_REST_API_USERNAME,
-                       settings.OSR_SALT_REST_API_PASSWORD, 'pam')
+        self.api.login(self.settings.getVariable('NUTS_SALT_REST_API_USERNAME'),
+                       self.settings.getVariable('NUTS_SALT_REST_API_PASSWORD'), 'pam')
 
     def discovery(self, args):
         response = self.api.low([{'client': 'local', 'tgt': '*', 'fun': 'state.sls',

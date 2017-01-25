@@ -9,9 +9,6 @@ class TestTestSuite:
 
     @classmethod
     def setup_class(cls):
-        cls.testSuite.createDevice("Server01", "Linux", "192.168.100.1", "root", "1234")
-        cls.testSuite.createDevice("Server02", "Linux", "192.168.100.2", "root", "1234")
-        cls.testSuite.createDevice("Switch01", "Cisco", "192.168.200.1", "admin", "1234")
         cls.testSuite.createTest("testPingFromAToB", "connectivity", 'Server01', '8.8.8.8', "=", 'True')
         cls.testSuite.createTest("checkuser", "checkuser", 'Server02', '8.8.8.8', "=", 'admin')
         cls.testSuite.createTest("Count ospf neighbors", "countospfneighbors", 'Switch1', '', "=", '3')

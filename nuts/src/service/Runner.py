@@ -16,7 +16,7 @@ class Runner:
         result = ''
         try:
             task = {
-                'targets': self.testSuite.getDeviceDestination(testCase),
+                'targets': testCase.devices,
                 'function': 'nuts.{}'.format(testCase.command),
                 'arguments': testCase.parameter}
             result = self.api.start_task(task)

@@ -87,37 +87,41 @@ def bandwidth(dst, host, os, user, pwd):
         return  returnSingle(float(m.group(1)) * 1000.0 * 1000.0)
     '''
 
-def dnscheck(dst, param, os, user, pwd):
-    if os == "linux":
-        result = local.cmd(dst, 'cmd.run', ['nslookup ' + param])
+def dnscheck(param):
+    os = __grains__['os_family']
+    if os == "Debian":
+        result = __salt__['cmd.run']('nslookup {}'.format(param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "(Name:[\s]*[a-z0-9.]*)"
         r = re.compile(regex)
         return returnSingle(bool(re.search(regex, text)))
 
 
-def dhcpcheck(dst, param, os, user, pwd):
-    if os == "linux":
-        result = local.cmd(dst, 'cmd.run', ['dhcping -s ' + param])
+def dhcpcheck(param):
+    os = __grains__['os_family']
+    if os == "Debian":
+        result = __salt__['cmd.run']('dhcping -s {}'.format(param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "(Got answer)"
         r = re.compile(regex)
         return returnSingle(bool(re.search(regex, text)))
 
 
-def webresponse(dst, param, os, user, pwd):
-    if os == "linux":
-        result = local.cmd(dst, 'cmd.run', ['curl -Is ' + param + ' | head -n 1'])
+def webresponse(param):
+    os = __grains__['os_family']
+    if os == "Debian":
+        result = __salt__['cmd.run']('curl -Is {} | head -n 1'.format(param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]{3} OK)"
         r = re.compile(regex)
         return returnSingle(bool(re.search(regex, text)))
 
 
-def portresponse(dst, port, param, os, user, pwd):
+def portresponse(param,port):
     resultList = []
-    if os == "linux":
-        result = local.cmd(dst, 'cmd.run', ['nmap -p ' + str(port) + ' ' + param])
+    os = __grains__['os_family']
+    if os == "Debian":
+        result = __salt__['cmd.run']('nmap -p {} {}'.format(port,param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]*)\/[a-z]* (open)"
         for m in re.finditer(regex, text):

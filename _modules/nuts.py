@@ -281,15 +281,13 @@ def vlanports(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
-def interfacestatus(dst, param, os, user, pwd):
-    result = ""
-    if os == 'ios':
-        namespace = "{ODM://flash:nuts.odm//show_interface_*_status}"
-        tree = getCiscoXML(dst, param, "sh interface", " status")
-        for id in tree.iter(tag=namespace + 'Status'):
-            result = (id.text)
-        return returnSingle(result)
-
+def interfacestatus(param):
+    os = __grains__['os_family']
+    if os == "proxy":
+        result = __salt__['net.interfaces']()
+        if result['result']:
+            if param in result['out']:
+                return returnSingle(result['out'][param]['is_up'])
 
 def interfacevlan(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
@@ -315,14 +313,13 @@ def interfaceduplex(dst, param, os, user, pwd):
         return returnSingle(result)
     '''
 
-def interfacespeed(dst, param, os, user, pwd):
-    result = ""
-    if os == 'ios':
-        namespace = "{ODM://flash:nuts.odm//show_interface_*_status}"
-        tree = getCiscoXML(dst, param, "sh interface", " status")
-        for id in tree.iter(tag=namespace + 'Speed'):
-            result = id.text
-        return returnSingle(result)
+def interfacespeed(param):
+    os = __grains__['os_family']
+    if os == "proxy":
+        result = __salt__['net.interfaces']()
+        if result['result']:
+            if param in result['out']:
+                return returnSingle(result['out'][param]['speed'])
 
 
 def cdpneighbor(dst, param, os, user, pwd):
@@ -349,14 +346,11 @@ def cdpneighborcount(dst, param, os, user, pwd):
         return returnSingle(i)
     '''
 
-def arp(dst, param, os, user, pwd):
-    resultList = []
-    if os == 'ios':
-        namespace = "{ODM://flash:nuts.odm//show_arp}"
-        tree = getCiscoXML(dst, "", "sh arp", "")
-        for id in tree.iter(tag=namespace + 'entry'):
-            if id.find(namespace + 'Address').text == param:
-                resultList.append(param + ":" + id.find(namespace + 'HardwareAddr').text)
-                return returnSingle(resultList)
-        resultList.append(param + ":-")
-        return returnSingle(resultList)
+def arp(param):
+    os = __grains__['os_family']
+    if os == "proxy":
+        result = __salt__['net.arp']('',param)
+        if result['result']:
+            for entry in result['out']:
+                if(entry['ip'] == param):
+                    return returnSingle(entry['mac'])

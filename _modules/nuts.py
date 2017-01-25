@@ -70,7 +70,8 @@ def traceroute(param):
     elif os == "proxy":
         result = __salt__['net.traceroute'](param)
         #TODO process resultlist
-        return returnMultiple(result['out']['success'])
+        if result['result']:
+            return returnMultiple(result['out']['success'])
 
 
 def bandwidth(dst, host, os, user, pwd):
@@ -135,20 +136,19 @@ def checkuser():
     os = __grains__['os_family']
     if os == "proxy":
         result = __salt__['users.config']()
-        
-        return returnMultiple(result['out'].keys())
+        if result['result']:
+            return returnMultiple(result['out'].keys())
     
 
-def checkversion(dst, param, os, user, pwd):
-    if os == 'ios':
-        tree = getCiscoXML(dst, "", "sh run", "")
-        return returnSingle(tree[0][0].text)
-    elif os == 'arista':
-        switch = Server("http://" + user + ":" + pwd + "@" + dst + "/command-api")
-        res = switch.runCmds(1, ["show version"])
-        return returnSingle(res[0]["version"])
-
-
+def checkversion():
+    os = __grains__['os_family']
+    if os == "proxy":
+        result = __salt__['net.facts']()
+        if result['result']:
+            if 'os_version' in result['out']:
+                return returnSingle(result['out']['os_version'])
+    
+    
 def checkospfneighbors(dst, param, os, user, pwd):
     resultList = []
     if os == 'ios':

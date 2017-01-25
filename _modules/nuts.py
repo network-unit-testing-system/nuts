@@ -58,11 +58,7 @@ def traceroute(param):
     json_data = {}
     resultList = []
     os = __grains__['os_family']
-    if os == "proxy":
-        result = __salt__['net.traceroute'](param)
-        #TODO process resultlist
-        return returnMultiple(result['out']['success'])
-    elif os == "Debian":
+    if os == "Debian":
         result = __salt__['cmd.run']('traceroute {}'.format(param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "[0-9]*  ([0-9\.]*) \("
@@ -71,6 +67,10 @@ def traceroute(param):
         json_data["result"] = resultList
         json_data["resulttype"] = "multiple"
         return json.dumps(json_data)
+    elif os == "proxy":
+        result = __salt__['net.traceroute'](param)
+        #TODO process resultlist
+        return returnMultiple(result['out']['success'])
 
 
 def bandwidth(dst, host, os, user, pwd):

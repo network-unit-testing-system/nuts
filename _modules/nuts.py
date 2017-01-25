@@ -38,24 +38,22 @@ def returnSingle(result):
     return json.dumps(json_data)
 
 
-def connectivity(dst, param, os, user, password):
-    if os == "linux":
-        result = local.cmd(dst, 'cmd.run', ['ping -c 3 ' + param])
+def connectivity(param):
+    os = __grains__['os_family']
+    if os == "Debian":
+        result = __salt__['cmd.run']('ping -c 3 {}'.format(param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]*)% packet loss"
         r = re.compile(regex)
         m = r.search(text)
         return returnSingle((int(float(m.group(1))) < 100))
-    elif os == "ios":
-        result = master.cmd('cmd.run',
-                            "salt-ssh " + dst + " -i -r 'ping '" + param + " --roster-file=/etc/salt/roster")
-        text = bytes(result).decode(encoding="utf-8", errors='ignore')
-        regex = 'percent \(([0-5])'
-        r = re.compile(regex)
-        m = r.search(text)
-        return returnSingle(int(float(m.group(1))) > 0)
-
-
+    elif os == "proxy":
+        #at the moment there's a bug in the napalm-salt library which forces you to set all parameters fixed 
+        #https://github.com/saltstack/salt/pull/38577
+        result = __salt__['net.ping'](param,'',255,2,100,10)
+        #the absolute is needed because cisco returns -10 as packet_loss if they are not sent
+        return returnSingle(abs(result['out']['success']['packet_loss']) != 10)
+       
 def traceroute(dst, param, os, user, pwd):
     json_data = {}
     resultList = []

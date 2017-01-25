@@ -18,8 +18,9 @@ class SaltApi(object):
         
             response format: {u'return': [{u'jid': u'20160718141822884336', u'minions': [u'srv01']}]}
         '''
-        response = self.api.low([{'client': 'local_async', 'tgt': args.targets, 'fun': args.function,
-                                  'arg': args.arguments}])
+        
+        response = self.api.low([{'client': 'local_async', 'tgt': args['targets'], 'fun': args['function'],
+                                  'arg': args['arguments']}])
 
         return response
     
@@ -28,3 +29,14 @@ class SaltApi(object):
         response = self.api.low([{'client': 'local_async', 'tgt': '*', 'fun': 'saltutil.kill_job',
                                   'arg': [args.job_id]}])
         return response
+    def get_job_result(self,jobresponse=null, jobid=null):
+        '''returns the current result of the entered job.
+        you can either insert the response you got when you started the task OR
+        you can insert the jobid
+        '''
+        if jobid != null and jobresponse != null and  jobresponse['return'][0]['jid'] != jobid:
+            #throw exception
+            raise ValueError('You entered both jobresponse and jobid but they didn\'t match')
+        if jobid == null:
+            jobid = jobresponse['return'][0]['jid']
+        return self.api.lookup_jid(jobid)

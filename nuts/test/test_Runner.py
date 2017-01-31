@@ -23,9 +23,9 @@ def api_mock():
 
 
 class TestRunner:
-    def test_runAll(self,example_testsuite, api_mock):
+    def test_run_all(self,example_testsuite, api_mock):
         with patch.object(Runner, "run") as runmethod_mocked:
-            Runner(example_testsuite,api_mock).runAll()
+            Runner(example_testsuite,api_mock).run_all()
             runmethod_mocked.assert_any_call(example_testsuite.getTestByName("testPingFromAToB"))
             runmethod_mocked.assert_any_call(example_testsuite.getTestByName("checkuser"))
             runmethod_mocked.assert_any_call(example_testsuite.getTestByName("Count ospf neighbors"))

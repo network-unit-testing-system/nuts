@@ -18,5 +18,5 @@ class TestController:
         self.fileHandler.readFile(self.testFile)
         TestController.testSuite.printAllTestCases()
 
-        self.runner.runAll()
+        self.runner.run_all()
         self.evaluator.printAllResults()

@@ -54,7 +54,7 @@ class Runner:
                 }
         return json.loads(extracted_result)
 
-    def runAll(self):
+    def run_all(self):
         print("\n")
         for test in self.testSuite.testCases:
             print("Start Test " + test.name)

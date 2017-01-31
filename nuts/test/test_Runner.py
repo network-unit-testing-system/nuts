@@ -1,5 +1,6 @@
 import pytest
 from mock import Mock
+from mock import patch
 from src.service.salt_api_wrapper import SaltApi
 from src.service.Runner import Runner
 from src.data.TestSuite import TestSuite
@@ -17,19 +18,28 @@ def mock_testsuite():
 @pytest.fixture
 def api_mock():
     mock = Mock(spec=SaltApi)
-    mock.start_task.return_value = {'return':[{'cisco.csr.1000v':"123"}]}
+    mock.start_task.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
     return mock
 
+
 class TestRunner:
-    def test_runAll(self):
-        pass
+    def test_runAll(self,example_testsuite, api_mock):
+        with patch.object(Runner, "run") as runmethod_mocked:
+            Runner(example_testsuite,api_mock).runAll()
+            runmethod_mocked.assert_any_call(example_testsuite.getTestByName("testPingFromAToB"))
+            runmethod_mocked.assert_any_call(example_testsuite.getTestByName("checkuser"))
+            runmethod_mocked.assert_any_call(example_testsuite.getTestByName("Count ospf neighbors"))
+        
     def test_run(self,example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
         test_case = example_testsuite.getTestByName("testPingFromAToB")
         runner.run(test_case)
         api_mock.connect.assert_called()
         api_mock.start_task.assert_called_with(runner.create_task(test_case))
-    
+        assert example_testsuite.getActualResult(test_case) == {
+            "resulttype": "single",
+             "result": "000c.29ea.d168"
+        }
     def test_extractReturn(self):
         returnDict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
         assert Runner._extractReturn(returnDict) == {

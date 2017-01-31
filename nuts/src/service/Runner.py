@@ -28,7 +28,8 @@ class Runner:
             self.testSuite.setActualResult(testCase, json.loads('{"resulttype": "single", "result": "ERROR"}'))
             print("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
             self.logger.exception("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
-    def _extractReturn(self,result):
+    @staticmethod
+    def _extractReturn(result):
         '''This helper extracts the returnvalue from the result
         At the moment it only expects one return value for each task'''
         return result['return'][0].itervalues().next()

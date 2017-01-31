@@ -2,7 +2,7 @@ import subprocess
 import os
 import sys
 import logging
-
+from pykwalify.core import Core
 
 class FileValidator:
     def __init__(self, testFile):
@@ -12,11 +12,11 @@ class FileValidator:
     def validate(self):
         cur_dir = os.path.dirname(__file__)
         testfile = os.path.join(cur_dir, "testSchema.yaml")
-        devfile = os.path.join(cur_dir, "deviceSchema.yaml")
         try:
-            procTest = subprocess.Popen(['pykwalify -d ' + self.testFile + ' -s ' + testfile],
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            print("Test-File: \n" + procTest.communicate()[0].decode('utf-8'))
+            c = Core(source_file=self.testFile, schema_files=[testfile])
+            c.validate(raise_exception=True)
+            return True
         except Exception as e:
             print("Validator-Fehler")
             self.logger.exception("Validator-Fehler")
+            return False

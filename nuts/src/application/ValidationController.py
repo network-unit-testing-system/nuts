@@ -9,4 +9,4 @@ class ValidationController:
         self.fileValidator = FileValidator(testFile)
 
     def logic(self):
-        self.fileValidator.validate()
+        return self.fileValidator.validate()

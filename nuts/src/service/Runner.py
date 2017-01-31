@@ -13,25 +13,25 @@ class Runner:
     def run(self, testCase):
             result = self._get_task_result(testCase)
             self.testSuite.setActualResult(testCase, result)
+            
+    @staticmethod
+    def create_task(testCase):
+        task = {
+            'targets':testCase.devices, 
+            'function':'nuts.{}'.format(testCase.command), 
+            'arguments':testCase.parameter}
+        return task
+
     def _get_task_result(self, testCase):
         result = ''
-        task = {
-                'targets': testCase.devices,
-                'function': 'nuts.{}'.format(testCase.command),
-                'arguments': testCase.parameter}
+        task = self.create_task(testCase)
         try:
             self.api.connect()
             result = self.api.start_task(task)
             print(result)
             if "ERROR" in result:
                 raise Exception('A salt error occurred!\n' + result)
-            extracted_result = self._extractReturn(result)
-            if(extracted_result == None):
-                return {
-                    'resulttype':'single',
-                    'result':None
-                }
-            return extracted_result
+            return self._extractReturn(result)
         except Exception as e:
             print(e)
             print("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
@@ -46,7 +46,13 @@ class Runner:
     def _extractReturn(result):
         '''This helper extracts the returnvalue from the result
         At the moment it only expects one return value for each task'''
-        return result['return'][0].itervalues().next()
+        extracted_result = result['return'][0].itervalues().next()
+        if(extracted_result == None):
+                return {
+                    'resulttype':'single',
+                    'result':None
+                }
+        return json.loads(extracted_result)
 
     def runAll(self):
         print("\n")

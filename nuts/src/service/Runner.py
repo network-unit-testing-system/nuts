@@ -3,31 +3,45 @@ import subprocess
 import json
 import logging
 from time import sleep
-from .salt_api_wrapper import SaltApi
 
 class Runner:
-    def __init__(self, testSuite):
+    def __init__(self, testSuite,salt_api):
         self.testSuite = testSuite
         self.logger = logging.getLogger('error_log')
-        self.api = SaltApi()
-
+        self.api = salt_api
+        
     def run(self, testCase):
-        self.api.connect()
+            result = self._get_task_result(testCase)
+            self.testSuite.setActualResult(testCase, result)
+    def _get_task_result(self, testCase):
         result = ''
-        try:
-            task = {
+        task = {
                 'targets': testCase.devices,
                 'function': 'nuts.{}'.format(testCase.command),
                 'arguments': testCase.parameter}
+        try:
+            self.api.connect()
             result = self.api.start_task(task)
-          
+            print(result)
             if "ERROR" in result:
                 raise Exception('A salt error occurred!\n' + result)
-            self.testSuite.setActualResult(testCase, json.loads(self._extractReturn(result)))
+            extracted_result = self._extractReturn(result)
+            if(extracted_result == None):
+                return {
+                    'resulttype':'single',
+                    'result':None
+                }
+            return extracted_result
         except Exception as e:
-            self.testSuite.setActualResult(testCase, json.loads('{"resulttype": "single", "result": "ERROR"}'))
+            print(e)
             print("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
             self.logger.exception("Error with {} \nSalt-Error: {} '\n'\n".format(task,result))
+            return {
+                'resulttype':'single',
+                'result':'ERROR'
+            }
+           
+        
     @staticmethod
     def _extractReturn(result):
         '''This helper extracts the returnvalue from the result

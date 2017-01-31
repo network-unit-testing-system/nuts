@@ -21,7 +21,6 @@ def api_mock():
     mock.start_task.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
     return mock
 
-
 class TestRunner:
     def test_run_all(self,example_testsuite, api_mock):
         with patch.object(Runner, "run") as runmethod_mocked:
@@ -40,16 +39,26 @@ class TestRunner:
             "resulttype": "single",
              "result": "000c.29ea.d168"
         }
+    
     def test_extractReturn(self):
         returnDict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
         assert Runner._extractReturn(returnDict) == {
             'resulttype':'single',
             'result':'000c.29ea.d168'
         }
+    
     def test_extractReturnEmpty(self):
         returnDict = {u'return': [{u'cisco.csr.1000v': None}]}
         assert Runner._extractReturn(returnDict) == {
                     'resulttype':'single',
                     'result':None
         }
-        
+    def test_create_task(self, example_testsuite, api_mock):
+        runner = Runner(example_testsuite,api_mock)
+        task = runner.create_task(example_testsuite.getTestByName("testPingFromAToB"))
+        assert 'targets' in task
+        assert 'function' in task
+        assert 'arguments' in task
+        assert task['targets'] == 'Server01'
+        assert task['function'] == 'nuts.connectivity'
+        assert task['arguments'] == '8.8.8.8'

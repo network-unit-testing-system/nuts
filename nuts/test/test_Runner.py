@@ -25,14 +25,21 @@ class TestRunner:
         pass
     def test_run(self,example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
-        runner.run(example_testsuite.getTestByName("testPingFromAToB"))
+        test_case = example_testsuite.getTestByName("testPingFromAToB")
+        runner.run(test_case)
         api_mock.connect.assert_called()
-
+        api_mock.start_task.assert_called_with(runner.create_task(test_case))
     
     def test_extractReturn(self):
-        returnDict = {'return':[{'cisco.csr.1000v':"123"}]}
-        assert Runner._extractReturn(returnDict) == "123"
+        returnDict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
+        assert Runner._extractReturn(returnDict) == {
+            'resulttype':'single',
+            'result':'000c.29ea.d168'
+        }
     def test_extractReturnEmpty(self):
-        returnDict = {'return':[{'cisco.csr.1000v':None}]}
-        assert Runner._extractReturn(returnDict) == None
+        returnDict = {u'return': [{u'cisco.csr.1000v': None}]}
+        assert Runner._extractReturn(returnDict) == {
+                    'resulttype':'single',
+                    'result':None
+        }
         

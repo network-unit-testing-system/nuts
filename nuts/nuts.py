@@ -14,12 +14,14 @@ def main(argv):
     logger = Logger()
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", help="Start with a Testfile", nargs=1)
-    parser.add_argument("-v", "--validate", help="Validates Testcase and Device File", nargs=1, )
+    parser.add_argument("-v", "--validate", help="Validates Testfile", nargs=1, )
 
     args = parser.parse_args()
     if args.input:
-        tester = TestController(os.getcwd() + "/" + args.input[0])
-        tester.logic()
+        validator = ValidationController(os.getcwd() + "/" + args.input[0])
+        if validator.logic(): 
+            tester = TestController(os.getcwd() + "/" + args.input[0])
+            tester.logic()
     elif args.validate:
         validator = ValidationController(os.getcwd() + "/" + args.validate[0])
         validator.logic()

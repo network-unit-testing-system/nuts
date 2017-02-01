@@ -1,4 +1,3 @@
-from .Device import Device
 from .TestCase import TestCase
 import logging
 

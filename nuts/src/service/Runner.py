@@ -1,4 +1,3 @@
-import subprocess
 #import progressbar
 import json
 import logging

@@ -1,5 +1,4 @@
 import pytest
-from src.data.Device import Device
 from src.data.TestSuite import TestSuite
 
 

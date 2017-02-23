@@ -49,5 +49,5 @@ class SaltApi(object):
             #throw exception
             raise ValueError('You entered both taskresponse and taskid but they didn\'t match')
         if taskid == None:
-            taskid = jobresponse['return'][0]['jid']
+            taskid = taskresponse['return'][0]['jid']
         return self.api.lookup_jid(taskid)

@@ -10,8 +10,37 @@ class Runner:
         self.api = salt_api
         
     def run(self, testCase):
-            result = self._get_task_result(testCase)
-            self.testSuite.setActualResult(testCase, result)
+        self._start_task(testCase)
+        
+        #    result = self._get_task_result(testCase)
+        #    self.testSuite.setActualResult(testCase, result)
+    def collectResult(self, test_case):
+        counter = 0
+        not_contained = True
+        while not_contained:
+            xx = self.api.get_task_result(taskid=test_case.job_id)
+            not_contained = False
+            for minion in test_case.minions:
+                if not minion in xx['return'][0]:
+                    not_contained = True
+                    sleep(0.1)
+                    counter += 1
+        print(counter)
+        return_value = self._extractReturn(xx)
+        self.testSuite.setActualResult(test_case, return_value)
+        
+    def _start_task(self, test_case):
+        try:
+            task = self.create_task(test_case)
+            self.api.connect()
+            task_information = self.api.start_task_async(task)
+            test_case.set_job(task_information)
+            #xx = self.api.get_task_result(result)
+            print(task_information)
+            #print(xx)
+        except Exception as e:
+            print(e)
+
             
     @staticmethod
     def create_task(testCase):
@@ -27,7 +56,10 @@ class Runner:
         try:
             self.api.connect()
             result = self.api.start_task(task)
+            #result = self.api.start_task_async(task)
+            #xx = self.api.get_task_result(result)
             print(result)
+            #print(xx)
             if "ERROR" in result:
                 raise Exception('A salt error occurred!\n' + result)
             return self._extractReturn(result)
@@ -58,4 +90,8 @@ class Runner:
         for test in self.testSuite.testCases:
             print("Start Test " + test.name)
             self.run(test)
+            print("\n")
+        for test in self.testSuite.testCases:
+            print("CollectResult of Test " + test.name)
+            self.collectResult(test)
             print("\n")

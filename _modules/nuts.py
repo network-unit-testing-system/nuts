@@ -69,9 +69,10 @@ def traceroute(param):
         return json.dumps(json_data)
     elif os == "proxy":
         result = __salt__['net.traceroute'](param)
-        #TODO process resultlist
         if result['result']:
-            return returnMultiple(result['out']['success'])
+            probes = result['out']['success']
+            hosts = {key: value['probes'][1]['host_name'] for key, value in probes.items()}
+            return returnMultiple(hosts)
 
 
 def bandwidth(dst, host, os, user, pwd):

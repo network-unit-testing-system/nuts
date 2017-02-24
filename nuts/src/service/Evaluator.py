@@ -9,10 +9,7 @@ class Evaluator:
 
     def compare(self, testCase):
         if testCase.operator == "=":
-            if testCase.actualResult["resulttype"] == "single":
-                return testCase.expectedResult == testCase.actualResult["result"]
-            elif testCase.actualResult["resulttype"] == "multiple":
-                return self.comp(testCase.actualResult["result"], testCase.expectedResult)
+            return self.comp(testCase.actualResult["result"], testCase.expectedResult)
         elif testCase.operator == "<":
             return testCase.expectedResult < testCase.actualResult["result"]
         elif testCase.operator == ">":
@@ -37,12 +34,10 @@ class Evaluator:
         return exp
 
     def comp(self, list1, list2):
-        if len(list1) != len(list2):
-            return False
-        for val in list1:
-            if val not in list2:
-                return False
-        return True
+        if isinstance(list1,list) and isinstance(list1,list):
+            return self.comp(set(list1), set(list2))
+        else:
+            return list1 == list2
 
     def printResult(self, testCase):
         if self.getResult(testCase) == "ERROR":

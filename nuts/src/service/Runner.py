@@ -8,13 +8,12 @@ class Runner:
         self.testSuite = testSuite
         self.logger = logging.getLogger('error_log')
         self.api = salt_api
-        
+    
     def run(self, testCase):
-        self._start_task(testCase)
+        result = self._get_task_result(testCase)
+        self.testSuite.setActualResult(testCase, result)
         
-        #    result = self._get_task_result(testCase)
-        #    self.testSuite.setActualResult(testCase, result)
-    def collectResult(self, test_case):
+    def _collect_result(self, test_case):
         counter = 0
         not_contained = True
         while not_contained:
@@ -86,19 +85,26 @@ class Runner:
                 }
         return json.loads(extracted_result)
 
-    def run_all(self):
-        print("\n")
-        started_counter = 0
-        for test in self.testSuite.testCases:
-            print("Start test " + test.name)
-            self.run(test)
-            started_counter += 1
-            print("Started test {} of {}".format(started_counter, len(self.testSuite.testCases)))
+    def run_all(self, execute_async = True):
+        if execute_async:
             print("\n")
-        test_counter = 0
-        for test in self.testSuite.testCases:
-            print("CollectResult of Test " + test.name)
-            self.collectResult(test)
-            test_counter += 1
-            print("Collected results from {} of {} tests".format(test_counter, len(self.testSuite.testCases)))
+            started_counter = 0
+            for test in self.testSuite.testCases:
+                print("Start test " + test.name)
+                self._start_task(test)
+                started_counter += 1
+                print("Started test {} of {}".format(started_counter, len(self.testSuite.testCases)))
+                print("\n")
+            test_counter = 0
+            for test in self.testSuite.testCases:
+                print("CollectResult of Test " + test.name)
+                self._collect_result(test)
+                test_counter += 1
+                print("Collected results from {} of {} tests".format(test_counter, len(self.testSuite.testCases)))
+                print("\n")
+        else:
+            for test in self.testSuite.testCases:
+                print("Start Test " + test.name)
+                self.run(test)
+                print("\n")
             print("\n")

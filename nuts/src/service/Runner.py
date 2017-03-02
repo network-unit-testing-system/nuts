@@ -13,21 +13,31 @@ class Runner:
         result = self._get_task_result(testCase)
         self.testSuite.setActualResult(testCase, result)
         
-    def _collect_result(self, test_case):
+    def _collect_result(self, test_case, max_iterations = 10, sleep_duration = 0.1):
+        
         counter = 0
         not_contained = True
-        while not_contained:
+        while not_contained and (counter < max_iterations):
             xx = self.api.get_task_result(taskid=test_case.job_id)
             not_contained = False
             print("jid {} counter {} xx {}".format(test_case.job_id, counter, xx))
             for minion in test_case.minions:
                 if not minion in xx['return'][0]:
                     not_contained = True
-                    sleep(0.1)
+                    sleep(sleep_duration)
                     counter += 1
         print(counter)
-        return_value = self._extractReturn(xx)
-        self.testSuite.setActualResult(test_case, return_value)
+        if not not_contained:
+            return_value = self._extractReturn(xx)
+            self.testSuite.setActualResult(test_case, return_value)
+        else:
+            #TODO better solution for timeout
+            self.testSuite.setActualResult(test_case,
+                {
+                'resulttype':'single',
+                'result':'TIMEOUT'
+                }
+            )    
         
     def _start_task(self, test_case):
         try:

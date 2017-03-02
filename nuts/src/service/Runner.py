@@ -20,6 +20,7 @@ class Runner:
         while not_contained:
             xx = self.api.get_task_result(taskid=test_case.job_id)
             not_contained = False
+            print("jid {} counter {} xx {}".format(test_case.job_id, counter, xx))
             for minion in test_case.minions:
                 if not minion in xx['return'][0]:
                     not_contained = True
@@ -87,11 +88,17 @@ class Runner:
 
     def run_all(self):
         print("\n")
+        started_counter = 0
         for test in self.testSuite.testCases:
-            print("Start Test " + test.name)
+            print("Start test " + test.name)
             self.run(test)
+            started_counter += 1
+            print("Started test {} of {}".format(started_counter, len(self.testSuite.testCases)))
             print("\n")
+        test_counter = 0
         for test in self.testSuite.testCases:
             print("CollectResult of Test " + test.name)
             self.collectResult(test)
+            test_counter += 1
+            print("Collected results from {} of {} tests".format(test_counter, len(self.testSuite.testCases)))
             print("\n")

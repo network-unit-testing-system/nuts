@@ -18,13 +18,13 @@ def mock_testsuite():
 @pytest.fixture
 def api_mock():
     mock = Mock(spec=SaltApi)
-    mock.start_task.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
+    mock.start_task.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
     return mock
 
 class TestRunner:
     def test_run_all(self,example_testsuite, api_mock):
         with patch.object(Runner, "run") as runmethod_mocked:
-            Runner(example_testsuite,api_mock).run_all()
+            Runner(example_testsuite,api_mock).run_all(execute_async=False)
             runmethod_mocked.assert_any_call(example_testsuite.getTestByName("testPingFromAToB"))
             runmethod_mocked.assert_any_call(example_testsuite.getTestByName("checkuser"))
             runmethod_mocked.assert_any_call(example_testsuite.getTestByName("Count ospf neighbors"))
@@ -37,14 +37,14 @@ class TestRunner:
         api_mock.start_task.assert_called_with(runner.create_task(test_case))
         assert example_testsuite.getActualResult(test_case) == {
             "resulttype": "single",
-             "result": "000c.29ea.d168"
+             "result": "00:0C:29:EA:D1:68"
         }
     
     def test_extractReturn(self):
-        returnDict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "000c.29ea.d168"}'}]}
+        returnDict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
         assert Runner._extractReturn(returnDict) == {
             'resulttype':'single',
-            'result':'000c.29ea.d168'
+            'result':'00:0C:29:EA:D1:68'
         }
     
     def test_extractReturnEmpty(self):

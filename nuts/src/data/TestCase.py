@@ -1,19 +1,19 @@
 class TestCase:
-    def __init__(self, name, command, devices, parameter, operator, expectedResult):
+    def __init__(self, name, command, devices, parameter, operator, expected_result):
         self.name = name
         self.command = command
         self.devices = devices
         self.parameter = parameter
         self.operator = operator
-        self.expectedResult = expectedResult
+        self.expected_result = expected_result
         self.job_id = ''
         self.minions = []
         
-    def setActualResult(self, actualResult):
-        self.actualResult = actualResult
+    def set_actual_result(self, actual_result):
+        self.actual_result = actual_result
 
-    def getActualResult(self):
-        return self.actualResult
+    def get_actual_result(self):
+        return self.actual_result
     
     def set_job(self, job_description):
         self.job_id = job_description['return'][0]['jid']
@@ -25,4 +25,4 @@ class TestCase:
                                                                                                             self.devices,
                                                                                                             self.parameter,
                                                                                                             self.operator,
-                                                                                                            self.expectedResult)
+                                                                                                            self.expected_result)

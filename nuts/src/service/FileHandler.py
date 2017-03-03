@@ -16,7 +16,7 @@ class FileHandler:
         values = yaml.safe_load(data)
         for val in values:
             test_suite.create_test(val["name"], val["command"], val["devices"], val["parameter"], val["operator"],
-                                 val["expected"])
+                                   val["expected"])
 
     def read_file(self, file):
         try:

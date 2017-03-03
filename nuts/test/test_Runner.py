@@ -4,6 +4,8 @@ from mock import patch
 from src.service.salt_api_wrapper import SaltApi
 from src.service.Runner import Runner
 from src.data.TestSuite import TestSuite
+
+
 @pytest.fixture
 def example_testsuite():
     test_suite = TestSuite("ExampleSuite")
@@ -11,10 +13,14 @@ def example_testsuite():
     test_suite.create_test("checkuser", "checkuser", 'Server02', '8.8.8.8', "=", 'admin')
     test_suite.create_test("Count ospf neighbors", "countospfneighbors", 'Switch1', '', "=", '3')
     return test_suite
+
+
 @pytest.fixture
 def mock_testsuite():
     mock = Mock(spec=TestSuite)
     return mock
+
+
 @pytest.fixture
 def api_mock():
     mock = Mock(spec=SaltApi)
@@ -23,26 +29,27 @@ def api_mock():
     mock.get_task_result.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
     return mock
 
+
 class TestRunner:
-    
-    def test_run_all_sync(self,example_testsuite, api_mock):
+
+    def test_run_all_sync(self, example_testsuite, api_mock):
         with patch.object(Runner, "run") as run_method_mocked:
-            Runner(example_testsuite,api_mock).run_all(execute_async=False)
+            Runner(example_testsuite, api_mock).run_all(execute_async=False)
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name("testPingFromAToB"))
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name("checkuser"))
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name("Count ospf neighbors"))
-            
+
     def test_run_all_async(self, example_testsuite, api_mock):
         with patch.object(Runner, "_start_task") as run_method_mocked:
             with patch.object(Runner, "_collect_result") as result_method_mocked:
-                Runner(example_testsuite,api_mock).run_all(execute_async=True)
+                Runner(example_testsuite, api_mock).run_all(execute_async=True)
                 run_method_mocked.assert_any_call(example_testsuite.get_test_by_name("testPingFromAToB"))
                 run_method_mocked.assert_any_call(example_testsuite.get_test_by_name("checkuser"))
                 run_method_mocked.assert_any_call(example_testsuite.get_test_by_name("Count ospf neighbors"))
                 result_method_mocked.assert_any_call(example_testsuite.get_test_by_name("testPingFromAToB"))
                 result_method_mocked.assert_any_call(example_testsuite.get_test_by_name("checkuser"))
-                result_method_mocked.assert_any_call(example_testsuite.get_test_by_name("Count ospf neighbors"))        
-    
+                result_method_mocked.assert_any_call(example_testsuite.get_test_by_name("Count ospf neighbors"))
+
     def test_start_task(self, example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
         test_case = example_testsuite.get_test_by_name("testPingFromAToB")
@@ -50,19 +57,19 @@ class TestRunner:
         api_mock.connect.assert_called()
         api_mock.start_task_async.assert_called_with(runner.create_task(test_case))
         assert test_case.job_id == u'20170302070941729675'
-    
+
     def test_collect_result(self, example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
         test_case = example_testsuite.get_test_by_name("testPingFromAToB")
         test_case.job_id == u'20170302070941729675'
         runner._collect_result(test_case)
-        api_mock.get_task_result.assert_called_with(taskid = u'20170302070941729675')
-        assert example_testsuite.get_actual_result(test_case) ==  {
-            'resulttype':'single',
-            'result':'00:0C:29:EA:D1:68'
+        api_mock.get_task_result.assert_called_with(taskid=u'20170302070941729675')
+        assert example_testsuite.get_actual_result(test_case) == {
+            'resulttype': 'single',
+            'result': '00:0C:29:EA:D1:68'
         }
-            
-    def test_run(self,example_testsuite, api_mock):
+
+    def test_run(self, example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
         test_case = example_testsuite.get_test_by_name("testPingFromAToB")
         runner.run(test_case)
@@ -70,25 +77,25 @@ class TestRunner:
         api_mock.start_task.assert_called_with(runner.create_task(test_case))
         assert example_testsuite.get_actual_result(test_case) == {
             "resulttype": "single",
-             "result": "00:0C:29:EA:D1:68"
+            "result": "00:0C:29:EA:D1:68"
         }
-    
+
     def test_extract_return(self):
         return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
         assert Runner._extract_return(return_dict) == {
-            'resulttype':'single',
-            'result':'00:0C:29:EA:D1:68'
+            'resulttype': 'single',
+            'result': '00:0C:29:EA:D1:68'
         }
-    
+
     def test_extract_return_empty(self):
         return_dict = {u'return': [{u'cisco.csr.1000v': None}]}
         assert Runner._extract_return(return_dict) == {
-                    'resulttype':'single',
-                    'result':None
+                    'resulttype': 'single',
+                    'result': None
         }
-        
+
     def test_create_task(self, example_testsuite, api_mock):
-        runner = Runner(example_testsuite,api_mock)
+        runner = Runner(example_testsuite, api_mock)
         task = runner.create_task(example_testsuite.get_test_by_name("testPingFromAToB"))
         assert 'targets' in task
         assert 'function' in task

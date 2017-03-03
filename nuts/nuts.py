@@ -19,12 +19,13 @@ def main(argv):
     args = parser.parse_args()
     if args.input:
         validator = ValidationController(os.getcwd() + "/" + args.input[0])
-        if validator.logic(): 
+        if validator.logic():
             tester = TestController(os.getcwd() + "/" + args.input[0])
             tester.logic()
     elif args.validate:
         validator = ValidationController(os.getcwd() + "/" + args.validate[0])
         validator.logic()
-   
+
+
 if __name__ == "__main__":
         main(sys.argv[1:])

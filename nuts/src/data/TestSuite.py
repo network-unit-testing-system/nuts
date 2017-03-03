@@ -29,4 +29,3 @@ class TestSuite:
         print("\nTestCases:")
         for test in TestSuite.test_cases:
             print(test)
-

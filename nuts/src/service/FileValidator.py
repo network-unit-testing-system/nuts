@@ -3,6 +3,7 @@ import sys
 import logging
 from pykwalify.core import Core
 
+
 class FileValidator:
     def __init__(self, test_file):
         self.test_file = test_file
@@ -16,6 +17,7 @@ class FileValidator:
             c.validate(raise_exception=True)
             return True
         except Exception as e:
-            print("Validator-Fehler")
-            self.logger.exception("Validator-Fehler")
+            print("Validation error")
+            self.logger.exception("Validation error")
+            self.logger.exception(e)
             return False

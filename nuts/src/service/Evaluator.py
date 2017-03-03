@@ -20,26 +20,26 @@ class Evaluator:
 
     def get_result(self, test_case):
         return test_case.actual_result['result']
-    
+
     def get_expected(self, test_case):
         return test_case.expected_result
 
     def comp(self, list1, list2):
-        if isinstance(list1,list) and isinstance(list1,list):
+        if isinstance(list1, list) and isinstance(list1, list):
             return self.comp(set(list1), set(list2))
         else:
             return list1 == list2
 
     @staticmethod
     def format_result(result):
-        if isinstance(result,basestring):
+        if isinstance(result, basestring):
             return result.encode('utf-8')
         if isinstance(result, list):
             return [x.encode('utf-8') for x in result]
-        if isinstance(result,dict):
-            return {x.encode('utf-8'):y.encode('utf-8') for x,y in result.items()}
+        if isinstance(result, dict):
+            return {x.encode('utf-8'): y.encode('utf-8') for x, y in result.items()}
         return str(result)
-    
+
     def print_result(self, test_case):
         if self.get_result(test_case) == "ERROR":
             print(

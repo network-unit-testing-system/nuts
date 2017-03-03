@@ -3,26 +3,26 @@ import logging
 
 
 class Evaluator:
-    def __init__(self, testSuite):
-        self.testSuite = testSuite
-        self.infologger = logging.getLogger('info_log')
+    def __init__(self, test_suite):
+        self.test_suite = test_suite
+        self.info_logger = logging.getLogger('info_log')
 
-    def compare(self, testCase):
-        if testCase.operator == "=":
-            print(testCase.actualResult["result"], testCase.expectedResult)
-            return self.comp(testCase.actualResult["result"], testCase.expectedResult)
-        elif testCase.operator == "<":
-            return testCase.expectedResult < testCase.actualResult["result"]
-        elif testCase.operator == ">":
-            return testCase.expectedResult > testCase.actualResult["result"]
-        elif testCase.operator == "not":
-            return testCase.expectedResult != testCase.actualResult["result"]
+    def compare(self, test_case):
+        if test_case.operator == "=":
+            print(test_case.actual_result["result"], test_case.expected_result)
+            return self.comp(test_case.actual_result["result"], test_case.expected_result)
+        elif test_case.operator == "<":
+            return test_case.expected_result < test_case.actual_result["result"]
+        elif test_case.operator == ">":
+            return test_case.expected_result > test_case.actual_result["result"]
+        elif test_case.operator == "not":
+            return test_case.expected_result != test_case.actual_result["result"]
 
-    def getResult(self, testCase):
-        return testCase.actualResult['result']
+    def get_result(self, test_case):
+        return test_case.actual_result['result']
     
-    def getExpected(self, testCase):
-        return testCase.expectedResult
+    def get_expected(self, test_case):
+        return test_case.expected_result
 
     def comp(self, list1, list2):
         if isinstance(list1,list) and isinstance(list1,list):
@@ -31,7 +31,7 @@ class Evaluator:
             return list1 == list2
 
     @staticmethod
-    def formatResult(result):
+    def format_result(result):
         if isinstance(result,basestring):
             return result.encode('utf-8')
         if isinstance(result, list):
@@ -40,23 +40,23 @@ class Evaluator:
             return {x.encode('utf-8'):y.encode('utf-8') for x,y in result.items()}
         return str(result)
     
-    def printResult(self, testCase):
-        if self.getResult(testCase) == "ERROR":
+    def print_result(self, test_case):
+        if self.get_result(test_case) == "ERROR":
             print(
-                '\033[91m' + testCase.name + ": Test nicht bestanden -------------------\033[0m\nFehler bei der Ausfuehrung des Tests!")
-            self.infologger.warning(
-                testCase.name + ": Test nicht bestanden -------------------\nFehler bei der Ausfuehrung des Tests!")
-        elif self.compare(testCase):
-            print('\033[92m' + testCase.name + ": Test bestanden ------------------------- \033[0m\nExpected: " + str(
-                self.formatResult(self.getExpected(testCase))) + " " + testCase.operator + " Actual: " + self.formatResult(str(self.getResult(testCase))))
-            self.infologger.warning('\n' + testCase.name + ": Test bestanden ------------------------- \nExpected: " + str(
-                self.getExpected(testCase)) + " " + testCase.operator + " Actual:  " + str(self.getResult(testCase)))
+                '\033[91m' + test_case.name + ": Test nicht bestanden -------------------\033[0m\nFehler bei der Ausfuehrung des Tests!")
+            self.info_logger.warning(
+                test_case.name + ": Test nicht bestanden -------------------\nFehler bei der Ausfuehrung des Tests!")
+        elif self.compare(test_case):
+            print('\033[92m' + test_case.name + ": Test bestanden ------------------------- \033[0m\nExpected: " + str(
+                self.format_result(self.get_expected(test_case))) + " " + test_case.operator + " Actual: " + self.format_result(str(self.get_result(test_case))))
+            self.info_logger.warning('\n' + test_case.name + ": Test bestanden ------------------------- \nExpected: " + str(
+                self.get_expected(test_case)) + " " + test_case.operator + " Actual:  " + str(self.get_result(test_case)))
         else:
-            print('\033[91m' + testCase.name + ": Test nicht bestanden -------------------\033[0m\nExpected: " + str(
-                self.getExpected(testCase)) + " " + testCase.operator + " Actual: " + str(self.getResult(testCase)))
-            self.infologger.warning('\n' + testCase.name + ": Test nicht bestanden ------------------- \nExpected: " + str(
-                self.getExpected(testCase)) + " " + testCase.operator + " Actual:  " + str(self.getResult(testCase)))
+            print('\033[91m' + test_case.name + ": Test nicht bestanden -------------------\033[0m\nExpected: " + str(
+                self.get_expected(test_case)) + " " + test_case.operator + " Actual: " + str(self.get_result(test_case)))
+            self.info_logger.warning('\n' + test_case.name + ": Test nicht bestanden ------------------- \nExpected: " + str(
+                self.get_expected(test_case)) + " " + test_case.operator + " Actual:  " + str(self.get_result(test_case)))
 
-    def printAllResults(self):
-        for test in self.testSuite.testCases:
-            self.printResult(test)
+    def print_all_results(self):
+        for test in self.test_suite.test_cases:
+            self.print_result(test)

@@ -4,20 +4,18 @@ import datetime
 
 class Logger:
     def __init__(self):
-        self.errorlogger = logging.getLogger('error_log')
-        self.infologger = logging.getLogger('info_log')
+        self.error_logger = logging.getLogger('error_log')
+        self.info_logger = logging.getLogger('info_log')
 
-        errorformatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        errorhandler = logging.FileHandler('/var/log/nuts/error.log')
-        errorhandler.setFormatter(errorformatter)
-        self.errorlogger.setLevel(logging.DEBUG)
-        self.errorlogger.addHandler(errorhandler)
-        self.errorlogger.error("Begin")
+        error_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        error_handler = logging.FileHandler('/var/log/nuts/error.log')
+        error_handler.setFormatter(error_formatter)
+        self.error_logger.setLevel(logging.DEBUG)
+        self.error_logger.addHandler(error_handler)
+        self.error_logger.error("Begin")
 
-        dateTag = datetime.datetime.now().strftime("%Y-%b-%d_%H-%M-%S")
-        infoformatter = logging.Formatter('%(asctime)s - %(message)s')
-        infohandler = logging.FileHandler('/var/log/nuts/' + dateTag + '-testresults.log')
-        infohandler.setFormatter(infoformatter)
-        self.infologger.addHandler(infohandler)
-
-
+        date_tag = datetime.datetime.now().strftime("%Y-%b-%d_%H-%M-%S")
+        info_formatter = logging.Formatter('%(asctime)s - %(message)s')
+        info_handler = logging.FileHandler('/var/log/nuts/' + date_tag + '-testresults.log')
+        info_handler.setFormatter(info_formatter)
+        self.info_logger.addHandler(info_handler)

@@ -4,17 +4,17 @@ from src.data.TestSuite import TestSuite
 
 
 class TestTestSuite:
-    testSuite = TestSuite("TestTestSuite")
-    eval = Evaluator(testSuite)
+    test_suite = TestSuite("TestTestSuite")
+    eval = Evaluator(test_suite)
 
     @classmethod
     def setup_class(cls):
-        cls.testSuite.createTest("testPingFromAToB", "connectivity", 'Server01', '8.8.8.8', "=", 'True')
-        cls.testSuite.createTest("checkuser", "checkuser", 'Server02', '8.8.8.8', "=", 'admin')
-        cls.testSuite.createTest("Count ospf neighbors", "countospfneighbors", 'Switch1', '', "=", '3')
-        cls.eval = Evaluator(cls.testSuite)
+        cls.test_suite.create_test("testPingFromAToB", "connectivity", 'Server01', '8.8.8.8', "=", 'True')
+        cls.test_suite.create_test("checkuser", "checkuser", 'Server02', '8.8.8.8', "=", 'admin')
+        cls.test_suite.create_test("Count ospf neighbors", "countospfneighbors", 'Switch1', '', "=", '3')
+        cls.eval = Evaluator(cls.test_suite)
 
-    def test_compMultiple(self):
+    def test_comp_multiple(self):
         list1 = []
         list2 = []
         list1.append('admin')
@@ -23,7 +23,7 @@ class TestTestSuite:
         list2.append('admin')
         self.eval.comp(list1, list2) is True
 
-    def test_compMultipleFalse(self):
+    def test_comp_multiple_false(self):
         list1 = []
         list2 = []
         list1.append('admin')
@@ -31,26 +31,26 @@ class TestTestSuite:
         list2.append('user')
         self.eval.comp(list1, list2) is False
 
-    def test_CompareSingleTrue(self):
-        testCase = self.testSuite.getTestByName('Count ospf neighbors')
+    def test_compare_single_true(self):
+        test_case = self.test_suite.get_test_by_name('Count ospf neighbors')
         result = {"resulttype": "single", "result": '3'}
-        testCase.actualResult = result
-        self.eval.compare(testCase) is 3
+        test_case.actual_result = result
+        self.eval.compare(test_case) is 3
 
-    def test_CompareSingleFalse(self):
+    def test_compare_single_false(self):
         result = {"resulttype": "single", "result": 'False'}
-        testCase = self.testSuite.getTestByName('testPingFromAToB')
-        testCase.actualResult = result
-        self.eval.compare(testCase) is False
+        test_case = self.test_suite.get_test_by_name('testPingFromAToB')
+        test_case.actual_result = result
+        self.eval.compare(test_case) is False
 
-    def test_CompareMultipleTrue(self):
+    def test_compare_multiple_true(self):
         result = {"resulttype": "multiple", "result": ['admin', 'user']}
-        testCase = self.testSuite.getTestByName('checkuser')
-        testCase.actualResult = result
-        self.eval.compare(testCase) is True
+        test_case = self.test_suite.get_test_by_name('checkuser')
+        test_case.actual_result = result
+        self.eval.compare(test_case) is True
 
-    def test_CompareMultipleFalse(self):
+    def test_compare_multiple_false(self):
         result = {"resulttype": "multiple", "result": ['admin']}
-        testCase = self.testSuite.getTestByName('checkuser')
-        testCase.actualResult = result
-        self.eval.compare(testCase) is False
+        test_case = self.test_suite.get_test_by_name('checkuser')
+        test_case.actual_result = result
+        self.eval.compare(test_case) is False

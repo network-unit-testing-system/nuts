@@ -4,18 +4,20 @@ import sys
 import argparse
 import logging
 import datetime
+import colorama
 from src.application.Logger import Logger
-
 from src.application.ValidationController import ValidationController
 from src.application.TestController import TestController
 
 
 def main(argv):
+    colorama.init()
+    
     logger = Logger()
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", help="Start with a Testfile", nargs=1)
     parser.add_argument("-v", "--validate", help="Validates Testfile", nargs=1, )
-
+    
     args = parser.parse_args()
     if args.input:
         validator = ValidationController(os.getcwd() + "/" + args.input[0])

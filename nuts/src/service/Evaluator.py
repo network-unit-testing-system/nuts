@@ -9,7 +9,6 @@ class Evaluator:
 
     def compare(self, test_case):
         if test_case.operator == "=":
-            print(test_case.actual_result["result"], test_case.expected_result)
             return self.comp(test_case.actual_result["result"], test_case.expected_result)
         elif test_case.operator == "<":
             return test_case.expected_result < test_case.actual_result["result"]
@@ -40,23 +39,31 @@ class Evaluator:
             return {x.encode('utf-8'): y.encode('utf-8') for x, y in result.items()}
         return str(result)
 
-    def print_result(self, test_case):
-        if self.get_result(test_case) == "ERROR":
+    def _test_case_failed(self, test_case):
+        return self.get_result(test_case) == "ERROR"
+    
+    def validate_result(self, test_case):
+        if self._test_case_failed(test_case):
             print(
                 '\033[91m' + test_case.name + ": Test error -------------------\033[0m\An error occurred while executing the test!")
             self.info_logger.warning(
                 test_case.name + ": Test failed -------------------\033[0m\nFailure while executing the test!")
+            self.test_suite.mark_test_case_failed(test_case)
         elif self.compare(test_case):
             print('\033[92m' + test_case.name + ": Test passed ------------------------- \033[0m\nExpected: " + str(
                 self.format_result(self.get_expected(test_case))) + " " + test_case.operator + " Actual: " + self.format_result(str(self.get_result(test_case))))
             self.info_logger.warning('\n' + test_case.name + ": Test passed ------------------------- \nExpected: " + str(
                 self.get_expected(test_case)) + " " + test_case.operator + " Actual:  " + str(self.get_result(test_case)))
+            self.test_suite.mark_test_case_passed(test_case)
         else:
             print('\033[91m' + test_case.name + ": Test failed -------------------\033[0m\nExpected: " + str(
                 self.get_expected(test_case)) + " " + test_case.operator + " Actual: " + str(self.get_result(test_case)))
             self.info_logger.warning('\n' + test_case.name + ": Test failed ------------------- \nExpected: " + str(
                 self.get_expected(test_case)) + " " + test_case.operator + " Actual:  " + str(self.get_result(test_case)))
+            self.test_suite.mark_test_case_failed(test_case)
 
-    def print_all_results(self):
+    def validate_all_results(self):
         for test in self.test_suite.test_cases:
-            self.print_result(test)
+            self.validate_result(test)
+        self.test_suite.print_statistics()
+        

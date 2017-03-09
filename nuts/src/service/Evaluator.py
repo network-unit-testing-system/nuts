@@ -43,18 +43,18 @@ class Evaluator:
     def print_result(self, test_case):
         if self.get_result(test_case) == "ERROR":
             print(
-                '\033[91m' + test_case.name + ": Test nicht bestanden -------------------\033[0m\nFehler bei der Ausfuehrung des Tests!")
+                '\033[91m' + test_case.name + ": Test error -------------------\033[0m\An error occurred while executing the test!")
             self.info_logger.warning(
-                test_case.name + ": Test nicht bestanden -------------------\nFehler bei der Ausfuehrung des Tests!")
+                test_case.name + ": Test failed -------------------\033[0m\nFailure while executing the test!")
         elif self.compare(test_case):
-            print('\033[92m' + test_case.name + ": Test bestanden ------------------------- \033[0m\nExpected: " + str(
+            print('\033[92m' + test_case.name + ": Test passed ------------------------- \033[0m\nExpected: " + str(
                 self.format_result(self.get_expected(test_case))) + " " + test_case.operator + " Actual: " + self.format_result(str(self.get_result(test_case))))
-            self.info_logger.warning('\n' + test_case.name + ": Test bestanden ------------------------- \nExpected: " + str(
+            self.info_logger.warning('\n' + test_case.name + ": Test passed ------------------------- \nExpected: " + str(
                 self.get_expected(test_case)) + " " + test_case.operator + " Actual:  " + str(self.get_result(test_case)))
         else:
-            print('\033[91m' + test_case.name + ": Test nicht bestanden -------------------\033[0m\nExpected: " + str(
+            print('\033[91m' + test_case.name + ": Test failed -------------------\033[0m\nExpected: " + str(
                 self.get_expected(test_case)) + " " + test_case.operator + " Actual: " + str(self.get_result(test_case)))
-            self.info_logger.warning('\n' + test_case.name + ": Test nicht bestanden ------------------- \nExpected: " + str(
+            self.info_logger.warning('\n' + test_case.name + ": Test failed ------------------- \nExpected: " + str(
                 self.get_expected(test_case)) + " " + test_case.operator + " Actual:  " + str(self.get_result(test_case)))
 
     def print_all_results(self):

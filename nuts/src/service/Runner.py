@@ -25,16 +25,16 @@ class Runner:
                     not_contained = True
                     sleep(sleep_duration)
             counter += 1
-        if not not_contained:
-            return_value = self._extract_return(xx)
-            self.test_suite.set_actual_result(test_case, return_value)
-        else:
-            # TODO better solution for timeout
+        if not_contained:
+             # TODO better solution for timeout
             timeout_result = {
                               'resulttype': 'single',
                               'result': 'TIMEOUT'
                               }
             self.test_suite.set_actual_result(test_case, timeout_result)
+        else:
+            return_value = self._extract_return(xx)
+            self.test_suite.set_actual_result(test_case, return_value)
 
     def _start_task(self, test_case):
         try:

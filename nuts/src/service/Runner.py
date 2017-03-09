@@ -24,7 +24,7 @@ class Runner:
                 if minion not in xx['return'][0]:
                     not_contained = True
                     sleep(sleep_duration)
-                    counter += 1
+            counter += 1
         if not not_contained:
             return_value = self._extract_return(xx)
             self.test_suite.set_actual_result(test_case, return_value)

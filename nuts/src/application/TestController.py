@@ -25,12 +25,12 @@ class TestController:
         if(self.test_suite.has_failed_tests()):
             if(self.check_re_run_failed_tests()):
                 self.re_run_failed_tests()
-                
+
     def re_run_failed_tests(self):
         self.test_suite.prepare_re_run()
         self.run_tests()
 
     def check_re_run_failed_tests(self):
-        input_var = raw_input('Do you want to re-run the failed tests? \n' 
-                          + 'Enter yes or y \n')   
+        input_var = raw_input('Do you want to re-run the failed tests? \n' +
+                              'Enter yes or y \n')
         return input_var.lower() == 'yes' or input_var.lower() == 'y'

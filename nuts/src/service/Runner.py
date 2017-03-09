@@ -26,7 +26,7 @@ class Runner:
                     sleep(sleep_duration)
             counter += 1
         if not_contained:
-             # TODO better solution for timeout
+            # TODO better solution for timeout
             timeout_result = {
                               'resulttype': 'single',
                               'result': 'TIMEOUT'

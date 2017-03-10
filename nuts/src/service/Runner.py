@@ -4,26 +4,28 @@ from time import sleep
 
 
 class Runner:
-    def __init__(self, test_suite, salt_api):
+    def __init__(self, test_suite, salt_api, max_iterations=25, sleep_duration=0.1):
         self.test_suite = test_suite
         self.logger = logging.getLogger('error_log')
         self.api = salt_api
+        self.max_iterations = max_iterations
+        self.sleep_duration = sleep_duration
 
     def run(self, test_case):
         result = self._get_task_result(test_case)
         self.test_suite.set_actual_result(test_case, result)
 
-    def _collect_result(self, test_case, max_iterations=10, sleep_duration=0.1):
+    def _collect_result(self, test_case):
         counter = 0
         not_contained = True
-        while not_contained and (counter < max_iterations):
+        while not_contained and (counter < self.max_iterations):
             xx = self.api.get_task_result(taskid=test_case.job_id)
             not_contained = False
             print("jid {} counter {} xx {}".format(test_case.job_id, counter, xx))
             for minion in test_case.minions:
                 if minion not in xx['return'][0]:
                     not_contained = True
-                    sleep(sleep_duration)
+                    sleep(self.sleep_duration)
             counter += 1
         return_value = self._extract_return(xx)
         self.test_suite.set_actual_result(test_case, return_value)

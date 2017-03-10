@@ -7,11 +7,11 @@ from src.service.salt_api_wrapper import SaltApi
 
 class TestController:
 
-    def __init__(self, test_file):
+    def __init__(self, test_file, max_iterations):
         self.test_suite = TestSuite("SuiteName")
         self.test_file = test_file
         self.file_handler = FileHandler(self.test_suite, self.test_file)
-        self.runner = Runner(self.test_suite, SaltApi())
+        self.runner = Runner(self.test_suite, SaltApi(), max_iterations=max_iterations)
         self.evaluator = Evaluator(self.test_suite)
 
     def logic(self):

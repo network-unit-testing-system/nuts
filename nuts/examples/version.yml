@@ -1,0 +1,6 @@
+- name: checkversion
+  command: checkversion
+  devices: cisco.csr.1000v
+  parameter: []
+  operator: '='
+  expected: 'CSR1000V Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 15.5(2)S, RELEASE SOFTWARE (fc3)' 

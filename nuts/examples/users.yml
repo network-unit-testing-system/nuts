@@ -1,0 +1,6 @@
+- name: example_user
+  command: checkuser
+  devices: cisco.csr.1000v
+  parameter: []
+  operator: '='
+  expected: ['cisco','test']

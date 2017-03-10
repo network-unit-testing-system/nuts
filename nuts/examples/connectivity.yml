@@ -1,0 +1,6 @@
+- name: example_ping
+  command: connectivity
+  devices: cisco.csr.1000v
+  parameter: [192.168.16.128]
+  operator: '='
+  expected: True

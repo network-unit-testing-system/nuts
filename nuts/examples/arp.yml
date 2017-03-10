@@ -1,0 +1,6 @@
+- name: example_arp
+  command: arp
+  devices: cisco.csr.1000v
+  parameter: [192.168.16.128]
+  operator: '='
+  expected: '00:0C:29:EA:D1:68'

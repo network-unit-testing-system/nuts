@@ -61,7 +61,7 @@ class TestRunner:
     def test_collect_result(self, example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
         test_case = example_testsuite.get_test_by_name("testPingFromAToB")
-        test_case.job_id == u'20170302070941729675'
+        test_case.job_id = u'20170302070941729675'
         runner._collect_result(test_case)
         api_mock.get_task_result.assert_called_with(taskid=u'20170302070941729675')
         assert example_testsuite.get_actual_result(test_case) == {

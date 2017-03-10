@@ -17,12 +17,17 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", help="Start with a Testfile", nargs=1)
     parser.add_argument("-v", "--validate", help="Validates Testfile", nargs=1, )
+    parser.add_argument('-its', '--iterations', help='Changes the number of iterations that nuts waits for a result',
+                        nargs=1)
 
     args = parser.parse_args()
     if args.input:
         validator = ValidationController(os.getcwd() + "/" + args.input[0])
         if validator.logic():
-            tester = TestController(os.getcwd() + "/" + args.input[0])
+            if(args.iterations):
+                tester = TestController(os.getcwd() + "/" + args.input[0], max_iterations=int(args.iterations[0]))
+            else:
+                tester = TestController(os.getcwd() + "/" + args.input[0])
             tester.logic()
     elif args.validate:
         validator = ValidationController(os.getcwd() + "/" + args.validate[0])

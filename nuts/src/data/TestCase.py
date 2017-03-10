@@ -1,4 +1,5 @@
 class TestCase:
+
     def __init__(self, name, command, devices, parameter, operator, expected_result):
         self.name = name
         self.command = command
@@ -16,7 +17,7 @@ class TestCase:
         return self.actual_result
 
     def extract_actual_result(self):
-        return {k: v['result'] for k,v in self.actual_result.iteritems()}
+        return {k: v['result'] for k, v in self.actual_result.iteritems()}
 
     def set_job(self, job_description):
         self.job_id = job_description['return'][0]['jid']

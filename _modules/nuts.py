@@ -4,7 +4,6 @@ import json
 import salt.config
 import xml.etree.ElementTree as ET
 from salt.client.ssh.client import SSHClient
-from jsonrpclib import Server
 
 client = SSHClient()
 local = salt.client.LocalClient()

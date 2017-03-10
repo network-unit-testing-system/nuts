@@ -4,17 +4,16 @@ from colorama import Fore
 
 
 class TestSuite:
-    name = ""
-    test_cases = []
-    test_cases_failed = []
-    test_cases_passed = []
 
     def __init__(self, name):
-        TestSuite.name = name
+        self.name = name
+        self.test_cases = []
+        self.test_cases_failed = []
+        self.test_cases_passed = []
 
     def create_test(self, name, command, devices, parameter, operator, expected_result):
         test = TestCase(name, command, devices, parameter, operator, expected_result)
-        TestSuite.test_cases.append(test)
+        self.test_cases.append(test)
         self.logger = logging.getLogger('error_log')
 
     def set_actual_result(self, test_case, actual_result):
@@ -24,7 +23,7 @@ class TestSuite:
         return self.get_test_by_name(test_case.name).get_actual_result()
 
     def get_test_by_name(self, name):
-        for test in TestSuite.test_cases:
+        for test in self.test_cases:
             if test.name == name:
                 return test
 
@@ -51,5 +50,5 @@ class TestSuite:
 
     def print_all_test_cases(self):
         print("\nTestCases:")
-        for test in TestSuite.test_cases:
+        for test in self.test_cases:
             print(test)

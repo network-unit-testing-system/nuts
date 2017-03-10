@@ -25,16 +25,8 @@ class Runner:
                     not_contained = True
                     sleep(sleep_duration)
             counter += 1
-        if not_contained:
-            # TODO better solution for timeout
-            timeout_result = {
-                              'resulttype': 'single',
-                              'result': 'TIMEOUT'
-                              }
-            self.test_suite.set_actual_result(test_case, timeout_result)
-        else:
-            return_value = self._extract_return(xx)
-            self.test_suite.set_actual_result(test_case, return_value)
+        return_value = self._extract_return(xx)
+        self.test_suite.set_actual_result(test_case, return_value)
 
     def _start_task(self, test_case):
         try:
@@ -79,11 +71,7 @@ class Runner:
         '''This helper extracts the returnvalue from the result
         At the moment it only expects one return value for each task'''
         result_dict = result['return'][0]
-        result_dict = {k: Runner._extract_result_entry(v) for k, v in result_dict.iteritems()}
-        if(len(result_dict) == 1):
-            return result_dict.itervalues().next()
-        else:
-            return result_dict
+        return {k: Runner._extract_result_entry(v) for k, v in result_dict.iteritems()}
 
     @staticmethod
     def _extract_result_entry(result_entry):

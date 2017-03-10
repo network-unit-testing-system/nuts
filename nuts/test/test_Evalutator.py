@@ -10,9 +10,31 @@ class TestTestSuite:
     @classmethod
     def setup_class(cls):
         cls.test_suite.create_test("testPingFromAToB", "connectivity", 'Server01', '8.8.8.8', "=", 'True')
-        cls.test_suite.create_test("checkuser", "checkuser", 'Server02', '8.8.8.8', "=", 'admin')
+        cls.test_suite.create_test("checkuser", "checkuser", 'Server02', '', "=", ['admin', 'user'])
         cls.test_suite.create_test("Count ospf neighbors", "countospfneighbors", 'Switch1', '', "=", '3')
+        cls.test_suite.create_test("checkuser multiple devices", "checkuser", 'cisco.*', '', "=", ['admin', 'user'])
+        
         cls.eval = Evaluator(cls.test_suite)
+
+    def test_comp_multiple_devices(self):
+        test_case = self.test_suite.get_test_by_name('checkuser multiple devices')
+        result = {
+            u'cisco.csr.1000v': {"resulttype": "single", "result": ['admin','user']},
+            u'cisco.test':{"resulttype": "single", "result": ['admin','user']}
+        }
+        test_case.minions = [u'cisco.csr.1000v', u'cisco.test']
+        test_case.actual_result = result
+        assert self.eval.compare(test_case) is True
+
+    def test_comp_multiple_devices_false(self):
+        test_case = self.test_suite.get_test_by_name('checkuser multiple devices')
+        result = {
+            u'cisco.csr.1000v': {"resulttype": "single", "result": ['admin','user']},
+            u'cisco.test':{"resulttype": "single", "result": ['admin']}
+        }
+        test_case.minions = [u'cisco.csr.1000v', u'cisco.test']
+        test_case.actual_result = result
+        assert self.eval.compare(test_case) is False
 
     def test_comp_multiple(self):
         list1 = []
@@ -21,7 +43,7 @@ class TestTestSuite:
         list1.append('user')
         list2.append('user')
         list2.append('admin')
-        self.eval.comp(list1, list2) is True
+        assert self.eval.comp(list1, list2) is True
 
     def test_comp_multiple_false(self):
         list1 = []
@@ -29,28 +51,32 @@ class TestTestSuite:
         list1.append('admin')
         list1.append('user')
         list2.append('user')
-        self.eval.comp(list1, list2) is False
+        assert self.eval.comp(list1, list2) is False
 
     def test_compare_single_true(self):
         test_case = self.test_suite.get_test_by_name('Count ospf neighbors')
-        result = {"resulttype": "single", "result": '3'}
+        result = {u'cisco.csr.1000v': {"resulttype": "single", "result": '3'}}
+        test_case.minions.append('cisco.csr.1000v')
         test_case.actual_result = result
-        self.eval.compare(test_case) is 3
+        assert self.eval.compare(test_case) is True
 
     def test_compare_single_false(self):
-        result = {"resulttype": "single", "result": 'False'}
+        result = {u'cisco.csr.1000v':{"resulttype": "single", "result": 'False'}}
         test_case = self.test_suite.get_test_by_name('testPingFromAToB')
+        test_case.minions.append('cisco.csr.1000v')
         test_case.actual_result = result
-        self.eval.compare(test_case) is False
+        assert self.eval.compare(test_case) is False
 
     def test_compare_multiple_true(self):
-        result = {"resulttype": "multiple", "result": ['admin', 'user']}
+        result = {u'cisco.csr.1000v':{"resulttype": "multiple", "result": ['admin', 'user']}}
         test_case = self.test_suite.get_test_by_name('checkuser')
+        test_case.minions.append('cisco.csr.1000v')
         test_case.actual_result = result
-        self.eval.compare(test_case) is True
+        assert self.eval.compare(test_case) is True
 
     def test_compare_multiple_false(self):
-        result = {"resulttype": "multiple", "result": ['admin']}
+        result = {u'cisco.csr.1000v':{"resulttype": "multiple", "result": ['admin']}}
         test_case = self.test_suite.get_test_by_name('checkuser')
+        test_case.minions.append('cisco.csr.1000v')
         test_case.actual_result = result
-        self.eval.compare(test_case) is False
+        assert self.eval.compare(test_case) is False

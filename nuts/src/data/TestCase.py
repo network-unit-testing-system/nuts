@@ -15,6 +15,9 @@ class TestCase:
     def get_actual_result(self):
         return self.actual_result
 
+    def extract_actual_result(self):
+        return {k: v['result'] for k,v in self.actual_result.iteritems()}
+
     def set_job(self, job_description):
         self.job_id = job_description['return'][0]['jid']
         self.minions = job_description['return'][0]['minions']

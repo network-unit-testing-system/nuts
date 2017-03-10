@@ -65,9 +65,10 @@ class TestRunner:
         runner._collect_result(test_case)
         api_mock.get_task_result.assert_called_with(taskid=u'20170302070941729675')
         assert example_testsuite.get_actual_result(test_case) == {
-            'resulttype': 'single',
-            'result': '00:0C:29:EA:D1:68'
-        }
+                u'cisco.csr.1000v':{
+                'resulttype': 'single',
+                'result': '00:0C:29:EA:D1:68'
+        }}
 
     def test_run(self, example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)
@@ -76,9 +77,10 @@ class TestRunner:
         api_mock.connect.assert_called()
         api_mock.start_task.assert_called_with(runner.create_task(test_case))
         assert example_testsuite.get_actual_result(test_case) == {
-            "resulttype": "single",
-            "result": "00:0C:29:EA:D1:68"
-        }
+            u'cisco.csr.1000v':{
+                "resulttype": "single",
+                "result": "00:0C:29:EA:D1:68"
+        }}
         
     def test_extract_return_multiple_devices(self):
         return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}',
@@ -99,16 +101,18 @@ class TestRunner:
     def test_extract_return(self):
         return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
         assert Runner._extract_return(return_dict) == {
-            'resulttype': 'single',
-            'result': '00:0C:29:EA:D1:68'
-        }
+            u'cisco.csr.1000v':{
+                'resulttype': 'single',
+                'result': '00:0C:29:EA:D1:68'
+        }}
 
     def test_extract_return_empty(self):
         return_dict = {u'return': [{u'cisco.csr.1000v': None}]}
         assert Runner._extract_return(return_dict) == {
+            u'cisco.csr.1000v':{
                     'resulttype': 'single',
                     'result': None
-        }
+        }}
 
     def test_create_task(self, example_testsuite, api_mock):
         runner = Runner(example_testsuite, api_mock)

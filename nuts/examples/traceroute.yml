@@ -1,0 +1,7 @@
+- name: example_traceroute
+  command: traceroute
+  devices: cisco.csr.1000v
+  parameter: [192.168.16.200]
+  operator: '='
+  expected: 
+    '0': '192.168.16.200'

@@ -6,9 +6,9 @@ from src.service.salt_api_wrapper import SaltApi
 
 
 class TestController:
-    test_suite = TestSuite("SuiteName")
 
     def __init__(self, test_file):
+        self.test_suite = TestSuite("SuiteName")
         self.test_file = test_file
         self.file_handler = FileHandler(self.test_suite, self.test_file)
         self.runner = Runner(self.test_suite, SaltApi())
@@ -19,7 +19,7 @@ class TestController:
         self.run_tests()
 
     def run_tests(self):
-        TestController.test_suite.print_all_test_cases()
+        self.test_suite.print_all_test_cases()
         self.runner.run_all()
         self.evaluator.validate_all_results()
         if(self.test_suite.has_failed_tests()):

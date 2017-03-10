@@ -79,6 +79,22 @@ class TestRunner:
             "resulttype": "single",
             "result": "00:0C:29:EA:D1:68"
         }
+        
+    def test_extract_return_multiple_devices(self):
+        return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}',
+                                    u'cisco.test': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+        assert Runner._extract_return(return_dict) == {
+            u'cisco.csr.1000v': {"resulttype": "single", "result": "00:0C:29:EA:D1:68"},
+            u'cisco.test': {"resulttype": "single", "result": "00:0C:29:EA:D1:68"}
+        }
+
+    def test_extract_return_empty_multiple_devices(self):
+        return_dict = {u'return': [{u'cisco.csr.1000v': None,
+                                    u'cisco.test': None}]}
+        assert Runner._extract_return(return_dict) == {
+            u'cisco.csr.1000v': {"resulttype": "single", "result": None},
+            u'cisco.test': {"resulttype": "single", "result": None}
+        }
 
     def test_extract_return(self):
         return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}

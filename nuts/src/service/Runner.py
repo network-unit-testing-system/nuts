@@ -78,13 +78,22 @@ class Runner:
     def _extract_return(result):
         '''This helper extracts the returnvalue from the result
         At the moment it only expects one return value for each task'''
-        extracted_result = result['return'][0].itervalues().next()
-        if(extracted_result is None):
+        result_dict = result['return'][0]
+        result_dict = {k: Runner._extract_result_entry(v) for k, v in result_dict.iteritems()}
+        if(len(result_dict) == 1):
+            return result_dict.itervalues().next()
+        else:
+            return result_dict
+
+    @staticmethod
+    def _extract_result_entry(result_entry):
+        if(result_entry is None):
                 return {
                     'resulttype': 'single',
                     'result': None
                 }
-        return json.loads(extracted_result)
+        else:
+            return json.loads(result_entry)
 
     def run_all(self, execute_async=True):
         if execute_async:

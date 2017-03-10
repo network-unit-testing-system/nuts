@@ -27,9 +27,11 @@ class Evaluator:
                 compare = test_case.expected_result > actual_result[minion]
             elif test_case.operator == "not":
                 compare = test_case.expected_result != actual_result[minion]
+            result = actual_result[minion]
         else:
             compare = False
-        return EvaluationResult(minion, actual_result[minion], compare)
+            result = None
+        return EvaluationResult(minion, result, compare)
 
     def comp(self, list1, list2):
         if isinstance(list1, list) and isinstance(list1, list):
@@ -48,31 +50,33 @@ class Evaluator:
         return str(result)
 
     def _test_case_failed(self, test_case):
+        # TODO Change because actual_result handling changed
         return test_case.extract_actual_result() == 'ERROR'
 
     def validate_result(self, test_case):
         if self._test_case_failed(test_case):
-            print(
-                Fore.RED + test_case.name + ': Test error -------------------\n' +
-                Fore.RESET + 'An error occurred while executing the test!')
-            self.info_logger.warning(
-                test_case.name + ': Test failed -------------------\nFailure while executing the test!')
+            print('{}{}: Test error -------------------\n{}An error occurred while executing the test!'
+                  .format(Fore.RED, test_case.name, Fore.RESET))
+            self.info_logger.warning('{}: Test error -------------------\nAn error occurred while executing the test!\nReturnvalue: {}'
+                                     .format(test_case.name, test_case.actual_result))
             self.test_suite.mark_test_case_failed(test_case)
         elif self.compare(test_case).result():
-            print(Fore.GREEN + test_case.name + ': Test passed -------------------------\n' +
-                  Fore.RESET + 'Expected: ' + str(self.format_result(test_case.expected_result)) +
-                  ' ' + test_case.operator + ' Actual: ' + self.format_result(str(test_case.extract_actual_result())))
-            self.info_logger.warning('\n' + test_case.name + ': Test passed ------------------------- \nExpected: ' +
-                                     str(test_case.expected_result) + ' ' + test_case.operator +
-                                     ' Actual:  ' + str(test_case.extract_actual_result()))
+            print('{}{}: Test passed -------------------------\n{}'.format(Fore.GREEN, test_case.name, Fore.RESET))
+            self.info_logger.warning('\n{}: Test passed ------------------------- \nExpected: {} {} Actual: {}'
+                                     .format(test_case.name, str(test_case.expected_result),
+                                             test_case.operator, str(test_case.extract_actual_result())))
             self.test_suite.mark_test_case_passed(test_case)
         else:
-            print(Fore.RED + test_case.name + ': Test failed -------------------\n' +
-                  Fore.RESET + 'Expected: ' + str(test_case.expected_result) + ' ' + test_case.operator +
-                  ' Actual: ' + str(test_case.extract_actual_result()))
-            self.info_logger.warning('\n' + test_case.name + ': Test failed ------------------- \nExpected: ' +
-                                     str(test_case.expected_result) + ' ' + test_case.operator +
-                                     ' Actual:  ' + str(test_case.extract_actual_result()))
+            evaluation = self.compare(test_case)
+            print('{}{}: Test failed -------------------\n{}'.format(Fore.RED, test_case.name, Fore.RESET))
+            print('Expected: {}\nOperator:{}\nActual:'.format(str(evaluation.expected_result), evaluation.operator))
+            logging_message = ""
+            for eval_result in evaluation.evaluation_results:
+                color = Fore.GREEN if eval_result.passed else Fore.RED
+                print(color + '{}: {}'.format(eval_result.minion, eval_result.actual_result))
+            self.info_logger.warning('\n{}: Test failed ------------------- \nExpected: {} Operator: {}\nActual: {}'
+                                     .format(test_case.name, str(test_case.expected_result),
+                                             test_case.operator, test_case.extract_actual_result()))
             self.test_suite.mark_test_case_failed(test_case)
 
     def validate_all_results(self):

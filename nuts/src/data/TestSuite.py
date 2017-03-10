@@ -44,9 +44,9 @@ class TestSuite:
         tests_passed = len(self.test_cases_passed)
         tests_failed = len(self.test_cases_failed)
 
-        print(Fore.GREEN + '\n{} out of {} passed\n'.format(tests_passed, tests_passed + tests_failed))
+        print(Fore.GREEN + '\n{} out of {} tests passed\n'.format(tests_passed, tests_passed + tests_failed))
         if(tests_failed > 0):
-            print(Fore.RED + '{} out of {} failed\n'.format(tests_failed, tests_passed + tests_failed))
+            print(Fore.RED + '{} out of {} tests failed\n'.format(tests_failed, tests_passed + tests_failed))
 
     def print_all_test_cases(self):
         print("\nTestCases:")

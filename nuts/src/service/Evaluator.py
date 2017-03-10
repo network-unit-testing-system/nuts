@@ -1,6 +1,8 @@
 import datetime
 import logging
 from colorama import Fore
+from src.data.EvaluationResult import EvaluationResult
+from src.data.Evaluation import Evaluation
 
 
 class Evaluator:
@@ -9,23 +11,25 @@ class Evaluator:
         self.info_logger = logging.getLogger('info_log')
 
     def compare(self, test_case):
-        actual_result = test_case.extract_actual_result()
-        compare = True
+        evaluation = Evaluation(test_case.expected_result, test_case.operator)
         for minion in test_case.minions:
-            if(minion in actual_result):
-                if test_case.operator == "=":
-                    compare = self.comp(test_case.expected_result, actual_result[minion])
-                elif test_case.operator == "<":
-                    compare = test_case.expected_result < actual_result[minion]
-                elif test_case.operator == ">":
-                    compare = test_case.expected_result > actual_result[minion]
-                elif test_case.operator == "not":
-                    compare = test_case.expected_result != actual_result[minion]
-            else:
-                compare = False
-            if not compare:
-                return False
-        return True
+            evaluation.evaluation_results.append(self.compare_minion(test_case, minion))
+        return evaluation
+
+    def compare_minion(self, test_case, minion):
+        actual_result = test_case.extract_actual_result()
+        if(minion in actual_result):
+            if test_case.operator == "=":
+                compare = self.comp(test_case.expected_result, actual_result[minion])
+            elif test_case.operator == "<":
+                compare = test_case.expected_result < actual_result[minion]
+            elif test_case.operator == ">":
+                compare = test_case.expected_result > actual_result[minion]
+            elif test_case.operator == "not":
+                compare = test_case.expected_result != actual_result[minion]
+        else:
+            compare = False
+        return EvaluationResult(minion, actual_result[minion], compare)
 
     def comp(self, list1, list2):
         if isinstance(list1, list) and isinstance(list1, list):
@@ -54,7 +58,7 @@ class Evaluator:
             self.info_logger.warning(
                 test_case.name + ': Test failed -------------------\nFailure while executing the test!')
             self.test_suite.mark_test_case_failed(test_case)
-        elif self.compare(test_case):
+        elif self.compare(test_case).result():
             print(Fore.GREEN + test_case.name + ': Test passed -------------------------\n' +
                   Fore.RESET + 'Expected: ' + str(self.format_result(test_case.expected_result)) +
                   ' ' + test_case.operator + ' Actual: ' + self.format_result(str(test_case.extract_actual_result())))

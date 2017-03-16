@@ -14,7 +14,8 @@ class SaltApi(object):
                        self.settings.get_variable('NUTS_SALT_REST_API_PASSWORD'), 'pam')
 
     def start_task(self, args):
-        ''' starts a the function defined in args.function on targets (args.targets) with the parameters defined in args.arguments
+        ''' starts a the function defined in args.function on targets (args.targets)
+        with the parameters defined in args.arguments
 
             response format: {u'return': [{u'srv01':True,u'srv020:True}]}
         '''
@@ -25,8 +26,9 @@ class SaltApi(object):
         return response
 
     def start_task_async(self, args):
-        ''' starts a the function defined in args.function on targets (args.targets) with the parameters defined in args.arguments
-        this function is asnyc and you'll have to collect the results with get_task_result
+        ''' starts a the function defined in args.function on targets (args.targets) with
+        the parameters defined in args.arguments this function is asnyc
+        and you'll have to collect the results with get_task_result
 
             response format: {u'return': [{u'jid': u'20160718141822884336', u'minions': [u'srv01']}]}
         '''

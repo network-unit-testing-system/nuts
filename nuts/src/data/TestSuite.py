@@ -45,9 +45,11 @@ class TestSuite:
         tests_passed = len(self.test_cases_passed)
         tests_failed = len(self.test_cases_failed)
         self.info_logger.info('---------------------Summary----------------------')
-        self.info_logger.info(Fore.GREEN  + '{} out of {} tests passed'.format(tests_passed, tests_passed + tests_failed))
+        self.info_logger.info(Fore.GREEN + '{} out of {} tests passed'
+                              .format(tests_passed, tests_passed + tests_failed))
         if(tests_failed > 0):
-            self.info_logger.info(Fore.RED + '{} out of {} tests failed'.format(tests_failed, tests_passed + tests_failed))
+            self.info_logger.info(Fore.RED + '{} out of {} tests failed'
+                                  .format(tests_failed, tests_passed + tests_failed))
 
     def print_all_test_cases(self):
         self.info_logger.info('\nTestCases:')

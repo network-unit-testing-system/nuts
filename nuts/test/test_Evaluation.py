@@ -9,7 +9,6 @@ def example_evaluation():
     evaluation.evaluation_results.append(EvaluationResult("minion", "actual_result", True))
     evaluation.evaluation_results.append(EvaluationResult("minion2", "actual_result", True))
     evaluation.evaluation_results.append(EvaluationResult("minion3", "actual_result", True))
-    
     return evaluation
 
 

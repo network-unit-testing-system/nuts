@@ -24,9 +24,10 @@ class TestCase:
         self.minions = job_description['return'][0]['minions']
 
     def __str__(self):
-        return "Name: {0}, Command: {1}, Devices: {2}, Parameter: {3}, Operator: {4}, Expected: {5}".format(self.name,
-                                                                                                            self.command,
-                                                                                                            self.devices,
-                                                                                                            self.parameter,
-                                                                                                            self.operator,
-                                                                                                            self.expected_result)
+        return "Name: {0}, Command: {1}, Devices: {2}, Parameter: {3}, Operator: {4}, Expected: {5}"\
+            .format(self.name,
+                    self.command,
+                    self.devices,
+                    self.parameter,
+                    self.operator,
+                    self.expected_result)

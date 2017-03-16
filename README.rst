@@ -59,13 +59,14 @@ Install::
 Usage
 =======
 
-usage: nuts.py [-h] [-i INPUT] [-v VALIDATE] [-its ITERATIONS]
+usage: nuts.py [-h] [-i INPUT] [-v VALIDATE] [-m ITERATIONS]
 
 optional arguments:
   -h, --help                                     show this help message and exit
   -i INPUT, --input INPUT                        Validates the testfile and starts the tests afterwards
   -v VALIDATE, --validate VALIDATE               Validates a testfile
-  -its ITERATIONS, --iterations ITERATIONS       Defines the maximum iterations that nuts waits for a response of saltstack
+  -m ITERATIONS, --iterations ITERATIONS         Defines the maximum iterations that nuts waits for a response of saltstack
+
 Testfiles
 =========
 The structure of the testfile has to be compliant with the testschema found in the folder nuts/src/service/testSchema.yaml.

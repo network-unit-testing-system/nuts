@@ -7,6 +7,7 @@ class Runner:
     def __init__(self, test_suite, salt_api, max_iterations=25, sleep_duration=0.1):
         self.test_suite = test_suite
         self.logger = logging.getLogger('error_log')
+        self.info_logger = logging.getLogger('info_log')
         self.api = salt_api
         self.max_iterations = max_iterations
         self.sleep_duration = sleep_duration
@@ -21,7 +22,7 @@ class Runner:
         while not_contained and (counter < self.max_iterations):
             salt_result = self.api.get_task_result(taskid=test_case.job_id)
             not_contained = False
-            print("jid {} counter {} xx {}".format(test_case.job_id, counter, salt_result))
+            self.info_logger.debug('jid {} counter {} salt_result {}'.format(test_case.job_id, counter, salt_result))
             for minion in test_case.minions:
                 if minion not in salt_result['return'][0]:
                     not_contained = True
@@ -36,9 +37,9 @@ class Runner:
             self.api.connect()
             task_information = self.api.start_task_async(task)
             test_case.set_job(task_information)
-            print(task_information)
+            self.info_logger.debug(task_information)
         except Exception as e:
-            print(e)
+            self.logger.exception(e)
 
     @staticmethod
     def create_task(test_case):
@@ -55,14 +56,14 @@ class Runner:
         try:
             self.api.connect()
             result = self.api.start_task(task)
-            print(result)
+            self.info_logger.debug('{} returned {} '.format(test_case.name, result))
             if "ERROR" in result:
                 raise Exception('A salt error occurred!\n' + result)
             return self._extract_return(result)
         except Exception as e:
-            print(e)
-            print("Error with {} \nSalt-Error: {} '\n'\n".format(task, result))
+            self.info_logger.exception('Error with {} \nSalt-Error: {} '.format(task, result))
             self.logger.exception("Error with {} \nSalt-Error: {} '\n'\n".format(task, result))
+            self.logger.exception(e)
             return {
                 'resulttype': 'single',
                 'result': 'ERROR'
@@ -87,24 +88,22 @@ class Runner:
 
     def run_all(self, execute_async=True):
         if execute_async:
-            print("\n")
             started_counter = 0
             for test in self.test_suite.test_cases:
-                print("Start test " + test.name)
+                self.info_logger.info("Start test " + test.name)
                 self._start_task(test)
                 started_counter += 1
-                print("Started test {} of {}".format(started_counter, len(self.test_suite.test_cases)))
-                print("\n")
+                self.info_logger.info("Started test {} of {}".format(started_counter, len(self.test_suite.test_cases)))
             test_counter = 0
+            self.info_logger.info('----------------Started all tests-----------------')
             for test in self.test_suite.test_cases:
-                print("CollectResult of Test " + test.name)
+                self.info_logger.info("CollectResult of Test " + test.name)
                 self._collect_result(test)
                 test_counter += 1
-                print("Collected results from {} of {} tests".format(test_counter, len(self.test_suite.test_cases)))
-                print("\n")
+                self.info_logger.info("Collected results from {} of {} tests".format(test_counter, len(self.test_suite.test_cases)))
+            self.info_logger.info('--------------Collected all results---------------')
         else:
             for test in self.test_suite.test_cases:
-                print("Start Test " + test.name)
+                self.info_logger.info("Start Test " + test.name)
                 self.run(test)
-                print("\n")
-            print("\n")
+            self.info_logger.info("\n")

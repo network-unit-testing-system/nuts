@@ -7,7 +7,7 @@ from src.service.salt_api_wrapper import SaltApi
 
 class TestController:
 
-    def __init__(self, test_file, max_iterations):
+    def __init__(self, test_file, max_iterations=25):
         self.test_suite = TestSuite("SuiteName")
         self.test_file = test_file
         self.file_handler = FileHandler(self.test_suite, self.test_file)

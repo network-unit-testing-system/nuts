@@ -3,7 +3,7 @@ from src.service.Evaluator import Evaluator
 from src.data.TestSuite import TestSuite
 
 
-class TestTestSuite:
+class TestEvaluator:
     test_suite = TestSuite("TestTestSuite")
     eval = Evaluator(test_suite)
 

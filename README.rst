@@ -72,6 +72,8 @@ Testfiles
 The structure of the testfile has to be compliant with the testschema found in the folder nuts/src/service/testSchema.yaml.
 An example could be:
 
+.. code:: yaml
+
 - name: example_arp
   command: arp
   devices: cisco.csr.1000v

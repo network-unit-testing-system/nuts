@@ -7,6 +7,7 @@ class FileHandler:
         self.test_suite = test_suite
         self.test_file = test_file
         self.logger = logging.getLogger('error_log')
+        self.info_logger = logging.getLogger('info_log')
 
     def yaml(self):
         return yaml.dump(self.__dict__)
@@ -28,5 +29,5 @@ class FileHandler:
             try:
                 self.add_tests(stream, self.test_suite)
             except yaml.YAMLError as exc:
-                print("Import-failure while processing file: {}".format(file))
+                self.info_logger.exception('Import-failure while processing file: {}'.format(file))
                 self.logger.exception("Import-failure while processing file: {}".format(file))

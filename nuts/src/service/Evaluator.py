@@ -55,26 +55,23 @@ class Evaluator:
 
     def validate_result(self, test_case):
         if self._test_case_failed(test_case):
-            print('{}{}: Test error -------------------\n{}An error occurred while executing the test!'
+            self.info_logger.warning('{}{}: Test error -------------------\n{}An error occurred while executing the test!'
                   .format(Fore.RED, test_case.name, Fore.RESET))
-            self.info_logger.warning('{}: Test error -------------------\nAn error occurred while executing the test!\nReturnvalue: {}'
-                                     .format(test_case.name, test_case.actual_result))
             self.test_suite.mark_test_case_failed(test_case)
         elif self.compare(test_case).result():
-            print('{}{}: Test passed -------------------------\n{}'.format(Fore.GREEN, test_case.name, Fore.RESET))
-            self.info_logger.warning('\n{}: Test passed ------------------------- \nExpected: {} {} Actual: {}'
-                                     .format(test_case.name, str(test_case.expected_result),
+            self.info_logger.info('{}{}: Test passed -------------------------\n{}'.format(Fore.GREEN, test_case.name, Fore.RESET))
+            self.info_logger.debug('Expected: {} {} Actual: {}'.format(str(test_case.expected_result),
                                              test_case.operator, str(test_case.extract_actual_result())))
             self.test_suite.mark_test_case_passed(test_case)
         else:
             evaluation = self.compare(test_case)
-            print('{}{}: Test failed -------------------\n{}'.format(Fore.RED, test_case.name, Fore.RESET))
-            print('Expected: {}\nOperator:{}\nActual:'.format(str(evaluation.expected_result), evaluation.operator))
+            self.info_logger.warning('{}{}: Test failed -------------------\n{}'.format(Fore.RED, test_case.name, Fore.RESET))
+            self.info_logger.warning('Expected: {}\nOperator:{}\nActual:'.format(str(evaluation.expected_result), evaluation.operator))
             logging_message = ""
             for eval_result in evaluation.evaluation_results:
                 color = Fore.GREEN if eval_result.passed else Fore.RED
-                print(color + '{}: {}'.format(eval_result.minion, eval_result.actual_result))
-            self.info_logger.warning('\n{}: Test failed ------------------- \nExpected: {} Operator: {}\nActual: {}'
+                self.info_logger.warning(color + '{}: {}'.format(eval_result.minion, eval_result.actual_result))
+            self.info_logger.debug('Expected: {} Operator: {}\nActual: {}'
                                      .format(test_case.name, str(test_case.expected_result),
                                              test_case.operator, test_case.extract_actual_result()))
             self.test_suite.mark_test_case_failed(test_case)

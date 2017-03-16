@@ -15,6 +15,7 @@ class TestSuite:
         test = TestCase(name, command, devices, parameter, operator, expected_result)
         self.test_cases.append(test)
         self.logger = logging.getLogger('error_log')
+        self.info_logger = logging.getLogger('info_log')
 
     def set_actual_result(self, test_case, actual_result):
         self.get_test_by_name(test_case.name).set_actual_result(actual_result)
@@ -43,12 +44,12 @@ class TestSuite:
     def print_statistics(self):
         tests_passed = len(self.test_cases_passed)
         tests_failed = len(self.test_cases_failed)
-
-        print(Fore.GREEN + '\n{} out of {} tests passed\n'.format(tests_passed, tests_passed + tests_failed))
+        self.info_logger.info('---------------------Summary----------------------')
+        self.info_logger.info(Fore.GREEN  + '{} out of {} tests passed'.format(tests_passed, tests_passed + tests_failed))
         if(tests_failed > 0):
-            print(Fore.RED + '{} out of {} tests failed\n'.format(tests_failed, tests_passed + tests_failed))
+            self.info_logger.info(Fore.RED + '{} out of {} tests failed'.format(tests_failed, tests_passed + tests_failed))
 
     def print_all_test_cases(self):
-        print("\nTestCases:")
+        self.info_logger.info('\nTestCases:')
         for test in self.test_cases:
-            print(test)
+            self.info_logger.info(test)

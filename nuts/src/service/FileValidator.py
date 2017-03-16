@@ -8,6 +8,7 @@ class FileValidator:
     def __init__(self, test_file):
         self.test_file = test_file
         self.logger = logging.getLogger('error_log')
+        self.info_logger = logging.getLogger('info_log')
 
     def validate(self):
         cur_dir = os.path.dirname(__file__)
@@ -17,7 +18,7 @@ class FileValidator:
             c.validate(raise_exception=True)
             return True
         except Exception as e:
-            print("Validation error")
+            self.info_logger.exception('Validation error')
             self.logger.exception("Validation error")
             self.logger.exception(e)
             return False

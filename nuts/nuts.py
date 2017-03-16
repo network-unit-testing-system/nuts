@@ -17,7 +17,7 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", help="Start with a Testfile", nargs=1)
     parser.add_argument("-v", "--validate", help="Validates Testfile", nargs=1, )
-    parser.add_argument('-its', '--iterations', help='Changes the number of iterations that nuts waits for a result',
+    parser.add_argument('-m', '--iterations', help='Changes the number of iterations that nuts waits for a result',
                         nargs=1)
 
     args = parser.parse_args()

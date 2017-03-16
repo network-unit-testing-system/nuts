@@ -12,15 +12,16 @@ The following Python versions are fully supported:
 
 - Python 2.7
 
+
 Pre-requirements
 ----------------
 - Salt master
 	Because nuts is fully based on saltstack you have to install and configure a salt master first.
-	For the full installation guide please visit https://docs.saltstack.com/en/latest/topics/installation/
+	For the full installation guide please visit the `installation guide <https://docs.saltstack.com/en/latest/topics/installation/>`_. 
 - Salt api
-	To use nuts you also need salt-api which enables nuts to connect to the salt master over Http. For the installation guide visit https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html
+	To use nuts you also need salt-api which enables nuts to connect to the salt master over Http. For the installation guide visit `cherrypy documentation <https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html/>`_.
 - Napalm salt
-	To create a connection from the salt master to your network device of choice there's a fantastic library called NAPALM which got an integration into saltstack. For the installation guide head to https://github.com/napalm-automation/napalm-salt
+	To create a connection from the salt master to your network device of choice there's a fantastic library called NAPALM which got an integration into saltstack. For the installation guide head to `napalm-salt repository <https://github.com/napalm-automation/napalm-salt/>`_.
 
 Install on arch linux
 ---------------------
@@ -81,7 +82,7 @@ An example could be:
    operator: '='
    expected: '00:0C:29:EA:D1:68'
 
-Please note that the devices attribute gets directly passed to the salt master which determines the targeted minions with so called globbing. For more information what's globbing head to https://docs.saltstack.com/en/latest/topics/targeting/globbing.html#globbing
+Please note that the devices attribute gets directly passed to the salt master which determines the targeted minions with so called globbing. For more information what's globbing head to `saltstack globbing <https://docs.saltstack.com/en/latest/topics/targeting/globbing.html#globbing>`_.
 If multiple minions are targeted each of them has to satisify the expected value for the test to pass.
 
 The following commands are currently available with napalm-salt if this command is available on your device is also dependent on the availability of der underlying functions of napalm:
@@ -93,7 +94,7 @@ The following commands are currently available with napalm-salt if this command 
  - checkversion         - checks the version of the device. Takes no parameter
  - checkuser            - checks which users are available on the device. Takes no parameter
 
-For more information about the availability visit https://napalm.readthedocs.io/en/latest/support/index.html
+For more information about the availability visit `napalm docs <https://napalm.readthedocs.io/en/latest/support/index.html>`_.
 
 The following commands are currently available for debian systems:
  - connectivity

@@ -74,12 +74,12 @@ An example could be:
 
 .. code:: yaml
 
-- name: example_arp
-  command: arp
-  devices: cisco.csr.1000v
-  parameter: [192.168.16.128]
-  operator: '='
-  expected: '00:0C:29:EA:D1:68'
+ - name: example_arp
+   command: arp
+   devices: cisco.csr.1000v
+   parameter: [192.168.16.128]
+   operator: '='
+   expected: '00:0C:29:EA:D1:68'
 
 Please note that the devices attribute gets directly passed to the salt master which determines the targeted minions with so called globbing. For more information what's globbing head to https://docs.saltstack.com/en/latest/topics/targeting/globbing.html#globbing
 If multiple minions are targeted each of them has to satisify the expected value for the test to pass.

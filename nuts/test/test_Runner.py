@@ -24,9 +24,12 @@ def mock_testsuite():
 @pytest.fixture
 def api_mock():
     mock = Mock(spec=SaltApi)
-    mock.start_task.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
-    mock.start_task_async.return_value = {u'return': [{u'jid': u'20170302070941729675', u'minions': [u'cisco.csr.1000v']}]}
-    mock.get_task_result.return_value = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+    mock.start_task.return_value = {u'return': [{u'cisco.csr.1000v':
+                                                 u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+    mock.start_task_async.return_value = {u'return': [{u'jid':
+                                                       u'20170302070941729675', u'minions': [u'cisco.csr.1000v']}]}
+    mock.get_task_result.return_value = {u'return': [{u'cisco.csr.1000v':
+                                                      u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
     return mock
 
 

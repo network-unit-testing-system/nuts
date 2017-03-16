@@ -100,7 +100,8 @@ class Runner:
                 self.info_logger.info("CollectResult of Test " + test.name)
                 self._collect_result(test)
                 test_counter += 1
-                self.info_logger.info("Collected results from {} of {} tests".format(test_counter, len(self.test_suite.test_cases)))
+                self.info_logger.info("Collected results from {} of {} tests"
+                                      .format(test_counter, len(self.test_suite.test_cases)))
             self.info_logger.info('--------------Collected all results---------------')
         else:
             for test in self.test_suite.test_cases:

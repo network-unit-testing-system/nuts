@@ -19,15 +19,15 @@ class Runner:
         counter = 0
         not_contained = True
         while not_contained and (counter < self.max_iterations):
-            xx = self.api.get_task_result(taskid=test_case.job_id)
+            salt_result = self.api.get_task_result(taskid=test_case.job_id)
             not_contained = False
-            print("jid {} counter {} xx {}".format(test_case.job_id, counter, xx))
+            print("jid {} counter {} xx {}".format(test_case.job_id, counter, salt_result))
             for minion in test_case.minions:
-                if minion not in xx['return'][0]:
+                if minion not in salt_result['return'][0]:
                     not_contained = True
                     sleep(self.sleep_duration)
             counter += 1
-        return_value = self._extract_return(xx)
+        return_value = self._extract_return(salt_result)
         self.test_suite.set_actual_result(test_case, return_value)
 
     def _start_task(self, test_case):

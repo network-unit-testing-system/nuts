@@ -18,7 +18,7 @@ def __virtual__():
 
 def getCiscoXML(dst, param, cmd, attribut):
     value = master.cmd('cmd.run', "salt-ssh " + str(dst) + " -i -r '" + str(cmd) + " " + str(
-        param) + " " + str(attribut) + " | format flash:nuts.odm' --roster-file=/etc/salt/roster")
+            param) + " " + str(attribut) + " | format flash:nuts.odm' --roster-file=/etc/salt/roster")
     xml = value[value.index('<'):len(value)]
     return ET.fromstring(xml)
 
@@ -47,12 +47,13 @@ def connectivity(param):
         m = r.search(text)
         return returnSingle((int(float(m.group(1))) < 100))
     elif os == "proxy":
-        #at the moment there's a bug in the napalm-salt library which forces you to set all parameters fixed 
-        #https://github.com/saltstack/salt/pull/38577
-        result = __salt__['net.ping'](param,'',255,2,100,10)
-        #the absolute is needed because cisco returns -10 as packet_loss if they are not sent
+        # at the moment there's a bug in the napalm-salt library which forces you to set all parameters fixed
+        # https://github.com/saltstack/salt/pull/38577
+        result = __salt__['net.ping'](param, '', 255, 2, 100, 10)
+        # the absolute is needed because cisco returns -10 as packet_loss if they are not sent
         return returnSingle(result['result'] and abs(result['out']['success']['packet_loss']) != 10)
-       
+
+
 def traceroute(param):
     json_data = {}
     resultList = []
@@ -88,6 +89,7 @@ def bandwidth(dst, host, os, user, pwd):
         return  returnSingle(float(m.group(1)) * 1000.0 * 1000.0)
     '''
 
+
 def dnscheck(param):
     os = __grains__['os_family']
     if os == "Debian":
@@ -118,11 +120,11 @@ def webresponse(param):
         return returnSingle(bool(re.search(regex, text)))
 
 
-def portresponse(param,port):
+def portresponse(param, port):
     resultList = []
     os = __grains__['os_family']
     if os == "Debian":
-        result = __salt__['cmd.run']('nmap -p {} {}'.format(port,param))
+        result = __salt__['cmd.run']('nmap -p {} {}'.format(port, param))
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]*)\/[a-z]* (open)"
         for m in re.finditer(regex, text):
@@ -138,7 +140,7 @@ def checkuser():
         result = __salt__['users.config']()
         if result['result']:
             return returnMultiple(result['out'].keys())
-    
+
 
 def checkversion():
     os = __grains__['os_family']
@@ -147,8 +149,8 @@ def checkversion():
         if result['result']:
             if 'os_version' in result['out']:
                 return returnSingle(result['out']['os_version'])
-    
-    
+
+
 def checkospfneighbors(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -161,6 +163,7 @@ def checkospfneighbors(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def countospfneighbors(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -168,6 +171,7 @@ def countospfneighbors(dst, param, os, user, pwd):
     json_data = json.loads(value[value.index('{'):(value.index('}') + 1)])
     return returnSingle(len(json_data["result"]))
     '''
+
 
 def checkospfneighborsstatus(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
@@ -181,6 +185,7 @@ def checkospfneighborsstatus(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def stpinterfacestate(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -193,6 +198,7 @@ def stpinterfacestate(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def stpinterfacerole(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -204,6 +210,7 @@ def stpinterfacerole(dst, param, os, user, pwd):
             resultList.append(id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Role').text)
         return returnMultiple(resultList)
     '''
+
 
 def stpinterfacecost(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
@@ -218,6 +225,7 @@ def stpinterfacecost(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def stprootid(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -230,6 +238,7 @@ def stprootid(dst, param, os, user, pwd):
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'RootID').text.split(' ')[1])
         return returnMultiple(resultList)
     '''
+
 
 def stprootcost(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
@@ -244,6 +253,7 @@ def stprootcost(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def stpvlaninterfaces(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -255,6 +265,7 @@ def stpvlaninterfaces(dst, param, os, user, pwd):
             resultList.append(id.text)
         return returnMultiple(resultList)
     '''
+
 
 def stpvlanblockedports(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
@@ -269,6 +280,7 @@ def stpvlanblockedports(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def vlanports(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -281,6 +293,7 @@ def vlanports(dst, param, os, user, pwd):
         return returnMultiple(resultList)
     '''
 
+
 def interfacestatus(param):
     os = __grains__['os_family']
     if os == "proxy":
@@ -288,6 +301,7 @@ def interfacestatus(param):
         if result['result']:
             if param in result['out']:
                 return returnSingle(result['out'][param]['is_up'])
+
 
 def interfacevlan(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
@@ -301,6 +315,7 @@ def interfacevlan(dst, param, os, user, pwd):
         return returnSingle(result)
     '''
 
+
 def interfaceduplex(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -312,6 +327,7 @@ def interfaceduplex(dst, param, os, user, pwd):
             result = id.text
         return returnSingle(result)
     '''
+
 
 def interfacespeed(param):
     os = __grains__['os_family']
@@ -334,6 +350,7 @@ def cdpneighbor(dst, param, os, user, pwd):
         return returnSingle(result)
     '''
 
+
 def cdpneighborcount(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
     '''
@@ -346,11 +363,12 @@ def cdpneighborcount(dst, param, os, user, pwd):
         return returnSingle(i)
     '''
 
+
 def arp(param):
     os = __grains__['os_family']
     if os == "proxy":
-        result = __salt__['net.arp']('',param)
+        result = __salt__['net.arp']('', param)
         if result['result']:
             for entry in result['out']:
-                if(entry['ip'] == param):
+                if (entry['ip'] == param):
                     return returnSingle(entry['mac'])

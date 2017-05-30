@@ -3,7 +3,7 @@ Nuts - Network Unit Testing System
 Nuts is a network unit testing system, that automates tests in the network similar to unit tests you might know from programming.
 The project uses saltstack and napalm for the communication with the network devices.
 This project is currently under construction and we can't guarantee you that this code works.
-If you have any question please reach out to mgabriel@hsr.ch or join https://networktocode.slack.com/
+If you have any question please reach out to https://github.com/HSRNetwork/Nuts or join https://networktocode.slack.com/
 
 Installation of nuts
 ====================
@@ -49,9 +49,8 @@ TODO UPDATE
 
 Get code::
 
-    $ wget https://github.com/asta1992/nuts/archive/v0.3.0.zip
-    $ unzip v0.3.0.zip
-    $ cd nuts-1.0.0
+    $ git clone https://github.com/HSRNetwork/Nuts.git
+    $ cd Nuts
 
 Install::
 
@@ -60,13 +59,17 @@ Install::
 Usage
 =======
 
-usage: nuts.py [-h] [-i INPUT] [-v VALIDATE] [-m ITERATIONS]
+usage: nuts.py [-h] [-v] [-m ITERATIONS] [-r RETRIES] [-c CONFIG] testfile
+
+positional arguments:
+  testfile                                  Start with a Testfile
 
 optional arguments:
-  -h, --help                                     show this help message and exit
-  -i INPUT, --input INPUT                        Validates the testfile and starts the tests afterwards
-  -v VALIDATE, --validate VALIDATE               Validates a testfile
-  -m ITERATIONS, --iterations ITERATIONS         Defines the maximum iterations that nuts waits for a response of saltstack
+  -h, --help                                show this help message and exit
+  -v, --validate                            Validates Testfile
+  -m ITERATIONS, --iterations ITERATIONS    Changes the number of iterations that nuts waits for a result
+  -r RETRIES, --retries RETRIES             Set the max retries for failed tests
+  -c CONFIG, --config CONFIG                Config file formatted as YAML. Settings will be merged with ENVVARs
 
 Testfiles
 =========

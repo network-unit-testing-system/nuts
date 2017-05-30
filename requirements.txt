@@ -1,6 +1,5 @@
 pyaml
 progressbar
-salt
 salt-pepper
 pykwalify
 colorama

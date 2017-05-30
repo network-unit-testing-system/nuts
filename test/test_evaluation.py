@@ -1,14 +1,15 @@
 import pytest
-from src.data.Evaluation import Evaluation
-from src.data.EvaluationResult import EvaluationResult
+
+from nuts.data.evaluation import Evaluation
+from nuts.data.evaluation_result import EvaluationResult
 
 
 @pytest.fixture
 def example_evaluation():
-    evaluation = Evaluation("expected_result", "=")
-    evaluation.evaluation_results.append(EvaluationResult("minion", "actual_result", True))
-    evaluation.evaluation_results.append(EvaluationResult("minion2", "actual_result", True))
-    evaluation.evaluation_results.append(EvaluationResult("minion3", "actual_result", True))
+    evaluation = Evaluation('expected_result', '=')
+    evaluation.evaluation_results.append(EvaluationResult('minion', 'actual_result', True))
+    evaluation.evaluation_results.append(EvaluationResult('minion2', 'actual_result', True))
+    evaluation.evaluation_results.append(EvaluationResult('minion3', 'actual_result', True))
     return evaluation
 
 
@@ -32,5 +33,5 @@ def test_last_result_false(example_evaluation):
 
 
 def test_result_empty():
-    evaluation = Evaluation("expected_result", "=")
+    evaluation = Evaluation('expected_result', '=')
     assert evaluation.result() is True

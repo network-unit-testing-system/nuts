@@ -1,17 +1,17 @@
 from pepper import Pepper
-from .settings import Settings
+from settings import settings
 
 
 class SaltApi(object):
     def __init__(self):
-        self.settings = Settings()
-        self.api = Pepper(self.settings.get_variable('NUTS_SALT_REST_API_URL'))
+        self.api = Pepper(settings.get_variable('NUTS_SALT_REST_API_URL'))
 
     def connect(self):
         '''connects to the salt-api with the defined username and password.
         configuration can be done in config.yml in your cwd'''
-        self.api.login(self.settings.get_variable('NUTS_SALT_REST_API_USERNAME'),
-                       self.settings.get_variable('NUTS_SALT_REST_API_PASSWORD'), 'pam')
+        self.api.login(settings.get_variable('NUTS_SALT_REST_API_USERNAME'),
+                       settings.get_variable('NUTS_SALT_REST_API_PASSWORD'),
+                       settings.get_variable('NUTS_SALT_REST_API_EAUTH'))
 
     def start_task(self, args):
         ''' starts a the function defined in args.function on targets (args.targets)

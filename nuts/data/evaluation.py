@@ -1,5 +1,4 @@
-class Evaluation:
-
+class Evaluation(object):
     def __init__(self, expected_result, operator):
         self.evaluation_results = []
         self.expected_result = expected_result

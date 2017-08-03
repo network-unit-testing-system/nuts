@@ -1,7 +1,10 @@
 import json
 import logging
 from time import sleep
-from urllib2 import URLError
+try:
+    from urllib.error import URLError
+except ImportError:
+    from urllib2 import URLError
 
 
 class Runner(object):
@@ -81,7 +84,7 @@ class Runner(object):
         '''This helper extracts the returnvalue from the result
         At the moment it only expects one return value for each task'''
         result_dict = result['return'][0]
-        return {k: Runner._extract_result_entry(v) for k, v in result_dict.iteritems()}
+        return {k: Runner._extract_result_entry(v) for k, v in result_dict.items()}
 
     @staticmethod
     def _extract_result_entry(result_entry):

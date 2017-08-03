@@ -1,25 +1,49 @@
+==================================
 Nuts - Network Unit Testing System
-##################################
+==================================
+
+.. image:: https://travis-ci.org/HSRNetwork/Nuts.svg?branch=master
+    :alt: Build status
+    :target: https://travis-ci.org/HSRNetwork/Nuts
+
+.. image:: https://img.shields.io/pypi/v/nuts.svg
+    :alt: PyPi Version
+    :target: https://pypi.python.org/pypi/nuts
+
+.. image:: https://img.shields.io/pypi/pyversions/nuts.svg
+    :alt: PyPi Python Versions
+    :target: https://pypi.python.org/pypi/nuts
+
+.. image:: https://img.shields.io/pypi/wheel/nuts.svg
+    :alt: PyPi wheel
+    :target: https://pypi.python.org/pypi/nuts
+
+.. image:: https://img.shields.io/pypi/l/nuts.svg
+    :alt: PyPi Licence
+    :target: https://pypi.python.org/pypi/nuts
+
 Nuts is a network unit testing system, that automates tests in the network similar to unit tests you might know from programming.
 The project uses saltstack and napalm for the communication with the network devices.
 This project is currently under construction and we can't guarantee you that this code works.
 If you have any question please reach out to https://github.com/HSRNetwork/Nuts or join https://networktocode.slack.com/
 
+--------------------
 Installation of nuts
-====================
+--------------------
 
 The following Python versions are fully supported:
 
 - Python 2.7
+- Python 3.6
 
 
 Pre-requirements
 ----------------
 - Salt master
 	Because nuts is fully based on saltstack you have to install and configure a salt master first.
-	For the full installation guide please visit the `installation guide <https://docs.saltstack.com/en/latest/topics/installation/>`_. 
+	For the full installation guide please visit the `installation guide <https://docs.saltstack.com/en/latest/topics/installation/>`_.
 - Salt api
-	To use nuts you also need salt-api which enables nuts to connect to the salt master over Http. For the installation guide visit `cherrypy documentation <https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html/>`_.
+	To use nuts you also need salt-api which enables nuts to connect to the salt master over Http. For the installation guide visit `cherrypy documentation <https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html>`_.
 - Napalm salt
 	To create a connection from the salt master to your network device of choice there's a fantastic library called NAPALM which got an integration into saltstack. For the installation guide head to `napalm-salt repository <https://github.com/napalm-automation/napalm-salt/>`_.
 
@@ -56,8 +80,9 @@ Install::
 
     $ sudo python setup.py install
 
+-------
 Usage
-=======
+-------
 
 usage: nuts.py [-h] [-v] [-m ITERATIONS] [-r RETRIES] [-c CONFIG] testfile
 
@@ -71,8 +96,9 @@ optional arguments:
   -r RETRIES, --retries RETRIES             Set the max retries for failed tests
   -c CONFIG, --config CONFIG                Config file formatted as YAML. Settings will be merged with ENVVARs
 
+---------
 Testfiles
-=========
+---------
 The structure of the testfile has to be compliant with the testschema found in the folder nuts/src/service/testSchema.yaml.
 An example could be:
 
@@ -113,31 +139,32 @@ There are the following operators available:
  - >
  - not
 
+--------
 Examples
-========
-There are a few more examples of test files available in the example folder. 
+--------
+There are a few more examples of test files available in the example folder.
 
-License
-=======
+-------------
+Configuration
+-------------
+You can use a YAML formatted configuration file and/or set environment variables
+Configuration options:
+ - NUTS_SALT_REST_API_URL
+ - NUTS_SALT_REST_API_USERNAME
+ - NUTS_SALT_REST_API_PASSWORD
+ - NUTS_SALT_REST_API_EAUTN
+ - NUTS_MAX_RETRIES
+ - NUTS_WAIT_ITERATIONS
+ - NUTS_LOG_FILE_LEVEL
+ - NUTS_LOG_CONSOLE_LEVEL
+ - NUTS_LOG_FOLDER
 
-The MIT License (MIT)
 
-Copyright (c) 2016 Andreas Stalder, David Meister, Matthias Gabriel
+config.yml example:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+.. code:: yaml
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+ NUTS_SALT_REST_API_URL: 'http://salt-master.lab:8000'
+ NUTS_SALT_REST_API_USERNAME: 'myUser'
+ NUTS_SALT_REST_API_PASSWORD: 'myPassword'
+ NUTS_SALT_REST_API_EAUTH: 'pam'

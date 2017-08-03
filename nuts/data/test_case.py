@@ -17,7 +17,7 @@ class TestCase(object):
         return self.actual_result
 
     def extract_actual_result(self):
-        return {k: v['result'] for k, v in self.actual_result.iteritems()}
+        return {k: v['result'] for k, v in self.actual_result.items()}
 
     def set_job(self, job_description):
         self.job_id = job_description['return'][0]['jid']

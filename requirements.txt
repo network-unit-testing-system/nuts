@@ -1,5 +1,4 @@
 pyaml
-progressbar
 salt-pepper
 pykwalify
 colorama

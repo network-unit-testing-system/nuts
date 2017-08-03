@@ -7,7 +7,7 @@ class Settings(object):
         self.cfg = {}
 
     def from_envvar(self, variable_names):
-        if isinstance(variable_names, basestring):
+        if isinstance(variable_names, str):
             variable_names = [variable_names]
         for vn in variable_names:
             rv = os.environ.get(vn)
@@ -29,6 +29,6 @@ class Settings(object):
             return default
 
     def dump_yaml(self):
-        print yaml.dump(self.cfg, default_flow_style=False)
+        print(yaml.dump(self.cfg, default_flow_style=False))
 
 settings = Settings()

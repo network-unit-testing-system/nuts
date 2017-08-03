@@ -1,5 +1,5 @@
 from pepper import Pepper
-from settings import settings
+from nuts.service.settings import settings
 
 
 class SaltApi(object):

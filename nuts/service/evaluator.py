@@ -43,7 +43,7 @@ class Evaluator(object):
 
     @staticmethod
     def format_result(result):
-        if isinstance(result, basestring):
+        if isinstance(result, basestring):  # pylint: disable=undefined-variable
             return result.encode('utf-8')
         if isinstance(result, list):
             return [x.encode('utf-8') for x in result]

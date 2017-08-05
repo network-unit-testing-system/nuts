@@ -21,11 +21,6 @@ class FileHandler(object):
                                    val['expected'])
 
     def read_file(self, filename):
-        try:
-            from yaml import CLoader as Loader, CDumper as Dumper
-        except ImportError:
-            from yaml import Loader, Dumper
-
         with open(filename, 'r') as stream:
             try:
                 self.add_tests(stream, self.test_suite)

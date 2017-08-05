@@ -38,9 +38,9 @@ def returnSingle(result):
 
 
 def connectivity(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "Debian":
-        result = __salt__['cmd.run']('ping -c 3 {}'.format(param))
+        result = __salt__['cmd.run']('ping -c 3 {}'.format(param))  # pylint: disable=undefined-variable
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]*)% packet loss"
         r = re.compile(regex)
@@ -49,7 +49,7 @@ def connectivity(param):
     elif os == "proxy":
         # at the moment there's a bug in the napalm-salt library which forces you to set all parameters fixed
         # https://github.com/saltstack/salt/pull/38577
-        result = __salt__['net.ping'](param, '', 255, 2, 100, 10)
+        result = __salt__['net.ping'](param, '', 255, 2, 100, 10)  # pylint: disable=undefined-variable
         # the absolute is needed because cisco returns -10 as packet_loss if they are not sent
         return returnSingle(result['result'] and abs(result['out']['success']['packet_loss']) != 10)
 
@@ -57,9 +57,9 @@ def connectivity(param):
 def traceroute(param):
     json_data = {}
     resultList = []
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "Debian":
-        result = __salt__['cmd.run']('traceroute {}'.format(param))
+        result = __salt__['cmd.run']('traceroute {}'.format(param))  # pylint: disable=undefined-variable
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "[0-9]*  ([0-9\.]*) \("
         for m in re.finditer(regex, text):
@@ -68,16 +68,15 @@ def traceroute(param):
         json_data["resulttype"] = "multiple"
         return json.dumps(json_data)
     elif os == "proxy":
-        result = __salt__['net.traceroute'](param)
+        result = __salt__['net.traceroute'](param)  # pylint: disable=undefined-variable
         if result['result']:
             probes = result['out']['success']
             hosts = {key: value['probes'][1]['host_name'] for key, value in probes.items()}
             return returnMultiple(hosts)
 
 
-def bandwidth(dst, host, os, user, pwd):
+def bandwidth(param):
     '''This function isn't working at the moment because it's not complient with the saltstack way'''
-    raise NotImplementedError('This function isn\'t implemented right now')
     '''
     if os == "linux":
         local.cmd(dst, 'cmd.run', ['iperf3 -s -D -1'])
@@ -88,12 +87,13 @@ def bandwidth(dst, host, os, user, pwd):
         m = r.search(text)
         return  returnSingle(float(m.group(1)) * 1000.0 * 1000.0)
     '''
+    raise NotImplementedError('This function isn\'t implemented right now')
 
 
 def dnscheck(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "Debian":
-        result = __salt__['cmd.run']('nslookup {}'.format(param))
+        result = __salt__['cmd.run']('nslookup {}'.format(param))  # pylint: disable=undefined-variable
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "(Name:[\s]*[a-z0-9.]*)"
         r = re.compile(regex)
@@ -101,9 +101,9 @@ def dnscheck(param):
 
 
 def dhcpcheck(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "Debian":
-        result = __salt__['cmd.run']('dhcping -s {}'.format(param))
+        result = __salt__['cmd.run']('dhcping -s {}'.format(param))  # pylint: disable=undefined-variable
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "(Got answer)"
         r = re.compile(regex)
@@ -111,9 +111,9 @@ def dhcpcheck(param):
 
 
 def webresponse(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "Debian":
-        result = __salt__['cmd.run']('curl -Is {} | head -n 1'.format(param))
+        result = __salt__['cmd.run']('curl -Is {} | head -n 1'.format(param))  # pylint: disable=undefined-variable
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]{3} OK)"
         r = re.compile(regex)
@@ -121,38 +121,36 @@ def webresponse(param):
 
 
 def portresponse(param, port):
-    resultList = []
-    os = __grains__['os_family']
+    result_list = []
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "Debian":
-        result = __salt__['cmd.run']('nmap -p {} {}'.format(port, param))
+        result = __salt__['cmd.run']('nmap -p {} {}'.format(port, param))  # pylint: disable=undefined-variable
         text = bytes(result).decode(encoding="utf-8", errors='ignore')
         regex = "([0-9]*)\/[a-z]* (open)"
         for m in re.finditer(regex, text):
             if m.group(2) == "open":
-                resultList.append(m.group(1))
-        return returnMultiple(resultList)
+                result_list.append(m.group(1))
+        return returnMultiple(result_list)
 
 
 def checkuser():
-    resultList = []
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "proxy":
-        result = __salt__['users.config']()
+        result = __salt__['users.config']()  # pylint: disable=undefined-variable
         if result['result']:
             return returnMultiple(result['out'].keys())
 
 
 def checkversion():
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "proxy":
-        result = __salt__['net.facts']()
+        result = __salt__['net.facts']()  # pylint: disable=undefined-variable
         if result['result']:
             if 'os_version' in result['out']:
                 return returnSingle(result['out']['os_version'])
 
 
-def checkospfneighbors(dst, param, os, user, pwd):
-    raise NotImplementedError('This function isn\'t implemented right now')
+def checkospfneighbors():
     '''
     resultList = []
     if os == 'ios':
@@ -162,19 +160,19 @@ def checkospfneighbors(dst, param, os, user, pwd):
             resultList.append(id.text)
         return returnMultiple(resultList)
     '''
-
-
-def countospfneighbors(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def countospfneighbors():
     '''
     value = checkospfneighbors(dst, os, user, pwd)
     json_data = json.loads(value[value.index('{'):(value.index('}') + 1)])
     return returnSingle(len(json_data["result"]))
     '''
-
-
-def checkospfneighborsstatus(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def checkospfneighborsstatus():
     '''
     resultList = []
     if os == 'ios':
@@ -184,10 +182,10 @@ def checkospfneighborsstatus(dst, param, os, user, pwd):
             resultList.append(id.find(namespace + 'NeighborID').text + ":" + id.find(namespace + 'State').text)
         return returnMultiple(resultList)
     '''
-
-
-def stpinterfacestate(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stpinterfacestate():
     '''
     resultList = []
     if os == 'ios':
@@ -197,10 +195,10 @@ def stpinterfacestate(dst, param, os, user, pwd):
             resultList.append(id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Sts').text)
         return returnMultiple(resultList)
     '''
-
-
-def stpinterfacerole(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stpinterfacerole():
     '''
     resultList = []
     if os == 'ios':
@@ -210,10 +208,10 @@ def stpinterfacerole(dst, param, os, user, pwd):
             resultList.append(id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Role').text)
         return returnMultiple(resultList)
     '''
-
-
-def stpinterfacecost(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stpinterfacecost():
     '''
     resultList = []
     if os == 'ios':
@@ -224,10 +222,10 @@ def stpinterfacecost(dst, param, os, user, pwd):
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Cost').text)
         return returnMultiple(resultList)
     '''
-
-
-def stprootid(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stprootid():
     '''
     resultList = []
     if os == 'ios':
@@ -238,10 +236,10 @@ def stprootid(dst, param, os, user, pwd):
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'RootID').text.split(' ')[1])
         return returnMultiple(resultList)
     '''
-
-
-def stprootcost(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stprootcost():
     '''
     resultList = []
     if os == 'ios':
@@ -252,10 +250,10 @@ def stprootcost(dst, param, os, user, pwd):
                 id.find(namespace + 'Vlan').text + ":" + id.find(namespace + 'Cost').text)
         return returnMultiple(resultList)
     '''
-
-
-def stpvlaninterfaces(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stpvlaninterfaces():
     '''
     resultList = []
     if os == 'ios':
@@ -265,10 +263,10 @@ def stpvlaninterfaces(dst, param, os, user, pwd):
             resultList.append(id.text)
         return returnMultiple(resultList)
     '''
-
-
-def stpvlanblockedports(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def stpvlanblockedports():
     '''
     resultList = []
     if os == 'ios':
@@ -279,10 +277,10 @@ def stpvlanblockedports(dst, param, os, user, pwd):
                 id.find(namespace + 'Name').text + ":" + id.find(namespace + 'BlockedInterfacesList').text)
         return returnMultiple(resultList)
     '''
-
-
-def vlanports(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def vlanports():
     '''
     resultList = []
     if os == 'ios':
@@ -292,19 +290,19 @@ def vlanports(dst, param, os, user, pwd):
             resultList.append(id.text)
         return returnMultiple(resultList)
     '''
+    raise NotImplementedError('This function isn\'t implemented right now')
 
 
 def interfacestatus(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "proxy":
-        result = __salt__['net.interfaces']()
+        result = __salt__['net.interfaces']()  # pylint: disable=undefined-variable
         if result['result']:
             if param in result['out']:
                 return returnSingle(result['out'][param]['is_up'])
 
 
-def interfacevlan(dst, param, os, user, pwd):
-    raise NotImplementedError('This function isn\'t implemented right now')
+def interfacevlan():
     '''
     result = ""
     if os == 'ios':
@@ -314,10 +312,10 @@ def interfacevlan(dst, param, os, user, pwd):
             result = (id.text)
         return returnSingle(result)
     '''
-
-
-def interfaceduplex(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def interfaceduplex():
     '''
     result = ""
     if os == 'ios':
@@ -327,19 +325,19 @@ def interfaceduplex(dst, param, os, user, pwd):
             result = id.text
         return returnSingle(result)
     '''
+    raise NotImplementedError('This function isn\'t implemented right now')
 
 
 def interfacespeed(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "proxy":
-        result = __salt__['net.interfaces']()
+        result = __salt__['net.interfaces']()  # pylint: disable=undefined-variable
         if result['result']:
             if param in result['out']:
                 return returnSingle(result['out'][param]['speed'])
 
 
-def cdpneighbor(dst, param, os, user, pwd):
-    raise NotImplementedError('This function isn\'t implemented right now')
+def cdpneighbor():
     '''
     result = ""
     if os == 'ios':
@@ -349,10 +347,10 @@ def cdpneighbor(dst, param, os, user, pwd):
             result = id.text
         return returnSingle(result)
     '''
-
-
-def cdpneighborcount(dst, param, os, user, pwd):
     raise NotImplementedError('This function isn\'t implemented right now')
+
+
+def cdpneighborcount():
     '''
     if os == 'ios':
         namespace = "{ODM://flash:nuts.odm//show_cdp_neighbors}"
@@ -362,13 +360,14 @@ def cdpneighborcount(dst, param, os, user, pwd):
             i += 1
         return returnSingle(i)
     '''
+    raise NotImplementedError('This function isn\'t implemented right now')
 
 
 def arp(param):
-    os = __grains__['os_family']
+    os = __grains__['os_family']  # pylint: disable=undefined-variable
     if os == "proxy":
-        result = __salt__['net.arp']('', param)
+        result = __salt__['net.arp']('', param)  # pylint: disable=undefined-variable
         if result['result']:
             for entry in result['out']:
-                if (entry['ip'] == param):
+                if entry['ip'] == param:
                     return returnSingle(entry['mac'])

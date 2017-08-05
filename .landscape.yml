@@ -1,0 +1,5 @@
+pyflakes:
+  disable:
+    - F821
+pyroma:
+  run: true

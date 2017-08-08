@@ -26,11 +26,11 @@ def mock_testsuite():
 def api_mock():
     mock = Mock(spec=SaltApi)
     mock.start_task.return_value = {
-        u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+        'return': [{'cisco.csr.1000v': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'}}]}
     mock.start_task_async.return_value = {
-        u'return': [{u'jid': u'20170302070941729675', u'minions': [u'cisco.csr.1000v']}]}
+        'return': [{'jid': '20170302070941729675', 'minions': ['cisco.csr.1000v']}]}
     mock.get_task_result.return_value = {
-        u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+        'return': [{'cisco.csr.1000v': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'}}]}
     return mock
 
 
@@ -90,8 +90,8 @@ def test_run(example_testsuite, api_mock):
 
 
 def test_extract_return_multiple_devices():
-    return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}',
-                                u'cisco.test': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+    return_dict = {'return': [{'cisco.csr.1000v': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'},
+                               'cisco.test': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'}}]}
     assert Runner._extract_return(return_dict) == {
         u'cisco.csr.1000v': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'},
         u'cisco.test': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'}
@@ -108,7 +108,7 @@ def test_extract_return_empty_multiple_devices():
 
 
 def test_extract_return():
-    return_dict = {u'return': [{u'cisco.csr.1000v': u'{"resulttype": "single", "result": "00:0C:29:EA:D1:68"}'}]}
+    return_dict = {'return': [{'cisco.csr.1000v': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'}}]}
     assert Runner._extract_return(return_dict) == {
         u'cisco.csr.1000v': {
             'resulttype': 'single',

@@ -1,4 +1,3 @@
-import json
 import logging
 from time import sleep
 try:
@@ -94,7 +93,7 @@ class Runner(object):
                 'result': None
             }
         else:
-            return json.loads(result_entry)
+            return result_entry
 
     def run_all(self, execute_async=True):
         if execute_async:

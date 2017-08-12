@@ -1,0 +1,16 @@
+- name: bandwith_ping
+  command: bandwith
+  devices: srvlnx0001
+  parameter: [192.168.16.128]
+  operator: '='
+  expected: True
+  setup:
+  - command: network.ip_addrs
+    device: srvlnx0099
+    save: ip
+  - command: iperf_server_start
+    parameter: [udp]
+    device: srvlnx0099
+  clean:
+  - command: iperf_server_stop
+    device: srvlnx0099

@@ -1,7 +1,7 @@
 import logging
 
 import os
-from pykwalify.core import Core
+from pykwalify.core import Core, SchemaError
 
 
 class FileValidator(object):
@@ -17,7 +17,8 @@ class FileValidator(object):
             c = Core(source_file=self.test_file, schema_files=[test_file])
             c.validate(raise_exception=True)
             return True
-        except Exception as e:
+        except SchemaError as e:
             self.validation_logger.exception('Validation error')
-            self.application_logger.exception(e)
+            self.validation_logger.info(e.msg)
+            self.application_logger.debug(e)
             return False

@@ -2,22 +2,41 @@ type: seq
 sequence:
   - type: map
     mapping:
-      "name":
+      name:
         type: str
         required: yes
         unique: yes
-      "command":
+      command:
         type: str
         required: yes
-      "devices":
+      devices:
         type: str
         required: yes
-      "parameter":
+      parameter:
         type: any
         required: yes
-      "operator":
+      operator:
         type: str
         required: yes
-      "expected":
+      expected:
         type: any
         required: yes
+      setup: &commands
+        type: seq
+        required: no
+        sequence:
+        - type: map
+          mapping:
+            command:
+              type: str
+              required: yes
+            device:
+              type: str
+              required: no
+            parameter:
+              type: any
+              required: no
+            save:
+              type: str
+              required: no
+      clean: *commands

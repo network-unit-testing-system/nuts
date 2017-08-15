@@ -10,9 +10,31 @@ from nuts.service.salt_api_wrapper import SaltApi
 @pytest.fixture
 def example_testsuite():
     test_suite = TSuite('ExampleSuite')
-    test_suite.create_test('testPingFromAToB', 'connectivity', 'Server01', '8.8.8.8', '=', 'True')
-    test_suite.create_test('checkuser', 'checkuser', 'Server02', '8.8.8.8', '=', 'admin')
-    test_suite.create_test('Count ospf neighbors', 'countospfneighbors', 'Switch1', '', '=', '3')
+    data = [
+        {'name': 'testPingFromAToB',
+         'command': 'connectivity',
+         'devices': 'Server01',
+         'parameter': '8.8.8.8',
+         'operator': '=',
+         'expected': 'True'
+         },
+        {'name': 'checkuser',
+         'command': 'checkuser',
+         'devices': 'Server01',
+         'parameter': '8.8.8.8',
+         'operator': '=',
+         'expected': 'admin'
+         },
+        {'name': 'Count ospf neighbors',
+         'command': 'countospfneighbors',
+         'devices': 'Switch1',
+         'parameter': '',
+         'operator': '=',
+         'expected': '3'
+         }
+    ]
+    for d in data:
+        test_suite.create_test(**d)
     return test_suite
 
 
@@ -35,8 +57,10 @@ def api_mock():
 
 
 def test_run_all_sync(example_testsuite, api_mock):
+    example_testsuite.test_cases_sync = example_testsuite.test_cases_async
+    example_testsuite.test_cases_async = []
     with patch.object(Runner, 'run') as run_method_mocked:
-        Runner(example_testsuite, api_mock).run_all(execute_async=False)
+        Runner(example_testsuite, api_mock).run_all()
         run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('testPingFromAToB'))
         run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('checkuser'))
         run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('Count ospf neighbors'))
@@ -45,7 +69,7 @@ def test_run_all_sync(example_testsuite, api_mock):
 def test_run_all_async(example_testsuite, api_mock):
     with patch.object(Runner, '_start_task') as run_method_mocked:
         with patch.object(Runner, '_collect_result') as result_method_mocked:
-            Runner(example_testsuite, api_mock).run_all(execute_async=True)
+            Runner(example_testsuite, api_mock).run_all()
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('testPingFromAToB'))
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('checkuser'))
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('Count ospf neighbors'))

@@ -1,9 +1,10 @@
 - name: bandwith_ping
+  async: False
   command: bandwith
   devices: srvlnx0001
   parameter: [192.168.16.128]
-  operator: '='
-  expected: True
+  operator: '>'
+  expected: 100
   setup:
   - command: network.ip_addrs
     device: srvlnx0099

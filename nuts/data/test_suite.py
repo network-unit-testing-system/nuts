@@ -8,15 +8,16 @@ from .test_case import TestCase
 class TestSuite(object):
     def __init__(self, name):
         self.name = name
-        self.test_cases = []
+        self.test_cases_async = []
+        self.test_cases_sync = []
         self.test_cases_failed = []
         self.test_cases_passed = []
         self.application_logger = logging.getLogger('nuts-application')
         self.test_report_logger = logging.getLogger('nuts-test-report')
 
-    def create_test(self, name, command, devices, parameter, operator, expected_result):
-        test = TestCase(name, command, devices, parameter, operator, expected_result)
-        self.test_cases.append(test)
+    def create_test(self, **kwargs):
+        test = TestCase(**kwargs)
+        self.test_cases_async.append(test)
 
     def set_actual_result(self, test_case, actual_result):
         self.get_test_by_name(test_case.name).set_actual_result(actual_result)
@@ -25,7 +26,7 @@ class TestSuite(object):
         return self.get_test_by_name(test_case.name).get_actual_result()
 
     def get_test_by_name(self, name):
-        for test in self.test_cases:
+        for test in self.test_cases_async + self.test_cases_sync:
             if test.name == name:
                 return test
 
@@ -39,8 +40,8 @@ class TestSuite(object):
         return self.test_cases_failed
 
     def prepare_re_run(self):
-        self.test_report_logger.info('----------------Rerun Failed Cases----------------')
-        self.test_cases = self.test_cases_failed
+        self.test_report_logger.info('-------Rerun Failed Cases (only sync calls)-------')
+        self.test_cases_sync = self.test_cases_failed
         self.test_cases_failed = []
 
     def print_statistics(self):
@@ -55,5 +56,11 @@ class TestSuite(object):
 
     def print_all_test_cases(self):
         self.test_report_logger.info('\nTestCases:')
-        for test in self.test_cases:
-            self.test_report_logger.info(test)
+        if self.test_cases_async:
+            self.test_report_logger.info('Async Tests:')
+            for test in self.test_cases_async:
+                self.test_report_logger.info(test)
+        if self.test_cases_sync:
+            self.test_report_logger.info('Sync Tests:')
+            for test in self.test_cases_sync:
+                self.test_report_logger.info(test)

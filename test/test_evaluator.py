@@ -7,10 +7,38 @@ from nuts.service.evaluator import Evaluator
 @pytest.fixture
 def test_suite():
     test_suite = TSuite('TestTestSuite')
-    test_suite.create_test('testPingFromAToB', 'connectivity', 'Server01', '8.8.8.8', '=', 'True')
-    test_suite.create_test('checkuser', 'checkuser', 'Server02', '', '=', ['admin', 'user'])
-    test_suite.create_test('Count ospf neighbors', 'countospfneighbors', 'Switch1', '', '=', '3')
-    test_suite.create_test('checkuser multiple devices', 'checkuser', 'cisco.*', '', '=', ['admin', 'user'])
+    data = [
+        {'name': 'testPingFromAToB',
+         'command': 'connectivity',
+         'devices': 'Server01',
+         'parameter': '8.8.8.8',
+         'operator': '=',
+         'expected': 'True'
+         },
+        {'name': 'checkuser',
+         'command': 'checkuser',
+         'devices': 'Server01',
+         'parameter': '8.8.8.8',
+         'operator': '=',
+         'expected': ['admin', 'user']
+         },
+        {'name': 'Count ospf neighbors',
+         'command': 'countospfneighbors',
+         'devices': 'Switch1',
+         'parameter': '',
+         'operator': '=',
+         'expected': '3'
+         },
+        {'name': 'checkuser multiple devices',
+         'command': 'checkuser',
+         'devices': 'cisco.*',
+         'parameter': '',
+         'operator': '=',
+         'expected': ['admin', 'user']
+         }
+    ]
+    for d in data:
+        test_suite.create_test(**d)
     return test_suite
 
 

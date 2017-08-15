@@ -1,11 +1,13 @@
 class TestCase(object):
-    def __init__(self, name, command, devices, parameter, operator, expected_result):
+    def __init__(self, name, command, devices, parameter, operator, expected, setup=[], clean=[]):
         self.name = name
         self.command = command
         self.devices = devices
         self.parameter = parameter
         self.operator = operator
-        self.expected_result = expected_result
+        self.expected_result = expected
+        self.setup_tasks = setup
+        self.clean_tasks = clean
         self.job_id = ''
         self.minions = []
         self.actual_result = None

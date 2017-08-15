@@ -83,6 +83,6 @@ class Evaluator(object):
             self.test_suite.mark_test_case_failed(test_case)
 
     def validate_all_results(self):
-        for test in self.test_suite.test_cases:
+        for test in self.test_suite.test_cases_async + self.test_suite.test_cases_sync:
             self.validate_result(test)
         self.test_suite.print_statistics()

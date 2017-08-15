@@ -17,8 +17,7 @@ class FileHandler(object):
     def add_tests(data, test_suite):
         values = yaml.safe_load(data)
         for val in values:
-            test_suite.create_test(val['name'], val['command'], val['devices'], val['parameter'], val['operator'],
-                                   val['expected'])
+            test_suite.create_test(**val)
 
     def read_file(self, filename):
         with open(filename, 'r') as stream:

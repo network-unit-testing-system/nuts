@@ -1,5 +1,6 @@
 import logging
 from time import sleep
+
 try:
     from urllib.error import URLError
 except ImportError:
@@ -95,26 +96,28 @@ class Runner(object):
         else:
             return result_entry
 
-    def run_all(self, execute_async=True):
-        if execute_async:
-            started_counter = 0
-            for test in self.test_suite.test_cases:
-                self.application_logger.info('Start test ' + test.name)
-                if not self._start_task(test):
-                    exit(1)
-                started_counter += 1
-                self.application_logger.info('Started test %s of %s', started_counter, len(self.test_suite.test_cases))
-            test_counter = 0
-            self.application_logger.info('----------------Started all tests-----------------')
-            for test in self.test_suite.test_cases:
-                self.application_logger.info('CollectResult of Test ' + test.name)
-                self._collect_result(test)
-                test_counter += 1
-                self.application_logger.info('Collected results from %s of %s tests', test_counter,
-                                             len(self.test_suite.test_cases))
-            self.application_logger.info('--------------Collected all results---------------')
-        else:
-            for test in self.test_suite.test_cases:
-                self.application_logger.info('Start Test ' + test.name)
-                self.run(test)
-            self.application_logger.info('\n')
+    def run_all(self):
+        # Run async tests
+        started_counter = 0
+        for test in self.test_suite.test_cases_async:
+            self.application_logger.info('Start test ' + test.name)
+            if not self._start_task(test):
+                exit(1)
+            started_counter += 1
+            self.application_logger.info('Started test %s of %s', started_counter,
+                                         len(self.test_suite.test_cases_async))
+        test_counter = 0
+        self.application_logger.info('----------------Started all tests-----------------')
+        for test in self.test_suite.test_cases_async:
+            self.application_logger.info('CollectResult of Test ' + test.name)
+            self._collect_result(test)
+            test_counter += 1
+            self.application_logger.info('Collected results from %s of %s tests', test_counter,
+                                         len(self.test_suite.test_cases_async))
+        self.application_logger.info('--------------Collected all results---------------')
+
+        # Run sync tests
+        for test in self.test_suite.test_cases_sync:
+            self.application_logger.info('Start Test ' + test.name)
+            self.run(test)
+        self.application_logger.info('\n')

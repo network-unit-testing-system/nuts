@@ -21,6 +21,9 @@ sequence:
       expected:
         type: any
         required: yes
+      async:
+        type: bool
+        required: no
       setup: &commands
         type: seq
         required: no

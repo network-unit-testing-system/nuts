@@ -54,3 +54,38 @@ def test_get_test_by_name_last(test_suite):
     assert test_suite.get_test_by_name('Count ospf neighbors') is not None
     assert test_suite.get_test_by_name('Count ospf neighbors').name == 'Count ospf neighbors'
     assert test_suite.get_test_by_name('Count ospf neighbors').command == 'countospfneighbors'
+
+
+def test_add_explicit_async_test(test_suite):
+    length = len(test_suite.test_cases_async)
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           async=True)
+    assert length + 1 == len(test_suite.test_cases_async)
+
+
+def test_add_explicit_sync_test(test_suite):
+    length = len(test_suite.test_cases_sync)
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           async=False)
+    assert length + 1 == len(test_suite.test_cases_sync)
+
+
+def test_add_sync_test_setup(test_suite):
+    length = len(test_suite.test_cases_sync)
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           setup=[{'command': 'test setup cmd'}])
+    assert length + 1 == len(test_suite.test_cases_sync)
+
+
+def test_add_sync_test_clean(test_suite):
+    length = len(test_suite.test_cases_sync)
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           clean=[{'command': 'test setup cmd'}])
+    assert length + 1 == len(test_suite.test_cases_sync)
+
+
+def test_add_sync_test_setup_clean(test_suite):
+    length = len(test_suite.test_cases_sync)
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           setup=[{'command': 'test setup cmd'}], clean=[{'command': 'test setup cmd'}])
+    assert length + 1 == len(test_suite.test_cases_sync)

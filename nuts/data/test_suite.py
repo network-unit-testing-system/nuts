@@ -16,8 +16,16 @@ class TestSuite(object):
         self.test_report_logger = logging.getLogger('nuts-test-report')
 
     def create_test(self, **kwargs):
+        async = kwargs.pop('async', None)
         test = TestCase(**kwargs)
-        self.test_cases_async.append(test)
+        if async:
+            self.test_cases_async.append(test)
+        elif async is False:
+            self.test_cases_sync.append(test)
+        elif len(kwargs.get('setup', [])) or len(kwargs.get('clean', [])):
+            self.test_cases_sync.append(test)
+        else:
+            self.test_cases_async.append(test)
 
     def set_actual_result(self, test_case, actual_result):
         self.get_test_by_name(test_case.name).set_actual_result(actual_result)

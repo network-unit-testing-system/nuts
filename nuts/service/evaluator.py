@@ -1,6 +1,10 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import logging
 
 from colorama import Fore
+from past.builtins import basestring
 
 from nuts.data.evaluation import Evaluation
 from nuts.data.evaluation_result import EvaluationResult
@@ -23,7 +27,7 @@ class Evaluator(object):
         elif isinstance(expected, bool) != isinstance(result, bool):
             return False
 
-        if isinstance(expected, (int, float, long)) and isinstance(result, (int, float, long)):
+        if isinstance(expected, (int, float)) and isinstance(result, (int, float)):
             return True
 
         if isinstance(expected, list) and isinstance(result, list):

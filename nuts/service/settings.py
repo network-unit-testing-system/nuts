@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import os
 import yaml
 
@@ -30,5 +33,6 @@ class Settings(object):
 
     def dump_yaml(self):
         print(yaml.dump(self.cfg, default_flow_style=False))
+
 
 settings = Settings()

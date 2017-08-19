@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 from nuts.data.test_suite import TestSuite
 from nuts.service.evaluator import Evaluator
 from nuts.service.file_handler import FileHandler

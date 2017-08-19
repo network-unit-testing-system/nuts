@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
+
 class Evaluation(object):
     def __init__(self, expected_result, operator):
         self.evaluation_results = []

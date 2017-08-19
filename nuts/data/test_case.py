@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
+
 class TestCase(object):
     def __init__(self, name, command, devices, parameter, operator, expected, setup=[], teardown=[]):
         self.name = name

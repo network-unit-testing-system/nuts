@@ -10,7 +10,7 @@ class TestController(object):
     def __init__(self, test_file, max_iterations=None, max_retries=None):
         self.test_file = test_file
         if max_iterations:
-            self.retries = max_iterations
+            self.max_iterations = max_iterations
         else:
             self.max_iterations = settings.get_variable('NUTS_WAIT_ITERATIONS', default=25)
         if max_iterations:

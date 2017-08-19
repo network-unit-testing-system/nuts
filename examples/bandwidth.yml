@@ -7,11 +7,11 @@
   expected: 100
   setup:
   - command: network.ip_addrs
-    device: srvlnx0099
+    devices: srvlnx0099
     save: ip
   - command: iperf_server_start
     parameter: [udp]
-    device: srvlnx0099
-  clean:
+    devices: srvlnx0099
+  teardown:
   - command: iperf_server_stop
-    device: srvlnx0099
+    devices: srvlnx0099

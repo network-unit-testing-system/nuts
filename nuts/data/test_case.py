@@ -1,5 +1,5 @@
 class TestCase(object):
-    def __init__(self, name, command, devices, parameter, operator, expected, setup=[], clean=[]):
+    def __init__(self, name, command, devices, parameter, operator, expected, setup=[], teardown=[]):
         self.name = name
         self.command = command
         self.devices = devices
@@ -7,7 +7,7 @@ class TestCase(object):
         self.operator = operator
         self.expected_result = expected
         self.setup_tasks = setup
-        self.clean_tasks = clean
+        self.teardown_tasks = teardown
         self.job_id = ''
         self.minions = []
         self.actual_result = None
@@ -21,9 +21,11 @@ class TestCase(object):
     def extract_actual_result(self):
         return {k: v['result'] for k, v in self.actual_result.items()}
 
-    def set_job(self, job_description):
-        self.job_id = job_description['return'][0]['jid']
-        self.minions = job_description['return'][0]['minions']
+    def set_job(self, jid):
+        self.job_id = jid
+
+    def set_minions(self, minion_list):
+        self.minions = minion_list
 
     def __str__(self):
         return 'Name: {0}, Command: {1}, Devices: {2}, Parameter: {3}, Operator: {4}, Expected: {5}' \

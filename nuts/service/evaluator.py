@@ -53,6 +53,10 @@ class Evaluator(object):
 
     def _test_case_failed(self, test_case):
         # TODO Change because actual_result handling changed
+        if not len(test_case.minions):
+            self.test_report_logger.debug('%s%s: No devices responding --------%s', Fore.RED, test_case.name,
+                                          Fore.RESET)
+            return True
         return test_case.extract_actual_result() == 'ERROR'
 
     def validate_result(self, test_case):

@@ -93,7 +93,7 @@ def test_collect_result(example_testsuite, api_mock):
     test_case.job_id = u'20170302070941729675'
     runner._collect_result(test_case)
     api_mock.get_task_result.assert_called_with(taskid=u'20170302070941729675')
-    assert example_testsuite.get_actual_result(test_case) == {
+    assert test_case.get_actual_result() == {
         u'cisco.csr.1000v': {
             'resulttype': 'single',
             'result': '00:0C:29:EA:D1:68'
@@ -106,7 +106,7 @@ def test_run(example_testsuite, api_mock):
     runner.run(test_case)
     api_mock.connect.assert_called()
     api_mock.start_task.assert_called_with(runner.create_task(test_case))
-    assert example_testsuite.get_actual_result(test_case) == {
+    assert test_case.get_actual_result() == {
         u'cisco.csr.1000v': {
             'resulttype': 'single',
             'result': '00:0C:29:EA:D1:68'

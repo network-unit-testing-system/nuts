@@ -22,16 +22,10 @@ class TestSuite(object):
             self.test_cases_async.append(test)
         elif async is False:
             self.test_cases_sync.append(test)
-        elif len(kwargs.get('setup', [])) or len(kwargs.get('clean', [])):
+        elif len(kwargs.get('setup', [])) or len(kwargs.get('teardown', [])):
             self.test_cases_sync.append(test)
         else:
             self.test_cases_async.append(test)
-
-    def set_actual_result(self, test_case, actual_result):
-        self.get_test_by_name(test_case.name).set_actual_result(actual_result)
-
-    def get_actual_result(self, test_case):
-        return self.get_test_by_name(test_case.name).get_actual_result()
 
     def get_test_by_name(self, name):
         for test in self.test_cases_async + self.test_cases_sync:

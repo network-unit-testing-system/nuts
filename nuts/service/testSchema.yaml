@@ -33,7 +33,7 @@ sequence:
             command:
               type: str
               required: yes
-            device:
+            devices:
               type: str
               required: no
             parameter:
@@ -42,4 +42,4 @@ sequence:
             save:
               type: str
               required: no
-      clean: *commands
+      teardown: *commands

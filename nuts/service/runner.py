@@ -18,7 +18,8 @@ class Runner(object):
 
     def run(self, test_case):
         result = self._get_task_result(test_case)
-        self.test_suite.set_actual_result(test_case, result)
+        test_case.set_minions(result.keys())
+        test_case.set_actual_result(result)
 
     def _collect_result(self, test_case):
         counter = 0
@@ -33,18 +34,23 @@ class Runner(object):
                     sleep(self.sleep_duration)
             counter += 1
         return_value = self._extract_return(salt_result)
-        self.test_suite.set_actual_result(test_case, return_value)
+        test_case.set_actual_result(return_value)
 
     def _start_task(self, test_case):
         try:
             task = self.create_task(test_case)
             self.api.connect()
             task_information = self.api.start_task_async(task)
-            test_case.set_job(task_information)
+            test_case.set_job(task_information['return'][0]['jid'])
+            test_case.set_minions(task_information['return'][0]['minions'])
             self.application_logger.debug(task_information)
             return True
         except URLError as e:
             self.application_logger.exception('Failed to start test case. Salt API URLError: %s', e.args[0].strerror)
+            self.test_report_logger.debug(e)
+            return False
+        except KeyError as e:
+            self.application_logger.exception('Failed to start test case. Probably devices match no minions')
             self.test_report_logger.debug(e)
             return False
         except Exception as e:

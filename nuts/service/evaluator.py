@@ -12,6 +12,31 @@ class Evaluator(object):
         self.application_logger = logging.getLogger('nuts-application')
         self.test_report_logger = logging.getLogger('nuts-test-report')
 
+    @staticmethod
+    def _compare_type(expected, result):
+        if isinstance(expected, basestring) and isinstance(result, basestring):
+            return True
+
+        if isinstance(expected, bool) and isinstance(result, bool):
+            return True
+        # bool is instance of int. return False if one type is a boolean
+        elif isinstance(expected, bool) != isinstance(result, bool):
+            return False
+
+        if isinstance(expected, (int, float, long)) and isinstance(result, (int, float, long)):
+            return True
+
+        if isinstance(expected, list) and isinstance(result, list):
+            return True
+
+        if isinstance(expected, dict) and isinstance(result, dict):
+            return True
+
+        if isinstance(expected, tuple) and isinstance(result, type):
+            return True
+
+        return False
+
     def compare(self, test_case):
         evaluation = Evaluation(test_case.expected_result, test_case.operator)
         for minion in test_case.minions:
@@ -21,14 +46,19 @@ class Evaluator(object):
     def compare_minion(self, test_case, minion):
         actual_result = test_case.extract_actual_result()
         if minion in actual_result:
-            if test_case.operator == '=':
-                compare = self.comp(test_case.expected_result, actual_result[minion])
-            elif test_case.operator == '<':
-                compare = test_case.expected_result < actual_result[minion]
-            elif test_case.operator == '>':
-                compare = test_case.expected_result > actual_result[minion]
-            elif test_case.operator == 'not':
-                compare = test_case.expected_result != actual_result[minion]
+            if self._compare_type(test_case.expected_result, actual_result[minion]):
+                if test_case.operator == '=':
+                    compare = self.comp(test_case.expected_result, actual_result[minion])
+                elif test_case.operator == '<':
+                    compare = test_case.expected_result < actual_result[minion]
+                elif test_case.operator == '>':
+                    compare = test_case.expected_result > actual_result[minion]
+                elif test_case.operator == 'not':
+                    compare = test_case.expected_result != actual_result[minion]
+            else:
+                self.test_report_logger.warning('%s%s: Result type mismatch ---------%s', Fore.RED, test_case.name,
+                                                Fore.RESET)
+                compare = False
             result = actual_result[minion]
         else:
             compare = False
@@ -65,7 +95,9 @@ class Evaluator(object):
                                             Fore.RESET)
             self.test_report_logger.warning('An error occurred while executing the test!')
             self.test_suite.mark_test_case_failed(test_case)
-        elif self.compare(test_case).result():
+
+        evaluation = self.compare(test_case)
+        if evaluation.result():
             self.test_report_logger.info('%s%s: Test passed -------------------------\n%s', Fore.GREEN, test_case.name,
                                          Fore.RESET)
             self.test_report_logger.debug('Expected: %s %s Actual: %s', str(test_case.expected_result),
@@ -73,7 +105,6 @@ class Evaluator(object):
                                           str(test_case.extract_actual_result()))
             self.test_suite.mark_test_case_passed(test_case)
         else:
-            evaluation = self.compare(test_case)
             self.test_report_logger.warning('%s%s: Test failed -------------------\n%s', Fore.RED, test_case.name,
                                             Fore.RESET)
             self.test_report_logger.warning('Expected: %s\nOperator:%s\nActual:', str(evaluation.expected_result),

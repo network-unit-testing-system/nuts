@@ -59,7 +59,7 @@ def api_mock():
 def test_run_all_sync(example_testsuite, api_mock):
     example_testsuite.test_cases_sync = example_testsuite.test_cases_async
     example_testsuite.test_cases_async = []
-    with patch.object(Runner, 'run') as run_method_mocked:
+    with patch.object(Runner, '_start_test_sync') as run_method_mocked:
         Runner(example_testsuite, api_mock).run_all()
         run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('testPingFromAToB'))
         run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('checkuser'))
@@ -67,7 +67,7 @@ def test_run_all_sync(example_testsuite, api_mock):
 
 
 def test_run_all_async(example_testsuite, api_mock):
-    with patch.object(Runner, '_start_task') as run_method_mocked:
+    with patch.object(Runner, '_start_test_async') as run_method_mocked:
         with patch.object(Runner, '_collect_result') as result_method_mocked:
             Runner(example_testsuite, api_mock).run_all()
             run_method_mocked.assert_any_call(example_testsuite.get_test_by_name('testPingFromAToB'))
@@ -81,9 +81,10 @@ def test_run_all_async(example_testsuite, api_mock):
 def test_start_task(example_testsuite, api_mock):
     runner = Runner(example_testsuite, api_mock)
     test_case = example_testsuite.get_test_by_name('testPingFromAToB')
-    runner._start_task(test_case)
+    runner._start_test_async(test_case)
     api_mock.connect.assert_called()
-    api_mock.start_task_async.assert_called_with(runner.create_task(test_case))
+    api_mock.start_task_async.assert_called_with(
+            runner.create_test_task(test_case.devices, test_case.command, test_case.parameter))
     assert test_case.job_id == u'20170302070941729675'
 
 
@@ -103,9 +104,10 @@ def test_collect_result(example_testsuite, api_mock):
 def test_run(example_testsuite, api_mock):
     runner = Runner(example_testsuite, api_mock)
     test_case = example_testsuite.get_test_by_name('testPingFromAToB')
-    runner.run(test_case)
+    runner._start_test_sync(test_case)
     api_mock.connect.assert_called()
-    api_mock.start_task.assert_called_with(runner.create_task(test_case))
+    api_mock.start_task.assert_called_with(
+        runner.create_test_task(test_case.devices, test_case.command, test_case.parameter))
     assert test_case.get_actual_result() == {
         u'cisco.csr.1000v': {
             'resulttype': 'single',
@@ -151,7 +153,8 @@ def test_extract_return_empty():
 
 def test_create_task(example_testsuite, api_mock):
     runner = Runner(example_testsuite, api_mock)
-    task = runner.create_task(example_testsuite.get_test_by_name('testPingFromAToB'))
+    test_case = example_testsuite.get_test_by_name('testPingFromAToB')
+    task = runner.create_test_task(test_case.devices, test_case.command, test_case.parameter)
     assert 'targets' in task
     assert 'function' in task
     assert 'arguments' in task

@@ -156,19 +156,38 @@ def traceroute(dest):
             return _returnMultiple(hosts)
 
 
-def bandwidth(param):
-    '''This function isn't working at the moment because it's not complient with the saltstack way'''
+def bandwidth(dest):
     '''
-    if os == "linux":
-        local.cmd(dst, 'cmd.run', ['iperf3 -s -D -1'])
-        result = local.cmd(host, 'cmd.run', ['iperf3 -c ' + dst])
-        text = bytes(result).decode(encoding="utf-8", errors='ignore')
-        regex = "Bytes  ([0-9\.]*) ([a-zA-Z]bits\/sec)([\s]*receiver)"
-        r = re.compile(regex)
-        m = r.search(text)
-        return  returnSingle(float(m.group(1)) * 1000.0 * 1000.0)
+    Return bits per second for the iperf3 test to the destination server specified
+
+    CLI Example:
+
+    .. code-block:: bash
+
+        salt "*" nuts.bandwidth 10.10.10.11
+
+    Example output:
+
+    .. code-block:: python
+
+        {
+            "result": 939010154.975192,
+            "resulttype": "single"
+        }
+
+    :param dest:
+    :return:
     '''
-    raise NotImplementedError('This function isn\'t implemented right now')
+    os_family = __grains__['os_family']  # pylint: disable=undefined-variable
+    if os_family in ['Debian', 'RedHat']:
+        # local.cmd(dst, 'cmd.run', ['iperf3 -s -D -1'])
+        result = __salt__['cmd.run']('iperf3 -c {} --json'.format(dest))
+        response = json.loads(result)
+        try:
+            bps = response['end']['sum_received']['bits_per_second']
+        except KeyError:
+            bps = 0
+        return _returnSingle(bps)
 
 
 def dnscheck(param):

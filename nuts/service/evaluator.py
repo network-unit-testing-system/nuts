@@ -77,7 +77,7 @@ class Evaluator(object):
 
     @staticmethod
     def format_result(result):
-        if isinstance(result, basestring):  # pylint: disable=undefined-variable
+        if isinstance(result, basestring):
             return result.encode('utf-8')
         if isinstance(result, list):
             return [x.encode('utf-8') for x in result]
@@ -99,6 +99,7 @@ class Evaluator(object):
                                             Fore.RESET)
             self.test_report_logger.warning('An error occurred while executing the test!')
             self.test_suite.mark_test_case_failed(test_case)
+            return
 
         evaluation = self.compare(test_case)
         if evaluation.result():

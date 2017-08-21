@@ -1,17 +1,18 @@
 - name: bandwith_ping
   async: False
-  command: bandwith
+  command: bandwidth
   devices: srvlnx0001
-  parameter: [192.168.16.128]
-  operator: '>'
-  expected: 100
+  parameter: ['10.10.10.99']
+  operator: '<'
+  expected: 100000000
   setup:
   - command: network.ip_addrs
     devices: srvlnx0099
     save: ip
-  - command: iperf_server_start
-    parameter: [udp]
+  - command: cmd.run
     devices: srvlnx0099
+    parameter: ['iperf3 -s -D -1']
   teardown:
-  - command: iperf_server_stop
+  - command: cmd.run
+    parameter: ['pkill iperf3']
     devices: srvlnx0099

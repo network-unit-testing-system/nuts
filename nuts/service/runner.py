@@ -19,11 +19,6 @@ class Runner(object):
         self.max_iterations = max_iterations
         self.sleep_duration = sleep_duration
 
-    def run(self, test_case):
-        result = self._get_task_result(test_case)
-        test_case.set_minions(result.keys())
-        test_case.set_actual_result(result)
-
     def _collect_result(self, test_case):
         counter = 0
         not_contained = True
@@ -39,9 +34,9 @@ class Runner(object):
         return_value = self._extract_return(salt_result)
         test_case.set_actual_result(return_value)
 
-    def _start_task(self, test_case):
+    def _start_test_async(self, test_case):
         try:
-            task = self.create_task(test_case)
+            task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter)
             self.api.connect()
             task_information = self.api.start_task_async(task)
             test_case.set_job(task_information['return'][0]['jid'])
@@ -61,18 +56,56 @@ class Runner(object):
             self.test_report_logger.debug(e)
             return False
 
+    def _start_test_sync(self, test_case):
+        if hasattr(test_case, 'setup_tasks'):
+            self.test_report_logger.debug('%s has %d setup tasks', test_case.name, len(test_case.setup_tasks))
+            self._start_tasks(test_case.setup_tasks)
+        self.test_report_logger.debug('%s start sync test', test_case.name)
+        result = self._get_task_result(test_case)
+        test_case.set_minions(result.keys())
+        test_case.set_actual_result(result)
+        if hasattr(test_case, 'teardown_tasks'):
+            self.test_report_logger.debug('%s has %d teardown tasks', test_case.name, len(test_case.setup_tasks))
+            self._start_tasks(test_case.teardown_tasks)
+
+    def _start_tasks(self, tasks):
+        result = {}
+        for task in tasks:
+            save = task.pop('save', None)
+            parameter = self.create_test_task(**task)
+            self.api.connect()
+            response = self.api.start_task(parameter)
+            self.test_report_logger.debug('%s %s returned %s', parameter['function'], parameter['arguments'], response)
+            if not len(response['return'][0]):
+                raise Exception('No device responding. devices: {}, command: {}'.format(task['devices'],
+                                                                                        task['command']))
+            for minion, value in response['return'][0].items():
+                if value is None:
+                    raise Exception('No response value from minion {}'.format(minion))
+                elif 'is not available' in value:
+                    raise Exception('Command {} not available on {}'.format(task['command'], minion))
+                elif 'Passed invalid arguments' in value:
+                    raise Exception('Passed invalid arguments for {} on {}. Arguments: {}'.format(task['command'],
+                                                                                                  minion,
+                                                                                                  task['parameter']))
+            if save:
+                result[save] = response
+        return result
+
     @staticmethod
-    def create_task(test_case):
+    def create_test_task(devices, command, parameter=None):
+        if '.' not in command:
+            command = 'nuts.{}'.format(command)
         task = {
-            'targets': test_case.devices,
-            'function': 'nuts.{}'.format(test_case.command),
-            'arguments': test_case.parameter
+            'targets': devices,
+            'function': command,
+            'arguments': parameter
         }
         return task
 
     def _get_task_result(self, test_case):
         result = ''
-        task = self.create_task(test_case)
+        task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter)
         try:
             self.api.connect()
             result = self.api.start_task(task)
@@ -110,7 +143,7 @@ class Runner(object):
         started_counter = 0
         for test in self.test_suite.test_cases_async:
             self.application_logger.info('Start test ' + test.name)
-            if not self._start_task(test):
+            if not self._start_test_async(test):
                 exit(1)
             started_counter += 1
             self.application_logger.info('Started test %s of %s', started_counter,
@@ -128,5 +161,5 @@ class Runner(object):
         # Run sync tests
         for test in self.test_suite.test_cases_sync:
             self.application_logger.info('Start Test ' + test.name)
-            self.run(test)
+            self._start_test_sync(test)
         self.application_logger.info('\n')

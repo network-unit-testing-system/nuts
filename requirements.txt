@@ -3,3 +3,4 @@ pyaml
 salt-pepper
 pykwalify
 colorama
+jinja2

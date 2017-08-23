@@ -9,6 +9,8 @@ try:
 except ImportError:
     from urllib2 import URLError
 
+from jinja2 import Template
+
 
 class Runner(object):
     def __init__(self, test_suite, salt_api, max_iterations=25, sleep_duration=0.1):
@@ -59,20 +61,19 @@ class Runner(object):
     def _start_test_sync(self, test_case):
         if hasattr(test_case, 'setup_tasks'):
             self.test_report_logger.debug('%s has %d setup tasks', test_case.name, len(test_case.setup_tasks))
-            self._start_tasks(test_case.setup_tasks)
+            saved_data = self._start_tasks(test_case.setup_tasks)
         self.test_report_logger.debug('%s start sync test', test_case.name)
-        result = self._get_task_result(test_case)
+        result = self._get_task_result(test_case, saved_data)
         test_case.set_minions(result.keys())
         test_case.set_actual_result(result)
         if hasattr(test_case, 'teardown_tasks'):
-            self.test_report_logger.debug('%s has %d teardown tasks', test_case.name, len(test_case.setup_tasks))
-            self._start_tasks(test_case.teardown_tasks)
+            self.test_report_logger.debug('%s has %d teardown tasks', test_case.name, len(test_case.teardown_tasks))
+            self._start_tasks(test_case.teardown_tasks, saved_data)
 
-    def _start_tasks(self, tasks):
-        result = {}
+    def _start_tasks(self, tasks, result={}):
         for task in tasks:
             save = task.pop('save', None)
-            parameter = self.create_test_task(**task)
+            parameter = self.create_test_task(render_data=result, **task)
             self.api.connect()
             response = self.api.start_task(parameter)
             self.test_report_logger.debug('%s %s returned %s', parameter['function'], parameter['arguments'], response)
@@ -89,13 +90,32 @@ class Runner(object):
                                                                                                   minion,
                                                                                                   task['parameter']))
             if save:
-                result[save] = response
+                '''
+                Normally no one minion will answer to a saved task. In this case the value is directly saved
+                in a dictionary. On multiple answers, the minion will be the dictionary key to access the value.
+                Multiple answer example for `save: ip`: `result['ip']['minion_name']`
+                One answer example for `save: ip`: `result['ip']`
+                The test write has to know when more then one minion will response.
+                '''
+                try:
+                    if len(response['return'][0]) == 1:
+                        result[save] = response['return'][0].popitem()[1]
+                    elif len(response['return'][0]) > 1:
+                        result[save] = response['return'][0]
+                except KeyError:
+                    pass
+
         return result
 
     @staticmethod
-    def create_test_task(devices, command, parameter=None):
+    def create_test_task(devices, command, parameter=[], render_data={}):
+        devices = Template(devices).render(render_data)
+        command = Template(command).render(render_data)
+        parameter = list(map(lambda x: Template(x).render(render_data), parameter))
+
         if '.' not in command:
             command = 'nuts.{}'.format(command)
+
         task = {
             'targets': devices,
             'function': command,
@@ -103,9 +123,9 @@ class Runner(object):
         }
         return task
 
-    def _get_task_result(self, test_case):
+    def _get_task_result(self, test_case, saved_data):
         result = ''
-        task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter)
+        task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter, saved_data)
         try:
             self.api.connect()
             result = self.api.start_task(task)

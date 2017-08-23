@@ -14,21 +14,21 @@ def example_testsuite():
         {'name': 'testPingFromAToB',
          'command': 'connectivity',
          'devices': 'Server01',
-         'parameter': '8.8.8.8',
+         'parameter': ['8.8.8.8'],
          'operator': '=',
          'expected': 'True'
          },
         {'name': 'checkuser',
          'command': 'checkuser',
          'devices': 'Server01',
-         'parameter': '8.8.8.8',
+         'parameter': ['8.8.8.8'],
          'operator': '=',
          'expected': 'admin'
          },
         {'name': 'Count ospf neighbors',
          'command': 'countospfneighbors',
          'devices': 'Switch1',
-         'parameter': '',
+         'parameter': [],
          'operator': '=',
          'expected': '3'
          }
@@ -160,4 +160,4 @@ def test_create_task(example_testsuite, api_mock):
     assert 'arguments' in task
     assert task['targets'] == 'Server01'
     assert task['function'] == 'nuts.connectivity'
-    assert task['arguments'] == '8.8.8.8'
+    assert task['arguments'] == ['8.8.8.8']

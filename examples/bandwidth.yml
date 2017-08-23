@@ -2,7 +2,7 @@
   async: False
   command: bandwidth
   devices: srvlnx0001
-  parameter: ['10.10.10.99']
+  parameter: ['{{ ip[0] }}']
   operator: '<'
   expected: 100000000
   setup:

@@ -1,4 +1,5 @@
 future
+futures
 pyaml
 salt-pepper
 pykwalify

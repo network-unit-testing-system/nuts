@@ -15,6 +15,7 @@ class TestCase(object):
         self.job_id = ''
         self.minions = []
         self.actual_result = None
+        self.saved_data = {}
 
     def set_actual_result(self, actual_result):
         self.actual_result = actual_result

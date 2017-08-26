@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import concurrent.futures
 import logging
 from time import sleep
 
@@ -35,11 +36,18 @@ class Runner(object):
             counter += 1
         return_value = self._extract_return(salt_result)
         test_case.set_actual_result(return_value)
+        if hasattr(test_case, 'teardown_tasks'):
+            self.test_report_logger.debug('%s has %d teardown tasks', test_case.name, len(test_case.teardown_tasks))
+            self._start_tasks(test_case.teardown_tasks, test_case.saved_data)
 
     def _start_test_async(self, test_case):
         try:
-            task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter)
-            self.api.connect()
+            saved_data = {}
+            if hasattr(test_case, 'setup_tasks'):
+                self.test_report_logger.debug('%s has %d setup tasks', test_case.name, len(test_case.setup_tasks))
+                saved_data = self._start_tasks(test_case.setup_tasks)
+                test_case.saved_data = saved_data
+            task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter, saved_data)
             task_information = self.api.start_task_async(task)
             test_case.set_job(task_information['return'][0]['jid'])
             test_case.set_minions(task_information['return'][0]['minions'])
@@ -62,6 +70,7 @@ class Runner(object):
         if hasattr(test_case, 'setup_tasks'):
             self.test_report_logger.debug('%s has %d setup tasks', test_case.name, len(test_case.setup_tasks))
             saved_data = self._start_tasks(test_case.setup_tasks)
+            test_case.saved_data = saved_data
         self.test_report_logger.debug('%s start sync test', test_case.name)
         result = self._get_task_result(test_case, saved_data)
         test_case.set_minions(result.keys())
@@ -74,7 +83,6 @@ class Runner(object):
         for task in tasks:
             save = task.pop('save', None)
             parameter = self.create_test_task(render_data=result, **task)
-            self.api.connect()
             response = self.api.start_task(parameter)
             self.test_report_logger.debug('%s %s returned %s', parameter['function'], parameter['arguments'], response)
             if not len(response['return'][0]):
@@ -127,7 +135,6 @@ class Runner(object):
         result = ''
         task = self.create_test_task(test_case.devices, test_case.command, test_case.parameter, saved_data)
         try:
-            self.api.connect()
             result = self.api.start_task(task)
             self.application_logger.debug('%s returned %s ', test_case.name, result)
             if 'ERROR' in result:
@@ -159,15 +166,24 @@ class Runner(object):
             return result_entry
 
     def run_all(self):
+        try:
+            self.api.connect()
+        except URLError as e:
+            self.application_logger.exception('Failed to connect to the server. Salt API URLError: %s',
+                                              e.args[0].strerror)
+            self.test_report_logger.debug(e)
+            exit(1)
         # Run async tests
         started_counter = 0
-        for test in self.test_suite.test_cases_async:
-            self.application_logger.info('Start test ' + test.name)
-            if not self._start_test_async(test):
-                exit(1)
-            started_counter += 1
-            self.application_logger.info('Started test %s of %s', started_counter,
-                                         len(self.test_suite.test_cases_async))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            futures = []
+            for test in self.test_suite.test_cases_async:
+                self.application_logger.info('Start test ' + test.name)
+                futures.append(executor.submit(self._start_test_async, test))
+            for x in concurrent.futures.as_completed(futures):
+                started_counter += 1
+                self.application_logger.info('Started test %s of %s', started_counter,
+                                             len(self.test_suite.test_cases_async))
         test_counter = 0
         self.application_logger.info('----------------Started all tests-----------------')
         for test in self.test_suite.test_cases_async:

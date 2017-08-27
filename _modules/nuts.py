@@ -180,8 +180,7 @@ def bandwidth(dest):
     '''
     os_family = __grains__['os_family']  # pylint: disable=undefined-variable
     if os_family in ['Debian', 'RedHat']:
-        # local.cmd(dst, 'cmd.run', ['iperf3 -s -D -1'])
-        result = __salt__['cmd.run']('iperf3 -c {} --json'.format(dest))
+        result = __salt__['cmd.run']('iperf3 -c {} --json'.format(dest))  # pylint: disable=undefined-variable
         response = json.loads(result)
         try:
             bps = response['end']['sum_received']['bits_per_second']

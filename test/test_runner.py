@@ -108,6 +108,37 @@ def test_run_all_async(example_testsuite, api_mock):
             result_method_mocked.assert_any_call(example_testsuite.get_test_by_name('bandwidth test'))
 
 
+def test_run_setup_teardown_sync(api_mock):
+    test_suite = TSuite('TestTestSuite')
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           setup=[{'command': 'test setup cmd'}], teardown=[{'command': 'test setup cmd'}])
+    with patch.object(Runner, '_start_tasks') as start_task_method_mocked:
+        Runner(test_suite, api_mock).run_all()
+        start_task_method_mocked.assert_any_call(test_suite.test_cases_sync[0].setup_tasks)
+        start_task_method_mocked.assert_any_call(test_suite.test_cases_sync[0].teardown_tasks)
+
+
+def test_run_setup_teardown_async(api_mock):
+    test_suite = TSuite('TestTestSuite')
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           setup=[{'command': 'test setup cmd'}], teardown=[{'command': 'test setup cmd'}], async=True)
+    with patch.object(Runner, '_start_tasks') as start_task_method_mocked:
+        Runner(test_suite, api_mock).run_all()
+        start_task_method_mocked.assert_any_call(test_suite.test_cases_async[0].setup_tasks)
+        start_task_method_mocked.assert_any_call(test_suite.test_cases_async[0].teardown_tasks)
+
+
+def test_return_setup(api_mock):
+    test_suite = TSuite('TestTestSuite')
+    test_suite.create_test(name='test', command='testcmd', devices='sw01', parameter='', operator='=', expected=True,
+                           setup=[{'command': 'test setup cmd', 'devices': 'sw99', 'save': 'ip'}])
+    with patch.object(Runner, '_get_task_result') as create_task_method_mocked:
+        Runner(test_suite, api_mock).run_all()
+        test_case = test_suite.test_cases_sync[0]
+        saved_data = {'ip': {'resulttype': 'single', 'result': '00:0C:29:EA:D1:68'}}
+        create_task_method_mocked.assert_any_call(test_case, saved_data)
+
+
 def test_start_task(example_testsuite, api_mock):
     runner = Runner(example_testsuite, api_mock)
     test_case = example_testsuite.get_test_by_name('testPingFromAToB')
@@ -189,3 +220,22 @@ def test_create_task(example_testsuite, api_mock):
     assert task['targets'] == 'Server01'
     assert task['function'] == 'nuts.connectivity'
     assert task['arguments'] == ['8.8.8.8']
+
+
+def test_create_task_render():
+    task = Runner.create_test_task(devices='sw01{{ id }}', command='test.{{cmd}}',
+                                   parameter=['{{ par }}', 'test2 {{ par2 }}'],
+                                   render_data={'id': 123, 'cmd': 'command', 'par': 'parameter', 'par2': 2})
+    assert 'targets' in task
+    assert 'function' in task
+    assert 'arguments' in task
+    assert task['targets'] == 'sw01123'
+    assert task['function'] == 'test.command'
+    assert task['arguments'] == ['parameter', 'test2 2']
+
+
+def test_create_task_add_nuts():
+    task = Runner.create_test_task(devices='sw01', command='test')
+
+    assert 'function' in task
+    assert task['function'] == 'nuts.test'

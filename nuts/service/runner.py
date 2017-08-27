@@ -79,7 +79,9 @@ class Runner(object):
             self.test_report_logger.debug('%s has %d teardown tasks', test_case.name, len(test_case.teardown_tasks))
             self._start_tasks(test_case.teardown_tasks, saved_data)
 
-    def _start_tasks(self, tasks, result={}):
+    def _start_tasks(self, tasks, result=None):
+        if result is None:
+            result = {}
         for task in tasks:
             save = task.pop('save', None)
             parameter = self.create_test_task(render_data=result, **task)
@@ -98,13 +100,11 @@ class Runner(object):
                                                                                                   minion,
                                                                                                   task['parameter']))
             if save:
-                '''
-                Normally no one minion will answer to a saved task. In this case the value is directly saved
-                in a dictionary. On multiple answers, the minion will be the dictionary key to access the value.
-                Multiple answer example for `save: ip`: `result['ip']['minion_name']`
-                One answer example for `save: ip`: `result['ip']`
-                The test write has to know when more then one minion will response.
-                '''
+                # Normally no one minion will answer to a saved task. In this case the value is directly saved
+                # in a dictionary. On multiple answers, the minion will be the dictionary key to access the value.
+                # Multiple answer example for `save: ip`: `result['ip']['minion_name']`
+                # One answer example for `save: ip`: `result['ip']`
+                # The test write has to know when more then one minion will response.
                 try:
                     if len(response['return'][0]) == 1:
                         result[save] = response['return'][0].popitem()[1]
@@ -116,7 +116,11 @@ class Runner(object):
         return result
 
     @staticmethod
-    def create_test_task(devices, command, parameter=[], render_data={}):
+    def create_test_task(devices, command, parameter=None, render_data=None):
+        if parameter is None:
+            parameter = []
+        if render_data is None:
+            render_data = {}
         devices = Template(devices).render(render_data)
         command = Template(command).render(render_data)
         parameter = list(map(lambda x: Template(x).render(render_data), parameter))
@@ -181,6 +185,10 @@ class Runner(object):
                 self.application_logger.info('Start test ' + test.name)
                 futures.append(executor.submit(self._start_test_async, test))
             for x in concurrent.futures.as_completed(futures):
+                if not x.result():
+                    self.application_logger.error('Error starting async test')
+                    executor.shutdown(wait=False)
+                    exit(1)
                 started_counter += 1
                 self.application_logger.info('Started test %s of %s', started_counter,
                                              len(self.test_suite.test_cases_async))

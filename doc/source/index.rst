@@ -54,11 +54,30 @@ Network Engineers write the test in a easy readable YAML file. For example to te
  - name: example_arp
    command: arp
    devices: cisco.csr.1000v
-   parameter: [192.168.16.128]
+   parameter: ['192.168.16.128']
    operator: '='
    expected: '00:0C:29:EA:D1:68'
 
-You can validate the test file first or just the tests and wait for the result.
+Or you can use a raspberry pi with sub interfaces to test https from a specific segment:
+
+.. code:: yaml
+
+ - name: http_access_vlan_10
+   command: webresponse
+   devices: raspberry01
+   parameter: ['https://github.com']
+   operator: '='
+   expected: True
+   setup:
+     - command: cmd.run
+       parameter: ['ip route add 10.10.0.0/16 via 192.168.50.1 dev eth0.10']
+       devices: raspberry01
+   teardown:
+     - command: cmd.run
+       parameter: ['ip route del 10.10.0.0/16 via 192.168.50.1 dev eth0.10']
+       devices: raspberry01
+
+You can validate the test file first or just start the tests and wait for the result.
 
 .. code:: bash
 

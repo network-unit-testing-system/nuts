@@ -1,0 +1,6 @@
+- name: dns_check_github
+  command: dnscheck
+  devices: srvlnx0001
+  parameter: [github.com]
+  operator: '='
+  expected: True

@@ -1,0 +1,6 @@
+- name: open_ports_srvlnx0099
+  command: portresponse
+  devices: srvlnx0001
+  parameter: ['10.10.10.1', 'U:53,111,137,T:22-25,53,80,443,139,8080']
+  operator: '='
+  expected: ['22/tcp', '80/tcp']

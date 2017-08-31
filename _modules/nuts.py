@@ -191,7 +191,7 @@ def bandwidth(dest):
 
 def dnscheck(param):
     '''
-    Retruns if a domain is resolvable on the minion
+    Returns true if a domain is resolvable on the minion
     command `nslookup` is needed
 
     RedHat/Centos: sudo yum install bind-utils
@@ -228,8 +228,6 @@ def dhcpcheck(dest):
     '''
     Pings the dhcp server and return True when a server response is recieved
     command `dhcping` is needed
-
-    RedHat/Centos: sudo yum install bind-utils
 
     CLI Example:
 
@@ -343,7 +341,13 @@ def checkuser():
 
     .. code-block:: python
 
-        ????????????????????????????????????????????????
+        {
+            "result": [
+                "user01",
+                "user02"
+            ],
+            "resulttype": "multiple"
+        }
 
     :return:
     '''

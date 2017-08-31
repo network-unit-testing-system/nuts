@@ -34,7 +34,7 @@ Index <https://pypi.python.org/pypi/nuts/>`__.
 
 Manual Installation
 -------------------
-TODO UPDATE
+.. TODO UPDATE
 
 .. code-block:: bash
 
@@ -65,6 +65,7 @@ Configuration
 -------------
 You can use a YAML formatted configuration file and/or set environment variables
 Configuration options:
+
 - NUTS_SALT_REST_API_URL
 - NUTS_SALT_REST_API_USERNAME
 - NUTS_SALT_REST_API_PASSWORD

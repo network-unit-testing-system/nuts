@@ -1,0 +1,12 @@
+- name: example_interfacestatus
+  command: interfacestatus
+  devices: cisco.csr.1000v
+  parameter: [GigabitEthernet1]
+  operator: '='
+  expected: True
+- name: example_interfacespeed
+  command: interfacespeed
+  devices: cisco.csr.1000v
+  parameter: [GigabitEthernet1]
+  operator: '='
+  expected: 1000

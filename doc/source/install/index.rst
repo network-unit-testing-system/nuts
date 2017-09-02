@@ -1,8 +1,8 @@
 Installation
 ============
 
-Nuts is a python tool and the installation is pretty easy. For the communication with the Salt master the API is used. So there is no need for root permissions on the system.
-In the sub pages you will find additional help to the integration
+Nuts is a python tool and the installation is pretty easy. For the communication with the Salt master the API is used.
+So there is no need for root permissions on the system. In the sub pages you will find additional help to the integration
 
 .. toctree::
    :maxdepth: 1
@@ -45,6 +45,17 @@ Manual Installation
 
     $ sudo python setup.py install
 
+Custom SaltStack Execution Module
+---------------------------------
+
+Nuts uses a custom salt execution module to get the test. It's is located in the folder ``_modules``.
+If the ``file_roots`` is not changed, copy the file to ``/srv/salt/_modules`` on your salt master and sync the modules.
+More details and links are in the :doc:`SaltStack Setup<salt_setup>` section.
+
+.. code-block:: bash
+
+    cp _modules/nuts.py /srv/salt/_modules/
+    salt \* saltutil.sync_modules
 
 Usage
 -----

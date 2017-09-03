@@ -1,14 +1,14 @@
 SaltStack API
 =============
 
-To use nuts you also need salt-api which enables nuts to connect to the salt master over HTTP / HTTPS.
+To use nuts you also need the salt-api which enables nuts to connect to the salt master over HTTP / HTTPS.
 For the installation guide visit `cherrypy documentation <https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html>`_.
 
 
 External Auth
 -------------
 
-Nuts needs the access to runner modules and the normal execution modules. `Documentation <https://docs.saltstack.com/en/latest/topics/eauth/index.html>`_
+Nuts needs the access to *runner modules* and the normal *execution modules*. `Documentation <https://docs.saltstack.com/en/latest/topics/eauth/index.html>`_
 
 .. code-block:: yaml
 

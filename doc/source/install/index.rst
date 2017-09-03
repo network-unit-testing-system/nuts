@@ -48,7 +48,7 @@ Manual Installation
 Custom SaltStack Execution Module
 ---------------------------------
 
-Nuts uses a custom salt execution module to get the test. It's is located in the folder ``_modules``.
+Nuts uses a custom salt execution module to get the test data. It's is located in the folder ``_modules``.
 If the ``file_roots`` is not changed, copy the file to ``/srv/salt/_modules`` on your salt master and sync the modules.
 More details and links are in the :doc:`SaltStack Setup<salt_setup>` section.
 

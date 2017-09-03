@@ -18,11 +18,12 @@ An example could be:
 Device targeting
 ----------------
 
-Please note that the devices attribute gets directly passed to the salt master which determines the targeted minions with so called globbing.
-For more information what's globbing head to `saltstack globbing <https://docs.saltstack.com/en/latest/topics/targeting/globbing.html#globbing>`_.
+Please note that the devices attribute gets directly passed to the salt master which determines the targeted minions
+with so called globbing.
+For more information about globbing head to `saltstack globbing <https://docs.saltstack.com/en/latest/topics/targeting/globbing.html#globbing>`_.
 If multiple minions are targeted each of them has to satisfy the expected value for the test to pass.
 
-So you can run a test on all test nodes with one statement
+So, you can run a test on all test nodes with one statement
 
 .. code:: yaml
 
@@ -59,6 +60,7 @@ The following commands are currently available for debian/redhat systems:
 - **dhcpcheck**
 - **webresponse**
 - **portresponse**
+- **bandwidth**
 
 Supported operators
 ~~~~~~~~~~~~~~~~~~~
@@ -75,7 +77,7 @@ Synchronous or asynchronous
 
 Nuts starts first all asynchronous test and after finishing, the synchronous task are started sequentially.
 Per default all test without any setup or teardown task are asynchronous and the test with a setup or teardown task are synchronous.
-You can override the default with the keyword `async` in the test definition.
+You can override the default behavior with the keyword `async` in the test definition.
 
 .. code:: yaml
 
@@ -86,13 +88,13 @@ You can override the default with the keyword `async` in the test definition.
 Setup & Teardown
 ----------------
 
-To prepare and clean up the test, Nuts have the setup and teardown capabilities. It works quit similar to the python
+To prepare and clean up a test, Nuts have the setup and teardown capabilities. It works quit similar to the python
 unit testing functions. As an additional feature, It is possible to save the return value to use it on a later command.
 Saved data are only in the same test scope available.
 
-In the following example, the command in the setup section returns a list of ip addresses. This list is saved with the
-variable name `ip`. On the parameter list we use jinja2 syntax to get the first ip address. The test is passed when
-`srvlnx0001` can ping the first ip address of `srvlnx0099`.
+In the following example, the command in the setup section returns a list of ip addresses. This list is saved as the
+variable name ``ip``. On the parameter list we use jinja2 syntax to get the first ip address. The test is passed when
+``srvlnx0001`` can ping the first ip address of ``srvlnx0099``.
 
 .. code:: yaml
 
@@ -107,10 +109,11 @@ variable name `ip`. On the parameter list we use jinja2 syntax to get the first 
      devices: srvlnx0099
      save: ip
 
-When using globbing and multiple minions are responding to as saved marked command, a dictionary with the minion name as key will be created.
+When using globbing and multiple minions are responding to a as saved marked command, a dictionary with the minion name
+as key will be created.
 
 As commands you can use all the SaltStack `Execution Modules <https://docs.saltstack.com/en/latest/ref/modules/all/index.html>`_
-the installed Salt environment is supporting.
+the installed Salt environment is supporting. Has the command no pint ``.``, ``nuts.`` is prepended automatically.
 
 
 Command details

@@ -1,0 +1,6 @@
+- name: https_google
+  command: webresponse
+  devices: srvlnx0001
+  parameter: ['http://google.com']
+  operator: '='
+  expected: True

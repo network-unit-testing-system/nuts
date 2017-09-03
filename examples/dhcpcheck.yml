@@ -1,0 +1,6 @@
+- name: dhcp_test
+  command: dhcpcheck
+  devices: srvlnx0014
+  parameter: ['10.10.10.11']
+  operator: '='
+  expected: True

@@ -3,7 +3,7 @@ bandwidth
 
 Starts a iperf3 test to the destination and returns bits per second
 
-.. literalinclude:: ../../../examples/connectivity.yml
+.. literalinclude:: ../../../examples/bandwidth.yml
 
 
 Parameter

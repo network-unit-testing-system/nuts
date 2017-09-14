@@ -1,7 +1,7 @@
 interfacestatus
 ---------------
 
-Check the interface status on a network device
+Check whether an interface is up.
 
 .. literalinclude:: ../../../examples/interfacestatus.yml
 
@@ -14,7 +14,7 @@ Interface: Interface name. Example `GigabitEthernet1`
 Return
 ~~~~~~
 
-Return true if the interface is up
+``true`` if the interface is up, ``false`` otherwise.
 
 .. code:: json
 

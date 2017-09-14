@@ -16,7 +16,7 @@ Ports: Number or ranges. Use `U:53` for a udp port and `T:22` for tcp port. Exam
 Return
 ~~~~~~
 
-Return all open ports on the destination host
+A list of all open ports.
 
 .. code:: json
 
@@ -32,7 +32,7 @@ Supported platforms
 ~~~~~~~~~~~~~~~~~~~
 
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

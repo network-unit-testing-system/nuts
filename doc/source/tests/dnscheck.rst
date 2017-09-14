@@ -9,14 +9,12 @@ Checks if a domain is resolvable
 Parameter
 ~~~~~~~~~
 
-Domain to resolve: Domain name
+Domain name: Domain to resolve
 
 Return
 ~~~~~~
 
-True or False
-
-Return True if the domain is resolvable
+``true`` if the domain is resolveable, ``false`` otherwise.
 
 .. code:: json
 
@@ -29,7 +27,7 @@ Supported platforms
 ~~~~~~~~~~~~~~~~~~~
 
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

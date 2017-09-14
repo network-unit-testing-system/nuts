@@ -2,7 +2,7 @@ Installation
 ============
 
 Nuts is a python tool and the installation is pretty easy. For the communication with the Salt master the API is used.
-So there is no need for root permissions on the system. In the sub pages you will find additional help to the integration
+There is no need for root permissions on the system. In the sub pages you will find additional help with configuration and integration.
 
 .. toctree::
    :maxdepth: 1
@@ -14,7 +14,7 @@ So there is no need for root permissions on the system. In the sub pages you wil
 Python version
 --------------
 
-The following Python versions are fully supported:
+The following Python versions are supported:
 
 - Python 2.7
 - Python 3.6
@@ -48,9 +48,9 @@ Manual Installation
 Custom SaltStack Execution Module
 ---------------------------------
 
-Nuts uses a custom salt execution module to get the test data. It's is located in the folder ``_modules``.
-If the ``file_roots`` is not changed, copy the file to ``/srv/salt/_modules`` on your salt master and sync the modules.
-More details and links are in the :doc:`SaltStack Setup<salt_setup>` section.
+Nuts uses a custom salt execution module to fetch the test data. It's is located in the folder ``_modules``.
+If ``file_roots`` is not changed, copy the file to ``/srv/salt/_modules`` on your salt master and sync the modules.
+For more informations see the :doc:`SaltStack Setup<salt_setup>` section.
 
 .. code-block:: bash
 
@@ -77,18 +77,18 @@ Configuration
 You can use a YAML formatted configuration file and/or set environment variables
 Configuration options:
 
-- NUTS_SALT_REST_API_URL
-- NUTS_SALT_REST_API_USERNAME
-- NUTS_SALT_REST_API_PASSWORD
-- NUTS_SALT_REST_API_EAUTN
-- NUTS_MAX_RETRIES
-- NUTS_WAIT_ITERATIONS
-- NUTS_LOG_FILE_LEVEL
-- NUTS_LOG_CONSOLE_LEVEL
-- NUTS_LOG_FOLDER
+- ``NUTS_SALT_REST_API_URL``
+- ``NUTS_SALT_REST_API_USERNAME``
+- ``NUTS_SALT_REST_API_PASSWORD``
+- ``NUTS_SALT_REST_API_EAUTN``
+- ``NUTS_MAX_RETRIES``
+- ``NUTS_WAIT_ITERATIONS``
+- ``NUTS_LOG_FILE_LEVEL``
+- ``NUTS_LOG_CONSOLE_LEVEL``
+- ``NUTS_LOG_FOLDER``
 
 
-config.yml example:
+``config.yml`` example:
 
 .. code:: yaml
 

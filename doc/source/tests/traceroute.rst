@@ -14,7 +14,7 @@ Destination: Domain name or ip address
 Return
 ~~~~~~
 
-Return all responding hosts
+All responding hosts.
 
 .. code:: json
 
@@ -31,7 +31,7 @@ Supported platforms
 
 - Network devices with NAPALM
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

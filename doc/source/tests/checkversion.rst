@@ -1,7 +1,7 @@
 checkversion
 ------------
 
-Return the OS version of the network device
+Returns the OS version of the network device
 
 .. literalinclude:: ../../../examples/version.yml
 
@@ -14,7 +14,7 @@ None
 Return
 ~~~~~~
 
-Return the OS version string
+The OS version string
 
 .. code:: json
 

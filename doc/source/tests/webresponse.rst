@@ -1,7 +1,7 @@
 webresponse
 -----------
 
-Checks the response code of a webserver
+Checks the HTTP status code of a webserver
 
 .. literalinclude:: ../../../examples/webresponse.yml
 
@@ -9,14 +9,14 @@ Checks the response code of a webserver
 Parameter
 ~~~~~~~~~
 
-DHCP Server: IP address
+.. TODO: Eher "URL"?
+
+Web Server: IP address
 
 Return
 ~~~~~~
 
-True or False
-
-Return True if the http response code is in the 200 or 300 range
+``true`` if the HTTP status code is in the ``2xx`` or ``3xx`` range, ``false`` otherwise.
 
 .. code:: json
 
@@ -29,7 +29,7 @@ Supported platforms
 ~~~~~~~~~~~~~~~~~~~
 
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

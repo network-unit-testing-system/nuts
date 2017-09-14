@@ -9,12 +9,12 @@ Checks the ARP entry for a given ip address
 Parameter
 ~~~~~~~~~
 
-Address: IP address for the arp lookup
+Address: IP address for the ARP lookup
 
 Return
 ~~~~~~
 
-Return the mac address stored in the arp table
+The MAC address stored in the ARP table.
 
 .. code:: json
 

@@ -189,39 +189,45 @@ def bandwidth(dest):
         return _returnSingle(bps)
 
 
-def dnscheck(param):
+def dnscheck(host, query_type='A', nameserver=None):
     '''
-    Returns true if a domain is resolvable on the minion
-    command `nslookup` is needed
+    Return the list of responses.
+    command `dig` is needed
 
     RedHat/Centos: sudo yum install bind-utils
+    Debian/Ubuntu: sudo apt-get install dnsutils
 
     CLI Example:
 
     .. code-block:: bash
 
-        salt "*" nuts.dnscheck google.ch
+        salt "*" nuts.dnscheck github.com
+        salt "*" nuts.dnscheck github.com AAAA
+        salt "*" nuts.dnscheck github.com A 8.8.8.8
 
     Example output:
 
     .. code-block:: python
 
         {
-            "result": true,
-            "resulttype": "single"
+            "resulttype": "multiple",
+            "result": [
+                "192.30.253.113",
+                "192.30.253.112"
+            ]
         }
 
-    :param param:
+    :param host:
+    :param query_type:
+    :param nameserver:
     :return:
     '''
 
     os_family = __grains__['os_family']  # pylint: disable=undefined-variable
     if os_family in ['Debian', 'RedHat']:
-        result = __salt__['cmd.run']('nslookup {}'.format(param))  # pylint: disable=undefined-variable
-        text = bytes(result).decode(encoding='utf-8', errors='ignore')
-        pattern = '(Name:[\s]*[a-z0-9.]*)'
-        regex = re.compile(pattern)
-        return _returnSingle(bool(re.search(regex, text)))
+        cmd = 'dig.{}'.format(query_type.upper())
+        result = __salt__[cmd](host, nameserver=nameserver)  # pylint: disable=undefined-variable
+        return _returnMultiple(result)
 
 
 def dhcpcheck(dest):

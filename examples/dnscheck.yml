@@ -1,6 +1,20 @@
 - name: dns_check_github
   command: dnscheck
   devices: srvlnx0001
-  parameter: [github.com]
+  parameter: ['github.com']
   operator: '='
-  expected: True
+  expected: ['192.30.253.113', '192.30.253.112']
+
+- name: dns_check_google_AAAA
+  command: dnscheck
+  devices: srvlnx0001
+  parameter: ['google.com', 'AAAA']
+  operator: '='
+  expected: ['2a00:1450:400a:806::200e']
+
+- name: dns_check_ins_8888
+  command: dnscheck
+  devices: srvlnx0001
+  parameter: ['ins.hsr.ch', 'A', '8.8.8.8']
+  operator: '='
+  expected: ['152.96.36.50']

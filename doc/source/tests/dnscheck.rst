@@ -14,13 +14,17 @@ Domain name: Domain to resolve
 Return
 ~~~~~~
 
-``true`` if the domain is resolveable, ``false`` otherwise.
+Return the list of responses. Supported query types are ``A``, ``AAAA``, ``MX``, ``NS``, ``SPF`` and ``TXT``.
+As third option the domain server can be specified.
 
 .. code:: json
 
  {
-     "result": true,
-     "resulttype": "single"
+     "resulttype": "multiple",
+     "result": [
+         "192.30.253.113",
+         "192.30.253.112"
+     ]
  }
 
 Supported platforms

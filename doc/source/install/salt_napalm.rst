@@ -3,12 +3,12 @@ NAPALM and Salt
 
 To create a connection from the salt master to your network device of choice there's a fantastic library called NAPALM
 which has an integration into SaltStack.
-For the installation guide head to `napalm-salt repository <https://github.com/napalm-automation/napalm-salt/>`_.
+For the installation guide head over to the `napalm-salt repository <https://github.com/napalm-automation/napalm-salt/>`_.
 
-A NAPALM minion-proxy is like a normal minion connected to the salt master. Every network vendor has it's on interface or
+A NAPALM minion-proxy is like a regular minion connected to the salt master. Every network vendor has it's on interface or
 cli syntax. Even platforms from the same vendor can have different implementations. This makes life much harder for
-a network automation engineer. On this point NAPALM comes in. NAPALM abstract the different interfaces and enables
-the communication with the same interface. With NAPALM proxies it's possible to interact with network devices like Linux boxes.
+a network automation engineer. This is where NAPALM comes in. NAPALM abstracts the different interfaces and enables
+communication with a common interface. With NAPALM proxies it's possible to interact with network devices as if they were Linux boxes.
 
 .. code-block:: bash
 

@@ -1,7 +1,7 @@
 connectivity
 ------------
 
-Return result of the connectivity test.
+Performs a connectivity test.
 
 .. literalinclude:: ../../../examples/connectivity.yml
 
@@ -14,9 +14,7 @@ Destination: Domain name or ip address
 Return
 ~~~~~~
 
-True or False
-
-Return True if the destination is reachable.
+``true`` if the destination is reachable, ``false`` otherwise.
 
 .. code:: json
 
@@ -30,7 +28,7 @@ Supported platforms
 
 - Network devices with NAPALM
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

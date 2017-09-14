@@ -1,7 +1,7 @@
 bandwidth
 ---------
 
-Starts a iperf3 test to the destination and returns bits per second
+Starts an ``iperf3`` test to the destination and returns the bandwith in bit/second.
 
 .. literalinclude:: ../../../examples/bandwidth.yml
 
@@ -27,7 +27,7 @@ Supported platforms
 ~~~~~~~~~~~~~~~~~~~
 
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

@@ -1,7 +1,7 @@
 dhcpcheck
 ---------
 
-Checks if the dhcp server is responding
+Checks if a DHCP server is responding
 
 .. literalinclude:: ../../../examples/dhcpcheck.yml
 
@@ -14,9 +14,7 @@ DHCP Server: IP address
 Return
 ~~~~~~
 
-True or False
-
-Return True if the dhcp server is response
+``true`` if the DHCP server is responding, ``false`` otherwise.
 
 .. code:: json
 
@@ -29,7 +27,7 @@ Supported platforms
 ~~~~~~~~~~~~~~~~~~~
 
 - Debian family
-- RadHat family
+- RedHat family
 
 Requirements
 ~~~~~~~~~~~~

@@ -14,7 +14,7 @@ Interface: Interface name. Example `GigabitEthernet1`
 Return
 ~~~~~~
 
-Return the operational interface speed
+The operational interface speed in Mbit/s
 
 .. code:: json
 

@@ -11,7 +11,7 @@ reqs = [str(ir.req) for ir in requirements]
 readme = open('README.rst').read()
 
 setup(name='nuts',
-      version='1.1.1',
+      version='1.2',
       description='A Network Unit Test System',
       author='Andreas Stalder, David Meister, Matthias Gabriel, Urs Baumann',
       author_email='astalder@hsr.ch, dmeister@hsr.ch, mgabriel@hsr.ch, ubaumann@ins.hsr.ch',

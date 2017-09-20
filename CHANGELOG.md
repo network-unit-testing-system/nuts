@@ -1,4 +1,4 @@
-## [Unreleased]
+## [1.2] = 2017-09-20
 ### Added
 - Changelog
 - Async switch in test schema

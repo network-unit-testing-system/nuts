@@ -9,9 +9,7 @@ Checks the HTTP status code of a webserver
 Parameter
 ~~~~~~~~~
 
-.. TODO: Eher "URL"?
-
-Web Server: IP address
+Web Server: IP address or url
 
 Return
 ~~~~~~

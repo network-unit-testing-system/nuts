@@ -22,16 +22,20 @@ Nuts - Network Unit Testing System
     :alt: PyPi Licence
     :target: https://pypi.python.org/pypi/nuts
 
-Nuts is a network unit testing system, that automates tests in the network similar to unit tests you might know from programming.
-The project uses saltstack and napalm for the communication with the network devices.
-This project is currently under construction and we can't guarantee you that this code works.
-If you have any question please reach out to https://github.com/HSRNetwork/Nuts or join https://networktocode.slack.com/
+Nuts is a network unit testing system that automates tests in the network similar to unit tests you might know from programming.
+The project uses SaltStack and napalm to communicate with network devices. Regular Salt minions are used for Linux devices.
+This project is currently under heavy construction and we can't guarantee you that this code works. But we do our best.
+If you have any questions, feature request or use cases please reach out to us at https://github.com/HSRNetwork/Nuts or https://networktocode.slack.com/
+
+**Documentation:** http://nuts.readthedocs.io/
+
+**Vagrant Project:** https://github.com/HSRNetwork/vagrant-nuts
 
 --------------------
 Installation of nuts
 --------------------
 
-The following Python versions are fully supported:
+The following Python versions are supported:
 
 - Python 2.7
 - Python 3.6
@@ -41,19 +45,11 @@ Pre-requirements
 ----------------
 - Salt master
 	Because nuts is fully based on saltstack you have to install and configure a salt master first.
-	For the full installation guide please visit the `installation guide <https://docs.saltstack.com/en/latest/topics/installation/>`_.
+	For the full installation guide head over to the `installation guide <https://docs.saltstack.com/en/latest/topics/installation/>`_.
 - Salt api
 	To use nuts you also need salt-api which enables nuts to connect to the salt master over Http. For the installation guide visit `cherrypy documentation <https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html>`_.
 - Napalm salt
 	To create a connection from the salt master to your network device of choice there's a fantastic library called NAPALM which got an integration into saltstack. For the installation guide head to `napalm-salt repository <https://github.com/napalm-automation/napalm-salt/>`_.
-
-Install on arch linux
----------------------
-TODO
-
-Install on ubuntu
------------------
-TODO
 
 Install with pip
 ----------------
@@ -69,7 +65,6 @@ Index <https://pypi.python.org/pypi/nuts/>`__.
 
 Manual Installation
 -------------------
-TODO UPDATE
 
 Get code::
 

@@ -1,3 +1,7 @@
+## [1.2.1] - 2017-09-21
+### Fixed
+- Rename testSchema.yaml to test_schema.py
+
 ## [1.2] = 2017-09-20
 ### Added
 - Changelog

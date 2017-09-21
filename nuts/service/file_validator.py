@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 
 import logging
 
-import os
 from pykwalify.core import Core, SchemaError
+
+from nuts.service.test_schema import TEST_SCHEMA
 
 
 class FileValidator(object):
@@ -14,10 +15,8 @@ class FileValidator(object):
         self.validation_logger = logging.getLogger('nuts-validation')
 
     def validate(self):
-        cur_dir = os.path.dirname(__file__)
-        test_file = os.path.join(cur_dir, 'testSchema.yaml')
         try:
-            c = Core(source_file=self.test_file, schema_files=[test_file])
+            c = Core(source_file=self.test_file, schema_data=TEST_SCHEMA)
             c.validate(raise_exception=True)
             return True
         except SchemaError as e:

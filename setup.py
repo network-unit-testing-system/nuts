@@ -11,13 +11,12 @@ reqs = [str(ir.req) for ir in requirements]
 readme = open('README.rst').read()
 
 setup(name='nuts',
-      version='1.2',
+      version='1.2.1',
       description='A Network Unit Test System',
       author='Andreas Stalder, David Meister, Matthias Gabriel, Urs Baumann',
       author_email='astalder@hsr.ch, dmeister@hsr.ch, mgabriel@hsr.ch, ubaumann@ins.hsr.ch',
       url='https://github.com/HSRNetwork/Nuts',
       packages=find_packages(),
-      data_files=[('nuts/service', ['nuts/service/testSchema.yaml'])],
       zip_safe=False,
       include_package_data=True,
       license='MIT',

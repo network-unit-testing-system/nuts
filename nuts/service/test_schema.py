@@ -1,3 +1,9 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
+import yaml
+
+SCHEMA = '''
 type: seq
 sequence:
   - type: map
@@ -43,3 +49,6 @@ sequence:
               type: str
               required: no
       teardown: *commands
+'''
+
+TEST_SCHEMA = yaml.safe_load(SCHEMA)

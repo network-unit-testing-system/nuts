@@ -15,3 +15,8 @@ def nuts_arguments():
 @pytest.fixture(scope="class")
 def hosts(hosts_interface_list):
     return {entry["source"] for entry in hosts_interface_list}
+
+
+@pytest.fixture(scope="class")
+def transformed_result(general_result):
+    return {key: value[0].result for key, value in general_result.items()}

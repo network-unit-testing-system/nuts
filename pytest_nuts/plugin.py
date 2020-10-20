@@ -4,7 +4,7 @@ from nornir import InitNornir
 
 @pytest.fixture(scope="session")
 def nornir_config_file():
-    return "nornir/nr-config.yaml"
+    return "nr-config.yaml"
 
 
 @pytest.fixture(scope="class")

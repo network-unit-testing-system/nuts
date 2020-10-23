@@ -1,10 +1,8 @@
-from pydoc import locate
 import py
+from pydoc import locate
 from typing import Iterable, Union
+
 import pytest
-
-import yaml
-
 from _pytest import nodes, fixtures
 from _pytest.python import Instance
 
@@ -130,7 +128,6 @@ class NutsTestClass(pytest.Class):
         self.obj.nuts_parameters = nuts_parameters
         self.obj.nuts_parameters_x = nuts_parameters_x
         return [(Instance.from_parent(self, name="()"))]
-
 
 
 def dict_to_tuple_list(source, fields):

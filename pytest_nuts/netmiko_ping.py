@@ -30,7 +30,7 @@ def parse_ping_results(raw_result):
     return parsed_results
 
 
-def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor:int=5) -> MultiResult:
+def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor=5) -> MultiResult:
     print(f"starting netmiko_ping_multi_host on {task.host.name}")
     destinations = destinations_per_host(task.host.name)
     print(f'{task.host.name}: {destinations}')
@@ -47,8 +47,8 @@ def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor:int=
     return results
 
 
-def destinations_per_host(destination_list):
-    return lambda host_name: [entry["destination"] for entry in destination_list if entry["source"] == host_name]
+def destinations_per_host(test_topology_data):
+    return lambda host_name: [entry["destination"] for entry in test_topology_data if entry["source"] == host_name]
 
 
 @pytest.fixture(scope="class")
@@ -57,13 +57,13 @@ def nuts_task():
 
 
 @pytest.fixture(scope="class")
-def nuts_arguments(destination_list):
-    return {"destinations_per_host": destinations_per_host(destination_list)}
+def nuts_arguments(test_topology_data):
+    return {"destinations_per_host": destinations_per_host(test_topology_data)}
 
 
 @pytest.fixture(scope="class")
-def hosts(destination_list):
-    return {entry["source"] for entry in destination_list}
+def hosts(test_topology_data):
+    return {entry["source"] for entry in test_topology_data}
 
 
 @pytest.fixture(scope="class")

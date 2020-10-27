@@ -24,9 +24,16 @@ class NutsYamlFile(pytest.File):
             class_name = test_entry["test_class"]
             label = test_entry.get("label")
             name = class_name if label is None else f'{class_name} - {label}'
-            arguments = test_entry["arguments"]
-            yield NutsTestClass.from_parent(parent, name=name, class_name=class_name, arguments=arguments)
-            # yield YamlItem.from_parent(self, test_class=test_entry["test_class"],  arguments=test_entry["arguments"])
+            test_topology_data = test_entry['data']
+            test_execution = test_entry["test_execution"]  # optional
+            test_evaluation_fields = test_entry["test_evaluation"]
+            # TODO: default behaviour OR behaviour that can be overwritten if needed
+            yield NutsTestClass.from_parent(parent,
+                                            name=name,
+                                            class_name=class_name,
+                                            test_topology_data=test_topology_data,
+                                            test_execution=test_execution)
+            # yield YamlItem.from_parent(self, test_class=test_entry["test_class"],  arguments=test_entry["data"])
 
 
 def load_test(class_path):
@@ -41,7 +48,7 @@ class NutsTestFile(pytest.File):
 
 
 class NutsTestClass(pytest.Class):
-    def __init__(self, parent, name: str, class_name: str, obj, **kw):
+    def __init__(self, parent, name: str, class_name: str, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name
@@ -65,15 +72,15 @@ class NutsTestClass(pytest.Class):
         Similar to Class::collect
         Note that this prevents setup_class and setup_method fixtures to kick in"""
 
-        @fixtures.fixture(scope="class")
+        @fixtures.fixture(scope="class")  # exposed as fixture for Tests
         def nuts_parameters(cls):
             return self.params
 
-        def nuts_parameters_x():
+        def data_for_test_evaluation():
             return self.params
 
-        self.obj.nuts_parameters = nuts_parameters
-        self.obj.nuts_parameters_x = nuts_parameters_x
+        self.obj.nuts_parameters = nuts_parameters  # param used above as fixture for Tests
+        self.obj.data_for_test_evaluation = data_for_test_evaluation # Param used to generate tests
         return [(Instance.from_parent(self, name="()"))]
 
 

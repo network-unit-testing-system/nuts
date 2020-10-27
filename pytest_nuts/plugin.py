@@ -44,8 +44,8 @@ def pytest_generate_tests(metafunc):
         nuts_params = nuts[0]  # nuts_params = ("input,expected", "placeholder")
         assert nuts_params[1] == 'placeholder'
         fields = nuts_params[0].split(",")
-        # actual_data = fetch_data_from_yaml_definition()
-        actual_data = dict_to_tuple_list(metafunc.cls.nuts_parameters_x()['arguments'], fields)
+        # TODO parse nuts_parameters for test evaluation
+        actual_data = dict_to_tuple_list(metafunc.cls.data_for_test_evaluation()['test_topology_data'], fields)  # cls = Class object where the test function is defined
         metafunc.parametrize(nuts_params[0], actual_data)
 
 

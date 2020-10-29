@@ -1,10 +1,11 @@
-import py
 from pydoc import locate
 from typing import Iterable, Union
 
+import py
 import pytest
 from _pytest import nodes, fixtures
-from _pytest.python import Instance
+
+from pytest_nuts.index import find_test_module_of_class
 
 
 class NutsYamlFile(pytest.File):
@@ -19,23 +20,24 @@ class NutsYamlFile(pytest.File):
         raw = yaml.safe_load(self.fspath.open())
 
         for test_entry in raw:
-            module = load_test(test_entry["test_module"])
+            module = load_module(test_entry.get("test_module"), test_entry.get("test_class"))
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
             # yield YamlItem.from_parent(self, test_class=test_entry["test_class"],  arguments=test_entry["arguments"])
 
 
-def load_test(class_path):
-    test_class = locate(class_path)
-    return test_class
+def load_module(module_path, class_name):
+    if not module_path:
+        module_path = find_test_module_of_class(class_name)
+    return locate(module_path)
 
 
 class NutsTestFile(pytest.Module):
     def __init__(self, fspath, parent, obj, test_entry):
         super().__init__(fspath, parent)
         self.obj = obj
-        self.test_entry=test_entry
-    
+        self.test_entry = test_entry
+
     def collect(self) -> Iterable[Union["Item", "Collector"]]:
         """
         Collects a single NutsTestClass instance from this NutsTestFile.
@@ -49,12 +51,12 @@ class NutsTestFile(pytest.Module):
         class_name = self.test_entry["test_class"]
         label = self.test_entry.get("label")
         name = class_name if label is None else f'{class_name} - {label}'
-        arguments = self.test_entry["arguments"]
+        arguments = self.test_entry.get("arguments", [])
         yield NutsTestClass.from_parent(self, name=name, class_name=class_name, arguments=arguments)
 
 
 class NutsTestClass(pytest.Class):
-    def __init__(self, parent, name: str, class_name: str, obj, **kw):
+    def __init__(self, parent, name: str, class_name: str, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name
@@ -89,6 +91,3 @@ class NutsTestClass(pytest.Class):
         self.obj.nuts_parameters = nuts_parameters
         self.obj.nuts_parameters_x = nuts_parameters_x
         return super(NutsTestClass, self).collect()
-
-
-

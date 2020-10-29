@@ -1,7 +1,7 @@
 from pytest_nuts.netmiko_ping import *
 
 
-class TestNornirPing:
+class TestNetmikoPing:
 
     @pytest.fixture(scope="class")
     def nuts_task(self):

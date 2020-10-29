@@ -3,7 +3,7 @@ from nornir.core.filter import F
 from nornir_netmiko import netmiko_send_command
 
 
-class TestNornirCdpNeighbors:
+class TestNetmikoCdpNeighbors:
 
     @pytest.fixture(scope="class")
     def nuts_task(self):

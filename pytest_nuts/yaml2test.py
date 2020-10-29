@@ -20,12 +20,8 @@ class NutsYamlFile(pytest.File):
 
         for test_entry in raw:
             module = load_test(test_entry["test_module"])
-            parent = NutsTestFile.from_parent(self, fspath=self.fspath, obj=module)
-            class_name = test_entry["test_class"]
-            label = test_entry.get("label")
-            name = class_name if label is None else f'{class_name} - {label}'
-            arguments = test_entry["arguments"]
-            yield NutsTestClass.from_parent(parent, name=name, class_name=class_name, arguments=arguments)
+            yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
+
             # yield YamlItem.from_parent(self, test_class=test_entry["test_class"],  arguments=test_entry["arguments"])
 
 
@@ -34,10 +30,27 @@ def load_test(class_path):
     return test_class
 
 
-class NutsTestFile(pytest.File):
-    def __init__(self, fspath, parent, obj):
+class NutsTestFile(pytest.Module):
+    def __init__(self, fspath, parent, obj, test_entry):
         super().__init__(fspath, parent)
         self.obj = obj
+        self.test_entry=test_entry
+    
+    def collect(self) -> Iterable[Union["Item", "Collector"]]:
+        """
+        Collects a single NutsTestClass instance from this NutsTestFile.
+        At the start inject setup_module fixture and parse all fixtures from the module.
+        This is directly adopted from pytest.Module
+        """
+        self._inject_setup_module_fixture()
+        self._inject_setup_function_fixture()
+        self.session._fixturemanager.parsefactories(self)
+
+        class_name = self.test_entry["test_class"]
+        label = self.test_entry.get("label")
+        name = class_name if label is None else f'{class_name} - {label}'
+        arguments = self.test_entry["arguments"]
+        yield NutsTestClass.from_parent(self, name=name, class_name=class_name, arguments=arguments)
 
 
 class NutsTestClass(pytest.Class):
@@ -48,7 +61,8 @@ class NutsTestClass(pytest.Class):
         self.class_name = class_name
 
     def _getobj(self):
-        """Get the underlying Python object. Overwritten from PyobjMixin to separate name and classname
+        """Get the underlying Python object.
+        Overwritten from PyobjMixin to separate name and classname
         This allows to group multiple tests of the same class with different parameters to be grouped separately"""
         # TODO: Improve the type of `parent` such that assert/ignore aren't needed.
         assert self.parent is not None
@@ -62,8 +76,8 @@ class NutsTestClass(pytest.Class):
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """Inject custom nuts fixture into the test classes
-        Similar to Class::collect
-        Note that this prevents setup_class and setup_method fixtures to kick in"""
+        Similar to the injection of setup_class and setup_method in pytest.Class::collect
+        """
 
         @fixtures.fixture(scope="class")
         def nuts_parameters(cls):
@@ -74,7 +88,7 @@ class NutsTestClass(pytest.Class):
 
         self.obj.nuts_parameters = nuts_parameters
         self.obj.nuts_parameters_x = nuts_parameters_x
-        return [(Instance.from_parent(self, name="()"))]
+        return super(NutsTestClass, self).collect()
 
 
 

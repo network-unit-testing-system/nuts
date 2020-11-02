@@ -1,5 +1,5 @@
 from pydoc import locate
-from typing import Iterable, Union
+from typing import Iterable, Union, Any
 
 import py
 import pytest
@@ -56,7 +56,7 @@ class NutsTestFile(pytest.Module):
 
 
 class NutsTestClass(pytest.Class):
-    def __init__(self, parent, name: str, class_name: str, **kw):
+    def __init__(self, parent, name: str, class_name: str, obj: Any, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name

@@ -1,2 +1,5 @@
 .idea/
+
 venv/
+pytest_nuts.egg-info/
+__pycache__

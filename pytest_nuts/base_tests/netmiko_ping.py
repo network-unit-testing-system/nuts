@@ -9,8 +9,10 @@ class TestNetmikoPing:
 
     @pytest.fixture(scope="class")
     def nuts_arguments(self, test_execution_params):
+        # data = nuts_parameters['data']
+        # TODO
         return {"destinations_per_host": destinations_per_host(test_execution_params),
-                "delay_factor": test_execution_params}
+                "delay_factor": 5}
 
     @pytest.fixture(scope="class")
     def hosts(self, test_execution_params):
@@ -23,7 +25,7 @@ class TestNetmikoPing:
 
     @pytest.fixture(scope="class")
     def test_execution_params(self, nuts_parameters):
-        return nuts_parameters['data']
+        return nuts_parameters['test_data']
 
     @pytest.mark.nuts("source,destination,expected", "placeholder")
     def test_ping(self, transformed_result, source, destination, expected):

@@ -32,7 +32,7 @@ class TestNetmikoCdpNeighbors:
                 transformed_result.items()}
 
     @pytest.fixture
-    def destination_list(self, nuts_parameters):
+    def destination_list(self, nuts_parameters):  # fixture with yaml-info
         return nuts_parameters
 
     @pytest.mark.nuts("source,local_port,destination_host,management_ip,remote_port", "placeholder")

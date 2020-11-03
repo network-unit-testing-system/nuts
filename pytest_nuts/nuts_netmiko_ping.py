@@ -47,8 +47,8 @@ def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor=5) -
     return results
 
 
-def destinations_per_host(test_topology_data):
-    return lambda host_name: [entry["destination"] for entry in test_topology_data if entry["source"] == host_name]
+def destinations_per_host(test_data):
+    return lambda host_name: [entry["destination"] for entry in test_data if entry["source"] == host_name]
 
 #
 # @pytest.fixture(scope="class")

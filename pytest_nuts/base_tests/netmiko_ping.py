@@ -1,4 +1,4 @@
-from pytest_nuts.netmiko_ping import *
+from pytest_nuts.nuts_netmiko_ping import *
 
 
 class TestNetmikoPing:
@@ -8,13 +8,13 @@ class TestNetmikoPing:
         return netmiko_ping_multi_host
 
     @pytest.fixture(scope="class")
-    def nuts_arguments(self, destination_list):
-        return {"destinations_per_host": destinations_per_host(destination_list),
-                "delay_factor": 2}
+    def nuts_arguments(self, test_execution_params):
+        return {"destinations_per_host": destinations_per_host(test_execution_params),
+                "delay_factor": test_execution_params}
 
     @pytest.fixture(scope="class")
-    def hosts(self, destination_list):
-        return {entry["source"] for entry in destination_list}
+    def hosts(self, test_execution_params):
+        return {entry["source"] for entry in test_execution_params}
 
     @pytest.fixture(scope="class")
     def transformed_result(self, general_result):
@@ -22,8 +22,8 @@ class TestNetmikoPing:
         return {key: parse_ping_results(value) for key, value in raw_textfsm_pinganswer.items()}
 
     @pytest.fixture(scope="class")
-    def destination_list(self, nuts_parameters):
-        return nuts_parameters['arguments']
+    def test_execution_params(self, nuts_parameters):
+        return nuts_parameters['data']
 
     @pytest.mark.nuts("source,destination,expected", "placeholder")
     def test_ping(self, transformed_result, source, destination, expected):

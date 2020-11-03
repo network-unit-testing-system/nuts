@@ -50,10 +50,10 @@ def pytest_generate_tests(metafunc):
 
 def get_parametrize_data(metafunc, nuts_params):
     fields = nuts_params[0].split(",")
-    func = getattr(metafunc.cls, 'nuts_parameters_x', None)
+    func = getattr(metafunc.cls, 'data_for_test_evaluation', None)
     if not func:
         return []
-    return dict_to_tuple_list(metafunc.cls.nuts_parameters_x()['test_topology_data'], fields)
+    return dict_to_tuple_list(metafunc.cls.data_for_test_evaluation()['test_topology_data'], fields)
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent, path):

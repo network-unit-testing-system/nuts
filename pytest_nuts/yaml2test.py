@@ -56,7 +56,7 @@ class NutsTestFile(pytest.Module):
         test_execution = self.test_entry.get("test_execution")  # optional
         test_evaluation_fields = self.test_entry.get("test_evaluation")
         # TODO: default behaviour OR behaviour that can be overwritten if needed
-        yield NutsTestClass.from_parent(parent,
+        yield NutsTestClass.from_parent(self,
                                         name=name,
                                         class_name=class_name,
                                         test_topology_data=test_topology_data,

@@ -43,11 +43,17 @@ def pytest_generate_tests(metafunc):
     if nuts and len(nuts) == 1:
         nuts_params = nuts[0]  # nuts_params = ("input,expected", "placeholder")
         assert nuts_params[1] == 'placeholder'
-        fields = nuts_params[0].split(",")
-        # TODO parse nuts_parameters for test evaluation
-        actual_data = dict_to_tuple_list(metafunc.cls.data_for_test_evaluation()['test_topology_data'], fields)  # cls = Class object where the test function is defined
-        metafunc.parametrize(nuts_params[0], actual_data)
 
+        parametrize_data = get_parametrize_data(metafunc, nuts_params)
+        metafunc.parametrize(nuts_params[0], parametrize_data)
+
+
+def get_parametrize_data(metafunc, nuts_params):
+    fields = nuts_params[0].split(",")
+    func = getattr(metafunc.cls, 'nuts_parameters_x', None)
+    if not func:
+        return []
+    return dict_to_tuple_list(metafunc.cls.nuts_parameters_x()['test_topology_data'], fields)
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent, path):

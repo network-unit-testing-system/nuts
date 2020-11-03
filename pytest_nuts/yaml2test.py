@@ -1,10 +1,11 @@
-import py
 from pydoc import locate
 from typing import Iterable, Union
 
+import py
 import pytest
 from _pytest import nodes, fixtures
-from _pytest.python import Instance
+
+from pytest_nuts.index import find_test_module_of_class
 
 
 class NutsYamlFile(pytest.File):
@@ -19,33 +20,47 @@ class NutsYamlFile(pytest.File):
         raw = yaml.safe_load(self.fspath.open())
 
         for test_entry in raw:
-            module = load_test(test_entry["test_module"])
-            parent = NutsTestFile.from_parent(self, fspath=self.fspath, obj=module)
-            class_name = test_entry["test_class"]
-            label = test_entry.get("label")
-            name = class_name if label is None else f'{class_name} - {label}'
-            test_topology_data = test_entry['data']
-            test_execution = test_entry["test_execution"]  # optional
-            test_evaluation_fields = test_entry["test_evaluation"]
-            # TODO: default behaviour OR behaviour that can be overwritten if needed
-            yield NutsTestClass.from_parent(parent,
-                                            name=name,
-                                            class_name=class_name,
-                                            test_topology_data=test_topology_data,
-                                            test_execution=test_execution)
-            # yield YamlItem.from_parent(self, test_class=test_entry["test_class"],  arguments=test_entry["data"])
+            module = load_module(test_entry.get("test_module"), test_entry.get("test_class"))
+            yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
+
+            # yield YamlItem.from_parent(self, test_class=test_entry["test_class"],  arguments=test_entry["arguments"])
 
 
-def load_test(class_path):
-    test_class = locate(class_path)
-    return test_class
+def load_module(module_path, class_name):
+    if not module_path:
+        module_path = find_test_module_of_class(class_name)
+    return locate(module_path)
 
 
-class NutsTestFile(pytest.File):
-    def __init__(self, fspath, parent, obj):
+class NutsTestFile(pytest.Module):
+    def __init__(self, fspath, parent, obj, test_entry):
         super().__init__(fspath, parent)
         self.obj = obj
+        self.test_entry = test_entry
 
+    def collect(self) -> Iterable[Union["Item", "Collector"]]:
+        """
+        Collects a single NutsTestClass instance from this NutsTestFile.
+        At the start inject setup_module fixture and parse all fixtures from the module.
+        This is directly adopted from pytest.Module
+        """
+        self._inject_setup_module_fixture()
+        self._inject_setup_function_fixture()
+        self.session._fixturemanager.parsefactories(self)
+
+        class_name = self.test_entry["test_class"]
+        label = self.test_entry.get("label")
+        name = class_name if label is None else f'{class_name} - {label}'
+
+        test_topology_data = self.test_entry.get('data')
+        test_execution = self.test_entry.get("test_execution")  # optional
+        test_evaluation_fields = self.test_entry.get("test_evaluation")
+        # TODO: default behaviour OR behaviour that can be overwritten if needed
+        yield NutsTestClass.from_parent(parent,
+                                        name=name,
+                                        class_name=class_name,
+                                        test_topology_data=test_topology_data,
+                                        test_execution=test_execution)
 
 class NutsTestClass(pytest.Class):
     def __init__(self, parent, name: str, class_name: str, **kw):
@@ -55,7 +70,8 @@ class NutsTestClass(pytest.Class):
         self.class_name = class_name
 
     def _getobj(self):
-        """Get the underlying Python object. Overwritten from PyobjMixin to separate name and classname
+        """Get the underlying Python object.
+        Overwritten from PyobjMixin to separate name and classname
         This allows to group multiple tests of the same class with different parameters to be grouped separately"""
         # TODO: Improve the type of `parent` such that assert/ignore aren't needed.
         assert self.parent is not None
@@ -69,8 +85,8 @@ class NutsTestClass(pytest.Class):
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """Inject custom nuts fixture into the test classes
-        Similar to Class::collect
-        Note that this prevents setup_class and setup_method fixtures to kick in"""
+        Similar to the injection of setup_class and setup_method in pytest.Class::collect
+        """
 
         @fixtures.fixture(scope="class")  # exposed as fixture for Tests
         def nuts_parameters(cls):
@@ -81,7 +97,4 @@ class NutsTestClass(pytest.Class):
 
         self.obj.nuts_parameters = nuts_parameters  # param used above as fixture for Tests
         self.obj.data_for_test_evaluation = data_for_test_evaluation # Param used to generate tests
-        return [(Instance.from_parent(self, name="()"))]
-
-
-
+        return super(NutsTestClass, self).collect()

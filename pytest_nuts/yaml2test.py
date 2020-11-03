@@ -54,13 +54,14 @@ class NutsTestFile(pytest.Module):
 
         test_topology_data = self.test_entry.get('data')
         test_execution = self.test_entry.get("test_execution")  # optional
-        test_evaluation_fields = self.test_entry.get("test_evaluation")
+        test_evaluation = self.test_entry.get("test_evaluation")
         # TODO: default behaviour OR behaviour that can be overwritten if needed
         yield NutsTestClass.from_parent(self,
                                         name=name,
                                         class_name=class_name,
                                         test_topology_data=test_topology_data,
-                                        test_execution=test_execution)
+                                        test_execution=test_execution,
+                                        test_evaluation=test_evaluation)
 
 class NutsTestClass(pytest.Class):
     def __init__(self, parent, name: str, class_name: str, **kw):
@@ -95,6 +96,6 @@ class NutsTestClass(pytest.Class):
         def data_for_test_evaluation():
             return self.params
 
-        self.obj.nuts_parameters = nuts_parameters  # param used above as fixture for Tests
-        self.obj.data_for_test_evaluation = data_for_test_evaluation # Param used to generate tests
+        self.obj.nuts_parameters = nuts_parameters  # used above as fixture for tests
+        self.obj.data_for_test_evaluation = data_for_test_evaluation # param used to generate tests
         return super(NutsTestClass, self).collect()

@@ -30,7 +30,7 @@ def parse_ping_results(raw_result):
     return parsed_results
 
 
-def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor=5) -> MultiResult:
+def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor) -> MultiResult:
     print(f"starting netmiko_ping_multi_host on {task.host.name}")
     destinations = destinations_per_host(task.host.name)
     print(f'{task.host.name}: {destinations}')

@@ -8,11 +8,11 @@ class TestNetmikoPing:
         return netmiko_ping_multi_host
 
     @pytest.fixture(scope="class")
-    def nuts_arguments(self, test_execution_params):
-        # data = nuts_parameters['data']
-        # TODO
-        return {"destinations_per_host": destinations_per_host(test_execution_params),
-                "delay_factor": 5}
+    def nuts_arguments(self, nuts_parameters):
+        test_data = nuts_parameters['test_data']
+        delay_factor = nuts_parameters['test_execution']['delay_factor']
+        return {"destinations_per_host": destinations_per_host(test_data),
+                "delay_factor": delay_factor}
 
     @pytest.fixture(scope="class")
     def hosts(self, test_execution_params):

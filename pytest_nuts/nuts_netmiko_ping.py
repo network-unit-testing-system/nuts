@@ -50,23 +50,22 @@ def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor=5) -
 def destinations_per_host(test_topology_data):
     return lambda host_name: [entry["destination"] for entry in test_topology_data if entry["source"] == host_name]
 
-
-@pytest.fixture(scope="class")
-def nuts_task():
-    return netmiko_ping_multi_host
-
-
-@pytest.fixture(scope="class")
-def nuts_arguments(test_topology_data):
-    return {"destinations_per_host": destinations_per_host(test_topology_data)}
-
-
-@pytest.fixture(scope="class")
-def hosts(test_topology_data):
-    return {entry["source"] for entry in test_topology_data}
-
-
-@pytest.fixture(scope="class")
-def transformed_result(general_result):
-    raw_textfsm_pinganswer = {key: [v.result for v in value[1:]] for key, value in general_result.items()}
-    return {key: parse_ping_results(value) for key, value in raw_textfsm_pinganswer.items()}
+#
+# @pytest.fixture(scope="class")
+# def nuts_task():
+#     return netmiko_ping_multi_host
+# 
+# @pytest.fixture(scope="class")
+# def nuts_arguments(test_topology_data):
+#     return {"destinations_per_host": destinations_per_host(test_topology_data)}
+#
+#
+# @pytest.fixture(scope="class")
+# def hosts(test_topology_data):
+#     return {entry["source"] for entry in test_topology_data}
+#
+#
+# @pytest.fixture(scope="class")
+# def transformed_result(general_result):
+#     raw_textfsm_pinganswer = {key: [v.result for v in value[1:]] for key, value in general_result.items()}
+#     return {key: parse_ping_results(value) for key, value in raw_textfsm_pinganswer.items()}

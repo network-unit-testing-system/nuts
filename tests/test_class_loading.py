@@ -10,7 +10,7 @@ def test_load_class_and_execute_tests(testdir):
             ---
             - test_module: tests.base_tests.class_loading
               test_class: TestClass
-              arguments: []
+              test_data: []
             """
     }
     testdir.makefile('.yaml', **arguments)
@@ -26,10 +26,10 @@ def test_load_class_multiple_times(testdir):
             ---
             - test_module: tests.base_tests.class_loading
               test_class: TestClass
-              arguments: []
+              test_data: []
             - test_module: tests.base_tests.class_loading
               test_class: TestClass
-              arguments: []
+              test_data: []
             """
     }
     testdir.makefile('.yaml', **arguments)
@@ -45,7 +45,7 @@ def test_injects_arguments_as_fixture(testdir):
             ---
             - test_module: tests.base_tests.class_loading
               test_class: TestFixture
-              arguments: ['test1', 'test2']
+              test_data: ['test1', 'test2']
             """
     }
     testdir.makefile('.yaml', **arguments)
@@ -62,7 +62,7 @@ def test_load_class_from_index(testdir):
                 """
                 ---
                 - test_class: TestFixture
-                  arguments: ['test1', 'test2']
+                  test_data: ['test1', 'test2']
                 """
         }
         testdir.makefile('.yaml', **arguments)

@@ -5,7 +5,7 @@ def test_execute_tests_based_on_arguments(testdir):
 ---
 - test_module: tests.base_tests.simple_nuts_annotation
   test_class: TestKeyValue
-  arguments: [{"key": "abc", "value":"abc"}, 
+  test_data: [{"key": "abc", "value":"abc"}, 
   {"key": "cde", "value":"cde"}]
             """
     }
@@ -37,7 +37,7 @@ def test_execute_tests_errors_with_incomplete_data(testdir):
 ---
 - test_module: tests.base_tests.simple_nuts_annotation
   test_class: TestKeyValue
-  arguments: [{"key": "abc"}]
+  test_data: [{"key": "abc"}]
             """
     }
     testdir.makefile('.yaml', **arguments)
@@ -53,10 +53,10 @@ def test_execute_tests_multiple_times_separates_arguments(testdir):
 ---
 - test_module: tests.base_tests.simple_nuts_annotation
   test_class: TestKeyValue
-  arguments: [{"key": "abc", "value":"abc"}]
+  test_data: [{"key": "abc", "value":"abc"}]
 - test_module: tests.base_tests.simple_nuts_annotation
   test_class: TestKeyValue
-  arguments: [{"key": "abc", "value":"bcd"}]
+  test_data: [{"key": "abc", "value":"bcd"}]
             """
     }
     testdir.makefile('.yaml', **arguments)
@@ -72,7 +72,7 @@ def test_execute_tests_errors_without_placeholder(testdir):
 ---
 - test_module: tests.base_tests.simple_nuts_annotation
   test_class: TestKeyValueWithoutParameter
-  arguments: [{"key": "abc", "value":"abc"}]
+  test_data: [{"key": "abc", "value":"abc"}]
             """
     }
     testdir.makefile('.yaml', **arguments)

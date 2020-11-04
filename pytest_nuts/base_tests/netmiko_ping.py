@@ -6,6 +6,7 @@ from nornir.core import Task
 from nornir.core.task import MultiResult
 from nornir_netmiko.tasks import netmiko_send_command
 
+
 class TestNetmikoPing:
 
     @pytest.fixture(scope="class")

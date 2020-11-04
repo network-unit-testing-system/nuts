@@ -1,4 +1,5 @@
 import pytest
+
 from nornir.core.filter import F
 from nornir_netmiko import netmiko_send_command
 

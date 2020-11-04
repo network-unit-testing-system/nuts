@@ -5,7 +5,7 @@ import py
 import pytest
 from _pytest import nodes, fixtures
 
-from pytest_nuts.index import find_test_module_of_class
+from pytest_nuts.index import TestIndex
 
 
 class NutsYamlFile(pytest.File):
@@ -28,7 +28,7 @@ class NutsYamlFile(pytest.File):
 
 def load_module(module_path, class_name):
     if not module_path:
-        module_path = find_test_module_of_class(class_name)
+        module_path = TestIndex().find_test_module_of_class(class_name)
     return locate(module_path)
 
 

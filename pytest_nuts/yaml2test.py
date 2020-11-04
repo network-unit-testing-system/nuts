@@ -49,7 +49,7 @@ class NutsTestFile(pytest.Module):
         label = self.test_entry.get("label")
         name = class_name if label is None else f'{class_name} - {label}'
 
-        test_data = self.test_entry.get('test_data')
+        test_data = self.test_entry.get('test_data', [])
         test_execution = self.test_entry.get("test_execution")
         yield NutsTestClass.from_parent(self,
                                         name=name,

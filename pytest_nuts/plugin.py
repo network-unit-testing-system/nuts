@@ -1,6 +1,6 @@
 import pytest
-
 from nornir import InitNornir
+
 from pytest_nuts.yaml2test import NutsYamlFile
 
 
@@ -35,6 +35,11 @@ def general_result(nr, nuts_task, nuts_arguments, nornir_filter):
     return overall_results
 
 
+def pytest_configure(config):
+    config.addinivalue_line("markers",
+                            "nuts: marks the test for nuts parameterization")
+
+
 def pytest_generate_tests(metafunc):
     """
     Checks if the the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
@@ -57,6 +62,7 @@ def get_parametrize_data(metafunc, nuts_params):
         return []
     return dict_to_tuple_list(metafunc.cls.get_parametrizing_data(), fields)
 
+
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent, path):
     if path.ext == ".yaml" and path.basename.startswith("test"):
@@ -70,6 +76,3 @@ def dict_to_tuple_list(source, fields):
 def dict_to_tuple(source, fields):
     ordered_fields = [source[field] for field in fields]
     return tuple(ordered_fields)
-
-
-

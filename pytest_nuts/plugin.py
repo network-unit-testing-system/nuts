@@ -51,10 +51,10 @@ def pytest_generate_tests(metafunc):
 
 def get_parametrize_data(metafunc, nuts_params):
     fields = nuts_params[0].split(",")
-    func = getattr(metafunc.cls, 'data_for_parametrizing_tests', None)
+    func = getattr(metafunc.cls, 'get_parametrizing_data', None)
     if not func:
         return []
-    return dict_to_tuple_list(metafunc.cls.data_for_parametrizing_tests()['test_data'], fields)
+    return dict_to_tuple_list(metafunc.cls.get_parametrizing_data(), fields)
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent, path):

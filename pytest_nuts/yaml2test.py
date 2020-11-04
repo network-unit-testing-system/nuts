@@ -90,9 +90,9 @@ class NutsTestClass(pytest.Class):
         def nuts_parameters(cls):
             return self.params
 
-        def data_for_parametrizing_tests():  # parameterizing tests
-            return self.params
+        def get_parametrizing_data():
+            return self.params['test_data']
 
-        self.obj.nuts_parameters = nuts_parameters  # used above as fixture for tests
-        self.obj.data_for_parametrizing_tests = data_for_parametrizing_tests # param used to generate tests
+        self.obj.nuts_parameters = nuts_parameters
+        self.obj.get_parametrizing_data = get_parametrizing_data
         return super(NutsTestClass, self).collect()

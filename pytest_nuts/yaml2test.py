@@ -1,12 +1,12 @@
 from pydoc import locate
-from typing import Iterable, Union
+from typing import Iterable, Union, Any
 
 import py
 import pytest
 import yaml
 from _pytest import nodes, fixtures
 
-from pytest_nuts.index import find_test_module_of_class
+from pytest_nuts.index import TestIndex
 
 
 class NutsYamlFile(pytest.File):
@@ -24,7 +24,7 @@ class NutsYamlFile(pytest.File):
 
 def load_module(module_path, class_name):
     if not module_path:
-        module_path = find_test_module_of_class(class_name)
+        module_path = TestIndex().find_test_module_of_class(class_name)
     return locate(module_path)
 
 
@@ -49,7 +49,7 @@ class NutsTestFile(pytest.Module):
         label = self.test_entry.get("label")
         name = class_name if label is None else f'{class_name} - {label}'
 
-        test_data = self.test_entry.get('test_data')
+        test_data = self.test_entry.get('test_data', [])
         test_execution = self.test_entry.get("test_execution")
         yield NutsTestClass.from_parent(self,
                                         name=name,
@@ -59,7 +59,7 @@ class NutsTestFile(pytest.Module):
 
 
 class NutsTestClass(pytest.Class):
-    def __init__(self, parent, name: str, class_name: str, **kw):
+    def __init__(self, parent, name: str, class_name: str, obj: Any, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name

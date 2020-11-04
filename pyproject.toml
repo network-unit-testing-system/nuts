@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "nettowel-nuts"
+version = "0.1.0"
+description = "Network Unit Testing System Component of NetTowel"
+authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+pytest = "^6.1.1"
+PyYAML = "^5.3.1"
+nornir = "^3.0.0"
+nornir-napalm = "^0.1.1"
+nornir-netmiko = "^0.1.1"
+nornir-utils = "^0.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

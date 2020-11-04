@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from pytest_nuts.index import TestIndex
+from pytest_nuts.index import ModuleIndex
 
 
 def test_load_class_and_execute_tests(testdir):
@@ -55,8 +55,8 @@ def test_injects_arguments_as_fixture(testdir):
 
 
 def test_load_class_from_index(testdir):
-    with patch('pytest_nuts.yaml2test.TestIndex') as module_index:
-        module_index.return_value = TestIndex({'TestFixture': 'tests.base_tests.class_loading'})
+    with patch('pytest_nuts.yaml2test.ModuleIndex') as module_index:
+        module_index.return_value = ModuleIndex({'TestFixture': 'tests.base_tests.class_loading'})
         arguments = {
             'test_class_loading':
                 """

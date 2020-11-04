@@ -1,4 +1,5 @@
 import pytest
+
 from nornir.core.filter import F
 from nornir_netmiko import netmiko_send_command
 
@@ -32,7 +33,7 @@ class TestNetmikoCdpNeighbors:
                 transformed_result.items()}
 
     @pytest.fixture
-    def destination_list(self, nuts_parameters):  # fixture with yaml-info
+    def destination_list(self, nuts_parameters):
         return nuts_parameters
 
     @pytest.mark.nuts("source,local_port,destination_host,management_ip,remote_port", "placeholder")

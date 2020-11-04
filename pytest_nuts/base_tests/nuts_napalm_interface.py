@@ -1,4 +1,5 @@
 import pytest
+
 from nornir_napalm.plugins.tasks import napalm_get
 
 

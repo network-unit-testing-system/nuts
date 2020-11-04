@@ -1,11 +1,10 @@
 from enum import Enum
 
+import pytest
+
 from nornir.core import Task
 from nornir.core.task import MultiResult
 from nornir_netmiko.tasks import netmiko_send_command
-
-import pytest
-
 
 class TestNetmikoPing:
 

@@ -1,6 +1,5 @@
 import pytest
 
-
 from nornir import InitNornir
 from pytest_nuts.yaml2test import NutsYamlFile
 
@@ -37,11 +36,13 @@ def general_result(nr, nuts_task, nuts_arguments, nornir_filter):
 
 
 def pytest_generate_tests(metafunc):
+    """Checks if the the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
+    to generate tests based on that information. The placeholder later holds data retrieved
+    from the YAML test definition.
+    """
     nuts = [mark.args for mark in metafunc.definition.own_markers if mark.name == 'nuts']
-    # checks for @pytest.mark.nuts("input,expected", "placeholder")
-    # nuts = [("input,expected", "placeholder")]
     if nuts and len(nuts) == 1:
-        nuts_params = nuts[0]  # nuts_params = ("input,expected", "placeholder")
+        nuts_params = nuts[0]
         assert nuts_params[1] == 'placeholder'
 
         parametrize_data = get_parametrize_data(metafunc, nuts_params)

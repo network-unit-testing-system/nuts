@@ -36,7 +36,8 @@ def general_result(nr, nuts_task, nuts_arguments, nornir_filter):
 
 
 def pytest_generate_tests(metafunc):
-    """Checks if the the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
+    """
+    Checks if the the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
     to generate tests based on that information. The placeholder later holds data retrieved
     from the YAML test definition.
     """

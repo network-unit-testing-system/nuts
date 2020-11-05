@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "nettowel-nuts"
+name = "pytest_nuts"
 version = "0.1.0"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>"]

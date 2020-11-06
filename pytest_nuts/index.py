@@ -2,14 +2,16 @@ from typing import Dict
 
 
 class ModuleIndex:
-    """
-    Helps to simplify test definitions by registering the module of a test class.
-    Thus in the test definitions the module is no longer needed.
+    """Map a test class to the name of its module.
+
+    Test definitions use this mapping to directly access a test
+    by using the name of a test class instead of the module name.
     """
 
     def __init__(self, index: Dict[str, str] = None):
-        """
-        Creates a new ModuleIndex
+        """Create a new ModuleIndex.
+
+        If None is specified the default values are taken.
 
         :param index: A dictionary which maps class names to modules.
                         If None is specified the default values are taken

@@ -7,9 +7,10 @@ from nornir.core.plugins.runners import RunnersPluginRegister
 @pytest.fixture
 def nr_wrapper():
     """
-    Fixture to cleanup Nornirs PluginRegisters
+    Cleanup Nornir's PluginRegisters.
+
     This is necessary as InitNornir is initiated for every test case, but the PluginRegisters are (somehow) shared.
-    This results in a PluginAlreadyRegistered Exception as the plugins would be registered multiple times.
+    This results in a PluginAlreadyRegistered Exception as the plugins are registered multiple times.
     """
     yield None
     ConnectionPluginRegister.deregister_all()
@@ -19,7 +20,7 @@ def nr_wrapper():
 
 @pytest.fixture
 def default_nr_init(testdir):
-    """Fixture which create initial nornir files and exposes the location as nornir_config_file fixture"""
+    """Create initial Nornir files and expose the location as nornir_config_file fixture."""
     hosts_path_as_string = str(testdir.tmpdir.join("hosts.yaml"))
     config = f'''inventory:
                           plugin: SimpleInventory

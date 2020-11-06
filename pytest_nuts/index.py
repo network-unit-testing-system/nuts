@@ -23,7 +23,7 @@ class ModuleIndex:
 
     def find_test_module_of_class(self, name: str) -> str:
         """
-        Tries to resolve the name of the test class to a module
+        Try to resolve the name of the test class to a module.
 
         :param name: The name of the test class
         :return: The path of the module which contains the test class

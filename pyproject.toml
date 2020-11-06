@@ -3,6 +3,7 @@ name = "pytest_nuts"
 version = "0.1.0"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>"]
+classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
 python = "^3.6"

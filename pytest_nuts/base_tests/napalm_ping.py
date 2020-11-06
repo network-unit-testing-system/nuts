@@ -2,7 +2,7 @@ from enum import Enum
 
 import pytest
 from nornir.core import Task
-from nornir.core.task import MultiResult
+from nornir.core.task import Result
 from nornir_napalm.plugins.tasks import napalm_ping
 
 
@@ -35,14 +35,12 @@ class Ping(Enum):
     FLAPPING = 2
 
 
-def napalm_ping_multi_host(task: Task, destinations_per_host) -> MultiResult:
+def napalm_ping_multi_host(task: Task, destinations_per_host) -> Result:
     destinations = destinations_per_host(task.host.name)
-    results = MultiResult("pinged_hosts")
     for destination in destinations:
         result = task.run(task=napalm_ping, dest=destination)
         result[0].destination = destination
-        results += result
-    return results
+    return Result(host=task.host, result="All pings executed")
 
 
 def destinations_per_host(test_data):
@@ -51,7 +49,6 @@ def destinations_per_host(test_data):
 
 def parse_ping_results(task_results):
     return {ping_task.destination: parse_result(ping_task.result['success']) for ping_task in task_results[1:]}
-
 
 
 def parse_result(result):

@@ -2,7 +2,7 @@ class TestIndex:
     def __init__(self, index=None):
         default_index = {
             'TestNetmikoCdpNeighbors': 'pytest_nuts.base_tests.netmiko_cdp_neighbors',
-            'TestNetmikoPing': 'pytest_nuts.base_tests.netmiko_ping',
+            'TestNapalmPing': 'pytest_nuts.base_tests.napalm_ping',
         }
 
         self.index = index if index is not None else default_index

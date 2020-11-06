@@ -15,6 +15,9 @@ nornir-utils = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 
+[tool.poetry.plugins."pytest11"]
+"pytest_nuts"="pytest_nuts.plugin"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

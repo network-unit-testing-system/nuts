@@ -22,33 +22,29 @@ def nr_wrapper():
 def default_nr_init(testdir):
     """Create initial Nornir files and expose the location as nornir_config_file fixture."""
     hosts_path_as_string = str(testdir.tmpdir.join("hosts.yaml"))
-    config = f'''inventory:
+    config = f"""inventory:
                           plugin: SimpleInventory
                           options:
-                              host_file: {hosts_path_as_string}'''
+                              host_file: {hosts_path_as_string}"""
     arguments = {
         "nr-config": config,
-        "hosts":
-            '''
+        "hosts": """
             R1:
               hostname: 10.20.0.31
             R2:
-              hostname: 10.20.0.32'''
-
+              hostname: 10.20.0.32""",
     }
-    testdir.makefile('.yaml', **arguments)
+    testdir.makefile(".yaml", **arguments)
     nr_path_as_string = str(testdir.tmpdir.join("nr-config.yaml")).replace("\\", r"\\")
-    conf_test = f'''
+    conf_test = f"""
           from nornir.core import Task
           import pytest
 
           @pytest.fixture(scope="session")
           def nornir_config_file():
               return "{nr_path_as_string}"
-                  '''
-    testdir.makeconftest(
-        conf_test
-    )
+                  """
+    testdir.makeconftest(conf_test)
 
 
 @pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
@@ -63,7 +59,8 @@ def test_inject_general_result_fixture(testdir):
               
         def test_basic_task(general_result):
             assert general_result is not None
-        """)
+        """
+    )
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=1)
@@ -75,7 +72,8 @@ def test_errors_if_no_task_is_defined(testdir):
         """
         def test_basic_task(general_result):
             assert general_result is not None
-        """)
+        """
+    )
 
     result = testdir.runpytest()
     result.assert_outcomes(errors=1)
@@ -93,7 +91,8 @@ def test_executes_specified_task(testdir):
             
         def test_basic_task(general_result):
             assert general_result['R1'].result == 'R1'
-        """)
+        """
+    )
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=1)
@@ -117,7 +116,8 @@ def test_filters_hosts(testdir):
         def test_basic_task(general_result):
             assert 'R1' in general_result
             assert 'R2' not in general_result
-        """)
+        """
+    )
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=1)
@@ -139,7 +139,8 @@ def test_pass_nuts_arguments_to_nornir(testdir):
 
         def test_basic_task(general_result):
             assert general_result['R1'].result == 'testArgument'
-        """)
+        """
+    )
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=1)

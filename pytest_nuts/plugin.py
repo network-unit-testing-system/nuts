@@ -21,8 +21,7 @@ def nornir_filter():
 
 @pytest.fixture(scope="session")
 def nr(nornir_config_file):
-    return InitNornir(config_file=nornir_config_file,
-                      logging=False)
+    return InitNornir(config_file=nornir_config_file, logging=False)
 
 
 @pytest.fixture(scope="class")
@@ -41,10 +40,10 @@ def pytest_generate_tests(metafunc):
     to generate tests based on that information. The placeholder later holds data retrieved
     from the YAML test definition.
     """
-    nuts = [mark.args for mark in metafunc.definition.own_markers if mark.name == 'nuts']
+    nuts = [mark.args for mark in metafunc.definition.own_markers if mark.name == "nuts"]
     if nuts and len(nuts) == 1:
         nuts_params = nuts[0]
-        assert nuts_params[1] == 'placeholder'
+        assert nuts_params[1] == "placeholder"
 
         parametrize_data = get_parametrize_data(metafunc, nuts_params)
         metafunc.parametrize(nuts_params[0], parametrize_data)
@@ -52,10 +51,11 @@ def pytest_generate_tests(metafunc):
 
 def get_parametrize_data(metafunc, nuts_params):
     fields = nuts_params[0].split(",")
-    func = getattr(metafunc.cls, 'get_parametrizing_data', None)
+    func = getattr(metafunc.cls, "get_parametrizing_data", None)
     if not func:
         return []
     return dict_to_tuple_list(metafunc.cls.get_parametrizing_data(), fields)
+
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent, path):
@@ -70,6 +70,3 @@ def dict_to_tuple_list(source, fields):
 def dict_to_tuple(source, fields):
     ordered_fields = [source[field] for field in fields]
     return tuple(ordered_fields)
-
-
-

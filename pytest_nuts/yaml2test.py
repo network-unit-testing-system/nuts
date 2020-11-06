@@ -10,7 +10,6 @@ from pytest_nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):
-
     def __init__(self, parent, fspath: py.path.local):
         super().__init__(fspath, parent)
 
@@ -47,15 +46,13 @@ class NutsTestFile(pytest.Module):
 
         class_name = self.test_entry["test_class"]
         label = self.test_entry.get("label")
-        name = class_name if label is None else f'{class_name} - {label}'
+        name = class_name if label is None else f"{class_name} - {label}"
 
-        test_data = self.test_entry.get('test_data', [])
+        test_data = self.test_entry.get("test_data", [])
         test_execution = self.test_entry.get("test_execution")
-        yield NutsTestClass.from_parent(self,
-                                        name=name,
-                                        class_name=class_name,
-                                        test_data=test_data,
-                                        test_execution=test_execution)
+        yield NutsTestClass.from_parent(
+            self, name=name, class_name=class_name, test_data=test_data, test_execution=test_execution
+        )
 
 
 class NutsTestClass(pytest.Class):
@@ -96,7 +93,7 @@ class NutsTestClass(pytest.Class):
             return self.params
 
         def get_parametrizing_data():
-            return self.params['test_data']
+            return self.params["test_data"]
 
         self.obj.nuts_parameters = nuts_parameters
         self.obj.get_parametrizing_data = get_parametrizing_data

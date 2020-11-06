@@ -6,18 +6,17 @@ from nornir.core import Task
 from nornir.core.task import MultiResult
 from nornir_netmiko.tasks import netmiko_send_command
 
-class TestNetmikoPing:
 
+class TestNetmikoPing:
     @pytest.fixture(scope="class")
     def nuts_task(self):
         return netmiko_ping_multi_host
 
     @pytest.fixture(scope="class")
     def nuts_arguments(self, nuts_parameters):
-        test_data = nuts_parameters['test_data']
-        delay_factor = nuts_parameters['test_execution']['delay_factor']
-        return {"destinations_per_host": destinations_per_host(test_data),
-                "delay_factor": delay_factor}
+        test_data = nuts_parameters["test_data"]
+        delay_factor = nuts_parameters["test_execution"]["delay_factor"]
+        return {"destinations_per_host": destinations_per_host(test_data), "delay_factor": delay_factor}
 
     @pytest.fixture(scope="class")
     def hosts(self, test_execution_params):
@@ -30,18 +29,18 @@ class TestNetmikoPing:
 
     @pytest.fixture(scope="class")
     def test_execution_params(self, nuts_parameters):
-        return nuts_parameters['test_data']
+        return nuts_parameters["test_data"]
 
     @pytest.mark.nuts("source,destination,expected", "placeholder")
     def test_ping(self, transformed_result, source, destination, expected):
         assert transformed_result[source][destination].name == expected
 
 
-
 class Ping(Enum):
     FAIL = 0
     SUCCESS = 1
     FLAPPING = 2
+
 
 def parse_ping_results(raw_result):
     parsed_results = {}
@@ -63,7 +62,7 @@ def parse_ping_results(raw_result):
 def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor) -> MultiResult:
     print(f"starting netmiko_ping_multi_host on {task.host.name}")
     destinations = destinations_per_host(task.host.name)
-    print(f'{task.host.name}: {destinations}')
+    print(f"{task.host.name}: {destinations}")
     results = MultiResult("pinged_hosts")
     for destination in destinations:
         results.append(
@@ -71,7 +70,7 @@ def netmiko_ping_multi_host(task: Task, destinations_per_host, delay_factor) -> 
                 task=netmiko_send_command,
                 command_string=f"ping {destination}",
                 use_textfsm=True,
-                delay_factor=delay_factor
+                delay_factor=delay_factor,
             )
         )
     return results

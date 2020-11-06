@@ -1,5 +1,4 @@
 class TestClass:
-
     def test_always_true(self):
         assert True
 
@@ -8,6 +7,5 @@ class TestClass:
 
 
 class TestFixture:
-
     def test_always_true(self, nuts_parameters):
-        assert nuts_parameters['test_data'] == ['test1', 'test2']
+        assert nuts_parameters["test_data"] == ["test1", "test2"]

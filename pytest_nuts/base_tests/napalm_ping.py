@@ -25,15 +25,18 @@ class TestNapalmPing:
     def transformed_result(self, general_result):
         return {host: parse_ping_results(task_results) for host, task_results in general_result.items()}
 
-    @pytest.mark.nuts("source,destination,expected", "placeholder")
-    def test_ping(self, transformed_result, source, destination, expected):
-        assert transformed_result[source][destination].name == expected
+    @pytest.mark.nuts("source,destination,max_drop,expected", "placeholder")
+    def test_ping(self, transformed_result, source, destination, max_drop, expected):
+        if transformed_result[source][destination] <= max_drop:
+            assert "SUCCESS" == expected
+        assert "FAIL" == expected
+        # assert transformed_result[source][destination].name == expected
 
 
-class Ping(Enum):
-    FAIL = 0
-    SUCCESS = 1
-    FLAPPING = 2
+# class Ping(Enum):
+#     FAIL = 0
+#     SUCCESS = 1
+#     FLAPPING = 2
 
 
 def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Result:
@@ -49,12 +52,12 @@ def destinations_per_host(test_data):
 
 
 def parse_ping_results(task_results):
-    return {ping_task.destination: parse_result(ping_task.result['success']) for ping_task in task_results[1:]}
+    return {ping_task.destination: ping_task.result['success']['packet_loss'] for ping_task in task_results[1:]}
 
 
-def parse_result(result):
-    if result['packet_loss'] == 0:
-        return Ping.SUCCESS
-    if result['packet_loss'] == result['probes_sent']:
-        return Ping.FAIL
-    return Ping.FLAPPING
+# def parse_result(result):
+#     if result['packet_loss'] == 0:
+#         return Ping.SUCCESS
+#     if result['packet_loss'] == result['probes_sent']:
+#         return Ping.FAIL
+#     return Ping.FLAPPING

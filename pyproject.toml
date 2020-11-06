@@ -2,7 +2,9 @@
 name = "pytest_nuts"
 version = "0.1.0"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>"]
+authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>",
+"Méline Sieber <meline.sieber@ins.hsr.ch",
+"Urs Baumann <urs.baumann@ins.hsr.ch"]
 classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]

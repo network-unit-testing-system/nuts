@@ -14,7 +14,8 @@ class TestNapalmPing:
     @pytest.fixture(scope="class")
     def nuts_arguments(self, nuts_parameters):
         test_data = nuts_parameters['test_data']
-        return {"destinations_per_host": destinations_per_host(test_data)}
+
+        return {"destinations_per_host": destinations_per_host(test_data), **nuts_parameters['test_execution']}
 
     @pytest.fixture(scope="class")
     def hosts(self, nuts_parameters):
@@ -35,10 +36,10 @@ class Ping(Enum):
     FLAPPING = 2
 
 
-def napalm_ping_multi_host(task: Task, destinations_per_host) -> Result:
+def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Result:
     destinations = destinations_per_host(task.host.name)
     for destination in destinations:
-        result = task.run(task=napalm_ping, dest=destination)
+        result = task.run(task=napalm_ping, dest=destination, **kwargs)
         result[0].destination = destination
     return Result(host=task.host, result="All pings executed")
 

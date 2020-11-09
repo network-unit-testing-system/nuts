@@ -3,6 +3,8 @@ from nornir.core.plugins.connections import ConnectionPluginRegister
 from nornir.core.plugins.inventory import InventoryPluginRegister
 from nornir.core.plugins.runners import RunnersPluginRegister
 
+from tests.shared import YAML_EXTENSION
+
 
 @pytest.fixture
 def nr_wrapper():
@@ -21,7 +23,7 @@ def nr_wrapper():
 @pytest.fixture
 def default_nr_init(testdir):
     """Create initial Nornir files and expose the location as nornir_config_file fixture."""
-    hosts_path_as_string = str(testdir.tmpdir.join("hosts.yaml"))
+    hosts_path_as_string = str(testdir.tmpdir.join(f"hosts{YAML_EXTENSION}"))
     config = f"""inventory:
                           plugin: SimpleInventory
                           options:
@@ -34,8 +36,8 @@ def default_nr_init(testdir):
             R2:
               hostname: 10.20.0.32""",
     }
-    testdir.makefile(".yaml", **arguments)
-    nr_path_as_string = str(testdir.tmpdir.join("nr-config.yaml")).replace("\\", r"\\")
+    testdir.makefile(YAML_EXTENSION, **arguments)
+    nr_path_as_string = str(testdir.tmpdir.join(f"nr-config{YAML_EXTENSION}")).replace("\\", r"\\")
     conf_test = f"""
           from nornir.core import Task
           import pytest

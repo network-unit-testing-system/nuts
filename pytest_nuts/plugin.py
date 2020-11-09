@@ -20,16 +20,16 @@ def nornir_filter():
 
 
 @pytest.fixture(scope="session")
-def nr(nornir_config_file):
+def initialized_nornir(nornir_config_file):
     return InitNornir(config_file=nornir_config_file, logging=False)
 
 
 @pytest.fixture(scope="class")
-def general_result(nr, nuts_task, nuts_arguments, nornir_filter):
+def general_result(initialized_nornir, nuts_task, nuts_arguments, nornir_filter):
     if nornir_filter:
-        selected_hosts = nr.filter(nornir_filter)
+        selected_hosts = initialized_nornir.filter(nornir_filter)
     else:
-        selected_hosts = nr
+        selected_hosts = initialized_nornir
     overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
     return overall_results
 

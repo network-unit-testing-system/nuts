@@ -19,6 +19,7 @@ class ModuleIndex:
         default_index = {
             "TestNetmikoCdpNeighbors": "pytest_nuts.base_tests.netmiko_cdp_neighbors",
             "TestNetmikoPing": "pytest_nuts.base_tests.netmiko_ping",
+            "TestNapalmLldpNeighbors": "pytest_nuts.base_tests.napalm_lldp_neighbors",
         }
 
         self.index = index if index is not None else default_index

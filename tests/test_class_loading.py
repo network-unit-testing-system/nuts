@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 from pytest_nuts.index import ModuleIndex
+from tests.shared import YAML_EXTENSION
 
 
 def test_load_class_and_execute_tests(testdir):
@@ -12,7 +13,7 @@ def test_load_class_and_execute_tests(testdir):
               test_data: []
             """
     }
-    testdir.makefile(".yaml", **arguments)
+    testdir.makefile(YAML_EXTENSION, **arguments)
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=2)
@@ -30,7 +31,7 @@ def test_load_class_multiple_times(testdir):
               test_data: []
             """
     }
-    testdir.makefile(".yaml", **arguments)
+    testdir.makefile(YAML_EXTENSION, **arguments)
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=4)
@@ -45,7 +46,7 @@ def test_injects_arguments_as_fixture(testdir):
               test_data: ['test1', 'test2']
             """
     }
-    testdir.makefile(".yaml", **arguments)
+    testdir.makefile(YAML_EXTENSION, **arguments)
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=1)
@@ -61,7 +62,7 @@ def test_load_class_from_index(testdir):
                   test_data: ['test1', 'test2']
                 """
         }
-        testdir.makefile(".yaml", **arguments)
+        testdir.makefile(YAML_EXTENSION, **arguments)
 
         result = testdir.runpytest()
         result.assert_outcomes(passed=1)

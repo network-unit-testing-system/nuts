@@ -88,10 +88,48 @@ This example creates three different tests, one for each entry in the `test_data
       remote_port: GigabitEthernet3
 ...
 ```
-## Exposed fixtures
-TODO explain the exposed fixtures
 
-## nuts custom marker
+## Installation as a user
+NetTowel nuts is currently not published via pip it therefore has to be cloned and installed manually.
+
+```
+git clone ssh://git@bitbucket.ins.local:7999/ntw/nettowel-nuts.git
+pip install <your_nuts_directory>
+```
+
+## Technical details
+
+### Exposed fixtures
+For the communication with the network devices in the predefined test cases [nornir](https://nornir.readthedocs.io/en/latest/) is used.
+To reduce the complexity of the test classes the idea is to extract the execution of the tasks to nornir and 
+only evaluate the results.
+
+Because the execution of these tasks is always similar, there exist predefined fixtures, which can be used in the test classes.
+Each of these fixtures can be overwritten with a test specific fixture defined in the test class.
+
+`general_result`: Runs a nornir task on the inventory and returns the result. 
+Requires `nr`, `nuts_task`, `nuts_arguments` and `nornir_filter` as input parameters
+ 
+`nr`: The nornir instance that should be used when executing the nornir task.
+Defaults to a simple Nornir instance that uses `nornir_config_file` as its configuration.
+
+`nornir_config_file`: The location of the nornir configuration file as a string. Is used by `nr` to instantiate nornir.
+Note that it can be relevant in which directory `pytest` is started if this is a relative path.
+Defaults to "nr-config.yaml"
+
+`nornir_filter`: A nornir filter that is applied to the `nr` instance before the task is executed.
+Default to an empty filter so that the task runs on the full instance. 
+
+`nuts_arguments`: Arguments that are passed to the nornir task as "kwargs".  
+Defaults to an empty dictionary so that no data is passed to the task.
+
+If you read this carefully, you might have noticed that `general_result` requires `nuts_task`, but it is not exposed by default.
+It is the job of the test class to expose the appropriate nornir task as the `nuts_task` fixture as there is no viable default task.
+
+In addition to these statically exposed fixtures, `nuts_parameters` is exposed when pytest is called on yaml files as 
+shortly described in the chapter "test bundle structure".
+
+### nuts custom marker
 The custom pytest marker "nuts" uses the data during test collection that has been defined in the test bundle.
 This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to 
 consider the data entries from the test bundle.
@@ -105,7 +143,7 @@ Based on the first argument of the annotation the required fields are determined
 these fields are extracted and transformed to a tuple considering the correct order.
 Because of this, it is currently a requirement that each entry in the `test_data` is a dictionary.
 
-### Example of test class with custom marker
+#### Example of test class with custom marker
 ```python
 import pytest
 class CdpNeighborTest:
@@ -115,13 +153,6 @@ class CdpNeighborTest:
 ```
 
 
-## Installation as a user
-NetTowel nuts is currently not published via pip it therefore has to be cloned and installed manually.
-
-```
-git clone ssh://git@bitbucket.ins.local:7999/ntw/nettowel-nuts.git
-pip install <your_nuts_directory>
-```
 
 ## Development
 As a dependency manager [poetry](https://python-poetry.org/) is used.

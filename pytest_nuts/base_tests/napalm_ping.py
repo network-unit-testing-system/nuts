@@ -68,3 +68,4 @@ def parse_ping_results(task_results):
 #     if result['packet_loss'] == result['probes_sent']:
 #         return Ping.FAIL
 #     return Ping.FLAPPING
+

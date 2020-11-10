@@ -23,14 +23,21 @@ class TestNapalmPing:
 
     @pytest.fixture(scope="class")
     def transformed_result(self, general_result):
+        # use nuts_parameters fixture to get data from there
+        # compare
         return {host: parse_ping_results(task_results) for host, task_results in general_result.items()}
 
     @pytest.mark.nuts("source,destination,max_drop,expected", "placeholder")
     def test_ping(self, transformed_result, source, destination, max_drop, expected):
-        if transformed_result[source][destination] <= max_drop:
-            assert "SUCCESS" == expected
-        assert "FAIL" == expected
+        if expected == "SUCCESS":
+            assert transformed_result[source][destination] <= max_drop
+        elif expected == "FAIL":
+            assert transformed_result[source][destination] >= max_drop  # not needed, packet loss = packet sent
+        # FLAPPING
+        else:
+            assert False
         # assert transformed_result[source][destination].name == expected
+
 
 
 # class Ping(Enum):

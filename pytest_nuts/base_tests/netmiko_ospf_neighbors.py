@@ -41,6 +41,16 @@ class TestNetmikoCdpNeighborsCount:
         assert len(transformed_result[source]) == neighbor_count
 
 
+class TestNetmikoCdpNeighborsFull:
+    @pytest.mark.nuts("source,local_port,neighbor_id,neighbor_address,state", "placeholder")
+    def test_neighbor_full(self, transformed_result, source, local_port, neighbor_id, neighbor_address, state):
+        assert source in transformed_result
+        assert neighbor_id in transformed_result[source]
+        neighbor = transformed_result[source][neighbor_id]
+        assert neighbor["interface"] == local_port
+        assert neighbor["address"] == neighbor_address
+        assert neighbor["state"] == state
+
 def transform_result(general_result):
     return {source: _transform_single_result(result) for source, result in general_result.items()}
 

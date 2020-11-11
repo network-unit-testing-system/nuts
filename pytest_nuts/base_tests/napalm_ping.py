@@ -9,11 +9,12 @@ from nornir_napalm.plugins.tasks import napalm_ping
 class TestNapalmPing:
     @pytest.fixture(scope="class")
     def nuts_task(self):
-        return _napalm_ping_multi_host
+        return napalm_ping_multi_host
 
     @pytest.fixture(scope="class")
     def nuts_arguments(self, nuts_parameters):
-        return {"destinations_per_host": _destinations_per_host(nuts_parameters['test_data']), **nuts_parameters['test_execution']}
+        return {"destinations_per_host":
+                    _destinations_per_host(nuts_parameters['test_data']), **nuts_parameters['test_execution']}
 
     @pytest.fixture(scope="class")
     def hosts(self, nuts_parameters):
@@ -21,7 +22,7 @@ class TestNapalmPing:
 
     @pytest.fixture(scope="class")
     def transformed_result(self, general_result, nuts_parameters):
-        return {host: _parse_ping_results(host, task_results, nuts_parameters['test_data']) for host, task_results in general_result.items()}
+        return transform_result(general_result, nuts_parameters['test_data'])
 
     @pytest.mark.nuts("source,destination,expected", "placeholder")
     def test_ping(self, transformed_result, source, destination, expected):
@@ -34,7 +35,7 @@ class Ping(Enum):
     FLAPPING = 2
 
 
-def _napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Result:
+def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Result:
     destinations = destinations_per_host(task.host.name)
     for destination in destinations:
         result = task.run(task=napalm_ping, dest=destination, **kwargs)
@@ -46,9 +47,16 @@ def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["source"] == host_name]
 
 
+def transform_result(general_result, test_data):
+    return {host: _parse_ping_results(host, task_results, test_data)
+            for host, task_results in general_result.items()}
+
+
 def _parse_ping_results(host, task_results, test_data):
     maxdrop_per_destination = {entry["destination"]: entry["max_drop"] for entry in test_data if entry["source"] == host}
-    return {ping_task.destination: _map_result_to_enum(ping_task.result, maxdrop_per_destination[ping_task.destination]) for ping_task in task_results[1:]}
+    return {ping_task.destination:
+            _map_result_to_enum(ping_task.result, maxdrop_per_destination[ping_task.destination])
+            for ping_task in task_results[1:]}
 
 
 def _map_result_to_enum(result, max_drop):

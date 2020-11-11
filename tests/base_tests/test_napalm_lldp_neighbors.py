@@ -19,7 +19,7 @@ neighbor_details = {
 def general_result():
     result = AggregatedResult("napalm_get")
     multi_result_r1 = MultiResult("napalm_get")
-    result_r1 = Result(host=None, name="naplam_get")
+    result_r1 = Result(host=None, name="napalm_get")
     result_r1.result = {
         "lldp_neighbors_detail": {
             "GigabitEthernet4": [neighbor_details.copy()],
@@ -40,7 +40,7 @@ def general_result():
     multi_result_r1.append(result_r1)
     result["R1"] = multi_result_r1
     multi_result_r2 = MultiResult("napalm_get")
-    result_r2 = Result(host=None, name="naplam_get")
+    result_r2 = Result(host=None, name="napalm_get")
     result_r2.result = {
         "lldp_neighbors_detail": {
             "GigabitEthernet4": [

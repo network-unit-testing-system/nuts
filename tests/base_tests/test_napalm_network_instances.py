@@ -8,7 +8,7 @@ from pytest_nuts.base_tests.napalm_network_instances import transform_result
 def general_result():
     result = AggregatedResult("napalm_get")
     multi_result_r1 = MultiResult("napalm_get")
-    result_r1 = Result(host=None, name="naplam_get")
+    result_r1 = Result(host=None, name="napalm_get")
     result_r1.result = {
         "network_instances": {
             "default": {

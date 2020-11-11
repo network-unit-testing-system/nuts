@@ -1,7 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
-from pytest_nuts.base_tests.napalm_virtual_instances import transform_result
+from pytest_nuts.base_tests.napalm_network_instances import transform_result
 
 
 @pytest.fixture

@@ -2,78 +2,75 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from pytest_nuts.base_tests.napalm_network_instances import transform_result
+from tests.shared import create_multi_result
 
 
 @pytest.fixture
 def general_result():
     result = AggregatedResult("napalm_get")
-    multi_result_r1 = MultiResult("napalm_get")
-    result_r1 = Result(host=None, name="napalm_get")
-    result_r1.result = {
-        "network_instances": {
-            "default": {
-                "name": "default",
-                "type": "DEFAULT_INSTANCE",
-                "state": {"route_distinguisher": ""},
-                "interfaces": {
-                    "interface": {
-                        "GigabitEthernet2": {},
-                        "GigabitEthernet3": {},
-                        "GigabitEthernet4": {},
-                        "GigabitEthernet5": {},
-                        "Loopback0": {},
-                    }
+    result["R1"] = create_multi_result(
+        {
+            "network_instances": {
+                "default": {
+                    "name": "default",
+                    "type": "DEFAULT_INSTANCE",
+                    "state": {"route_distinguisher": ""},
+                    "interfaces": {
+                        "interface": {
+                            "GigabitEthernet2": {},
+                            "GigabitEthernet3": {},
+                            "GigabitEthernet4": {},
+                            "GigabitEthernet5": {},
+                            "Loopback0": {},
+                        }
+                    },
                 },
-            },
-            "mgmt": {
-                "name": "mgmt",
-                "type": "L3VRF",
-                "state": {"route_distinguisher": ""},
-                "interfaces": {"interface": {"GigabitEthernet1": {}}},
-            },
-            "test": {
-                "name": "test",
-                "type": "L3VRF",
-                "state": {"route_distinguisher": ""},
-                "interfaces": {"interface": {}},
-            },
-            "test2": {
-                "name": "test2",
-                "type": "L3VRF",
-                "state": {"route_distinguisher": "1:1"},
-                "interfaces": {"interface": {"Loopback2": {}}},
-            },
-        }
-    }
-    multi_result_r1.append(result_r1)
-    result["R1"] = multi_result_r1
-    multi_result_r2 = MultiResult("napalm_get")
-    result_r2 = Result(host=None, name="naplam_get")
-    result_r2.result = {
-        "network_instances": {
-            "default": {
-                "name": "default",
-                "type": "DEFAULT_INSTANCE",
-                "state": {"route_distinguisher": ""},
-                "interfaces": {
-                    "interface": {
-                        "GigabitEthernet2": {},
-                        "GigabitEthernet3": {},
-                        "GigabitEthernet4": {},
-                        "Loopback0": {},
-                    }
+                "mgmt": {
+                    "name": "mgmt",
+                    "type": "L3VRF",
+                    "state": {"route_distinguisher": ""},
+                    "interfaces": {"interface": {"GigabitEthernet1": {}}},
                 },
-            },
-            "mgmt": {
-                "name": "mgmt",
-                "type": "L3VRF",
-                "state": {"route_distinguisher": ""},
-                "interfaces": {"interface": {"GigabitEthernet1": {}}},
-            },
+                "test": {
+                    "name": "test",
+                    "type": "L3VRF",
+                    "state": {"route_distinguisher": ""},
+                    "interfaces": {"interface": {}},
+                },
+                "test2": {
+                    "name": "test2",
+                    "type": "L3VRF",
+                    "state": {"route_distinguisher": "1:1"},
+                    "interfaces": {"interface": {"Loopback2": {}}},
+                },
+            }
         }
-    }
-    multi_result_r2.append(result_r2)
-    result["R2"] = multi_result_r2
+    )
+    result["R2"] = create_multi_result(
+        {
+            "network_instances": {
+                "default": {
+                    "name": "default",
+                    "type": "DEFAULT_INSTANCE",
+                    "state": {"route_distinguisher": ""},
+                    "interfaces": {
+                        "interface": {
+                            "GigabitEthernet2": {},
+                            "GigabitEthernet3": {},
+                            "GigabitEthernet4": {},
+                            "Loopback0": {},
+                        }
+                    },
+                },
+                "mgmt": {
+                    "name": "mgmt",
+                    "type": "L3VRF",
+                    "state": {"route_distinguisher": ""},
+                    "interfaces": {"interface": {"GigabitEthernet1": {}}},
+                },
+            }
+        }
+    )
     return result
 
 

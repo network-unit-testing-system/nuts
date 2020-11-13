@@ -1,4 +1,4 @@
-from tests.shared import YAML_EXTENSION
+from tests.helpers.shared import YAML_EXTENSION
 
 
 def test_execute_tests_based_on_arguments(testdir):

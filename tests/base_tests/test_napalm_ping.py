@@ -11,7 +11,8 @@ test_data = [
 ]
 
 result_data = [
-        {"success": {
+    {
+        "success": {
             "probes_sent": 5,
             "packet_loss": 1,
             "rtt_min": 1.0,
@@ -24,10 +25,11 @@ result_data = [
                 {"ip_address": "172.16.23.3", "rtt": 0.0},
                 {"ip_address": "172.16.23.3", "rtt": 0.0},
                 {"ip_address": "172.16.23.3", "rtt": 0.0},
-                ],
-            }
-        },
-        {"success": {
+            ],
+        }
+    },
+    {
+        "success": {
             "probes_sent": 5,
             "packet_loss": 5,
             "rtt_min": 1.0,
@@ -40,10 +42,11 @@ result_data = [
                 {"ip_address": "172.16.23.4", "rtt": 0.0},
                 {"ip_address": "172.16.23.4", "rtt": 0.0},
                 {"ip_address": "172.16.23.4", "rtt": 0.0},
-                ],
-            }
-         },
-        {"success": {
+            ],
+        }
+    },
+    {
+        "success": {
             "probes_sent": 5,
             "packet_loss": 3,
             "rtt_min": 1.0,
@@ -56,9 +59,9 @@ result_data = [
                 {"ip_address": "172.16.23.5", "rtt": 0.0},
                 {"ip_address": "172.16.23.5", "rtt": 0.0},
                 {"ip_address": "172.16.23.5", "rtt": 0.0},
-                ],
-            }
+            ],
         }
+    },
 ]
 
 
@@ -96,7 +99,7 @@ class TestTransformResult:
         transformed_result = transform_result(general_result, test_data)
         assert host in transformed_result
 
-    @pytest.mark.parametrize("host,destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"),  ("R3", "172.16.23.5")])
+    @pytest.mark.parametrize("host,destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"), ("R3", "172.16.23.5")])
     def test_contains_pinged_destination(self, general_result, host, destination):
         transformed_result = transform_result(general_result, test_data)
         assert destination in transformed_result[host]

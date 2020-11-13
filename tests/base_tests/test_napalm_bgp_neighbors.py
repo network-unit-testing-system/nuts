@@ -42,7 +42,6 @@ def general_result():
                 }
             }
         }
-
     )
     result["R2"] = create_multi_result(
         {

@@ -19,26 +19,29 @@ test_data = [{
 @pytest.fixture
 def general_result():
     result = AggregatedResult("napalm_get")
+    result_r0 = Result(host=None, destination=None, result="All pings executed", name="napalm_ping_multi_host")
     multi_result_r1 = MultiResult("napalm_get")
-    result_r1 = Result(host=None, name="napalm_get")
+    multi_result_r1.append(result_r0)
+    result_r1 = Result(host=None, name="napalm_get", destination="172.16.23.3")
     result_r1.result = {
-        {'success': {'probes_sent': 5, 'packet_loss': 0, 'rtt_min': 1.0, 'rtt_max': 2.0, 'rtt_avg': 1.0,
+                     'success': {'probes_sent': 5, 'packet_loss': 0, 'rtt_min': 1.0, 'rtt_max': 2.0, 'rtt_avg': 1.0,
                      'rtt_stddev': 0.0,
                      'results': [{'ip_address': '172.16.23.3', 'rtt': 0.0}, {'ip_address': '172.16.23.3', 'rtt': 0.0},
                                  {'ip_address': '172.16.23.3', 'rtt': 0.0}, {'ip_address': '172.16.23.3', 'rtt': 0.0},
-                                 {'ip_address': '172.16.23.3', 'rtt': 0.0}]}}
-    }
+                                 {'ip_address': '172.16.23.3', 'rtt': 0.0}]}
+                    }
+
     multi_result_r1.append(result_r1)
     result["R1"] = multi_result_r1
     multi_result_r2 = MultiResult("napalm_get")
-    result_r2 = Result(host=None, name="napalm_get")
-    result_r2.result = {
-        {'success': {'probes_sent': 5, 'packet_loss': 0, 'rtt_min': 1.0, 'rtt_max': 1.0, 'rtt_avg': 1.0,
+    multi_result_r2.append(result_r0)
+    result_r2 = Result(host=None, name="napalm_get", destination="172.16.23.3")
+    result_r2.result = {'success': {'probes_sent': 5, 'packet_loss': 0, 'rtt_min': 1.0, 'rtt_max': 1.0, 'rtt_avg': 1.0,
                      'rtt_stddev': 0.0,
                      'results': [{'ip_address': '172.16.23.3', 'rtt': 0.0}, {'ip_address': '172.16.23.3', 'rtt': 0.0},
                                  {'ip_address': '172.16.23.3', 'rtt': 0.0}, {'ip_address': '172.16.23.3', 'rtt': 0.0},
-                                 {'ip_address': '172.16.23.3', 'rtt': 0.0}]}}
-    }
+                                 {'ip_address': '172.16.23.3', 'rtt': 0.0}]}
+                    }
     multi_result_r2.append(result_r2)
     result["R2"] = multi_result_r2
     return result
@@ -53,17 +56,11 @@ class TestTransformResult:
     @pytest.mark.parametrize("host,destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.3")])
     def test_contains_pingeddestination(self, general_result, host, destination):
         transformed_result = transform_result(general_result, test_data)
-        assert transformed_result[host].keys == destination  # assert keys
+        assert destination in transformed_result[host]
 
     @pytest.mark.parametrize("host,destination,ping_result",[("R1", "172.16.23.3", 1), ("R2", "172.16.23.3", 1)] )
     def test_destination_maps_to_enum(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
-        assert transformed_result[host][destination]
+        assert transformed_result[host][destination].value == ping_result
 
-    # results-part is not empty and contains ip-addresses
-        # was transform_result zurückgibt:
-        result = {'R1': {
-                   '172.16.23.3': SUCCESS: 1 >, '172.16.14.4': < Ping.SUCCESS: 1 >, '172.16.42.42': < Ping.FAIL: 0 >},
-        'R2': {'172.16.23.3': < Ping.SUCCESS: 1 >, '172.16.14.4': < Ping.SUCCESS: 1 >, '172.16.42.43': < Ping.FAIL: 0 >}
-        }
-    #
+

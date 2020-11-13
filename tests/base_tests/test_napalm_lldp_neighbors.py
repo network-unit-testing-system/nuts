@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from pytest_nuts.base_tests.napalm_lldp_neighbors import transform_result
-from tests.shared import create_multi_result
+from tests.helpers.shared import create_multi_result
 
 neighbor_details = {
     "remote_chassis_id": "001e.e611.3500",

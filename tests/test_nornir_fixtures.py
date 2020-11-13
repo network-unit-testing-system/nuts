@@ -3,7 +3,7 @@ from nornir.core.plugins.connections import ConnectionPluginRegister
 from nornir.core.plugins.inventory import InventoryPluginRegister
 from nornir.core.plugins.runners import RunnersPluginRegister
 
-from tests.shared import YAML_EXTENSION
+from tests.helpers.shared import YAML_EXTENSION
 
 
 @pytest.fixture

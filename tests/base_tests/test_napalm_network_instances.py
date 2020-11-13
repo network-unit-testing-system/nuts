@@ -1,8 +1,8 @@
 import pytest
-from nornir.core.task import AggregatedResult, MultiResult, Result
+from nornir.core.task import AggregatedResult
 
 from pytest_nuts.base_tests.napalm_network_instances import transform_result
-from tests.shared import create_multi_result
+from tests.helpers.shared import create_multi_result
 
 
 @pytest.fixture

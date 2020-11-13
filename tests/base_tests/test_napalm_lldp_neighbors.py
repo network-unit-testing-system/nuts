@@ -1,7 +1,8 @@
 import pytest
-from nornir.core.task import AggregatedResult, MultiResult, Result
+from nornir.core.task import AggregatedResult
 
 from pytest_nuts.base_tests.napalm_lldp_neighbors import transform_result
+from tests.helpers.shared import create_multi_result
 
 neighbor_details = {
     "remote_chassis_id": "001e.e611.3500",
@@ -18,59 +19,55 @@ neighbor_details = {
 @pytest.fixture
 def general_result():
     result = AggregatedResult("napalm_get")
-    multi_result_r1 = MultiResult("napalm_get")
-    result_r1 = Result(host=None, name="napalm_get")
-    result_r1.result = {
-        "lldp_neighbors_detail": {
-            "GigabitEthernet4": [neighbor_details.copy()],
-            "GigabitEthernet3": [
-                {
-                    "remote_chassis_id": "001e.f62f.a600",
-                    "remote_port": "Gi2",
-                    "remote_port_description": "GigabitEthernet2",
-                    "remote_system_name": "R2",
-                    "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-                    "remote_system_capab": ["bridge", "router"],
-                    "remote_system_enable_capab": ["router"],
-                    "parent_interface": "",
-                }
-            ],
+    result["R1"] = create_multi_result(
+        {
+            "lldp_neighbors_detail": {
+                "GigabitEthernet4": [neighbor_details.copy()],
+                "GigabitEthernet3": [
+                    {
+                        "remote_chassis_id": "001e.f62f.a600",
+                        "remote_port": "Gi2",
+                        "remote_port_description": "GigabitEthernet2",
+                        "remote_system_name": "R2",
+                        "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+                        "remote_system_capab": ["bridge", "router"],
+                        "remote_system_enable_capab": ["router"],
+                        "parent_interface": "",
+                    }
+                ],
+            }
         }
-    }
-    multi_result_r1.append(result_r1)
-    result["R1"] = multi_result_r1
-    multi_result_r2 = MultiResult("napalm_get")
-    result_r2 = Result(host=None, name="napalm_get")
-    result_r2.result = {
-        "lldp_neighbors_detail": {
-            "GigabitEthernet4": [
-                {
-                    "remote_chassis_id": "001e.e611.3500",
-                    "remote_port": "Gi3",
-                    "remote_port_description": "GigabitEthernet3",
-                    "remote_system_name": "R3",
-                    "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-                    "remote_system_capab": ["bridge", "router"],
-                    "remote_system_enable_capab": ["router"],
-                    "parent_interface": "",
-                }
-            ],
-            "GigabitEthernet2": [
-                {
-                    "remote_chassis_id": "001e.e547.df00",
-                    "remote_port": "Gi3",
-                    "remote_port_description": "GigabitEthernet3",
-                    "remote_system_name": "R1",
-                    "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-                    "remote_system_capab": ["bridge", "router"],
-                    "remote_system_enable_capab": ["router"],
-                    "parent_interface": "",
-                }
-            ],
+    )
+    result["R2"] = create_multi_result(
+        {
+            "lldp_neighbors_detail": {
+                "GigabitEthernet4": [
+                    {
+                        "remote_chassis_id": "001e.e611.3500",
+                        "remote_port": "Gi3",
+                        "remote_port_description": "GigabitEthernet3",
+                        "remote_system_name": "R3",
+                        "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+                        "remote_system_capab": ["bridge", "router"],
+                        "remote_system_enable_capab": ["router"],
+                        "parent_interface": "",
+                    }
+                ],
+                "GigabitEthernet2": [
+                    {
+                        "remote_chassis_id": "001e.e547.df00",
+                        "remote_port": "Gi3",
+                        "remote_port_description": "GigabitEthernet3",
+                        "remote_system_name": "R1",
+                        "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+                        "remote_system_capab": ["bridge", "router"],
+                        "remote_system_enable_capab": ["router"],
+                        "parent_interface": "",
+                    }
+                ],
+            }
         }
-    }
-    multi_result_r2.append(result_r2)
-    result["R2"] = multi_result_r2
+    )
     return result
 
 

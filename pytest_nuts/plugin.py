@@ -1,6 +1,6 @@
 import pytest
-
 from nornir import InitNornir
+
 from pytest_nuts.yaml2test import NutsYamlFile
 
 
@@ -51,10 +51,14 @@ def pytest_generate_tests(metafunc):
 
 def get_parametrize_data(metafunc, nuts_params):
     fields = nuts_params[0].split(",")
+    if len(nuts_params) >= 3:
+        required_fields = nuts_params[2].split(",")
+    else:
+        required_fields = []
     func = getattr(metafunc.cls, "get_parametrizing_data", None)
     if not func:
         return []
-    return dict_to_tuple_list(metafunc.cls.get_parametrizing_data(), fields)
+    return dict_to_tuple_list(metafunc.cls.get_parametrizing_data(), fields, required_fields)
 
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
@@ -63,10 +67,17 @@ def pytest_collect_file(parent, path):
         return NutsYamlFile.from_parent(parent, fspath=path)
 
 
-def dict_to_tuple_list(source, fields):
-    return [dict_to_tuple(item, fields) for item in source]
+def dict_to_tuple_list(source, fields, required_fields):
+    return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in source]
+
+
+def wrap_if_needed(source, required_fields, tuple):
+    missing_fields = [field for field in required_fields if field not in source]
+    if not missing_fields:
+        return tuple
+    return pytest.param(*tuple, marks=pytest.mark.skip(f"required values {missing_fields} not present in test-bundle"))
 
 
 def dict_to_tuple(source, fields):
-    ordered_fields = [source[field] for field in fields]
+    ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

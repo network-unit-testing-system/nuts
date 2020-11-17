@@ -8,6 +8,7 @@ test_data = [
     {"expected": "SUCCESS", "source": "R1", "destination": "172.16.23.3", "max_drop": 1},
     {"expected": "FAIL", "source": "R2", "destination": "172.16.23.4", "max_drop": 1},
     {"expected": "FLAPPING", "source": "R3", "destination": "172.16.23.5", "max_drop": 1},
+    {"expected": "SUCCESS", "source": "R1", "destination": "172.16.23.6", "max_drop": 1},
 ]
 
 result_data = [
@@ -62,6 +63,23 @@ result_data = [
             ],
         }
     },
+    {
+        "success": {
+            "probes_sent": 5,
+            "packet_loss": 1,
+            "rtt_min": 1.0,
+            "rtt_max": 2.0,
+            "rtt_avg": 1.0,
+            "rtt_stddev": 0.0,
+            "results": [
+                {"ip_address": "172.16.23.6", "rtt": 0.0},
+                {"ip_address": "172.16.23.6", "rtt": 0.0},
+                {"ip_address": "172.16.23.6", "rtt": 0.0},
+                {"ip_address": "172.16.23.6", "rtt": 0.0},
+                {"ip_address": "172.16.23.6", "rtt": 0.0},
+            ],
+        }
+    },
 ]
 
 
@@ -72,9 +90,12 @@ def general_result():
 
     multi_result_r1 = MultiResult("napalm_ping_multi_host")
     multi_result_r1.append(result_r0)
-    result_r1 = Result(host=None, name="napalm_ping", destination="172.16.23.3")
-    result_r1.result = result_data[0]
-    multi_result_r1.append(result_r1)
+    result_r1_1 = Result(host=None, name="napalm_ping", destination="172.16.23.3")
+    result_r1_1.result = result_data[0]
+    multi_result_r1.append(result_r1_1)
+    result_r1_2 = Result(host=None, name="napalm_ping", destination="172.16.23.6")
+    result_r1_2.result = result_data[0]
+    multi_result_r1.append(result_r1_2)
     result["R1"] = multi_result_r1
 
     multi_result_r2 = MultiResult("napalm_ping_multi_host")
@@ -116,5 +137,11 @@ class TestTransformResult:
 
     @pytest.mark.parametrize("host,destination,ping_result", [("R3", "172.16.23.5", Ping.FLAPPING)])
     def test_destination_maps_to_enum_flapping(self, general_result, host, destination, ping_result):
+        transformed_result = transform_result(general_result, test_data)
+        assert transformed_result[host][destination] == ping_result
+
+    @pytest.mark.parametrize("host, destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS),
+                                                               ("R1", "172.16.23.6", Ping.SUCCESS)])
+    def test_one_host_several_destinations(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
         assert transformed_result[host][destination] == ping_result

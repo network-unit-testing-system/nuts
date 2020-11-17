@@ -140,8 +140,9 @@ class TestTransformResult:
         transformed_result = transform_result(general_result, test_data)
         assert transformed_result[host][destination] == ping_result
 
-    @pytest.mark.parametrize("host, destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS),
-                                                               ("R1", "172.16.23.6", Ping.SUCCESS)])
+    @pytest.mark.parametrize(
+        "host, destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS), ("R1", "172.16.23.6", Ping.SUCCESS)]
+    )
     def test_one_host_several_destinations(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
         assert transformed_result[host][destination] == ping_result

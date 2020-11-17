@@ -94,7 +94,7 @@ def general_result():
     result_r1_1.result = result_data[0]
     multi_result_r1.append(result_r1_1)
     result_r1_2 = Result(host=None, name="napalm_ping", destination="172.16.23.6")
-    result_r1_2.result = result_data[0]
+    result_r1_2.result = result_data[3]
     multi_result_r1.append(result_r1_2)
     result["R1"] = multi_result_r1
 

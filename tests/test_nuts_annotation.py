@@ -134,7 +134,7 @@ class TestOptionalAttributes:
         result = testdir.runpytest()
         result.assert_outcomes(passed=1)
 
-    def test_executes_test_if_required_attribute_is_None(self, testdir):
+    def test_executes_test_if_required_attribute_is_none(self, testdir):
         arguments = {
             "test_class_loading": """
         ---

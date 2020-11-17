@@ -26,7 +26,7 @@ class TestNapalmPing:
     def transformed_result(self, general_result, nuts_parameters):
         return transform_result(general_result, nuts_parameters["test_data"])
 
-    @pytest.mark.nuts("source,destination,expected", "placeholder")
+    @pytest.mark.nuts("source,destination,expected")
     def test_ping(self, transformed_result, source, destination, expected):
         assert transformed_result[source][destination].name == expected
 

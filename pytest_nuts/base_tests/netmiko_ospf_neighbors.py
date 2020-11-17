@@ -35,14 +35,14 @@ def destination_list(nuts_parameters):
 
 
 class TestNetmikoCdpNeighborsCount:
-    @pytest.mark.nuts("source,neighbor_count", "placeholder")
+    @pytest.mark.nuts("source,neighbor_count")
     def test_neighbor_count(self, transformed_result, source, neighbor_count):
         assert source in transformed_result
         assert len(transformed_result[source]) == neighbor_count
 
 
 class TestNetmikoCdpNeighborsFull:
-    @pytest.mark.nuts("source,local_port,neighbor_id,neighbor_address,state", "placeholder")
+    @pytest.mark.nuts("source,local_port,neighbor_id,neighbor_address,state")
     def test_neighbor_full(self, transformed_result, source, local_port, neighbor_id, neighbor_address, state):
         assert source in transformed_result
         assert neighbor_id in transformed_result[source]

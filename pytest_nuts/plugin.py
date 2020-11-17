@@ -47,8 +47,6 @@ def pytest_generate_tests(metafunc):
     nuts = [mark.args for mark in metafunc.definition.own_markers if mark.name == "nuts"]
     if nuts and len(nuts) == 1:
         nuts_params = nuts[0]
-        assert nuts_params[1] == "placeholder"
-
         parametrize_data = get_parametrize_data(metafunc, nuts_params)
         metafunc.parametrize(nuts_params[0], parametrize_data)
 
@@ -63,8 +61,8 @@ def get_parametrize_data(metafunc, nuts_params):
 
 
 def calculate_required_fields(fields, nuts_params):
-    if len(nuts_params) >= 3:
-        optional_fields = nuts_params[2].split(",")
+    if len(nuts_params) >= 2:
+        optional_fields = nuts_params[1].split(",")
         required_fields = [field for field in fields if field not in optional_fields]
     else:
         required_fields = fields

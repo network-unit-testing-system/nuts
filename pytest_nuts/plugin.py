@@ -1,6 +1,6 @@
 import pytest
-
 from nornir import InitNornir
+
 from pytest_nuts.yaml2test import NutsYamlFile
 
 
@@ -32,6 +32,11 @@ def general_result(initialized_nornir, nuts_task, nuts_arguments, nornir_filter)
         selected_hosts = initialized_nornir
     overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
     return overall_results
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers",
+                            "nuts: marks the test for nuts parameterization")
 
 
 def pytest_generate_tests(metafunc):

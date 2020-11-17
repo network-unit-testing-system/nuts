@@ -51,6 +51,7 @@ class TestNetmikoCdpNeighborsFull:
         assert neighbor["address"] == neighbor_address
         assert neighbor["state"] == state
 
+
 def transform_result(general_result):
     return {source: _transform_single_result(result) for source, result in general_result.items()}
 

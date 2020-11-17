@@ -31,20 +31,6 @@ class TestExecuteTests:
         result = testdir.runpytest()
         result.assert_outcomes(passed=2)
 
-    def test_inserts_none_on_incomplete_data(self, testdir):
-        arguments = {
-            "test_class_loading": """
-    ---
-    - test_module: tests.base_tests.simple_nuts_annotation
-      test_class: TestNonPresentValue
-      test_data: [{"key": "abc"}]
-                """
-        }
-        testdir.makefile(YAML_EXTENSION, **arguments)
-
-        result = testdir.runpytest()
-        result.assert_outcomes(passed=1)
-
     def test_multiple_times_separates_arguments(self, testdir):
         arguments = {
             "test_class_loading": """
@@ -77,13 +63,13 @@ class TestExecuteTests:
         result.assert_outcomes(errors=1)
 
 
-class TestRequiredAttributes:
-    def test_skips_test_if_required_attribute_is_missing(self, testdir):
+class TestOptionalAttributes:
+    def test_skips_test_if_attribute_is_missing(self, testdir):
         arguments = {
             "test_class_loading": """
         ---
         - test_module: tests.base_tests.simple_nuts_annotation
-          test_class: TestRequiredAttribute
+          test_class: TestKeyValue
           test_data: [{"key": "abc"}]
                     """
         }
@@ -92,12 +78,12 @@ class TestRequiredAttributes:
         result = testdir.runpytest()
         result.assert_outcomes(skipped=1)
 
-    def test_skips_test_if_any_required_attribute_is_missing(self, testdir):
+    def test_skips_test_if_non_optional_attribute_is_missing(self, testdir):
         arguments = {
             "test_class_loading": """
         ---
         - test_module: tests.base_tests.simple_nuts_annotation
-          test_class: TestRequiredAttributes
+          test_class: TestOptionalAttribute
           test_data: [{"key": "abc"}]
                     """
         }
@@ -106,27 +92,41 @@ class TestRequiredAttributes:
         result = testdir.runpytest()
         result.assert_outcomes(skipped=1)
 
-    def test_skips_tests_if_multiple_required_attributes_are_missing(self, testdir):
+    def test_executes_test_if_optional_attribute_is_missing(self, testdir):
         arguments = {
             "test_class_loading": """
         ---
         - test_module: tests.base_tests.simple_nuts_annotation
-          test_class: TestRequiredAttributes
+          test_class: TestOptionalAttribute
+          test_data: [{"value": null}]
+                    """
+        }
+        testdir.makefile(YAML_EXTENSION, **arguments)
+
+        result = testdir.runpytest()
+        result.assert_outcomes(passed=1)
+
+    def test_executes_test_if_any_optional_attribute_is_missing(self, testdir):
+        arguments = {
+            "test_class_loading": """
+        ---
+        - test_module: tests.base_tests.simple_nuts_annotation
+          test_class: TestOptionalAttributes
+          test_data: [{"value": null}]
+                    """
+        }
+        testdir.makefile(YAML_EXTENSION, **arguments)
+
+        result = testdir.runpytest()
+        result.assert_outcomes(passed=1)
+
+    def test_executes_test_if_all_optional_attribute_are_missing(self, testdir):
+        arguments = {
+            "test_class_loading": """
+        ---
+        - test_module: tests.base_tests.simple_nuts_annotation
+          test_class: TestOptionalAttributes
           test_data: [{}]
-                    """
-        }
-        testdir.makefile(YAML_EXTENSION, **arguments)
-
-        result = testdir.runpytest()
-        result.assert_outcomes(skipped=1)
-
-    def test_executes_test_if_required_attribute_is_present(self, testdir):
-        arguments = {
-            "test_class_loading": """
-        ---
-        - test_module: tests.base_tests.simple_nuts_annotation
-          test_class: TestRequiredAttribute
-          test_data: [{"key":"value", "value": "value"}]
                     """
         }
         testdir.makefile(YAML_EXTENSION, **arguments)
@@ -139,7 +139,7 @@ class TestRequiredAttributes:
             "test_class_loading": """
         ---
         - test_module: tests.base_tests.simple_nuts_annotation
-          test_class: TestRequiredAttributes
+          test_class: TestKeyValue
           test_data: [{"key": null, "value": null}]
                     """
         }

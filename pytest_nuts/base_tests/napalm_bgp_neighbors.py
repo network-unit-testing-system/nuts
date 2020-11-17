@@ -24,32 +24,32 @@ class TestNapalmBgpNeighbors:
     def transformed_result(self, general_result):
         return transform_result(general_result)
 
-    @pytest.mark.nuts("source,peer,local_as", "placeholder", "local_as")
+    @pytest.mark.nuts("source,peer,local_as", "placeholder")
     def test_local_as(self, transformed_result, source, peer, local_as):
         bgp_neighbor_entry = transformed_result[source][peer]
         assert bgp_neighbor_entry["local_as"] == local_as
 
-    @pytest.mark.nuts("source,peer,local_id", "placeholder", "local_id")
+    @pytest.mark.nuts("source,peer,local_id", "placeholder")
     def test_local_id(self, transformed_result, source, peer, local_id):
         bgp_neighbor_entry = transformed_result[source][peer]
         assert bgp_neighbor_entry["local_id"] == local_id
 
-    @pytest.mark.nuts("source,peer,remote_as", "placeholder", "remote_as")
+    @pytest.mark.nuts("source,peer,remote_as", "placeholder")
     def test_remote_as(self, transformed_result, source, peer, remote_as):
         bgp_neighbor_entry = transformed_result[source][peer]
         assert bgp_neighbor_entry["remote_as"] == remote_as
 
-    @pytest.mark.nuts("source,peer,remote_id", "placeholder", "remote_id")
+    @pytest.mark.nuts("source,peer,remote_id", "placeholder")
     def test_remote_id(self, transformed_result, source, peer, remote_id):
         bgp_neighbor_entry = transformed_result[source][peer]
         assert bgp_neighbor_entry["remote_id"] == remote_id
 
-    @pytest.mark.nuts("source,peer,is_enabled", "placeholder", "is_enabled")
+    @pytest.mark.nuts("source,peer,is_enabled", "placeholder")
     def test_is_enabled(self, transformed_result, source, peer, is_enabled):
         bgp_neighbor_entry = transformed_result[source][peer]
         assert bgp_neighbor_entry["is_enabled"] == is_enabled
 
-    @pytest.mark.nuts("source,peer,is_up", "placeholder", "is_up")
+    @pytest.mark.nuts("source,peer,is_up", "placeholder")
     def test_is_up(self, transformed_result, source, peer, is_up):
         bgp_neighbor_entry = transformed_result[source][peer]
         assert bgp_neighbor_entry["is_up"] == is_up

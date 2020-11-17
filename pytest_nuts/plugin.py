@@ -51,14 +51,20 @@ def pytest_generate_tests(metafunc):
 
 def get_parametrize_data(metafunc, nuts_params):
     fields = nuts_params[0].split(",")
-    if len(nuts_params) >= 3:
-        required_fields = nuts_params[2].split(",")
-    else:
-        required_fields = []
+    required_fields = calculate_required_fields(fields, nuts_params)
     func = getattr(metafunc.cls, "get_parametrizing_data", None)
     if not func:
         return []
     return dict_to_tuple_list(metafunc.cls.get_parametrizing_data(), fields, required_fields)
+
+
+def calculate_required_fields(fields, nuts_params):
+    if len(nuts_params) >= 3:
+        optional_fields = nuts_params[2].split(",")
+        required_fields = [field for field in fields if field not in optional_fields]
+    else:
+        required_fields = fields
+    return required_fields
 
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin

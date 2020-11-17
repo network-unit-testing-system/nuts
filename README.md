@@ -148,9 +148,8 @@ these fields are extracted and transformed to a tuple considering the correct or
 This currently requires that each entry in the `test_data` is a dictionary.
 
 If any of these fields are not present in an entry of `test_data`, the corresponding test case will be skipped.
-However, it is possible to specify which fields are optional as the second argument of the nuts annotation
- similarly to the first argument.
-In this case non present values are passed into the function as `None`.
+However, optional fields can be set as the second argument of the nuts annotation
+ similarly to the first argument. In this case non-present values are passed into the function as `None`.
 
 #### Example of a test class with custom marker
 ```python
@@ -161,6 +160,9 @@ class CdpNeighborTest:
         pass
 ```
 
+This test class of CDP neighbors uses the fields `source`, `local_port`, `destination_host`, `management_ip` and `remote_port`
+in each entry that is listed under the `test_data` section in the test bundle. They must all be present, otherwise the test fails.
+However, *some* of those entries can have the fields `management_ip` and `remote_port`, which means they are optional.
 
 
 ## Development

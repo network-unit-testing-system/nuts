@@ -6,6 +6,28 @@ from pytest_nuts.helpers.converters import InterfaceNameConverter
 from pytest_nuts.helpers.data import NutsNornirResult
 
 
+@pytest.fixture
+def check_failed(single_result):
+    assert not single_result.exception_or_failed()
+    yield
+
+
+@pytest.fixture
+def check_failed2(transformed_result):
+    single_result = extract_single_result(transformed_result)
+    assert not single_result.exception_or_failed()
+    yield
+
+
+@pytest.fixture
+def extract_single_result(transformed_result, source):
+    def _extract_single_result(result):
+        return result[source]
+
+    return _extract_single_result
+
+
+@pytest.mark.usefixtures("check_failed")
 class TestNapalmLldpNeighbors:
     @pytest.fixture(scope="class")
     def nuts_task(self):
@@ -27,10 +49,13 @@ class TestNapalmLldpNeighbors:
     def transformed_result(self, general_result):
         return transform_result(general_result)
 
+    @pytest.fixture
+    def single_result(self, transformed_result, source):
+        return transformed_result[source]
+
     @pytest.mark.nuts("source,local_port,remote_host,remote_port", "placeholder")
-    def test_neighbor_full(self, transformed_result, source, local_port, remote_host, remote_port):
-        assert not transformed_result[source].exception_or_failed()
-        bgp_neighbor_entry = transformed_result[source].result[local_port]
+    def test_neighbor_full(self, single_result, local_port, remote_host, remote_port):
+        bgp_neighbor_entry = single_result.result[local_port]
         assert bgp_neighbor_entry["remote_host"] == remote_host
         assert (
             bgp_neighbor_entry["remote_port"] == remote_port

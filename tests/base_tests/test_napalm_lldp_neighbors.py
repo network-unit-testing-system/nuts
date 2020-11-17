@@ -70,7 +70,8 @@ def general_result():
         }
     )
 
-    result['R3'] = create_multi_result(r'''Traceback (most recent call last):
+    result["R3"] = create_multi_result(
+        r"""Traceback (most recent call last):
   File "C:\Users\maede\Documents\nornir-pytest-playground\venv\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection
     self.remote_conn_pre.connect(**ssh_connect_params)
   File "C:\Users\maede\Documents\nornir-pytest-playground\venv\lib\site-packages\paramiko\client.py", line 349, in connect
@@ -125,7 +126,10 @@ Traceback (most recent call last):
   File "C:\Users\maede\Documents\nornir-pytest-playground\venv\lib\site-packages\napalm\base\base.py", line 95, in _netmiko_open
     raise ConnectionException("Cannot connect to {}".format(self.hostname))
 napalm.base.exceptions.ConnectionException: Cannot connect to 10.20.0.123
-''', failed=True, exception=ConnectionException('Cannot connect to 10.20.0.123'))
+""",
+        failed=True,
+        exception=ConnectionException("Cannot connect to 10.20.0.123"),
+    )
     return result
 
 
@@ -141,21 +145,21 @@ class TestTransformResult:
     )
     def test_contains_local_ports_at_second_level(self, general_result, host, local_ports):
         transformed_result = transform_result(general_result)
-        assert list(transformed_result[host]['peers'].keys()) == local_ports
+        assert list(transformed_result[host]["peers"].keys()) == local_ports
 
     @pytest.mark.parametrize("host,local_port,expected_details", [("R1", "GigabitEthernet4", neighbor_details)])
     def test_contains_information_about_neighbor(self, general_result, host, local_port, expected_details):
         transformed_result = transform_result(general_result)
-        actual_details = transformed_result[host]['peers'][local_port]
+        actual_details = transformed_result[host]["peers"][local_port]
         for key in expected_details:
             assert actual_details[key] == expected_details[key]
 
     @pytest.mark.parametrize("host,local_port,remote_host", [("R1", "GigabitEthernet4", "R3")])
     def test_contains_information_remote_host(self, general_result, host, local_port, remote_host):
         transformed_result = transform_result(general_result)
-        assert transformed_result[host]['peers'][local_port]["remote_host"] == remote_host
+        assert transformed_result[host]["peers"][local_port]["remote_host"] == remote_host
 
     @pytest.mark.parametrize("host,local_port,remote_port_expanded", [("R1", "GigabitEthernet4", "GigabitEthernet2")])
     def test_contains_information_expanded_interface(self, general_result, host, local_port, remote_port_expanded):
         transformed_result = transform_result(general_result)
-        assert transformed_result[host]['peers'][local_port]["remote_port_expanded"] == remote_port_expanded
+        assert transformed_result[host]["peers"][local_port]["remote_port_expanded"] == remote_port_expanded

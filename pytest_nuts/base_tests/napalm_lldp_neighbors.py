@@ -3,6 +3,7 @@ from nornir.core.filter import F
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.converters import InterfaceNameConverter
+from pytest_nuts.helpers.data import NutsNornirResult
 
 
 class TestNapalmLldpNeighbors:
@@ -28,8 +29,8 @@ class TestNapalmLldpNeighbors:
 
     @pytest.mark.nuts("source,local_port,remote_host,remote_port", "placeholder")
     def test_neighbor_full(self, transformed_result, source, local_port, remote_host, remote_port):
-        assert not transformed_result[source]['failed']
-        bgp_neighbor_entry = transformed_result[source]['peers'][local_port]
+        assert not transformed_result[source].exception_or_failed()
+        bgp_neighbor_entry = transformed_result[source].result[local_port]
         assert bgp_neighbor_entry["remote_host"] == remote_host
         assert (
             bgp_neighbor_entry["remote_port"] == remote_port
@@ -43,10 +44,10 @@ def transform_result(general_result):
 
 def _transform_single_result(single_result):
     if single_result.failed:
-        return {"peers": {}, "failed": True}
+        return NutsNornirResult(failed=True, exception=single_result.exception)
     task_result = single_result[0].result
     neighbors = task_result["lldp_neighbors_detail"]
-    return {"peers": {peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()}, "failed": False}
+    return NutsNornirResult({peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()})
 
 
 def _add_custom_fields(element):

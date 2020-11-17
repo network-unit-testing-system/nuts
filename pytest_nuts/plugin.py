@@ -35,8 +35,7 @@ def general_result(initialized_nornir, nuts_task, nuts_arguments, nornir_filter)
 
 
 def pytest_configure(config):
-    config.addinivalue_line("markers",
-                            "nuts: marks the test for nuts parameterization")
+    config.addinivalue_line("markers", "nuts: marks the test for nuts parameterization")
 
 
 def pytest_generate_tests(metafunc):

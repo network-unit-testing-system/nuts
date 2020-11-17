@@ -3,28 +3,7 @@ from nornir.core.filter import F
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.converters import InterfaceNameConverter
-from pytest_nuts.helpers.data import NutsNornirResult
-
-
-@pytest.fixture
-def check_failed(single_result):
-    assert not single_result.exception_or_failed()
-    yield
-
-
-@pytest.fixture
-def check_failed2(transformed_result):
-    single_result = extract_single_result(transformed_result)
-    assert not single_result.exception_or_failed()
-    yield
-
-
-@pytest.fixture
-def extract_single_result(transformed_result, source):
-    def _extract_single_result(result):
-        return result[source]
-
-    return _extract_single_result
+from pytest_nuts.helpers.result import nuts_result_wrapper, check_result
 
 
 @pytest.mark.usefixtures("check_failed")
@@ -51,6 +30,7 @@ class TestNapalmLldpNeighbors:
 
     @pytest.fixture
     def single_result(self, transformed_result, source):
+        assert source in transformed_result, f"Host {source} not found in aggregated result."
         return transformed_result[source]
 
     @pytest.mark.nuts("source,local_port,remote_host,remote_port", "placeholder")
@@ -64,15 +44,13 @@ class TestNapalmLldpNeighbors:
 
 
 def transform_result(general_result):
-    return {source: _transform_single_result(result) for source, result in general_result.items()}
+    return {source: nuts_result_wrapper(result, _transform_single_result) for source, result in general_result.items()}
 
 
 def _transform_single_result(single_result):
-    if single_result.failed:
-        return NutsNornirResult(failed=True, exception=single_result.exception)
     task_result = single_result[0].result
     neighbors = task_result["lldp_neighbors_detail"]
-    return NutsNornirResult({peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()})
+    return {peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()}
 
 
 def _add_custom_fields(element):

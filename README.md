@@ -145,13 +145,18 @@ This transformation is currently fixed, but more flexibility is very likely to c
 
 Based on the first argument of the annotation the required fields are determined and for each entry in `test_data`
 these fields are extracted and transformed to a tuple considering the correct order.
-Because of this, it is currently a requirement that each entry in the `test_data` is a dictionary.
+This currently requires that each entry in the `test_data` is a dictionary.
+
+If any of these fields are not present in an entry of `test_data`, the corresponding test case will be skipped.
+However, it is possible to specify which fields are optional as the second argument of the nuts annotation
+ similarly to the first argument.
+In this case non present values are passed into the function as `None`.
 
 #### Example of a test class with custom marker
 ```python
 import pytest
 class CdpNeighborTest:
-    @pytest.mark.nuts("source,local_port,destination_host,management_ip,remote_port", "placeholder")
+    @pytest.mark.nuts("source,local_port,destination_host,management_ip,remote_port", "management_ip,remote_port")
     def test_cdp_neighbor_partial(self, general_result, source, local_port, destination_host, remote_port):
         pass
 ```

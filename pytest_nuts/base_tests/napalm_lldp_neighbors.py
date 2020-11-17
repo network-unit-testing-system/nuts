@@ -28,7 +28,8 @@ class TestNapalmLldpNeighbors:
 
     @pytest.mark.nuts("source,local_port,remote_host,remote_port", "placeholder")
     def test_neighbor_full(self, transformed_result, source, local_port, remote_host, remote_port):
-        bgp_neighbor_entry = transformed_result[source][local_port]
+        assert not transformed_result[source]['failed']
+        bgp_neighbor_entry = transformed_result[source]['peers'][local_port]
         assert bgp_neighbor_entry["remote_host"] == remote_host
         assert (
             bgp_neighbor_entry["remote_port"] == remote_port
@@ -41,9 +42,11 @@ def transform_result(general_result):
 
 
 def _transform_single_result(single_result):
+    if single_result.failed:
+        return {"peers": {}, "failed": True}
     task_result = single_result[0].result
     neighbors = task_result["lldp_neighbors_detail"]
-    return {peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()}
+    return {"peers": {peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()}, "failed": False}
 
 
 def _add_custom_fields(element):

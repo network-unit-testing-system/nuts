@@ -90,7 +90,7 @@ This example creates three different tests, one for each entry in the `test_data
 ...
 ```
 
-## Installation as a user
+## Installation instructions
 NetTowel nuts is currently not published via pip. It has to be cloned and installed manually.
 
 ```
@@ -120,20 +120,21 @@ Defaults to a simple nornir instance that uses `nornir_config_file` as its confi
 Note that it can be relevant in which directory `pytest` is started if this is a relative path.
 Defaults to `nr-config.yaml`.
 
-`nornir_filter`: A nornir filter that is applied to the `nr` instance before the task is executed.
-Defaults to an empty filter so that the task runs on the full instance. 
+`nornir_filter`: A nornir filter that is applied to the `nr` instance before the task is executed, 
+for example to filter for specific hosts. Defaults to an empty filter so that the task runs on the full instance.
 
-`nuts_arguments`: Arguments that are passed to the nornir task as `kwargs`.  
+`nuts_arguments`: Arguments that are passed to the nornir task as `kwargs`. These can be  
+parameters that are defined in the `test_execution` part of the test bundle. 
 Defaults to an empty dictionary so that no data is passed to the task.
 
 If you read this carefully, you might have noticed that `general_result` requires `nuts_task`, but it is not exposed by default.
 It is the job of the test class to expose the appropriate nornir task as the `nuts_task` fixture as there is no viable default task.
 
-In addition to these statically exposed fixtures, `nuts_parameters` is exposed when pytest is called on yaml files as 
-shortly described in the chapter "test bundle structure".
+In addition to these statically exposed fixtures, `nuts_parameters` is exposed 
+when pytest is called on yaml files (see "Test Bundle Structure".
 
-### nuts custom marker
-The custom pytest marker "nuts" uses the data during test collection that has been defined in the test bundle.
+### Nuts custom marker
+During test collection, the custom pytest marker "nuts" uses the data that has been defined in the test bundle.
 This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to 
 consider the data entries from the test bundle.
 
@@ -146,7 +147,7 @@ Based on the first argument of the annotation the required fields are determined
 these fields are extracted and transformed to a tuple considering the correct order.
 Because of this, it is currently a requirement that each entry in the `test_data` is a dictionary.
 
-#### Example of test class with custom marker
+#### Example of a test class with custom marker
 ```python
 import pytest
 class CdpNeighborTest:
@@ -158,25 +159,26 @@ class CdpNeighborTest:
 
 
 ## Development
-As a dependency manager [poetry](https://python-poetry.org/) is used.
-If you have not installed poetry please consider their [documentation](https://python-poetry.org/docs/#installation)
+Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
+If you have not installed poetry, please read their [installation instructions](https://python-poetry.org/docs/#installation).
 
-### Install requirements
+### Installation requirements
 
 ```bash
 poetry install
 ```
 
-### Open shell with venv
+### Open Shell with venv
 
 ```bash
 poetry shell
 ```
 
 ### SonarQube
-The project is analysed on our [sonarqube server](sonarqube.ins.work) automatically via bamboo.
-If you prefer to run your analysis without pushing you can trigger the analysis locally after executing the tests with coverage
-WINDOWS PowerShell
+Our [sonarqube server](sonarqube.ins.work) automatically analyses our project via bamboo.
+If you prefer to run your analysis without pushing you can trigger the analysis locally after executing the tests with coverage.
+
+Windows PowerShell:
 ```bash
 $token=<your_token>
 docker run --volume ${pwd}:/usr/src --workdir /usr/src --rm -e SONAR_HOST_URL="https://sonarqube.ins.work" -e SONAR_LOGIN=$token sonarsource/sonar-scanner-cli "-Dsonar.projectKey=nettowel-nuts" "-Dsonar.branch.name=$(git rev-parse --abbrev-ref HEAD)" "-Dsonar.python.coverage.reportPaths=/usr/src/test-reports/coverage.xml"

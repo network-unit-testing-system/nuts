@@ -18,28 +18,28 @@ class TestNapalmUsers:
 
     @pytest.fixture(scope="class")
     def hosts(self, nuts_parameters):
-        return {entry["source"] for entry in nuts_parameters["test_data"]}
+        return {entry["host"] for entry in nuts_parameters["test_data"]}
 
     @pytest.fixture(scope="class")
     def transformed_result(self, general_result):
         return transform_result(general_result)
 
     @pytest.mark.nuts("host,username")
-    def test_username(self, transformed_result, username):
-        raise Exception
+    def test_username(self, transformed_result, host, username):
+        assert username in transformed_result[host]
 
-    @pytest.mark.nuts("host,username")
-    def test_password(self, transformed_result, password):
-        raise Exception
+    @pytest.mark.nuts("host,username,password")
+    def test_password(self,transformed_result, host, username, password):
+        assert transformed_result[host][username]["password"] == password
 
-    @pytest.mark.nuts("host,username")
-    def test_privilege_level(self, transformed_result, level):
-        raise Exception
+    @pytest.mark.nuts("host,username,level")
+    def test_privilege_level(self, transformed_result, host, username, level):
+        assert transformed_result[host][username]["level"] == level
 
 
 def transform_result(general_result):
-    return {source: _transform_single_result(result) for source, result in general_result.items()}
+    return {host: _transform_single_result(result) for host, result in general_result.items()}
 
 
 def _transform_single_result(single_result):
-    return single_result[0].result[0].result["users"]
+    return single_result[0].result["users"]

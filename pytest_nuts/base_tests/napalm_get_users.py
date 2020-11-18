@@ -29,7 +29,7 @@ class TestNapalmUsers:
         assert username in transformed_result[host]
 
     @pytest.mark.nuts("host,username,password")
-    def test_password(self,transformed_result, host, username, password):
+    def test_password(self, transformed_result, host, username, password):
         assert transformed_result[host][username]["password"] == password
 
     @pytest.mark.nuts("host,username,level")

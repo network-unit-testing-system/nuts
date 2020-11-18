@@ -21,10 +21,10 @@ def check_result(single_result):
     yield
 
 
-def nuts_result_wrapper(single_result, func):
-    if single_result.failed:
-        return NutsResult(failed=True, exception=single_result.exception)
+def nuts_result_wrapper(nornir_result, single_transform):
+    if nornir_result.failed:
+        return NutsResult(failed=True, exception=nornir_result.exception)
     try:
-        return NutsResult(func(single_result))
+        return NutsResult(single_transform(nornir_result))
     except Exception as exception:
         return NutsResult(failed=True, exception=exception)

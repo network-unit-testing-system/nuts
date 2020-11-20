@@ -36,10 +36,14 @@ class TestNapalmLldpNeighbors:
         assert source in transformed_result, f"Host {source} not found in aggregated result."
         return transformed_result[source]
 
-    @pytest.mark.nuts("source,local_port,remote_host,remote_port")
-    def test_neighbor_full(self, single_result, local_port, remote_host, remote_port):
+    @pytest.mark.nuts("source,local_port,remote_host")
+    def test_remote_host(self, single_result, local_port, remote_host):
         bgp_neighbor_entry = single_result.result[local_port]
         assert bgp_neighbor_entry["remote_host"] == remote_host
+
+    @pytest.mark.nuts("source,local_port,remote_port")
+    def test_remote_port(self, single_result, local_port, remote_port):
+        bgp_neighbor_entry = single_result.result[local_port]
         assert (
             bgp_neighbor_entry["remote_port"] == remote_port
             or bgp_neighbor_entry["remote_port_expanded"] == remote_port

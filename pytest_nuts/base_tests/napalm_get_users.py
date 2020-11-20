@@ -5,34 +5,32 @@ from nornir.core.filter import F
 from nornir_napalm.plugins.tasks import napalm_get
 
 
+@pytest.fixture(scope="class")
+def nuts_task():
+    return napalm_get
+
+
+@pytest.fixture(scope="class")
+def nuts_arguments():
+    return {"getters": ["users"]}
+
+
+@pytest.fixture(scope="class")
+def nornir_filter(hosts):
+    return F(name__any=hosts)
+
+
+@pytest.fixture(scope="class")
+def hosts(nuts_parameters):
+    return {entry["host"] for entry in nuts_parameters["test_data"]}
+
+
+@pytest.fixture(scope="class")
+def transformed_result(general_result):
+    return transform_result(general_result)
+
+
 class TestNapalmUsers:
-    @pytest.fixture(scope="class")
-    def nuts_task(self):
-        return napalm_get
-
-    @pytest.fixture(scope="class")
-    def nuts_arguments(self):
-        return {"getters": ["users"]}
-
-    @pytest.fixture(scope="class")
-    def nornir_filter(self, hosts):
-        return F(name__any=hosts)
-
-    @pytest.fixture(scope="class")
-    def hosts(self, nuts_parameters):
-        return {entry["host"] for entry in nuts_parameters["test_data"]}
-
-    @pytest.fixture(scope="class")
-    def users_per_host(self, nuts_parameters):
-        r = defaultdict(list)
-        for entry in nuts_parameters["test_data"]:
-            r[entry["host"]].append(entry["username"])
-        return r
-
-    @pytest.fixture(scope="class")
-    def transformed_result(self, general_result):
-        return transform_result(general_result)
-
     @pytest.mark.nuts("host,username")
     def test_username(self, transformed_result, host, username):
         assert username in transformed_result[host]
@@ -45,9 +43,11 @@ class TestNapalmUsers:
     def test_privilege_level(self, transformed_result, host, username, level):
         assert transformed_result[host][username]["level"] == level
 
-    @pytest.mark.nuts("host,username")
-    def test_no_rogue_users(self, transformed_result, host, username, users_per_host):
-        assert len(transformed_result[host]) == len(users_per_host[host]) and username in transformed_result[host]
+
+class TestNapalmOnlyDefinedUsersExist:
+    @pytest.mark.nuts("host,usernames")
+    def test_no_rogue_users(self, transformed_result, host, usernames):
+        assert list(transformed_result[host].keys()) == usernames
 
 
 def transform_result(general_result):

@@ -26,7 +26,7 @@ class TestNapalmLldpNeighbors:
     def transformed_result(self, general_result):
         return transform_result(general_result)
 
-    @pytest.mark.nuts("source,local_port,remote_host,remote_port", "placeholder")
+    @pytest.mark.nuts("source,local_port,remote_host,remote_port")
     def test_neighbor_full(self, transformed_result, source, local_port, remote_host, remote_port):
         bgp_neighbor_entry = transformed_result[source][local_port]
         assert bgp_neighbor_entry["remote_host"] == remote_host

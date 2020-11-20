@@ -31,13 +31,13 @@ def transformed_result(general_result):
 
 
 class TestNapalmNetworkInstancesInterfaces:
-    @pytest.mark.nuts("source,network_instance,interfaces", "placeholder")
+    @pytest.mark.nuts("source,network_instance,interfaces")
     def test_network_instance_contains_interfaces(self, transformed_result, source, network_instance, interfaces):
         assert transformed_result[source][network_instance]["interfaces"] == interfaces
 
 
 class TestNapalmNetworkInstancesRouteDistinguisher:
-    @pytest.mark.nuts("source,network_instance,route_distinguisher", "placeholder")
+    @pytest.mark.nuts("source,network_instance,route_distinguisher")
     def test_network_instance_contains_interfaces(
         self, transformed_result, source, network_instance, route_distinguisher
     ):

@@ -36,7 +36,7 @@ class TestNetmikoCdpNeighbors:
     def destination_list(self, nuts_parameters):
         return nuts_parameters
 
-    @pytest.mark.nuts("source,local_port,destination_host,management_ip,remote_port", "placeholder")
+    @pytest.mark.nuts("source,local_port,destination_host,management_ip,remote_port")
     def test_neighbor_full(self, grouped_result, source, local_port, destination_host, management_ip, remote_port):
         assert grouped_result[source][destination_host]["local_port"] == local_port
         assert grouped_result[source][destination_host]["destination_host"] == destination_host

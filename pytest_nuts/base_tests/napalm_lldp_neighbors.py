@@ -6,7 +6,7 @@ from pytest_nuts.helpers.converters import InterfaceNameConverter
 from pytest_nuts.helpers.result import nuts_result_wrapper, check_result
 
 
-@pytest.mark.usefixtures("check_failed")
+@pytest.mark.usefixtures("check_result")
 class TestNapalmLldpNeighbors:
     @pytest.fixture(scope="class")
     def nuts_task(self):

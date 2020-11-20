@@ -34,21 +34,32 @@ def destination_list(nuts_parameters):
     return nuts_parameters
 
 
-class TestNetmikoCdpNeighborsCount:
+class TestNetmikoOspfNeighborsCount:
     @pytest.mark.nuts("source,neighbor_count")
     def test_neighbor_count(self, transformed_result, source, neighbor_count):
         assert source in transformed_result
         assert len(transformed_result[source]) == neighbor_count
 
 
-class TestNetmikoCdpNeighborsFull:
-    @pytest.mark.nuts("source,local_port,neighbor_id,neighbor_address,state")
-    def test_neighbor_full(self, transformed_result, source, local_port, neighbor_id, neighbor_address, state):
+class TestNetmikoOspfNeighbors:
+    @pytest.mark.nuts("source,neighbor_id")
+    def test_neighbor_id(self, transformed_result, source, neighbor_id):
         assert source in transformed_result
         assert neighbor_id in transformed_result[source]
+
+    @pytest.mark.nuts("source,neighbor_id,neighbor_address")
+    def test_neighbor_address(self, transformed_result, source, neighbor_id, neighbor_address):
+        neighbor = transformed_result[source][neighbor_id]
+        assert neighbor["address"] == neighbor_address
+
+    @pytest.mark.nuts("source,local_port,neighbor_id")
+    def test_local_port(self, transformed_result, source, local_port, neighbor_id):
         neighbor = transformed_result[source][neighbor_id]
         assert neighbor["interface"] == local_port
-        assert neighbor["address"] == neighbor_address
+
+    @pytest.mark.nuts("source,neighbor_id,state")
+    def test_state(self, transformed_result, source, neighbor_id, state):
+        neighbor = transformed_result[source][neighbor_id]
         assert neighbor["state"] == state
 
 

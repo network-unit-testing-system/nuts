@@ -20,6 +20,11 @@ class ModuleIndex:
             "TestNetmikoCdpNeighbors": "pytest_nuts.base_tests.netmiko_cdp_neighbors",
             "TestNetmikoPing": "pytest_nuts.base_tests.netmiko_ping",
             "TestNapalmLldpNeighbors": "pytest_nuts.base_tests.napalm_lldp_neighbors",
+            "TestNetmikoOspfNeighborsCount": "pytest_nuts.base_tests.netmiko_ospf_neighbors",
+            "TestNetmikoOspfNeighbors": "pytest_nuts.base_tests.netmiko_ospf_neighbors",
+            "TestNapalmNetworkInstances": "pytest_nuts.base_tests.napalm_network_instances",
+            "TestNapalmBgpNeighbors": "pytest_nuts.base_tests.napalm_bgp_neighbors",
+            "TestNapalmBgpNeighborsCount": "pytest_nuts.base_tests.napalm_bgp_neighbors",
         }
 
         self.index = index if index is not None else default_index

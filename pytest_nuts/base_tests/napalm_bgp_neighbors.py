@@ -3,27 +3,39 @@ from nornir.core.filter import F
 from nornir_napalm.plugins.tasks import napalm_get
 
 
+@pytest.fixture(scope="class")
+def nuts_task():
+    return napalm_get
+
+
+@pytest.fixture(scope="class")
+def nuts_arguments():
+    return {"getters": ["bgp_neighbors"]}
+
+
+@pytest.fixture(scope="class")
+def nornir_filter(hosts):
+    return F(name__any=hosts)
+
+
+@pytest.fixture(scope="class")
+def hosts(nuts_parameters):
+    return {entry["source"] for entry in nuts_parameters["test_data"]}
+
+
+@pytest.fixture(scope="class")
+def transformed_result(general_result):
+    return transform_result(general_result)
+
+
+class TestNapalmBgpNeighborsCount:
+    @pytest.mark.nuts("source,neighbor_count")
+    def test_neighbor_count(self, transformed_result, source, neighbor_count):
+        assert source in transformed_result
+        assert len(transformed_result[source]) == neighbor_count
+
+
 class TestNapalmBgpNeighbors:
-    @pytest.fixture(scope="class")
-    def nuts_task(self):
-        return napalm_get
-
-    @pytest.fixture(scope="class")
-    def nuts_arguments(self):
-        return {"getters": ["bgp_neighbors"]}
-
-    @pytest.fixture(scope="class")
-    def nornir_filter(self, hosts):
-        return F(name__any=hosts)
-
-    @pytest.fixture(scope="class")
-    def hosts(self, nuts_parameters):
-        return {entry["source"] for entry in nuts_parameters["test_data"]}
-
-    @pytest.fixture(scope="class")
-    def transformed_result(self, general_result):
-        return transform_result(general_result)
-
     @pytest.mark.nuts("source,peer,local_as")
     def test_local_as(self, transformed_result, source, peer, local_as):
         bgp_neighbor_entry = transformed_result[source][peer]

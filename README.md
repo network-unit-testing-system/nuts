@@ -161,8 +161,8 @@ class CdpNeighborTest:
 ```
 
 This test class of CDP neighbors uses the fields `source`, `local_port`, `destination_host`, `management_ip` and `remote_port`
-in each entry that is listed under the `test_data` section in the test bundle. They must all be present, otherwise the test fails.
-On the other hand, the fields `management_ip` and `remote_port` are optional, the test completes whether they are present
+in each entry that is listed under the `test_data` section in the test bundle. The fields `management_ip` and `remote_port`
+ are listed separately again and indicate that they are optional: The test completes whether they are present
 in an entry or not.
 
 

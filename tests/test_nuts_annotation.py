@@ -133,3 +133,17 @@ class TestOptionalAttributes:
 
         result = testdir.runpytest()
         result.assert_outcomes(passed=1)
+
+    def test_strips_spaced_attribute_names(self, testdir):
+        arguments = {
+            "test_class_loading": """
+        ---
+        - test_module: tests.base_tests.simple_nuts_annotation
+          test_class: TestSpacedKeyValue
+          test_data: [{"key": null, "value": null}]
+                    """
+        }
+        testdir.makefile(YAML_EXTENSION, **arguments)
+
+        result = testdir.runpytest()
+        result.assert_outcomes(passed=1)

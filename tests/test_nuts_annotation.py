@@ -48,20 +48,6 @@ class TestExecuteTests:
         result = testdir.runpytest()
         result.assert_outcomes(passed=1, failed=1)
 
-    def test_errors_without_placeholder(self, testdir):
-        arguments = {
-            "test_class_loading": """
-    ---
-    - test_module: tests.base_tests.simple_nuts_annotation
-      test_class: TestKeyValueWithoutPlaceholder
-      test_data: [{"key": "abc", "value":"abc"}]
-                """
-        }
-        testdir.makefile(YAML_EXTENSION, **arguments)
-
-        result = testdir.runpytest()
-        result.assert_outcomes(errors=1)
-
 
 class TestOptionalAttributes:
     def test_skips_test_if_attribute_is_missing(self, testdir):
@@ -140,6 +126,20 @@ class TestOptionalAttributes:
         ---
         - test_module: tests.base_tests.simple_nuts_annotation
           test_class: TestKeyValue
+          test_data: [{"key": null, "value": null}]
+                    """
+        }
+        testdir.makefile(YAML_EXTENSION, **arguments)
+
+        result = testdir.runpytest()
+        result.assert_outcomes(passed=1)
+
+    def test_strips_spaced_attribute_names(self, testdir):
+        arguments = {
+            "test_class_loading": """
+        ---
+        - test_module: tests.base_tests.simple_nuts_annotation
+          test_class: TestSpacedKeyValue
           test_data: [{"key": null, "value": null}]
                     """
         }

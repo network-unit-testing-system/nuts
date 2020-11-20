@@ -1,9 +1,12 @@
+from typing import Dict
+
 import pytest
 from nornir.core.filter import F
+from nornir.core.task import MultiResult
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.converters import InterfaceNameConverter
-from pytest_nuts.helpers.result import nuts_result_wrapper, check_result
+from pytest_nuts.helpers.result import nuts_result_wrapper, check_result, NutsResult
 
 
 @pytest.mark.usefixtures("check_result")
@@ -33,7 +36,7 @@ class TestNapalmLldpNeighbors:
         assert source in transformed_result, f"Host {source} not found in aggregated result."
         return transformed_result[source]
 
-    @pytest.mark.nuts("source,local_port,remote_host,remote_port", "placeholder")
+    @pytest.mark.nuts("source,local_port,remote_host,remote_port")
     def test_neighbor_full(self, single_result, local_port, remote_host, remote_port):
         bgp_neighbor_entry = single_result.result[local_port]
         assert bgp_neighbor_entry["remote_host"] == remote_host
@@ -43,27 +46,27 @@ class TestNapalmLldpNeighbors:
         )
 
 
-def transform_result(general_result):
+def transform_result(general_result) -> Dict[str, NutsResult]:
     return {source: nuts_result_wrapper(result, _transform_single_result) for source, result in general_result.items()}
 
 
-def _transform_single_result(single_result):
+def _transform_single_result(single_result: MultiResult) -> dict:
     task_result = single_result[0].result
     neighbors = task_result["lldp_neighbors_detail"]
     return {peer: _add_custom_fields(details[0]) for peer, details in neighbors.items()}
 
 
-def _add_custom_fields(element):
+def _add_custom_fields(element: dict) -> dict:
     element = _add_expanded_remote_port(element)
     element = _add_remote_host(element)
     return element
 
 
-def _add_remote_host(element):
+def _add_remote_host(element: dict) -> dict:
     element["remote_host"] = element["remote_system_name"]
     return element
 
 
-def _add_expanded_remote_port(element):
+def _add_expanded_remote_port(element: dict) -> dict:
     element["remote_port_expanded"] = InterfaceNameConverter().expand_interface_name(element["remote_port"])
     return element

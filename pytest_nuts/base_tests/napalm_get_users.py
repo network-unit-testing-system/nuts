@@ -49,6 +49,7 @@ class TestNapalmUsers:
     def test_no_rogue_users(self, transformed_result, host, username, users_per_host):
         assert len(transformed_result[host]) == len(users_per_host[host]) and username in transformed_result[host]
 
+
 def transform_result(general_result):
     return {host: _transform_single_result(result) for host, result in general_result.items()}
 

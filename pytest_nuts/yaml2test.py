@@ -1,4 +1,4 @@
-from pydoc import locate
+from importlib import util
 from typing import Iterable, Union, Any
 
 import py
@@ -24,7 +24,10 @@ class NutsYamlFile(pytest.File):
 def load_module(module_path, class_name):
     if not module_path:
         module_path = ModuleIndex().find_test_module_of_class(class_name)
-    return locate(module_path)
+    spec = util.find_spec(module_path)
+    module = util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class NutsTestFile(pytest.Module):

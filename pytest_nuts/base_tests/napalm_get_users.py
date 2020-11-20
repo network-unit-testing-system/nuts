@@ -24,15 +24,15 @@ class TestNapalmUsers:
     def transformed_result(self, general_result):
         return transform_result(general_result)
 
-    @pytest.mark.nuts("host,username", "placeholder")
+    @pytest.mark.nuts("host,username")
     def test_username(self, transformed_result, host, username):
         assert username in transformed_result[host]
 
-    @pytest.mark.nuts("host,username,password", "placeholder")
+    @pytest.mark.nuts("host,username,password")
     def test_password(self, transformed_result, host, username, password):
         assert transformed_result[host][username]["password"] == password
 
-    @pytest.mark.nuts("host,username,level", "placeholder")
+    @pytest.mark.nuts("host,username,level")
     def test_privilege_level(self, transformed_result, host, username, level):
         assert transformed_result[host][username]["level"] == level
 

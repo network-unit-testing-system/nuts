@@ -6,7 +6,7 @@ from tests.helpers.shared import create_multi_result
 
 
 @pytest.fixture
-def general_result():
+def general_result(timeouted_multiresult):
     result = AggregatedResult("napalm_get")
     result["R1"] = create_multi_result(
         {
@@ -71,6 +71,7 @@ def general_result():
             }
         }
     )
+    result["R3"] = timeouted_multiresult
     return result
 
 
@@ -85,7 +86,7 @@ class TestTransformResult:
     )
     def test_contains_network_instances_at_second_level(self, general_result, host, network_instances):
         transformed_result = transform_result(general_result)
-        assert list(transformed_result[host].keys()) == network_instances
+        assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize(
         "host,network_instance,interfaces",
@@ -100,7 +101,7 @@ class TestTransformResult:
     )
     def test_contains_interfaces_at_network_instance(self, general_result, host, network_instance, interfaces):
         transformed_result = transform_result(general_result)
-        assert transformed_result[host][network_instance]["interfaces"] == interfaces
+        assert transformed_result[host].result[network_instance]["interfaces"] == interfaces
 
     @pytest.mark.parametrize(
         "host,network_instance,route_distinguisher",
@@ -114,4 +115,9 @@ class TestTransformResult:
         self, general_result, host, network_instance, route_distinguisher
     ):
         transformed_result = transform_result(general_result)
-        assert transformed_result[host][network_instance]["route_distinguisher"] == route_distinguisher
+        assert transformed_result[host].result[network_instance]["route_distinguisher"] == route_distinguisher
+
+    def test_marks_as_failed_if_task_failed(self, general_result):
+        transformed_result = transform_result(general_result)
+        assert transformed_result["R3"].failed
+        assert transformed_result["R3"].exception is not None

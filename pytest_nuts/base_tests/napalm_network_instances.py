@@ -1,8 +1,11 @@
+from typing import Dict
+
 import pytest
 from nornir.core.filter import F
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.converters import InterfaceNameConverter
+from pytest_nuts.helpers.result import NutsResult, nuts_result_wrapper, check_result
 
 
 @pytest.fixture(scope="class")
@@ -30,18 +33,25 @@ def transformed_result(general_result):
     return transform_result(general_result)
 
 
+@pytest.fixture
+def single_result(transformed_result, source):
+    assert source in transformed_result, f"Host {source} not found in aggregated result."
+    return transformed_result[source]
+
+
+@pytest.mark.usefixtures("check_result")
 class TestNapalmNetworkInstances:
     @pytest.mark.nuts("source,network_instance,interfaces")
-    def test_network_instance_contains_interfaces(self, transformed_result, source, network_instance, interfaces):
-        assert transformed_result[source][network_instance]["interfaces"] == interfaces
+    def test_network_instance_contains_interfaces(self, single_result, network_instance, interfaces):
+        assert single_result.result[network_instance]["interfaces"] == interfaces
 
     @pytest.mark.nuts("source,network_instance,route_distinguisher")
-    def test_route_distinguisher(self, transformed_result, source, network_instance, route_distinguisher):
-        assert transformed_result[source][network_instance]["route_distinguisher"] == route_distinguisher
+    def test_route_distinguisher(self, single_result, network_instance, route_distinguisher):
+        assert single_result.result[network_instance]["route_distinguisher"] == route_distinguisher
 
 
-def transform_result(general_result):
-    return {source: _transform_single_result(result) for source, result in general_result.items()}
+def transform_result(general_result) -> Dict[str, NutsResult]:
+    return {source: nuts_result_wrapper(result, _transform_single_result) for source, result in general_result.items()}
 
 
 def _transform_single_result(single_result):

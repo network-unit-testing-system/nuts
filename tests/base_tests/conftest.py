@@ -1,12 +1,9 @@
 import pytest
 from napalm.base.exceptions import ConnectionException
 
-from tests.helpers.shared import create_multi_result
+from tests.helpers.shared import create_multi_result, create_result
 
-@pytest.fixture
-def timeouted_multiresult():
-    return create_multi_result(
-        r"""Traceback (most recent call last):
+TIMEOUT_MESSAGE = r"""Traceback (most recent call last):
   File "C:\Users\maede\Documents\nornir-pytest-playground\venv\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection
     self.remote_conn_pre.connect(**ssh_connect_params)
   File "C:\Users\maede\Documents\nornir-pytest-playground\venv\lib\site-packages\paramiko\client.py", line 349, in connect
@@ -61,7 +58,13 @@ Traceback (most recent call last):
   File "C:\Users\maede\Documents\nornir-pytest-playground\venv\lib\site-packages\napalm\base\base.py", line 95, in _netmiko_open
     raise ConnectionException("Cannot connect to {}".format(self.hostname))
 napalm.base.exceptions.ConnectionException: Cannot connect to 10.20.0.123
-""",
+"""
+
+
+@pytest.fixture
+def timeouted_multiresult():
+    return create_multi_result(
+        TIMEOUT_MESSAGE,
         failed=True,
         exception=ConnectionException("Cannot connect to 10.20.0.123"),
     )

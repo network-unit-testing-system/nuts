@@ -33,10 +33,12 @@ def hosts(nuts_parameters):
 def transformed_result(general_result):
     return transform_result(general_result)
 
+
 @pytest.fixture
 def single_result(transformed_result, host):
     assert host in transformed_result, f"Host {host} not found in aggregated result."
     return transformed_result[host]
+
 
 @pytest.mark.usefixtures("check_result")
 class TestNapalmUsers:

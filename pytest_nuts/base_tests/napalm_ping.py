@@ -6,7 +6,10 @@ from nornir.core import Task
 from nornir.core.task import Result, MultiResult
 from nornir_napalm.plugins.tasks import napalm_ping
 
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult, check_result
+from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+
+# noinspection PyUnresolvedReferences
+from pytest_nuts.helpers.result import check_result
 
 
 @pytest.mark.usefixtures("check_result")

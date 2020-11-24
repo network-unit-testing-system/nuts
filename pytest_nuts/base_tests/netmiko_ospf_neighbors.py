@@ -6,7 +6,10 @@ from nornir.core.filter import F
 from nornir.core.task import MultiResult
 from nornir_netmiko import netmiko_send_command
 
-from pytest_nuts.helpers.result import NutsResult, nuts_result_wrapper, check_result
+from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+
+# noinspection PyUnresolvedReferences
+from pytest_nuts.helpers.result import check_result
 
 
 @pytest.fixture(scope="class")

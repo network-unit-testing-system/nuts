@@ -6,7 +6,10 @@ from nornir.core.task import MultiResult
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.converters import InterfaceNameConverter
-from pytest_nuts.helpers.result import nuts_result_wrapper, check_result, NutsResult
+from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+
+# noinspection PyUnresolvedReferences
+from pytest_nuts.helpers.result import check_result
 
 
 @pytest.mark.usefixtures("check_result")

@@ -84,7 +84,7 @@ result_data = [
 
 
 @pytest.fixture
-def general_result():
+def general_result(timeouted_multiresult):
     result = AggregatedResult("napalm_ping_multi_host")
     result_r0 = Result(host=None, destination=None, result="All pings executed", name="napalm_ping_multi_host")
 
@@ -111,6 +111,7 @@ def general_result():
     result_r3.result = result_data[2]
     multi_result_r3.append(result_r3)
     result["R3"] = multi_result_r3
+    result["R4"] = timeouted_multiresult
     return result
 
 
@@ -123,26 +124,31 @@ class TestTransformResult:
     @pytest.mark.parametrize("host,destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"), ("R3", "172.16.23.5")])
     def test_contains_pinged_destination(self, general_result, host, destination):
         transformed_result = transform_result(general_result, test_data)
-        assert destination in transformed_result[host]
+        assert destination in transformed_result[host].result
 
     @pytest.mark.parametrize("host,destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS)])
     def test_destination_maps_to_enum_success(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
-        assert transformed_result[host][destination] == ping_result
+        assert transformed_result[host].result[destination] == ping_result
 
     @pytest.mark.parametrize("host,destination,ping_result", [("R2", "172.16.23.4", Ping.FAIL)])
     def test_destination_maps_to_enum_failure(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
-        assert transformed_result[host][destination] == ping_result
+        assert transformed_result[host].result[destination] == ping_result
 
     @pytest.mark.parametrize("host,destination,ping_result", [("R3", "172.16.23.5", Ping.FLAPPING)])
     def test_destination_maps_to_enum_flapping(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
-        assert transformed_result[host][destination] == ping_result
+        assert transformed_result[host].result[destination] == ping_result
 
     @pytest.mark.parametrize(
         "host, destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS), ("R1", "172.16.23.6", Ping.SUCCESS)]
     )
     def test_one_host_several_destinations(self, general_result, host, destination, ping_result):
         transformed_result = transform_result(general_result, test_data)
-        assert transformed_result[host][destination] == ping_result
+        assert transformed_result[host].result[destination] == ping_result
+
+    def test_marks_as_failed_if_task_failed(self, general_result):
+        transformed_result = transform_result(general_result, test_data)
+        assert transformed_result["R4"].failed
+        assert transformed_result["R4"].exception is not None

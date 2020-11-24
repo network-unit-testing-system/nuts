@@ -6,9 +6,6 @@ from nornir.core.task import MultiResult
 from nornir_napalm.plugins.tasks import napalm_get
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
-# noinspection PyUnresolvedReferences
-from pytest_nuts.helpers.result import check_result
-
 
 @pytest.fixture(scope="class")
 def nuts_task():
@@ -35,7 +32,7 @@ def transformed_result(general_result):
     return transform_result(general_result)
 
 
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighborsCount:
     @pytest.fixture
     def single_result(self, transformed_result, source):
@@ -47,7 +44,7 @@ class TestNapalmBgpNeighborsCount:
         assert len(single_result.result) == neighbor_count
 
 
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighbors:
     @pytest.fixture
     def single_result(self, transformed_result, source):

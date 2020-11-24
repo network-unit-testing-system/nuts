@@ -8,11 +8,8 @@ from nornir_napalm.plugins.tasks import napalm_ping
 
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
-# noinspection PyUnresolvedReferences
-from pytest_nuts.helpers.result import check_result
 
-
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmPing:
     @pytest.fixture(scope="class")
     def nuts_task(self):

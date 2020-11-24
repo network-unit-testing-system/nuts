@@ -8,9 +8,6 @@ from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
-# noinspection PyUnresolvedReferences
-from pytest_nuts.helpers.result import check_result
-
 
 @pytest.fixture(scope="class")
 def nuts_task():
@@ -43,7 +40,7 @@ def single_result(transformed_result, host):
     return transformed_result[host]
 
 
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmUsers:
     @pytest.mark.nuts("host,username")
     def test_username(self, single_result, username):

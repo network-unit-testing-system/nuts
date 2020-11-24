@@ -8,11 +8,8 @@ from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
-# noinspection PyUnresolvedReferences
-from pytest_nuts.helpers.result import check_result
 
-
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoCdpNeighbors:
     @pytest.fixture(scope="class")
     def nuts_task(self):

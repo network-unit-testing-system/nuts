@@ -8,9 +8,6 @@ from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
-# noinspection PyUnresolvedReferences
-from pytest_nuts.helpers.result import check_result
-
 
 @pytest.fixture(scope="class")
 def nuts_task():
@@ -48,14 +45,14 @@ def single_result(transformed_result, source):
     return transformed_result[source]
 
 
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoOspfNeighborsCount:
     @pytest.mark.nuts("source,neighbor_count")
     def test_neighbor_count(self, single_result, neighbor_count):
         assert len(single_result.result) == neighbor_count
 
 
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoOspfNeighbors:
     @pytest.mark.nuts("source,neighbor_id")
     def test_neighbor_id(self, single_result, neighbor_id):

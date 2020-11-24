@@ -7,9 +7,6 @@ from nornir_napalm.plugins.tasks import napalm_get
 from pytest_nuts.helpers.converters import InterfaceNameConverter
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
-# noinspection PyUnresolvedReferences
-from pytest_nuts.helpers.result import check_result
-
 
 @pytest.fixture(scope="class")
 def nuts_task():
@@ -42,7 +39,7 @@ def single_result(transformed_result, source):
     return transformed_result[source]
 
 
-@pytest.mark.usefixtures("check_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmNetworkInstances:
     @pytest.mark.nuts("source,network_instance,interfaces")
     def test_network_instance_contains_interfaces(self, single_result, network_instance, interfaces):

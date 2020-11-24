@@ -33,11 +33,12 @@ class TestNapalmPing:
     @pytest.fixture
     def single_result(self, transformed_result, source, destination):
         assert source in transformed_result, f"Host {source} not found in aggregated result."
-        return transformed_result[source]
+        assert destination in transformed_result[source], f"Destination {destination} not found in result."
+        return transformed_result[source][destination]
 
     @pytest.mark.nuts("source,destination,expected")
-    def test_ping(self, single_result, destination, expected):
-        assert single_result.result[destination].name == expected
+    def test_ping(self, single_result, expected):
+        assert single_result.result.name == expected
 
 
 class Ping(Enum):
@@ -58,15 +59,8 @@ def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["source"] == host_name]
 
 
-def transform_result(general_result, test_data) -> Dict[str, NutsResult]:
-    return {
-        host: nuts_result_wrapper(task_results, _get_transform_single_entry(host, test_data))
-        for host, task_results in general_result.items()
-    }
-
-
-def _get_transform_single_entry(host: str, test_data: List[dict]) -> Callable[[MultiResult], dict]:
-    return lambda task_results: _parse_ping_results(host, task_results, test_data)
+def transform_result(general_result, test_data) -> Dict[str, Dict[str, NutsResult]]:
+    return {host: _parse_ping_results(host, task_results, test_data) for host, task_results in general_result.items()}
 
 
 def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[dict]) -> dict:
@@ -74,9 +68,15 @@ def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[di
         entry["destination"]: entry["max_drop"] for entry in test_data if entry["source"] == host
     }
     return {
-        ping_task.destination: _map_result_to_enum(ping_task.result, maxdrop_per_destination[ping_task.destination])
+        ping_task.destination: nuts_result_wrapper(
+            ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])
+        )
         for ping_task in task_results[1:]
     }
+
+
+def _get_transform_single_entry(max_drop):
+    return lambda ping_task: _map_result_to_enum(ping_task.result, max_drop)
 
 
 def _map_result_to_enum(result: dict, max_drop: int) -> Ping:

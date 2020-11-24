@@ -14,7 +14,7 @@ neighbor_details = {
 
 
 @pytest.fixture
-def general_result():
+def general_result(timeouted_multiresult):
     result = AggregatedResult("netmiko_send_command")
     multi_result_r1 = MultiResult("netmiko_send_command")
     result_r1 = Result(host=None, name="netmiko_send_command")
@@ -69,6 +69,7 @@ def general_result():
     ]
     multi_result_r2.append(result_r2)
     result["R2"] = multi_result_r2
+    result["R3"] = timeouted_multiresult
     return result
 
 
@@ -87,11 +88,16 @@ class TestTransformResult:
     )
     def test_contains_neighbors_at_second_level(self, general_result, host, network_instances):
         transformed_result = transform_result(general_result)
-        assert list(transformed_result[host].keys()) == network_instances
+        assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize("host,neighbor,details", [("R1", "172.16.255.3", neighbor_details)])
     def test_contains_information_about_neighbor(self, general_result, host, neighbor, details):
         transformed_result = transform_result(general_result)
-        expected_details = transformed_result[host][neighbor]
+        expected_details = transformed_result[host].result[neighbor]
         for key in details:
             assert expected_details[key] == details[key]
+
+    def test_marks_as_failed_if_task_failed(self, general_result):
+        transformed_result = transform_result(general_result)
+        assert transformed_result["R3"].failed
+        assert transformed_result["R3"].exception is not None

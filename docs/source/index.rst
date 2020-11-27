@@ -31,9 +31,9 @@ In order to run NUTS, you need the following components:
 
 1. **Test bundles** in the form of YAML-files that specify the actual tests. Each test bundle is structured in a similar way, but has specific fields tailored to the test bundle. 
 
-2. **Information of your network**. Currently, these are YAML-files in the form of a `nornir-inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__. They contain all details of your network, such as hosts, login-information and other configuration. 
+2. **Information on your network**. Currently, these are YAML-files in the form of a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__. They contain all details of your network, such as hosts, login-information and other configuration. 
 
-Head over to the :doc:`Usage section <usage/index>` to see how those two components are structured. There's also a :doc:`Quickstart <quickstart/index>` for the impatient.
+Head over to the :doc:`Usage section <tutorial/index>` to see how those two components are structured and how you get NUTS up and running.
 
 The project relies on the `pytest framework <https://docs.pytest.org/>`__ to setup and execute the
 tests. NUTS itself is written as a custom pytest plugin. In the background, `nornir <https://nornir.readthedocs.io/>`__ executes specific network tasks for the actual tests.
@@ -46,13 +46,16 @@ Since NUTS is written as a pytest plugin and in python, you can customize it you
 
 
 
+Contents
+========
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    Home <self>
-   Quickstart <quickstart/index>
-   Usage <usage/index>
+   Installation <installation/index>
+   First Steps <tutorial/index>
+   Test Bundles <testbundles/alltestbundles>
    Develop <dev/index>
    API <api/index>
 

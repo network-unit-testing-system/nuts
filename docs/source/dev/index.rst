@@ -1,10 +1,6 @@
 How to enhance NUTS
 ===================
 
-TODO
+.. todo::
 
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   *
+    Include more technical details on how NUTS is structured.

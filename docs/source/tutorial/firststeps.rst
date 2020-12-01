@@ -13,11 +13,11 @@ Two major components are needed for NUTS:
 
 You must provide information on your network configuration so that NUTS can actually interact with it. Currently, NUTS uses a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ as network configuration and ``nr-config.yaml`` which uses that inventory.
 
-Here's a sample overview on how to organise files so that NUTS can find everything it needs. The root folder also contains the :doc:`NUTS installation <../installation/index>`.
+Here's a sample overview on how to organise files so that NUTS can find everything it needs. The root folder also contains also the virtual environment in with the :doc:`NUTS installation <../installation/index>`.
 
 .. code:: shell
 
-    .
+    .                       # NUTS root 
     ├── inventory           # your inventory
     │   └── hosts.yaml
     ├── nr-config.yaml      # nornir configuration
@@ -68,11 +68,12 @@ A sample ``nr-config.yaml`` might look like this:
   options:
       num_workers: 100
 
+If you set up the above folders and files, you're read to write test bundles.
 
 2. Test Bundle
 --------------
 
-A test bundle is a YAML-file that is parsed by NUTS. It provides data on the actual network configuration and describes which test definitions should be collected and executed. Such a test bundle contains information on how to run a specific test, such das "ping hosts" or "retrieve information of BGP neighbors".
+A test bundle is a YAML-file that is parsed by NUTS. It describes which test definitions should be collected and executed and provides data for those tests. Such a test bundle contains information on how to run a specific test, such das "ping hosts" or "retrieve information of BGP neighbors".
 
 Currently only YAML files are supported as test bundle format, but other sources such as other file formats or database entries can be considered in later NUTS versions.
 
@@ -90,12 +91,9 @@ Each test bundle contains the following structure:
       test_execution: <additional data used to execute the test> # optional
       test_data: <data used to generate the test cases>
 
-``test_module``: Optional. The full path of the python module that contains the
-  test class to be used. This value is optional if the test class is registered in index.py of
-  the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started
-  if local test modules are used.
+``test_module``: Optional. The full path of the python module that contains the test class to be used. This value is optional if the test class is registered in index.py of the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started if local test modules are used.
 
-``test_class``: Required. The name of the python class which contains the tests that should be executed. Note that currently every test in this class will be executed.
+``test_class``: Required. The name of the python class which contains the tests that should be executed.Note that currently every test in this class will be executed.
 
 ``label``: Optional. Additional identifier that can be used to distinguish between multiple occurrences of the same 
 test class in a test bundle.
@@ -106,7 +104,7 @@ This allows the additional ``max_drop`` parameter in ``test execution``, since i
 
 ``test_data``: Required. Data that is used to parametrize the tests - basically what information your actual test needs. The structure of this section is specific to every test bundle.
 
-Since each test bundle looks a little different, please see the :doc:`subchapter on test bundles <all-test-bundles>` to read how these are structured.
+Since each test bundle looks a little different, please see the :doc:`chapter on test bundles <../testbundles/alltestbundles>` to read how these are structured.
 
 Sample Test-Bundle: Ping
 ************************
@@ -129,8 +127,8 @@ As an example, we now want to test if ``R1`` can ping ``R2``. Our sample test bu
 
 Note: 
 
-* ``test_execution:``: By using the pre-defined key-value pair ``count: 5``, we indicate that the ping should be executed 5 times.
-* ``test_data.expected: SUCCESS``: The pre-defined values are either SUCCESS, FAIL, or FLAPPING.
+* ``test_execution:`` By using the pre-defined key-value pair ``count: 5``, we indicate that the ping should be executed 5 times.
+* ``test_data.expected: SUCCESS`` The pre-defined values are either SUCCESS, FAIL, or FLAPPING.
 * ``test_data.max_drop: 1`` indicates what actually counts as SUCCESS ping.
 
 
@@ -139,7 +137,7 @@ We save this file as ``test-definition-ping.yaml``.
 Run NUTS
 --------
 
-If everything is set up as shown above, run the test from the command-line with this command:
+If everything is set up as shown above, run the test from your root folder with this command:
 
 .. code:: shell
 

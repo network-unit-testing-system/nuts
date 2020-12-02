@@ -8,11 +8,11 @@ NUTS is currently not published via pip. It has to be cloned and installed manua
 
 .. todo::
     
-    Use public repository to access code
+    Use public repository to access code and retest the installation instructions.
 
 .. code:: shell
 
-   git clone ssh://git@bitbucket.ins.local:7999/ntw/nettowel-nuts.git
+   git clone <public repository>
 
    cd nettowel-nuts
 

@@ -1,23 +1,24 @@
 Test Bundles
 ============
 
-A test bundle contains one ore more tests that are related to each other. For example, when executing the test bundle that checks BGP neighbors, a test of that bundle checks the correctness of the local ID, another checks if a peer is up etc.
+A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc.
 
-You find here all network test bundles that have been implemented in NUTS. They can be executed with the command ``$ pytest <test>.yaml``. Note that you need an inventory for the tests to work, and some fields in the bundles directly refer to items in that inventory. Also, there are optional fields in test bundles, e.g. the ``label`` field, those have been omitted for clarity. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
+You find here all test bundles that have been implemented in NUTS. They can be executed with the command ``$ pytest <test>.yaml`` from your project root. 
 
-In some test bundles you can directly pass arguments to the network query that is executed in the background. For those test bundles we indicate the specific network library and the command that is used to query the devices, so that you see all available arguments. The libraries used are `napalm <https://napalm.readthedocs.io/en/latest/>`__ and `netmiko <https://ktbyers.github.io/netmiko/>`__.
+Note that you need an inventory for the tests to work, and some fields in the bundles directly refer to items in that inventory. Also,optional fields in test bundles have been omitted for clarity here. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
+
+In some test bundles you can directly pass arguments to the network query that is executed in the background. For those test bundles we indicate the specific network library and the command that is used to query the devices, so that you can look up all available arguments. 
 
 BGP Neighbors - Information
 ---------------------------
 
 **Test Bundle:** Tests if pre-defined BGP neighbors exist on a host.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_bgp_neighbors
-      test_class: TestNapalmBgpNeighbors
+    - test_class: TestNapalmBgpNeighbors
       test_data:
         - source: <host name, required>
           local_id: <ID>
@@ -37,14 +38,13 @@ Required fields for specific tests in this bundle:
     * Test if the peer is enabled: ``source, peer, is_enabled``
     * Test if the peer is up: ``source, peer, is_up``
 
-If all fields are present, all tests are executed. If the field is missing, the test is skipped: In the example below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``).
+If all fields are present, all tests are executed. If the field is missing, the test is skipped: In the example below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). All other tests will be shown as "skipped" in the results.
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_bgp_neighbors
-      test_class: TestNapalmBgpNeighbors
+    - test_class: TestNapalmBgpNeighbors
       test_data:
         - source: R1
           local_id: 172.16.255.1
@@ -64,25 +64,21 @@ BGP Neighbors - Count
 
 **Test Bundle:** Tests the amount of BGP neighbors a host should have.
 
-**Library used:** `Napalm <https://github.com/napalm-automation/napalm>`__.
-
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_bgp_neighbors
-      test_class: TestNapalmBgpNeighborsCount
+    - test_class: TestNapalmBgpNeighborsCount
       test_data:
         - source: <host name, required>
           neighbor_count: <number of neighbors, required>
 
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_bgp_neighbors
-      test_class: TestNapalmBgpNeighborsCount
+    - test_class: TestNapalmBgpNeighborsCount
       test_data:
         - source: R1
           neighbor_count: 2
@@ -95,12 +91,11 @@ CDP Neighbors
 
 **Test Bundle:** Tests if pre-defined CDP neighbors exist on a host.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.netmiko_cdp_neighbors
-      test_class: TestNetmikoCdpNeighbors
+    - test_class: TestNetmikoCdpNeighbors
       test_data:
         - source: <host name, required>
           local_port: <name of the local interface>
@@ -111,16 +106,15 @@ CDP Neighbors
 Required fields for specific tests in this bundle:
 
     * Test destination host: ``source, destination_host`` 
-    * Test local port: `` source, destination_host, local_port``
+    * Test local port: ``source, destination_host, local_port``
     * Test remote port: ``destination_host, remote_port``
-    * Test management IP: ``source, destination_host, management_i``
+    * Test management IP: ``source, destination_host, management_ip``
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.netmiko_cdp_neighbors
-      test_class: TestNetmikoCdpNeighbors
+    - test_class: TestNetmikoCdpNeighbors
       test_data:
         - source: R1
           local_port: GigabitEthernet3
@@ -134,12 +128,11 @@ LLDP Neighbors
 
 **Test Bundle:** Tests if pre-defined LLDP neighbors exist on a host.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_lldp_neighbors
-      test_class: TestNapalmLldpNeighbors
+    - test_class: TestNapalmLldpNeighbors
       test_data:
         - source: <host name, required>
           local_port: <name of the local interface, required>
@@ -151,12 +144,11 @@ Required fields for specific tests in this bundle:
     * Test remote host: ``local_port, remote_host``
     * Test remote port: ``local_port, remote_port`` 
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_lldp_neighbors
-      test_class: TestNapalmLldpNeighbors
+    - test_class: TestNapalmLldpNeighbors
       test_data:
         - source: R1
           local_port: GigabitEthernet3
@@ -164,41 +156,76 @@ Required fields for specific tests in this bundle:
           remote_port: GigabitEthernet2
 
 
+Network Instances
+-----------------
+
+**Test Bundle:**  Tests if pre-defined network instances (VRFs) exist.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmNetworkInstances
+      test_data:
+        - source: <host name, required>
+          network_instance: <VRF name, required>
+          interfaces:
+            - <interface name>
+          route_distinguisher: "<number>:<number>"
+
+Required fields for specific tests in this bundle:
+
+    * Test interfaces that belong to a VRF: ``source, network_instance, interfaces``
+    * Test route-distinguisher: ``source, network_instance, route_distinguisher``  
+
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmNetworkInstances
+      test_data:
+        - source: R1
+          network_instance: test1
+          interfaces:
+            - GigabitEthernet2
+            - GigabitEthernet3
+            - Loopback0
+          route_distinguisher: "1:1"
+
 OSPF Neighbors - Information
 ----------------------------
 
 **Test Bundle:** Tests if pre-defined OSPF neighbors exist on a host.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.netmiko_ospf_neighbors
-      test_class: TestNetmikoOspfNeighbors
+    - test_class: TestNetmikoOspfNeighbors
       test_data:
         - source: <host name, required>
-          local_port: <name of the local interface, required>
+          local_port: <name of the local interface>
           neighbor_id: <ID>
           state: <FULL/BDR|FULL/DR>
           neighbor_address: <IP address>
 
 Required fields for specific tests in this bundle:
 
-    * Test neighbor ID: ``source, neighbor_id``
     * Test local port: ``source, local_port, neighbor_id``
-    * Test neighbor address: ``source, neighbor_id, neighbor_address``
+    * Test neighbor ID: ``source, neighbor_id``
     * Test state: ``source, neighbor_id, state``
+    * Test neighbor address: ``source, neighbor_id, neighbor_address``
 
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.netmiko_ospf_neighbors
-      test_class: TestNetmikoOspfNeighbors
+    - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: GigabitEthernet2
-          local_port: 172.16.255.3
+        - source: R1
+          local_port: GigabitEthernet2
           neighbor_id: 172.16.255.4
           state: FULL/BDR
           neighbor_address: 172.16.14.4
@@ -209,68 +236,87 @@ OSPF Neighbors - Count
 
 **Test Bundle:** Tests the amount of OSPF neighbors a host should have.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.netmiko_ospf_neighbors
-      test_class: TestNetmikoOspfNeighborsCount
+    - test_class: TestNetmikoOspfNeighborsCount
       test_data:
         - source: <host name, required>
           neighbor_count: <number of neighbors, required>
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.netmiko_ospf_neighbors
-      test_class: TestNetmikoOspfNeighbors
+    - test_class: TestNetmikoOspfNeighbors
       test_data:
         - source: R1
           neighbor_count: 3
 
 
-Network Instances
------------------
-
-**Test Bundle:** 
-
-**Test Bundle Structure**
-
-Required fields for specific tests in this bundle:
-
-    * Test : ``something`` 
-
-
-**Test Bundle Example**
-
 Ping Hosts
 ----------
 
-**Test Bundle:** 
+**Test Bundle:** Tests if a host can ping another.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
-Required fields for specific tests in this bundle:
+.. code:: yaml
 
-    * Test : ``something`` 
+    - test_class: TestNapalmPing
+      test_execution: 
+        ttl: <number, optional>
+        timeout: <number, optional>
+        size: <number, optional>
+        count: <number, optional>
+        vrf: <string, optional>
+      test_data:
+        - source: <host name, required>
+          destination: <IP Address>
+          expected: <SUCCESS|FAIL|FLAPPING>
+          max_drop: <number>
+
+There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``source, destination, expected, max_drop``. 
+
+``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. 
+``FAIL`` means that ``max_drop`` equals the number of attempted pings. Consequentially, ``FAIL`` is ``max_drop == count``. ``FLAPPING`` is everything else in-between.
+
+``test_execution``: These fields directly control how the ping is executed. Their values are passed on to nornir, which executes the actual network requests in the background. `Nornir uses napalm's ping <https://github.com/nornir-automation/nornir_napalm/blob/master/nornir_napalm/plugins/tasks/napalm_ping.py>`__, which supports the following fields:
+
+    * ``ttl``: Max number of hops, optional.
+    * ``timeout``: Max seconds to wait after sending final packet, optional.
+    * ``size``: Size of request in bytes.
+    * ``count``: Number of ping request to send. ``count == max_drop`` implies ``FAIL``.
+    * ``vrf``: Name of VRF.
 
 
-**Test Bundle Example**
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmPing
+      test_execution:
+        count: 5
+        ttl: 10
+      test_data:
+        - source: R1
+          destination: 172.16.23.3
+          expected: SUCCESS
+          max_drop: 1
 
 
-User Information
-----------------
+Users - Information
+-------------------
 
 
 **Test Bundle:** Tests the if pre-defined users exist on a device.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_get_users
-      test_class: TestNapalmUsers
+    - test_class: TestNapalmUsers
       test_data:
         - host: <host name, required>
           username: <name>
@@ -283,40 +329,37 @@ Required fields for specific tests in this bundle:
     * Test password: ``host, username, password`` 
     * Test privilege level: ``host, username, level`` 
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_get_users
-      test_class: TestNapalmUsers
+    - test_class: TestNapalmUsers
       test_data:
         - host: R1
           username: arya
           password: stark
           level: 15
 
-No Rogue Users
---------------
+Users - No Rogue Users
+----------------------
 
-**Test Bundle:** Tests if only pre-defined users exist on a device, i.e. there are no rogue users.
+**Test Bundle:** Tests if only pre-defined users exist on a device, i.e. that there are no rogue users.
 
-**Test Bundle Structure**
+**Test Bundle Structure:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_get_users
-      test_class: TestNapalmOnlyDefinedUsersExist
+    - test_class: TestNapalmOnlyDefinedUsersExist
       test_data:
         - host: <host name, required>
           usernames: <list of usernames, required>
             - <username>
 
-**Test Bundle Example**
+**Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_module: pytest_nuts.base_tests.napalm_get_users
-      test_class: TestNapalmOnlyDefinedUsersExist
+    - test_class: TestNapalmOnlyDefinedUsersExist
       test_data:
         - host: R1
           usernames:

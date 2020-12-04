@@ -1,6 +1,7 @@
 import pytest
 from nornir import InitNornir
 
+from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yaml2test import NutsYamlFile
 
 
@@ -32,6 +33,20 @@ def general_result(initialized_nornir, nuts_task, nuts_arguments, nornir_filter)
         selected_hosts = initialized_nornir
     overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
     return overall_results
+
+
+@pytest.fixture
+def check_nuts_result(single_result: NutsResult) -> None:
+    """
+    Ensure that the result has no exception and is not failed.
+    Raises corresponding AssertionError based on the condition
+
+    :param single_result: The result to be checked
+    :return: None
+    :raise AssertionError if single_result contains an exception or single_result is failed
+    """
+    assert not single_result.exception, "An exception was thrown during information gathering"
+    assert not single_result.failed, "Information gathering failed"
 
 
 def pytest_configure(config):

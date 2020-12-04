@@ -9,7 +9,7 @@ def test_check_result(testdir):
     arguments = {
         "test_check_result": """
 import pytest
-from pytest_nuts.helpers.result import NutsResult, check_result
+from pytest_nuts.helpers.result import NutsResult
 
 failed_result = NutsResult(failed=True)
 exception_result = NutsResult(exception=Exception("TestException"))
@@ -17,8 +17,8 @@ failed_exception_result = NutsResult(failed=True, exception=Exception("TestExcep
 ok_result = NutsResult("TestData")
 
 class TestCheckResult:
-    @pytest.mark.usefixtures("check_result")
-    @pytest.mark.parametrize('single_result', [failed_result, exception_result, failed_exception_result, ok_result])
+    @pytest.mark.usefixtures("check_nuts_result")
+    @pytest.mark.parametrize("single_result", [failed_result, exception_result, failed_exception_result, ok_result])
     def test_raises_error_if_exception(self):
         pass
             """

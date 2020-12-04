@@ -21,7 +21,7 @@ result_data = [
 
 
 @pytest.fixture
-def general_result():
+def general_result(timeouted_multiresult):
     result = AggregatedResult("napalm_get_facts")
 
     multi_result_r1 = MultiResult("napalm_get_facts")
@@ -35,6 +35,8 @@ def general_result():
     result_r2.result = result_data[1]
     multi_result_r2.append(result_r2)
     result["R2"] = multi_result_r2
+
+    result["R3"] = timeouted_multiresult
     return result
 
 
@@ -43,7 +45,7 @@ def _tupelize_dict(dict_data):
 
 
 class TestTransformResult:
-    @pytest.mark.parametrize("host", ["R1", "R2"])
+    @pytest.mark.parametrize("host", ["R1", "R2", "R3"])
     def test_contains_host_at_toplevel(self, general_result, host):
         transformed_result = transform_result(general_result)
         assert host in transformed_result
@@ -51,14 +53,19 @@ class TestTransformResult:
     @pytest.mark.parametrize("host,username", [("R1", "arya"), ("R1", "bran")])
     def test_contains_multiple_usernames_per_host(self, general_result, host, username):
         transformed_result = transform_result(general_result)
-        assert username in transformed_result[host]
+        assert username in transformed_result[host].result
 
     @pytest.mark.parametrize("host,username,password,level", _tupelize_dict(test_data))
     def test_username_has_corresponding_password(self, general_result, host, username, password, level):
         transformed_result = transform_result(general_result)
-        assert transformed_result[host][username]["password"] == password
+        assert transformed_result[host].result[username]["password"] == password
 
     @pytest.mark.parametrize("host,username,password,level", _tupelize_dict(test_data))
     def test_username_has_matching_privilegelevel(self, general_result, host, username, password, level):
         transformed_result = transform_result(general_result)
-        assert transformed_result[host][username]["level"] == level
+        assert transformed_result[host].result[username]["level"] == level
+
+    def test_marks_as_failed_if_task_failed(self, general_result):
+        transformed_result = transform_result(general_result)
+        assert transformed_result["R3"].failed
+        assert transformed_result["R3"].exception is not None

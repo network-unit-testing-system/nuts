@@ -1,13 +1,14 @@
 Test Bundles
 ============
 
-A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc.
+A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc. These tests are defined by the individual fields for each entry in `test_data`. If all fields are present, all tests are executed. If the field is missing, the test is skipped: In the example on BGP neighbors below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). All other tests whose fields are missing will be shown as "skipped" in the results.
 
-You find here all test bundles that have been implemented in NUTS. They can be executed with the command ``$ pytest <test>.yaml`` from your project root. 
+This section contains all test bundles which have been implemented in NUTS, you can incorporate them in your own bundles. They can be executed with the command ``$ pytest <test>.yaml`` from your project root. 
 
-Note that you need an inventory for the tests to work, and some fields in the bundles directly refer to items in that inventory. Also,optional fields in test bundles have been omitted for clarity here. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
+Note that you need an inventory for the tests to work. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
 
-In some test bundles you can directly pass arguments to the network query that is executed in the background. For those test bundles we indicate the specific network library and the command that is used to query the devices, so that you can look up all available arguments. 
+In some test bundles you can directly pass arguments to the nornir task, i.e. the network query that is executed in the background. For those test bundles we indicate the specific task which is used to query the devices, so that you can look up all available arguments. 
+
 
 BGP Neighbors - Information
 ---------------------------
@@ -37,8 +38,6 @@ Required fields for specific tests in this bundle:
     * Test remote ID: ``source, peer, remote_id``
     * Test if the peer is enabled: ``source, peer, is_enabled``
     * Test if the peer is up: ``source, peer, is_up``
-
-If all fields are present, all tests are executed. If the field is missing, the test is skipped: In the example below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). All other tests will be shown as "skipped" in the results.
 
 **Test Bundle Example:**
 

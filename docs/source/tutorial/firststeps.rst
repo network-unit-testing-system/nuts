@@ -1,7 +1,7 @@
 First Steps with NUTS
 =====================
 
-This tutorial guides you through a minimal setup to use NUTS.
+This tutorial guides you through a minimal setup of NUTS.
 
 Two major components are needed for NUTS:
 
@@ -34,25 +34,23 @@ A sample ``hosts.yaml`` might look like this:
     platform: ios
     username: Cisco
     password: cisco
-    data:
-      interfaces:
-        - name: GigabitEthernet2
-          ipv4_address: 172.16.0.42
-        - name: Loopback0
-          ipv4_address: 172.16.255.1
+    interfaces:
+      - name: GigabitEthernet2
+        ipv4_address: 172.16.0.42
+      - name: Loopback0
+        ipv4_address: 172.16.255.1
   R2:
     hostname: 10.20.0.24
     platform: ios
     username: Cisco
     password: cisco
-    data:
-      interfaces:
-        - name: GigabitEthernet2
-          ipv4_address: 172.16.0.24
-        - name: Loopback0
-          ipv4_address: 172.16.255.2
+    interfaces:
+      - name: GigabitEthernet2
+        ipv4_address: 172.16.0.24
+      - name: Loopback0
+        ipv4_address: 172.16.255.2
 
-We provide the most basic exmaple here. Please see `nornir's documentation <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ on how to structure the inventory according to your needs. 
+We provide the most basic example here. Please see `nornir's documentation <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ on how to structure the inventory according to your needs. 
 
 A sample ``nr-config.yaml`` might look like this:
 
@@ -73,9 +71,9 @@ If you set up the above folders and files, you're ready to write test bundles.
 2. Test Bundle
 --------------
 
-A test bundle is a YAML-file that is parsed by NUTS. It conists of tests that are logically related to each other, e.g. tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. 
+A test bundle is a collection of tests are logically related to each other, for example tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
 
-Currently only YAML files are supported as test bundle format.
+Currently only YAML files are supported as test bundle format, but other data sources can could be integrated in later versions of NUTS.
 
 Structure of a Test Bundle
 **************************
@@ -100,11 +98,11 @@ test class in a test bundle.
 
 ``test_execution``: Optional. NUTS uses nornir tasks to automatically interact with the network. This field contains additional information that is directly passed to the nornir task in the background. Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
 As an example, the test definition ``TestNapalmPing`` calls a nornir task to execute napalm's ping-command. 
-This allows the additional ``max_drop`` parameter in ``test execution``, since it is in turn pre-defined by napalm. Please see the :doc:`chapter on test bundles <../testbundles/alltestbundles>` for more detailed explanations.
+This allows the additional ``count`` parameter in ``test execution``, since it is in turn pre-defined by napalm. Please see the :doc:`chapter on test bundles <../testbundles/alltestbundles>` for more detailed explanations.
 
 ``test_data``: Required. Data that is used to parametrize the tests - basically what information each test instance needs. The structure of this section is specific to every test bundle, detailed in the chapter on :doc:`test bundles <../testbundles/alltestbundles>`. 
 
-Since each test bundle looks a little different, please see the :doc:`chapter on test bundles <../testbundles/alltestbundles>` to read how these are structured.
+Since each test bundle looks a little different, please see the :doc:`chapter on test bundles <../testbundles/alltestbundles>` to see how each one is structured.
 
 Sample Test-Bundle: Ping
 ************************

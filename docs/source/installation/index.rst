@@ -29,7 +29,9 @@ NUTS is currently not published via pip. It has to be cloned and installed manua
 Deinstallation
 --------------
 
-Delete the folder ``nettowel-nuts.``
+.. code:: shell
+    
+    pip uninstall nettowel-nuts
 
 
-
+If you installed everything in a virtual environment, you can delete the folder that contains the virtual environment.

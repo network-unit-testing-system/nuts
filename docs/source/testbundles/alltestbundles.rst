@@ -1,7 +1,7 @@
 Test Bundles
 ============
 
-A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc. These tests are defined by the individual fields for each entry in `test_data`. If all fields are present, all tests are executed. If the field is missing, the test is skipped: In the example on BGP neighbors below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). All other tests whose fields are missing will be shown as "skipped" in the results.
+A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc. These tests are defined by the individual fields for each entry in ``test_data``. If all fields are present, all tests are executed. If the field is missing, the test will be shown as "skipped" in the results. In the example on BGP neighbors below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). 
 
 This section contains all test bundles which have been implemented in NUTS, you can incorporate them in your own bundles. They can be executed with the command ``$ pytest <test>.yaml`` from your project root. 
 

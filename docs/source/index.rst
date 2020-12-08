@@ -1,7 +1,4 @@
-.. NUTS - NetTowel Network Unit Testing System documentation master file, created by
-   sphinx-quickstart on Tue Nov 24 09:43:45 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. NUTS - NetTowel Network Unit Testing System documentation master file
 
 Documentation of NUTS
 =====================
@@ -9,7 +6,7 @@ Documentation of NUTS
 Introduction
 ------------
 
-The NetTowel Network Unit Testing System or "NUTS" in short is the
+The NetTowel Network Unit Testing System or "NUTS" for short is the
 testing component of the NetTowel Project, which is developed at the Institute of Networked Solutions in Rapperswil, Switzerland.
 NUTS draws on the concept of unit tests, known from the domain of
 software development, and applies it to the domain of networking.
@@ -27,9 +24,9 @@ Use pre-defined test cases together with your network topology, apply this to yo
 How NUTS works
 --------------
 
-In order to run NUTS, you need two components:
+In order to run NUTS, two components are required:
 
-#. **Information on your network**. Currently, these are YAML-files in the form of a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__. They contain all details of your network, such as hosts, login-information and other configuration. 
+#. **Inventory of the network**.  Currently, these are YAML-files in the form of a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__. They contain all details of your network, such as hosts, login-information and other configuration. 
 
 #. **Test bundles** in the form of YAML-files that specify the actual tests. A test bundle is a series of tests that are logically related to each other. Each test bundle is structured in a similar way, but has specific fields tailored to the test bundle. Some field values in a test bundle are directly related to your inventory.
 
@@ -38,7 +35,7 @@ Head over to the :doc:`Usage section <tutorial/firststeps>` to see how those two
 The project relies on the `pytest framework <https://docs.pytest.org/>`__ to setup and execute the
 tests. NUTS itself is written as a custom pytest plugin. In the background, `nornir <https://nornir.readthedocs.io/>`__ executes specific network tasks for the actual tests.
 
-Pytest reads in the test bundle (2.) and transforms it into test runs. In the background, nornir uses the network information provided in (1.), queries the network based on the specific test bundle and passes the results of those queries to pytest. Pytest then evaluates if the expectations defined in the test bundle match those results.
+Pytest reads in the test bundle (2.) and transforms it into test runs. In the background, nornir uses the network information provided in the inventory (1.), queries the network based on the specific test bundle and passes the results of those queries to pytest. Pytest then evaluates if the expectations defined in the test bundle match those results.
 
 Enhance NUTS
 ------------

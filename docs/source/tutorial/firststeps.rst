@@ -28,7 +28,6 @@ A sample ``hosts.yaml`` might look like this:
 
 .. code:: yaml
 
-  ---
   R1:
     hostname: 10.0.0.42
     platform: ios
@@ -56,7 +55,6 @@ A sample ``nr-config.yaml`` might look like this:
 
 .. code:: yaml
 
-  ---
   inventory:
   plugin: SimpleInventory
   options:
@@ -73,7 +71,7 @@ If you set up the above folders and files, you're ready to write test bundles.
 
 A test bundle is a collection of tests are logically related to each other, for example tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
 
-Currently only YAML files are supported as test bundle format, but other data sources can could be integrated in later versions of NUTS.
+Currently only YAML files are supported as test bundle format, but other data sources could be integrated in later versions of NUTS.
 
 Structure of a Test Bundle
 **************************
@@ -82,12 +80,11 @@ Each test bundle contains the following structure:
 
 .. code:: yaml
 
-    ---
-    - test_module: <module that contains the test class> # optional
-      test_class: <name of the test class>
-      label: <label to uniquely identify the test> # optional 
-      test_execution: <additional data used to execute the test> # optional
-      test_data: <data used to generate the test instances>
+  - test_module: <module that contains the test class> # optional
+    test_class: <name of the test class>
+    label: <label to uniquely identify the test> # optional 
+    test_execution: <additional data used to execute the test> # optional
+    test_data: <data used to generate the test instances>
 
 ``test_module``: Optional. The full path of the python module that contains the test class to be used. This value is optional if the test class is registered in ``index.py`` of the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started if local test modules are used.
 
@@ -111,7 +108,6 @@ As an example, we now want to test if ``R1`` can ping ``R2``. Here's our sample 
 
 .. code:: yaml
 
-  ---
   - test_class: TestNapalmPing
     test_execution:
       count: 5
@@ -121,7 +117,7 @@ As an example, we now want to test if ``R1`` can ping ``R2``. Here's our sample 
         source: R1
         max_drop: 1
 
-Note: 
+Notes: 
 
 * ``test_execution:`` By using the pre-defined key-value pair ``count: 5``, we indicate that the ping should be executed 5 times.
 * ``test_data.expected: SUCCESS``. The ping should be successful. The pre-defined values are either SUCCESS, FAIL, or FLAPPING.

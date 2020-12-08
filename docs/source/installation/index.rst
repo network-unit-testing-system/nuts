@@ -1,7 +1,7 @@
 Installation of NUTS 
 ====================
 
-Installation instructions
+Installation Instructions
 -------------------------
 
 NUTS is currently not published via pip. It has to be cloned and installed manually.

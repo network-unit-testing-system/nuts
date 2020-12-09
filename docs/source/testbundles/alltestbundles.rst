@@ -133,7 +133,7 @@ LLDP Neighbors
 
     - test_class: TestNapalmLldpNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_port: <name of the local interface, required>
           remote_host: <host name>
           remote_port: <name of the remote interface>
@@ -149,7 +149,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNapalmLldpNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_port: GigabitEthernet3
           remote_host: R2
           remote_port: GigabitEthernet2

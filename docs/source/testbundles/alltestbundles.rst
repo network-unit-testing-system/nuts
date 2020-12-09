@@ -203,7 +203,7 @@ OSPF Neighbors - Information
 
     - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_port: <name of the local interface>
           neighbor_id: <ID>
           state: <FULL/BDR|FULL/DR>
@@ -211,10 +211,10 @@ OSPF Neighbors - Information
 
 Required fields for specific tests in this bundle:
 
-    * Test local port: ``source, local_port, neighbor_id``
-    * Test neighbor ID: ``source, neighbor_id``
-    * Test state: ``source, neighbor_id, state``
-    * Test neighbor address: ``source, neighbor_id, neighbor_address``
+    * Test local port: ``host, local_port, neighbor_id``
+    * Test neighbor ID: ``host, neighbor_id``
+    * Test state: ``host, neighbor_id, state``
+    * Test neighbor address: ``host, neighbor_id, neighbor_address``
 
 
 **Test Bundle Example:**
@@ -223,7 +223,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_port: GigabitEthernet2
           neighbor_id: 172.16.255.4
           state: FULL/BDR
@@ -241,7 +241,7 @@ OSPF Neighbors - Count
 
     - test_class: TestNetmikoOspfNeighborsCount
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           neighbor_count: <number of neighbors, required>
 
 **Test Bundle Example:**
@@ -250,7 +250,7 @@ OSPF Neighbors - Count
 
     - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: R1
+        - host: R1
           neighbor_count: 3
 
 

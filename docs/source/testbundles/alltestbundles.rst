@@ -166,7 +166,7 @@ Network Instances
 
     - test_class: TestNapalmNetworkInstances
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           network_instance: <VRF name, required>
           interfaces:
             - <interface name>
@@ -174,8 +174,8 @@ Network Instances
 
 Required fields for specific tests in this bundle:
 
-    * Test interfaces that belong to a VRF: ``source, network_instance, interfaces``
-    * Test route-distinguisher: ``source, network_instance, route_distinguisher``  
+    * Test interfaces that belong to a VRF: ``host, network_instance, interfaces``
+    * Test route-distinguisher: ``host, network_instance, route_distinguisher``  
 
 
 **Test Bundle Example:**
@@ -184,7 +184,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNapalmNetworkInstances
       test_data:
-        - source: R1
+        - host: R1
           network_instance: test1
           interfaces:
             - GigabitEthernet2

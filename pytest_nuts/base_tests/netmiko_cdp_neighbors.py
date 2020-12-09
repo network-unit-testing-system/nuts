@@ -40,21 +40,21 @@ class TestNetmikoCdpNeighbors:
     def destination_list(self, nuts_parameters):
         return nuts_parameters
 
-    @pytest.mark.nuts("host,destination_host")
-    def test_destination_host(self, single_result, destination_host):
-        assert destination_host in single_result.result
+    @pytest.mark.nuts("host,remote_host")
+    def test_remote_host(self, single_result, remote_host):
+        assert remote_host in single_result.result
 
-    @pytest.mark.nuts("host,destination_host,local_port")
-    def test_local_port(self, single_result, destination_host, local_port):
-        assert single_result.result[destination_host]["local_port"] == local_port
+    @pytest.mark.nuts("host,remote_host,local_port")
+    def test_local_port(self, single_result, remote_host, local_port):
+        assert single_result.result[remote_host]["local_port"] == local_port
 
-    @pytest.mark.nuts("host,destination_host,remote_port")
-    def test_remote_port(self, single_result, destination_host, remote_port):
-        assert single_result.result[destination_host]["remote_port"] == remote_port
+    @pytest.mark.nuts("host,remote_host,remote_port")
+    def test_remote_port(self, single_result, remote_host, remote_port):
+        assert single_result.result[remote_host]["remote_port"] == remote_port
 
-    @pytest.mark.nuts("host,destination_host,management_ip")
-    def test_management_ip(self, single_result, destination_host, management_ip):
-        assert single_result.result[destination_host]["management_ip"] == management_ip
+    @pytest.mark.nuts("host,remote_host,management_ip")
+    def test_management_ip(self, single_result, remote_host, management_ip):
+        assert single_result.result[remote_host]["management_ip"] == management_ip
 
 
 def transform_result(general_result) -> Dict[str, NutsResult]:

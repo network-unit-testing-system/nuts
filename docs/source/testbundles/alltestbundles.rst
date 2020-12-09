@@ -98,16 +98,16 @@ CDP Neighbors
       test_data:
         - host: <host name, required>
           local_port: <name of the local interface>
-          destination_host: <host name, required>
+          remote_host: <host name, required>
           management_ip: <IP address>
           remote_port: <name of the remote interface>
 
 Required fields for specific tests in this bundle:
 
-    * Test destination host: ``host, destination_host`` 
-    * Test local port: ``host, destination_host, local_port``
-    * Test remote port: ``destination_host, remote_port``
-    * Test management IP: ``host, destination_host, management_ip``
+    * Test remote_host host: ``host, remote_host`` 
+    * Test local port: ``host, remote_host, local_port``
+    * Test remote port: ``remote_host, remote_port``
+    * Test management IP: ``host, remote_host, management_ip``
 
 **Test Bundle Example:**
 
@@ -117,7 +117,7 @@ Required fields for specific tests in this bundle:
       test_data:
         - host: R1
           local_port: GigabitEthernet3
-          destination_host: R2
+          remote_host: R2
           management_ip: 172.16.12.2
           remote_port: GigabitEthernet2
 

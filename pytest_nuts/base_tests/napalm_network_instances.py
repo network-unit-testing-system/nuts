@@ -25,7 +25,7 @@ def nornir_filter(hosts):
 
 @pytest.fixture(scope="class")
 def hosts(nuts_parameters):
-    return {entry["source"] for entry in nuts_parameters["test_data"]}
+    return {entry["host"] for entry in nuts_parameters["test_data"]}
 
 
 @pytest.fixture(scope="class")
@@ -34,24 +34,24 @@ def transformed_result(general_result):
 
 
 @pytest.fixture
-def single_result(transformed_result, source):
-    assert source in transformed_result, f"Host {source} not found in aggregated result."
-    return transformed_result[source]
+def single_result(transformed_result, host):
+    assert host in transformed_result, f"Host {host} not found in aggregated result."
+    return transformed_result[host]
 
 
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmNetworkInstances:
-    @pytest.mark.nuts("source,network_instance,interfaces")
+    @pytest.mark.nuts("host,network_instance,interfaces")
     def test_network_instance_contains_interfaces(self, single_result, network_instance, interfaces):
         assert single_result.result[network_instance]["interfaces"] == interfaces
 
-    @pytest.mark.nuts("source,network_instance,route_distinguisher")
+    @pytest.mark.nuts("host,network_instance,route_distinguisher")
     def test_route_distinguisher(self, single_result, network_instance, route_distinguisher):
         assert single_result.result[network_instance]["route_distinguisher"] == route_distinguisher
 
 
 def transform_result(general_result) -> Dict[str, NutsResult]:
-    return {source: nuts_result_wrapper(result, _transform_single_result) for source, result in general_result.items()}
+    return {host: nuts_result_wrapper(result, _transform_single_result) for host, result in general_result.items()}
 
 
 def _transform_single_result(single_result):

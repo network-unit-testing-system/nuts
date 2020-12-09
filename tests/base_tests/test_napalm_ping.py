@@ -8,11 +8,11 @@ from tests.base_tests.conftest import TIMEOUT_MESSAGE
 from tests.helpers.shared import create_result
 
 test_data = [
-    {"expected": "SUCCESS", "source": "R1", "destination": "172.16.23.3", "max_drop": 1},
-    {"expected": "FAIL", "source": "R2", "destination": "172.16.23.4", "max_drop": 1},
-    {"expected": "FLAPPING", "source": "R3", "destination": "172.16.23.5", "max_drop": 1},
-    {"expected": "SUCCESS", "source": "R1", "destination": "172.16.23.6", "max_drop": 1},
-    {"expected": "SUCCESS", "source": "R3", "destination": "172.16.23.6", "max_drop": 1},
+    {"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.3", "max_drop": 1},
+    {"expected": "FAIL", "host": "R2", "destination": "172.16.23.4", "max_drop": 1},
+    {"expected": "FLAPPING", "host": "R3", "destination": "172.16.23.5", "max_drop": 1},
+    {"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.6", "max_drop": 1},
+    {"expected": "SUCCESS", "host": "R3", "destination": "172.16.23.6", "max_drop": 1},
 ]
 
 result_data = [

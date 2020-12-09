@@ -21,7 +21,7 @@ BGP Neighbors - Information
 
     - test_class: TestNapalmBgpNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_id: <ID>
           local_as: <AS number>
           peer: <IP address, required>
@@ -32,12 +32,12 @@ BGP Neighbors - Information
 
 Required fields for specific tests in this bundle:
 
-    * Test the local AS: ``source, peer, local_as`` 
-    * Test the local ID: ``source, peer, local_id``
-    * Test remote AS: ``source, peer, remote_as``
-    * Test remote ID: ``source, peer, remote_id``
-    * Test if the peer is enabled: ``source, peer, is_enabled``
-    * Test if the peer is up: ``source, peer, is_up``
+    * Test the local AS: ``host, peer, local_as`` 
+    * Test the local ID: ``host, peer, local_id``
+    * Test remote AS: ``host, peer, remote_as``
+    * Test remote ID: ``host, peer, remote_id``
+    * Test if the peer is enabled: ``host, peer, is_enabled``
+    * Test if the peer is up: ``host, peer, is_up``
 
 **Test Bundle Example:**
 
@@ -45,7 +45,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNapalmBgpNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_id: 172.16.255.1
           local_as: 45001
           peer: 172.16.255.2
@@ -53,7 +53,7 @@ Required fields for specific tests in this bundle:
           remote_id: 0.0.0.0
           is_enabled: true
           is_up: false
-        - source: R2
+        - host: R2
           peer: 172.16.255.2
           is_up: false      
 
@@ -69,7 +69,7 @@ BGP Neighbors - Count
 
     - test_class: TestNapalmBgpNeighborsCount
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           neighbor_count: <number of neighbors, required>
 
 
@@ -79,9 +79,9 @@ BGP Neighbors - Count
 
     - test_class: TestNapalmBgpNeighborsCount
       test_data:
-        - source: R1
+        - host: R1
           neighbor_count: 2
-        - source: R2
+        - host: R2
           neighbor_count: 1
 
 
@@ -96,18 +96,18 @@ CDP Neighbors
 
     - test_class: TestNetmikoCdpNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_port: <name of the local interface>
-          destination_host: <host name, required>
+          remote_host: <host name, required>
           management_ip: <IP address>
           remote_port: <name of the remote interface>
 
 Required fields for specific tests in this bundle:
 
-    * Test destination host: ``source, destination_host`` 
-    * Test local port: ``source, destination_host, local_port``
-    * Test remote port: ``destination_host, remote_port``
-    * Test management IP: ``source, destination_host, management_ip``
+    * Test remote_host host: ``host, remote_host`` 
+    * Test local port: ``host, remote_host, local_port``
+    * Test remote port: ``remote_host, remote_port``
+    * Test management IP: ``host, remote_host, management_ip``
 
 **Test Bundle Example:**
 
@@ -115,9 +115,9 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNetmikoCdpNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_port: GigabitEthernet3
-          destination_host: R2
+          remote_host: R2
           management_ip: 172.16.12.2
           remote_port: GigabitEthernet2
 
@@ -133,7 +133,7 @@ LLDP Neighbors
 
     - test_class: TestNapalmLldpNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_port: <name of the local interface, required>
           remote_host: <host name>
           remote_port: <name of the remote interface>
@@ -149,7 +149,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNapalmLldpNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_port: GigabitEthernet3
           remote_host: R2
           remote_port: GigabitEthernet2
@@ -166,7 +166,7 @@ Network Instances
 
     - test_class: TestNapalmNetworkInstances
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           network_instance: <VRF name, required>
           interfaces:
             - <interface name>
@@ -174,8 +174,8 @@ Network Instances
 
 Required fields for specific tests in this bundle:
 
-    * Test interfaces that belong to a VRF: ``source, network_instance, interfaces``
-    * Test route-distinguisher: ``source, network_instance, route_distinguisher``  
+    * Test interfaces that belong to a VRF: ``host, network_instance, interfaces``
+    * Test route-distinguisher: ``host, network_instance, route_distinguisher``  
 
 
 **Test Bundle Example:**
@@ -184,7 +184,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNapalmNetworkInstances
       test_data:
-        - source: R1
+        - host: R1
           network_instance: test1
           interfaces:
             - GigabitEthernet2
@@ -203,7 +203,7 @@ OSPF Neighbors - Information
 
     - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_port: <name of the local interface>
           neighbor_id: <ID>
           state: <FULL/BDR|FULL/DR>
@@ -211,10 +211,10 @@ OSPF Neighbors - Information
 
 Required fields for specific tests in this bundle:
 
-    * Test local port: ``source, local_port, neighbor_id``
-    * Test neighbor ID: ``source, neighbor_id``
-    * Test state: ``source, neighbor_id, state``
-    * Test neighbor address: ``source, neighbor_id, neighbor_address``
+    * Test local port: ``host, local_port, neighbor_id``
+    * Test neighbor ID: ``host, neighbor_id``
+    * Test state: ``host, neighbor_id, state``
+    * Test neighbor address: ``host, neighbor_id, neighbor_address``
 
 
 **Test Bundle Example:**
@@ -223,7 +223,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_port: GigabitEthernet2
           neighbor_id: 172.16.255.4
           state: FULL/BDR
@@ -241,7 +241,7 @@ OSPF Neighbors - Count
 
     - test_class: TestNetmikoOspfNeighborsCount
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           neighbor_count: <number of neighbors, required>
 
 **Test Bundle Example:**
@@ -250,7 +250,7 @@ OSPF Neighbors - Count
 
     - test_class: TestNetmikoOspfNeighbors
       test_data:
-        - source: R1
+        - host: R1
           neighbor_count: 3
 
 
@@ -271,12 +271,12 @@ Ping Hosts
         count: <number, optional>
         vrf: <string, optional>
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           destination: <IP Address>
           expected: <SUCCESS|FAIL|FLAPPING>
           max_drop: <number>
 
-There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``source, destination, expected, max_drop``. 
+There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``host, destination, expected, max_drop``. 
 
 ``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. 
 ``FAIL`` means that ``max_drop`` equals the number of attempted pings. Consequentially, ``FAIL`` is ``max_drop == count``. ``FLAPPING`` is everything else in-between.
@@ -299,7 +299,7 @@ There is only one test in this bundle, i.e. ping another host. All fields are th
         count: 5
         ttl: 10
       test_data:
-        - source: R1
+        - host: R1
           destination: 172.16.23.3
           expected: SUCCESS
           max_drop: 1

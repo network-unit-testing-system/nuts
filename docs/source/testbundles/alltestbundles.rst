@@ -278,8 +278,7 @@ Ping Hosts
 
 There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``host, destination, expected, max_drop``. 
 
-``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. 
-``FAIL`` means that ``max_drop`` equals the number of attempted pings. Consequentially, ``FAIL`` is ``max_drop == count``. ``FLAPPING`` is everything else in-between.
+``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. ``FAIL`` means that the destination is expected to be unreachable. ``FLAPPING`` is everything else in-between.
 
 ``test_execution``: These fields directly control how the ping is executed. Their values are passed on to nornir, which executes the actual network requests in the background. `Nornir uses napalm's ping <https://github.com/nornir-automation/nornir_napalm/blob/master/nornir_napalm/plugins/tasks/napalm_ping.py>`__, which supports the following fields:
 

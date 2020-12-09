@@ -21,7 +21,7 @@ BGP Neighbors - Information
 
     - test_class: TestNapalmBgpNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_id: <ID>
           local_as: <AS number>
           peer: <IP address, required>
@@ -32,12 +32,12 @@ BGP Neighbors - Information
 
 Required fields for specific tests in this bundle:
 
-    * Test the local AS: ``source, peer, local_as`` 
-    * Test the local ID: ``source, peer, local_id``
-    * Test remote AS: ``source, peer, remote_as``
-    * Test remote ID: ``source, peer, remote_id``
-    * Test if the peer is enabled: ``source, peer, is_enabled``
-    * Test if the peer is up: ``source, peer, is_up``
+    * Test the local AS: ``host, peer, local_as`` 
+    * Test the local ID: ``host, peer, local_id``
+    * Test remote AS: ``host, peer, remote_as``
+    * Test remote ID: ``host, peer, remote_id``
+    * Test if the peer is enabled: ``host, peer, is_enabled``
+    * Test if the peer is up: ``host, peer, is_up``
 
 **Test Bundle Example:**
 
@@ -45,7 +45,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNapalmBgpNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_id: 172.16.255.1
           local_as: 45001
           peer: 172.16.255.2
@@ -53,7 +53,7 @@ Required fields for specific tests in this bundle:
           remote_id: 0.0.0.0
           is_enabled: true
           is_up: false
-        - source: R2
+        - host: R2
           peer: 172.16.255.2
           is_up: false      
 
@@ -69,7 +69,7 @@ BGP Neighbors - Count
 
     - test_class: TestNapalmBgpNeighborsCount
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           neighbor_count: <number of neighbors, required>
 
 
@@ -79,9 +79,9 @@ BGP Neighbors - Count
 
     - test_class: TestNapalmBgpNeighborsCount
       test_data:
-        - source: R1
+        - host: R1
           neighbor_count: 2
-        - source: R2
+        - host: R2
           neighbor_count: 1
 
 

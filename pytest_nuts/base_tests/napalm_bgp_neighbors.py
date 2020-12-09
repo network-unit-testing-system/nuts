@@ -24,7 +24,7 @@ def nornir_filter(hosts):
 
 @pytest.fixture(scope="class")
 def hosts(nuts_parameters):
-    return {entry["source"] for entry in nuts_parameters["test_data"]}
+    return {entry["host"] for entry in nuts_parameters["test_data"]}
 
 
 @pytest.fixture(scope="class")
@@ -35,11 +35,11 @@ def transformed_result(general_result):
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighborsCount:
     @pytest.fixture
-    def single_result(self, transformed_result, source):
-        assert source in transformed_result, f"Host {source} not found in aggregated result."
-        return transformed_result[source]
+    def single_result(self, transformed_result, host):
+        assert host in transformed_result, f"Host {host} not found in aggregated result."
+        return transformed_result[host]
 
-    @pytest.mark.nuts("source,neighbor_count")
+    @pytest.mark.nuts("host,neighbor_count")
     def test_neighbor_count(self, single_result, neighbor_count):
         assert len(single_result.result) == neighbor_count
 
@@ -47,41 +47,41 @@ class TestNapalmBgpNeighborsCount:
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighbors:
     @pytest.fixture
-    def single_result(self, transformed_result, source):
-        assert source in transformed_result, f"Host {source} not found in aggregated result."
-        return transformed_result[source]
+    def single_result(self, transformed_result, host):
+        assert host in transformed_result, f"Host {host} not found in aggregated result."
+        return transformed_result[host]
 
     @pytest.fixture
     def peer_result(self, single_result, peer):
         return single_result.result[peer]
 
-    @pytest.mark.nuts("source,peer,local_as")
+    @pytest.mark.nuts("host,peer,local_as")
     def test_local_as(self, peer_result, local_as):
         assert peer_result["local_as"] == local_as
 
-    @pytest.mark.nuts("source,peer,local_id")
+    @pytest.mark.nuts("host,peer,local_id")
     def test_local_id(self, peer_result, local_id):
         assert peer_result["local_id"] == local_id
 
-    @pytest.mark.nuts("source,peer,remote_as")
+    @pytest.mark.nuts("host,peer,remote_as")
     def test_remote_as(self, peer_result, remote_as):
         assert peer_result["remote_as"] == remote_as
 
-    @pytest.mark.nuts("source,peer,remote_id")
+    @pytest.mark.nuts("host,peer,remote_id")
     def test_remote_id(self, peer_result, remote_id):
         assert peer_result["remote_id"] == remote_id
 
-    @pytest.mark.nuts("source,peer,is_enabled")
+    @pytest.mark.nuts("host,peer,is_enabled")
     def test_is_enabled(self, peer_result, is_enabled):
         assert peer_result["is_enabled"] == is_enabled
 
-    @pytest.mark.nuts("source,peer,is_up")
+    @pytest.mark.nuts("host,peer,is_up")
     def test_is_up(self, peer_result, is_up):
         assert peer_result["is_up"] == is_up
 
 
 def transform_result(general_result) -> Dict[str, NutsResult]:
-    return {source: nuts_result_wrapper(result, _transform_single_result) for source, result in general_result.items()}
+    return {host: nuts_result_wrapper(result, _transform_single_result) for host, result in general_result.items()}
 
 
 def _transform_single_result(single_result: MultiResult) -> dict:

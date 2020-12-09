@@ -96,7 +96,7 @@ CDP Neighbors
 
     - test_class: TestNetmikoCdpNeighbors
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           local_port: <name of the local interface>
           destination_host: <host name, required>
           management_ip: <IP address>
@@ -104,10 +104,10 @@ CDP Neighbors
 
 Required fields for specific tests in this bundle:
 
-    * Test destination host: ``source, destination_host`` 
-    * Test local port: ``source, destination_host, local_port``
+    * Test destination host: ``host, destination_host`` 
+    * Test local port: ``host, destination_host, local_port``
     * Test remote port: ``destination_host, remote_port``
-    * Test management IP: ``source, destination_host, management_ip``
+    * Test management IP: ``host, destination_host, management_ip``
 
 **Test Bundle Example:**
 
@@ -115,7 +115,7 @@ Required fields for specific tests in this bundle:
 
     - test_class: TestNetmikoCdpNeighbors
       test_data:
-        - source: R1
+        - host: R1
           local_port: GigabitEthernet3
           destination_host: R2
           management_ip: 172.16.12.2

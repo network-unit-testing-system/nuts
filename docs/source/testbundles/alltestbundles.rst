@@ -271,12 +271,12 @@ Ping Hosts
         count: <number, optional>
         vrf: <string, optional>
       test_data:
-        - source: <host name, required>
+        - host: <host name, required>
           destination: <IP Address>
           expected: <SUCCESS|FAIL|FLAPPING>
           max_drop: <number>
 
-There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``source, destination, expected, max_drop``. 
+There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``host, destination, expected, max_drop``. 
 
 ``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. 
 ``FAIL`` means that ``max_drop`` equals the number of attempted pings. Consequentially, ``FAIL`` is ``max_drop == count``. ``FLAPPING`` is everything else in-between.
@@ -299,7 +299,7 @@ There is only one test in this bundle, i.e. ping another host. All fields are th
         count: 5
         ttl: 10
       test_data:
-        - source: R1
+        - host: R1
           destination: 172.16.23.3
           expected: SUCCESS
           max_drop: 1

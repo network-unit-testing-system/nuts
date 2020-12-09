@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Callable
+from typing import Dict, List
 
 import pytest
 from nornir.core import Task
@@ -24,19 +24,19 @@ class TestNapalmPing:
 
     @pytest.fixture(scope="class")
     def hosts(self, nuts_parameters):
-        return {entry["source"] for entry in nuts_parameters["test_data"]}
+        return {entry["host"] for entry in nuts_parameters["test_data"]}
 
     @pytest.fixture(scope="class")
     def transformed_result(self, general_result, nuts_parameters):
         return transform_result(general_result, nuts_parameters["test_data"])
 
     @pytest.fixture
-    def single_result(self, transformed_result, source, destination):
-        assert source in transformed_result, f"Host {source} not found in aggregated result."
-        assert destination in transformed_result[source], f"Destination {destination} not found in result."
-        return transformed_result[source][destination]
+    def single_result(self, transformed_result, host, destination):
+        assert host in transformed_result, f"Host {host} not found in aggregated result."
+        assert destination in transformed_result[host], f"Destination {destination} not found in result."
+        return transformed_result[host][destination]
 
-    @pytest.mark.nuts("source,destination,expected")
+    @pytest.mark.nuts("host,destination,expected")
     def test_ping(self, single_result, expected):
         assert single_result.result.name == expected
 
@@ -56,7 +56,7 @@ def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Resul
 
 
 def _destinations_per_host(test_data):
-    return lambda host_name: [entry["destination"] for entry in test_data if entry["source"] == host_name]
+    return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
 def transform_result(general_result, test_data) -> Dict[str, Dict[str, NutsResult]]:
@@ -65,7 +65,7 @@ def transform_result(general_result, test_data) -> Dict[str, Dict[str, NutsResul
 
 def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[dict]) -> dict:
     maxdrop_per_destination = {
-        entry["destination"]: entry["max_drop"] for entry in test_data if entry["source"] == host
+        entry["destination"]: entry["max_drop"] for entry in test_data if entry["host"] == host
     }
     return {
         ping_task.destination: nuts_result_wrapper(

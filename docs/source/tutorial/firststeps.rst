@@ -112,9 +112,9 @@ As an example, we now want to test if ``R1`` can ping ``R2``. Here's our sample 
     test_execution:
       count: 5
     test_data:
-      - destination: 172.16.0.24
+      - host: R1
+        destination: 172.16.0.24
         expected: SUCCESS
-        source: R1
         max_drop: 1
 
 Notes: 

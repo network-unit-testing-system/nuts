@@ -32,6 +32,30 @@ filterwarnings = [
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
 ]
 
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py36,black,mypy,docs
+
+[testenv]
+deps = pytest
+commands = pytest
+
+[testenv:black]
+deps = black
+commands = black pytest_nuts tests
+
+[testenv:mypy]
+deps = mypy
+commands = mypy pytest_nuts tests
+
+[testenv:docs]
+deps = sphinx
+changedir = docs/
+commands = sphinx-build source build
+"""
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

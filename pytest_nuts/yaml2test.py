@@ -14,7 +14,8 @@ class NutsYamlFile(pytest.File):
         super().__init__(fspath, parent)
 
     def collect(self):
-        raw = yaml.safe_load(self.fspath.open())
+        with self.fspath.open() as f:
+            raw = yaml.safe_load(f)
 
         for test_entry in raw:
             module = load_module(test_entry.get("test_module"), test_entry.get("test_class"))

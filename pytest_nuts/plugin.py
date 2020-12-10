@@ -50,7 +50,7 @@ def check_nuts_result(single_result: NutsResult) -> None:
 
 
 def pytest_configure(config):
-    config.addinivalue_line("markers", "nuts: marks the test for nuts parameterization")
+    config.addinivalue_line("markers", "nuts: marks the test for nuts parametrization")
 
 
 def pytest_generate_tests(metafunc):

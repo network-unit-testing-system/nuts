@@ -76,11 +76,10 @@ def get_parametrize_data(metafunc, nuts_params):
 
 
 def calculate_required_fields(fields, nuts_params):
+    required_fields = set(fields)
     if len(nuts_params) >= 2:
-        optional_fields = [field.strip() for field in nuts_params[1].split(",")]
-        required_fields = [field for field in fields if field not in optional_fields]
-    else:
-        required_fields = fields
+        optional_fields = {field.strip() for field in nuts_params[1].split(",")}
+        required_fields -= optional_fields
     return required_fields
 
 
@@ -95,7 +94,7 @@ def dict_to_tuple_list(source, fields, required_fields):
 
 
 def wrap_if_needed(source, required_fields, tuple):
-    missing_fields = [field for field in required_fields if field not in source]
+    missing_fields = required_fields - set(source)
     if not missing_fields:
         return tuple
     return pytest.param(*tuple, marks=pytest.mark.skip(f"required values {missing_fields} not present in test-bundle"))

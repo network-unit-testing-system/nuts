@@ -60,7 +60,7 @@ class NutsTestFile(pytest.Module):
 
 
 class NutsTestClass(pytest.Class):
-    def __init__(self, parent, name: str, class_name: str, obj: Any, **kw):
+    def __init__(self, parent: NutsTestFile, name: str, class_name: str, obj: Any, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name
@@ -72,11 +72,7 @@ class NutsTestClass(pytest.Class):
         Overwritten from PyobjMixin to separate name and classname
         This allows to group multiple tests of the same class with different parameters to be grouped separately
         """
-
-        # TODO: Improve the type of `parent` such that assert/ignore aren't needed.
-        assert self.parent is not None
-        obj = self.parent.obj  # type: ignore[attr-defined]
-        return getattr(obj, self.class_name)
+        return getattr(self.parent.obj, self.class_name)
 
     @classmethod
     def from_parent(cls, parent, *, name, obj=None, **kw):

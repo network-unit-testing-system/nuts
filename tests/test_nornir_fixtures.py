@@ -23,11 +23,11 @@ def nr_wrapper():
 @pytest.fixture(autouse=True)
 def default_nr_init(testdir):
     """Create initial Nornir files and expose the location as nornir_config_file fixture."""
-    hosts_path_as_string = str(testdir.tmpdir.join(f"hosts{YAML_EXTENSION}"))
+    hosts_path = testdir.tmpdir.join(f"hosts{YAML_EXTENSION}")
     config = f"""inventory:
                           plugin: SimpleInventory
                           options:
-                              host_file: {hosts_path_as_string}"""
+                              host_file: {hosts_path}"""
     arguments = {
         "nr-config": config,
         "hosts": """
@@ -37,14 +37,14 @@ def default_nr_init(testdir):
               hostname: 10.20.0.32""",
     }
     testdir.makefile(YAML_EXTENSION, **arguments)
-    nr_path_as_string = str(testdir.tmpdir.join(f"nr-config{YAML_EXTENSION}")).replace("\\", r"\\")
+    nr_path = testdir.tmpdir.join(f"nr-config{YAML_EXTENSION}")
     conf_test = f"""
           from nornir.core import Task
           import pytest
 
           @pytest.fixture(scope="session")
           def nornir_config_file():
-              return "{nr_path_as_string}"
+              return r"{nr_path}"
                   """
     testdir.makeconftest(conf_test)
 

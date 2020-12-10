@@ -6,7 +6,7 @@ from nornir.core.plugins.runners import RunnersPluginRegister
 from tests.helpers.shared import YAML_EXTENSION
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def nr_wrapper():
     """
     Cleanup Nornir's PluginRegisters.
@@ -20,7 +20,7 @@ def nr_wrapper():
     RunnersPluginRegister.deregister_all()
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def default_nr_init(testdir):
     """Create initial Nornir files and expose the location as nornir_config_file fixture."""
     hosts_path_as_string = str(testdir.tmpdir.join(f"hosts{YAML_EXTENSION}"))
@@ -49,7 +49,6 @@ def default_nr_init(testdir):
     testdir.makeconftest(conf_test)
 
 
-@pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
 def test_inject_general_result_fixture(testdir):
     testdir.makepyfile(
         """
@@ -68,7 +67,6 @@ def test_inject_general_result_fixture(testdir):
     result.assert_outcomes(passed=1)
 
 
-@pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
 def test_errors_if_no_task_is_defined(testdir):
     testdir.makepyfile(
         """
@@ -81,7 +79,6 @@ def test_errors_if_no_task_is_defined(testdir):
     result.assert_outcomes(errors=1)
 
 
-@pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
 def test_executes_specified_task(testdir):
     testdir.makepyfile(
         """
@@ -100,7 +97,6 @@ def test_executes_specified_task(testdir):
     result.assert_outcomes(passed=1)
 
 
-@pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
 def test_filters_hosts(testdir):
     testdir.makepyfile(
         """
@@ -125,7 +121,6 @@ def test_filters_hosts(testdir):
     result.assert_outcomes(passed=1)
 
 
-@pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
 def test_pass_nuts_arguments_to_nornir(testdir):
     testdir.makepyfile(
         """

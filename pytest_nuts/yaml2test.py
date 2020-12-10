@@ -36,7 +36,7 @@ class NutsTestFile(pytest.Module):
         self.obj = obj
         self.test_entry = test_entry
 
-    def collect(self) -> Iterable[Union["Item", "Collector"]]:
+    def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """
         Collects a single NutsTestClass instance from this NutsTestFile.
         At the start inject setup_module fixture and parse all fixtures from the module.

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 
 class ModuleIndex:
@@ -30,7 +30,7 @@ class ModuleIndex:
 
         self.index = index if index is not None else default_index
 
-    def find_test_module_of_class(self, name: str) -> str:
+    def find_test_module_of_class(self, name: str) -> Optional[str]:
         """
         Try to resolve the name of the test class to a module.
 

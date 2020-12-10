@@ -1,6 +1,9 @@
 .idea/
 venv/
+.venv/
 pytest_nuts.egg-info/
 __pycache__
 
 docs/build/
+
+.pytest-cache/

@@ -43,7 +43,7 @@ def check_nuts_result(single_result: NutsResult) -> None:
 
     :param single_result: The result to be checked
     :return: None
-    :raise AssertionError if single_result contains an exception or single_result is failed
+    :raise: AssertionError if single_result contains an exception or single_result is failed
     """
     assert not single_result.exception, "An exception was thrown during information gathering"
     assert not single_result.failed, "Information gathering failed"

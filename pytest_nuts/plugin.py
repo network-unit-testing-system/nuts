@@ -97,7 +97,9 @@ def wrap_if_needed(source, required_fields, present_fields):
     missing_fields = required_fields - set(source)
     if not missing_fields:
         return present_fields
-    return pytest.param(*present_fields, marks=pytest.mark.skip(f"required values {missing_fields} not present in test-bundle"))
+    return pytest.param(
+        *present_fields, marks=pytest.mark.skip(f"required values {missing_fields} not present in test-bundle")
+    )
 
 
 def dict_to_tuple(source, fields):

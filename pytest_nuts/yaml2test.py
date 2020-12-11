@@ -6,6 +6,7 @@ import pytest
 import yaml
 from _pytest import nodes
 
+from pytest_nuts.context import NutsContext
 from pytest_nuts.index import ModuleIndex
 
 
@@ -90,6 +91,6 @@ class NutsTestClass(pytest.Class):
         if hasattr(self.module, "CONTEXT"):
             self.nuts_ctx = self.module.CONTEXT(self.params)
         else:
-            self.nuts_ctx = None
+            self.nuts_ctx = NutsContext(self.params)
 
         return super().collect()

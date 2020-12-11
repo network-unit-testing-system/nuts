@@ -1,7 +1,8 @@
 import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
-#from pytest_nuts.base_tests.netmiko_cdp_neighbors import transform_result
+from pytest_nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
+
 neighbor_details = {
     "destination_host": "R2",
     "management_ip": "172.16.12.2",
@@ -79,10 +80,15 @@ def general_result(timeouted_multiresult):
     return result
 
 
+@pytest.fixture
+def nuts_ctx():
+    return CONTEXT(None)
+
+
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])
-    def test_contains_hosts_at_toplevel(self, general_result, host):
-        transformed_result = transform_result(general_result)
+    def test_contains_hosts_at_toplevel(self, nuts_ctx, general_result, host):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert host in transformed_result
 
     @pytest.mark.parametrize(
@@ -92,18 +98,18 @@ class TestTransformResult:
             ("R2", ["R3", "R1", "R5"]),
         ],
     )
-    def test_contains_neighbors_at_second_level(self, general_result, host, network_instances):
-        transformed_result = transform_result(general_result)
+    def test_contains_neighbors_at_second_level(self, nuts_ctx, general_result, host, network_instances):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize("host,neighbor,details", [("R1", "R2", neighbor_details)])
-    def test_contains_information_about_neighbor(self, general_result, host, neighbor, details):
-        transformed_result = transform_result(general_result)
+    def test_contains_information_about_neighbor(self, nuts_ctx, general_result, host, neighbor, details):
+        transformed_result = nuts_ctx.transform_result(general_result)
         expected_details = transformed_result[host].result[neighbor]
         for key in details:
             assert expected_details[key] == details[key]
 
-    def test_marks_as_failed_if_task_failed(self, general_result):
-        transformed_result = transform_result(general_result)
+    def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result["R3"].failed
         assert transformed_result["R3"].exception is not None

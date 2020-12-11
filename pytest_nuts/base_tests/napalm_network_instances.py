@@ -5,10 +5,10 @@ from nornir.core.filter import F
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
-from pytest_nuts.plugin import NutsContext
+from pytest_nuts.context import NornirNutsContext
 
 
-class NetworkInstancesContext(NutsContext):
+class NetworkInstancesContext(NornirNutsContext):
     def nuts_task(self):
         return napalm_get
 

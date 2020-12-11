@@ -4,10 +4,10 @@ from nornir.core.task import MultiResult
 from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.helpers.result import nuts_result_wrapper
-from pytest_nuts.plugin import NutsContext
+from pytest_nuts.context import NornirNutsContext
 
 
-class CdpNeighborsContext(NutsContext):
+class CdpNeighborsContext(NornirNutsContext):
     def nuts_task(self):
         return netmiko_send_command
 
@@ -23,9 +23,9 @@ class CdpNeighborsContext(NutsContext):
 
     def transform_result(self, general_result):
         return {
-            host: nuts_result_wrapper(result, self._transform_host_results)
-            for host, result in general_result.items()
+            host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
         }
+
 
 CONTEXT = CdpNeighborsContext
 

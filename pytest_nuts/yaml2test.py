@@ -4,7 +4,7 @@ from typing import Iterable, Union, Any
 import py
 import pytest
 import yaml
-from _pytest import nodes, fixtures
+from _pytest import nodes
 
 from pytest_nuts.index import ModuleIndex
 
@@ -87,5 +87,9 @@ class NutsTestClass(pytest.Class):
         nuts_parameters: Used as fixture for actual tests. Can include optional info on how to run the test.
         get_parametrizing_data: Used for parametrizing and thus generate tests.
         """
-        self.nuts_ctx = self.module.CONTEXT(self.params)
+        if hasattr(self.module, "CONTEXT"):
+            self.nuts_ctx = self.module.CONTEXT(self.params)
+        else:
+            self.nuts_ctx = None
+
         return super().collect()

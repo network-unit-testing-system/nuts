@@ -285,7 +285,7 @@ There is only one test in this bundle, i.e. ping another host. All fields are th
     * ``ttl``: Max number of hops, optional.
     * ``timeout``: Max seconds to wait after sending final packet, optional.
     * ``size``: Size of request in bytes.
-    * ``count``: Number of ping request to send. ``count == max_drop`` implies ``FAIL``.
+    * ``count``: Number of ping request to send.
     * ``vrf``: Name of VRF.
 
 

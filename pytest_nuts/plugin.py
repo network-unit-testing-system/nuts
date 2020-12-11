@@ -55,6 +55,12 @@ def nuts_ctx(request):
 
 
 @pytest.fixture
+def single_result(nuts_ctx, host):
+    assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
+    return nuts_ctx.transformed_result[host]
+
+
+@pytest.fixture
 def check_nuts_result(single_result: NutsResult) -> None:
     """
     Ensure that the result has no exception and is not failed.

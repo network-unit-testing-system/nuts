@@ -1,17 +1,13 @@
-from typing import Dict
-
 import pytest
-
 from nornir.core.filter import F
 from nornir.core.task import MultiResult
 from nornir_netmiko import netmiko_send_command
 
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+from pytest_nuts.helpers.result import nuts_result_wrapper
 from pytest_nuts.plugin import NutsContext
 
 
 class CdpNeighborsContext(NutsContext):
-
     def nuts_task(self):
         return netmiko_send_command
 
@@ -25,11 +21,6 @@ class CdpNeighborsContext(NutsContext):
     def _transform_host_results(self, host_results: MultiResult) -> dict:
         return {neighbor["destination_host"]: neighbor for neighbor in host_results[0].result}
 
-
-    def single_result(self, host):
-        assert host in self.transformed_result, f"Host {host} not found in aggregated result."
-        return self.transformed_result[host]
-
     def transform_result(self, general_result):
         return {
             host: nuts_result_wrapper(result, self._transform_host_results)
@@ -39,21 +30,20 @@ class CdpNeighborsContext(NutsContext):
 CONTEXT = CdpNeighborsContext
 
 
-#@pytest.mark.usefixtures("check_nuts_result")
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoCdpNeighbors:
-
     @pytest.mark.nuts("host,remote_host")
-    def test_remote_host(self, nuts_ctx, host, remote_host):
-        assert remote_host in nuts_ctx.single_result(host).result
+    def test_remote_host(self, single_result, remote_host):
+        assert remote_host in single_result.result
 
     @pytest.mark.nuts("host,remote_host,local_port")
-    def test_local_port(self, nuts_ctx, host, remote_host, local_port):
-        assert nuts_ctx.single_result(host).result[remote_host]["local_port"] == local_port
+    def test_local_port(self, single_result, remote_host, local_port):
+        assert single_result.result[remote_host]["local_port"] == local_port
 
     @pytest.mark.nuts("host,remote_host,remote_port")
-    def test_remote_port(self, nuts_ctx, host, remote_host, remote_port):
-        assert nuts_ctx.single_result(host).result[remote_host]["remote_port"] == remote_port
+    def test_remote_port(self, single_result, remote_host, remote_port):
+        assert single_result.result[remote_host]["remote_port"] == remote_port
 
     @pytest.mark.nuts("host,remote_host,management_ip")
-    def test_management_ip(self, nuts_ctx, host, remote_host, management_ip):
-        assert nuts_ctx.single_result(host).result[remote_host]["management_ip"] == management_ip
+    def test_management_ip(self, single_result, remote_host, management_ip):
+        assert single_result.result[remote_host]["management_ip"] == management_ip

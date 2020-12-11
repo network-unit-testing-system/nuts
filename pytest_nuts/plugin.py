@@ -59,9 +59,9 @@ def pytest_generate_tests(metafunc):
     to generate tests based on that information. The placeholder later holds data retrieved
     from the YAML test definition.
     """
-    nuts = [mark.args for mark in metafunc.definition.own_markers if mark.name == "nuts"]
-    if nuts and len(nuts) == 1:
-        nuts_params = nuts[0]
+    nuts = metafunc.definition.get_closest_marker("nuts")
+    if nuts:
+        nuts_params = nuts.args
         parametrize_data = get_parametrize_data(metafunc, nuts_params)
         metafunc.parametrize(nuts_params[0], parametrize_data)
 

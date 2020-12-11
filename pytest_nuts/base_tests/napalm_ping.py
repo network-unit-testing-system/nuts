@@ -64,7 +64,9 @@ def transform_result(general_result, test_data) -> Dict[str, Dict[str, NutsResul
 
 
 def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[dict]) -> dict:
-    maxdrop_per_destination = {entry["destination"]: entry["max_drop"] for entry in test_data if entry["host"] == host}
+    maxdrop_per_destination = {
+        entry["destination"]: entry.get("max_drop", 0) for entry in test_data if entry["host"] == host
+    }
     return {
         ping_task.destination: nuts_result_wrapper(
             ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])

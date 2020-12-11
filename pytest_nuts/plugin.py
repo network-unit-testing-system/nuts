@@ -5,34 +5,44 @@ from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yaml2test import NutsYamlFile
 
 
-@pytest.fixture(scope="session")
-def nornir_config_file():
-    return "nr-config.yaml"
+class NutsContext:
+
+    def __init__(self, nuts_parameters):
+        self.nuts_parameters = nuts_parameters
+
+    def nuts_task(self):
+        raise NotImplementedError
+
+    def nuts_arguments(self):
+        return {}
+
+    def nornir_filter(self):
+        return None
+
+    def nornir_config_file(self):
+        return "nr-config.yaml"
+
+    def initialized_nornir(self):
+        config_file = self.nornir_config_file()
+        return InitNornir(config_file=config_file, logging=False)
+
+    def general_result(self):
+        nuts_task = self.nuts_task()
+        nuts_arguments = self.nuts_arguments()
+        nornir_filter = self.nornir_filter()
+        initialized_nornir = self.initialized_nornir()
+
+        if nornir_filter:
+            selected_hosts = initialized_nornir.filter(nornir_filter)
+        else:
+            selected_hosts = initialized_nornir
+        overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
+        return overall_results
 
 
-@pytest.fixture(scope="class")
-def nuts_arguments():
-    return {}
-
-
-@pytest.fixture(scope="class")
-def nornir_filter():
-    return None
-
-
-@pytest.fixture(scope="session")
-def initialized_nornir(nornir_config_file):
-    return InitNornir(config_file=nornir_config_file, logging=False)
-
-
-@pytest.fixture(scope="class")
-def general_result(initialized_nornir, nuts_task, nuts_arguments, nornir_filter):
-    if nornir_filter:
-        selected_hosts = initialized_nornir.filter(nornir_filter)
-    else:
-        selected_hosts = initialized_nornir
-    overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
-    return overall_results
+@pytest.fixture
+def nuts_ctx(request):
+    return request.node.parent.parent.nuts_ctx
 
 
 @pytest.fixture

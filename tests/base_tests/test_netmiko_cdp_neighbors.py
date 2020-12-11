@@ -1,8 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
-from pytest_nuts.base_tests.netmiko_cdp_neighbors import transform_result
-
+#from pytest_nuts.base_tests.netmiko_cdp_neighbors import transform_result
 neighbor_details = {
     "destination_host": "R2",
     "management_ip": "172.16.12.2",

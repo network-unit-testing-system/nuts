@@ -20,7 +20,7 @@ def nuts_arguments():
 
 
 @pytest.fixture(scope="class")
-def nuts_filter(hosts):
+def nornir_filter(hosts):
     return F(name__any=hosts)
 
 

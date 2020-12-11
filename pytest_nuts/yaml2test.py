@@ -87,11 +87,5 @@ class NutsTestClass(pytest.Class):
         nuts_parameters: Used as fixture for actual tests. Can include optional info on how to run the test.
         get_parametrizing_data: Used for parametrizing and thus generate tests.
         """
-
-        @fixtures.fixture(scope="class")
-        def nuts_parameters(cls):
-            return self.params
-
-        self.obj.nuts_parameters = nuts_parameters
-
+        self.nuts_ctx = self.module.CONTEXT(self.params)
         return super().collect()

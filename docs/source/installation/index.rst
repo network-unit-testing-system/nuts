@@ -28,13 +28,22 @@ NUTS is currently not published via pip. It has to be cloned and installed manua
 Parsing with ntc-templates
 --------------------------
 
-In order to parse answers from network devices, some NUTS test classes use `ntc-templates <https://github.com/networktocode/ntc-templates>`__ (TextFSM Templates for Network Devices). These tests rely on ntc-templates:
+In order to parse answers from network devices, some NUTS test classes use `netmiko in combination with ntc-templates <https://ktbyers.github.io/netmiko/#textfsm-integration>`__ (ntc-templates: TextFSM Templates for Network Devices). These NUTS tests rely on ntc-templates:
 
   * ``TestNetmikoCdpNeighbors``
   * ``TestNetmikoOspfNeighborsCount``
   * ``TestNetmikoOspfNeighbors``
 
-If you run these test classes, please make sure to have ntc-templates installed in your project root - see `ntc-templates on Github <https://github.com/networktocode/ntc-templates>`__ for the installation instructions. The folder must lie on the same level as the test and the inventory folder.
+If you run these test classes, please make sure to configure access to ntc-templates correctly:
+
+  1. Clone the `ntc-templates repository <https://github.com/networktocode/ntc-templates.git>`__ into your project root, on the same hierarchical level as your ``inventory`` and ``tests`` folder.
+  2. Set environment variable: 
+
+.. code:: shell
+
+  $ export NET_TEXTFSM=/path/to/ntc-templates/templates/
+
+`More on Netmiko and TextFSM <https://pynet.twb-tech.com/blog/automation/netmiko-textfsm.html>`__
 
 
 Deinstallation

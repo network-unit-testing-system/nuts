@@ -69,10 +69,11 @@ def pytest_generate_tests(metafunc):
 def get_parametrize_data(metafunc, nuts_params):
     fields = [field.strip() for field in nuts_params[0].split(",")]
     required_fields = calculate_required_fields(fields, nuts_params)
-    data = getattr(metafunc.cls, "nuts_test_data", None)
+    nuts_test_instance = metafunc.definition.parent.parent
+    data = getattr(nuts_test_instance, "params")
     if not data:
         return []
-    return dict_to_tuple_list(data, fields, required_fields)
+    return dict_to_tuple_list(data["test_data"], fields, required_fields)
 
 
 def calculate_required_fields(fields, nuts_params):

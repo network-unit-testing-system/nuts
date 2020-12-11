@@ -93,5 +93,5 @@ class NutsTestClass(pytest.Class):
             return self.params
 
         self.obj.nuts_parameters = nuts_parameters
-        self.obj.nuts_test_data = self.params["test_data"]
+
         return super().collect()

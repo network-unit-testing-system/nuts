@@ -90,6 +90,8 @@ CDP Neighbors
 
 **Test Bundle:** Tests if pre-defined CDP neighbors exist on a host.
 
+**Note**: `ntc-templates <https://github.com/networktocode/ntc-templates>`__ must be pre-installed.
+
 **Test Bundle Structure:**
 
 .. code:: yaml
@@ -197,6 +199,8 @@ OSPF Neighbors - Information
 
 **Test Bundle:** Tests if pre-defined OSPF neighbors exist on a host.
 
+**Note**: `ntc-templates <https://github.com/networktocode/ntc-templates>`__ must be pre-installed.
+
 **Test Bundle Structure:**
 
 .. code:: yaml
@@ -234,6 +238,8 @@ OSPF Neighbors - Count
 ----------------------------
 
 **Test Bundle:** Tests the amount of OSPF neighbors a host should have.
+
+**Note**: `ntc-templates <https://github.com/networktocode/ntc-templates>`__ must be pre-installed.
 
 **Test Bundle Structure:**
 

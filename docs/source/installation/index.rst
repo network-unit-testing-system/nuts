@@ -4,7 +4,7 @@ Installation of NUTS
 Installation Instructions
 -------------------------
 
-NUTS is currently not published via pip. It has to be cloned and installed manually.
+NUTS is currently not published on the Python Package Index (`PyPI <https://pypi.org/>`_). It has to be cloned and installed manually.
 
 .. todo::
     

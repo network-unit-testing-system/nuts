@@ -1,16 +1,35 @@
 import pytest
+from nornir import InitNornir
+from nornir.core import Nornir
 
 from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yaml2test import NutsYamlFile, get_parametrize_data
 
 
 @pytest.fixture
-def nuts_ctx(request):
-    return request.node.parent.parent.nuts_ctx
+def nornir_config_file():
+    return "nr-config.yaml"
+
+
+@pytest.fixture(scope='session')
+def initialized_nornir(nornir_config_file) -> Nornir:
+    return InitNornir(config_file=nornir_config_file, logging=False)
 
 
 @pytest.fixture
-def single_result(nuts_ctx, host):
+def nuts_ctx(request):
+    ctx = request.node.parent.parent.nuts_ctx
+    return ctx
+
+
+@pytest.fixture
+def nornir_nuts_ctx(nuts_ctx, initialized_nornir):
+    nuts_ctx.nornir = initialized_nornir
+    return nuts_ctx
+
+
+@pytest.fixture
+def single_result(nornir_nuts_ctx, host):
     assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
     return nuts_ctx.transformed_result[host]
 

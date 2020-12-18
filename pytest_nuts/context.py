@@ -1,4 +1,5 @@
 from nornir import InitNornir
+from nornir.core import Nornir
 
 
 class NutsContext:
@@ -10,6 +11,7 @@ class NornirNutsContext(NutsContext):
     def __init__(self, nuts_parameters):
         super().__init__(nuts_parameters)
         self._transformed_result = None
+        self.nornir = None
 
     def nuts_task(self):
         raise NotImplementedError
@@ -23,18 +25,11 @@ class NornirNutsContext(NutsContext):
     def nornir_filter(self):
         return None
 
-    def nornir_config_file(self):
-        return "nr-config.yaml"
-
-    def initialized_nornir(self):
-        config_file = self.nornir_config_file()
-        return InitNornir(config_file=config_file, logging=False)
-
     def general_result(self):
         nuts_task = self.nuts_task()
         nuts_arguments = self.nuts_arguments()
         nornir_filter = self.nornir_filter()
-        initialized_nornir = self.initialized_nornir()
+        initialized_nornir = self.nornir
 
         if nornir_filter:
             selected_hosts = initialized_nornir.filter(nornir_filter)

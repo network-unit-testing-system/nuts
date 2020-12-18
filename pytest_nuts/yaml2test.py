@@ -66,6 +66,7 @@ class NutsTestClass(pytest.Class):
         self.params = kw
         self.name = name
         self.class_name = class_name
+        self.nuts_ctx = None
 
     def _getobj(self):
         """
@@ -89,7 +90,8 @@ class NutsTestClass(pytest.Class):
         get_parametrizing_data: Used for parametrizing and thus generate tests.
         """
         if hasattr(self.module, "CONTEXT"):
-            self.nuts_ctx = self.module.CONTEXT(self.params)
+            context = self.module.CONTEXT(self.params)
+            self.nuts_ctx = context
         else:
             self.nuts_ctx = NutsContext(self.params)
 
@@ -100,10 +102,10 @@ def get_parametrize_data(metafunc, nuts_params):
     fields = [field.strip() for field in nuts_params[0].split(",")]
     required_fields = calculate_required_fields(fields, nuts_params)
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "params")
+    data = getattr(nuts_test_instance, "nuts_ctx", None)
     if not data:
         return []
-    return dict_to_tuple_list(data["test_data"], fields, required_fields)
+    return dict_to_tuple_list(data.nuts_parameters["test_data"], fields, required_fields)
 
 
 def calculate_required_fields(fields, nuts_params):

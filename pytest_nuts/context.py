@@ -1,5 +1,6 @@
-from nornir import InitNornir
-from nornir.core import Nornir
+class NutsSetupError(Exception):
+    def __init__(self, message):
+        super(NutsSetupError, self).__init__(message)
 
 
 class NutsContext:
@@ -26,6 +27,8 @@ class NornirNutsContext(NutsContext):
         return None
 
     def general_result(self):
+        if not self.nornir:
+            raise NutsSetupError("Nornir instance not found in context object")
         nuts_task = self.nuts_task()
         nuts_arguments = self.nuts_arguments()
         nornir_filter = self.nornir_filter()

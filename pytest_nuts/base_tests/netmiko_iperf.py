@@ -1,6 +1,6 @@
 import pytest
 import json
-from typing import Dict, List
+from typing import Dict
 
 from nornir.core.filter import F
 from nornir.core.task import Task, Result, MultiResult
@@ -9,6 +9,7 @@ from nornir_netmiko import netmiko_send_command
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
 
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoIperf:
     @pytest.fixture(scope="class")
     def nuts_setup_teardown(self, nuts_parameters, initialized_nornir):
@@ -22,15 +23,14 @@ class TestNetmikoIperf:
         return netmiko_run_iperf
 
     @pytest.fixture(scope="class")
-    def nornir_filter(self, hosts):
-        return F(name__any=hosts)
-
-    @pytest.fixture(scope="class")
     def nuts_arguments(self, nuts_parameters):
         return {
             "destinations_per_host": _destinations_per_host(nuts_parameters["test_data"]),
-            # **nuts_parameters["test_execution"],
         }
+
+    @pytest.fixture(scope="class")
+    def nornir_filter(self, hosts):
+        return F(name__any=hosts)
 
     @pytest.fixture(scope="class")
     def general_result(self, nuts_setup_teardown, initialized_nornir, nuts_task, nuts_arguments, nornir_filter):
@@ -56,7 +56,7 @@ class TestNetmikoIperf:
         return transformed_result[host][destination]
 
     @pytest.mark.nuts("host,destination,min_expected")
-    def test_iperf(self, single_result, host, destination, min_expected):
+    def test_iperf(self, single_result, min_expected):
         assert single_result.result > min_expected
 
 
@@ -64,7 +64,7 @@ def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
-def _client_iperf(task: Task, dest: str):
+def _client_iperf(task: Task, dest: str) -> None:
     task.run(
         task=netmiko_send_command,
         command_string=f"iperf3 -c {dest} --json",
@@ -74,7 +74,7 @@ def _client_iperf(task: Task, dest: str):
 def netmiko_run_iperf(task: Task, destinations_per_host, **kwargs) -> Result:
     dests = destinations_per_host(task.host.name)
     for destination in dests:
-        result = task.run(task=_client_iperf, dest=destination, **kwargs)
+        task.run(task=_client_iperf, dest=destination, **kwargs)
     return Result(host=task.host, result=f"iperf executed for {task.host}")
 
 
@@ -82,10 +82,10 @@ def transform_result(general_result) -> Dict[str, Dict[str, NutsResult]]:
     return {host: _parse_iperf_result(task_results) for host, task_results in general_result.items()}
 
 
-def _parse_iperf_result(task_results: MultiResult):
+def _parse_iperf_result(task_results: MultiResult) -> Dict[str, NutsResult]:
     results_per_host = {}
     for iperf_task in task_results[1:]:
-        results_per_host[_extract_dest(iperf_task)] = nuts_result_wrapper(iperf_task, _extract_bps)
+        results_per_host[_extract_dest(iperf_task)] = nuts_result_wrapper(iperf_task, _extract_bps)  # TODO
     return results_per_host
 
 
@@ -104,7 +104,10 @@ def destinations(test_data):
 
 
 def server_setup(task: Task):
-    return task.run(task=netmiko_send_command, command_string=f"iperf3 --server --daemon --one-off")
+    task.run(
+        task=netmiko_send_command,
+        command_string=f"iperf3 --server --daemon --one-off"
+    )
 
 
 def server_teardown(task: Task):

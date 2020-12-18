@@ -23,9 +23,12 @@ class TestConstructor:
         assert module_index.index == custom_index
 
 
-class TestFindTestModuleOfClass:
-    def test_returns_none_if_class_not_specified(self, default_module_index):
-        assert default_module_index.find_test_module_of_class("someClass") is None
-
-    def test_returns_module_if_class_is_specified(self, default_module_index):
-        assert default_module_index.find_test_module_of_class("testClass") == "test.module"
+@pytest.mark.parametrize(
+    "test_class, expected",
+    [
+        ("someClass", None),
+        ("testClass", "test.module"),
+    ],
+)
+def test_find_test_module_of_class(test_class, expected, default_module_index):
+    assert default_module_index.find_test_module_of_class(test_class) == expected

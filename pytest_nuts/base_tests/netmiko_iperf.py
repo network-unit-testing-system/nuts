@@ -71,10 +71,10 @@ def _client_iperf(task: Task, dest: str) -> None:
     )
 
 
-def netmiko_run_iperf(task: Task, destinations_per_host, **kwargs) -> Result:
+def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
     dests = destinations_per_host(task.host.name)
     for destination in dests:
-        task.run(task=_client_iperf, dest=destination, **kwargs)
+        task.run(task=_client_iperf, dest=destination)
     return Result(host=task.host, result=f"iperf executed for {task.host}")
 
 
@@ -104,10 +104,7 @@ def destinations(test_data):
 
 
 def server_setup(task: Task):
-    task.run(
-        task=netmiko_send_command,
-        command_string=f"iperf3 --server --daemon --one-off"
-    )
+    task.run(task=netmiko_send_command, command_string=f"iperf3 --server --daemon --one-off")
 
 
 def server_teardown(task: Task):

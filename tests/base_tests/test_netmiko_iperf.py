@@ -13,8 +13,9 @@ test_data = [
 result_data = [
     '{"start":{"connected":[{"remote_host":"10.0.0.2"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',
     '{"start":{"connected":[{"remote_host":"10.0.0.3"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',
-     '{"start":{"connected":[{"remote_host":"10.0.0.1"}]},"end":{"sum_received":{"bits_per_second":0}}}',
-    ]
+    '{"start":{"connected":[{"remote_host":"10.0.0.1"}]},"end":{"sum_received":{"bits_per_second":0}}}',
+]
+
 
 @pytest.fixture
 def general_result():
@@ -52,23 +53,33 @@ def general_result():
 
     return ag_result
 
+
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["L1"])
     def test_contains_host_at_toplevel(self, general_result, host):
         transformed_result = transform_result(general_result)
         assert host in transformed_result
 
-    @pytest.mark.parametrize("host, destination", [("L1", "10.0.0.2"), ("L1", "10.0.0.3"), ("L2", "10.0.0.1")])
+    @pytest.mark.parametrize(
+        "host, destination",
+        [
+            (test_data[0]["host"], test_data[0]["destination"]),
+            (test_data[1]["host"], test_data[1]["destination"]),
+            (test_data[2]["host"], test_data[2]["destination"]),
+        ],
+    )
     def test_contains_iperf_dest(self, general_result, host, destination):
         transformed_result = transform_result(general_result)
         assert destination in transformed_result[host]
 
-    @pytest.mark.parametrize("host, destination, min_expected", [("L1", "10.0.0.2", 10000000), ("L1", "10.0.0.3", 10000000),])
+    @pytest.mark.parametrize(
+        "host, destination, min_expected", [tuple(test_data[0].values()), tuple(test_data[1].values())]
+    )
     def test_one_host_several_destinations(self, general_result, host, destination, min_expected):
         transformed_result = transform_result(general_result)
         assert transformed_result[host][destination].result > min_expected
 
-    @pytest.mark.parametrize("host, destination, min_expected", [("L2", "10.0.0.1", 10000000)])
+    @pytest.mark.parametrize("host, destination, min_expected", [tuple(test_data[2].values())])
     def test_min_expected_fails(self, general_result, host, destination, min_expected):
         transformed_result = transform_result(general_result)
         assert transformed_result[host][destination].result != min_expected

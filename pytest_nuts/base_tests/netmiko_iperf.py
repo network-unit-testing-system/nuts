@@ -104,7 +104,7 @@ def destinations(test_data):
 
 
 def server_setup(task: Task):
-    task.run(task=netmiko_send_command, command_string=f"iperf3 --server --daemon --one-off")
+    task.run(task=netmiko_send_command, command_string=f"iperf3 --server --daemon")
 
 
 def server_teardown(task: Task):

@@ -85,21 +85,21 @@ def transform_result(general_result) -> Dict[str, Dict[str, NutsResult]]:
 def _parse_iperf_result(task_results: MultiResult) -> Dict[str, NutsResult]:
     results_per_host = {}
     for iperf_task in task_results[1:]:
-        results_per_host[_extract_dest(iperf_task)] = nuts_result_wrapper(iperf_task, _extract_bps)
+        results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
     return results_per_host
 
 
-def _extract_bps(iperf_task: MultiResult) -> int:
-    iperf_result = json.loads(iperf_task[1].result)
+def _extract_bps(iperf_task):
+    iperf_result = json.loads(iperf_task.result)
     return int(iperf_result["end"]["sum_received"]["bits_per_second"])
 
 
-def _extract_dest(iperf_task: MultiResult) -> str:
-    iperf_result = json.loads(iperf_task[1].result)
+def _extract_dest(iperf_task):
+    iperf_result = json.loads(iperf_task.result)
     return iperf_result["start"]["connected"][0]["remote_host"]
 
 
-def destinations(test_data) -> set:
+def destinations(test_data):
     return {entry["destination"] for entry in test_data}
 
 

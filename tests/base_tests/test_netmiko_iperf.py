@@ -12,66 +12,46 @@ test_data = [
 ]
 
 result_data = [
-    {
-        "start": {
-            "connected": [
-                {
-                    "remote_host": "10.0.0.2",
-                }
-            ],
-        },
-        "end": {
-            "sum_received": {"bits_per_second": 3.298164e09},
-        },
-    },
-    {
-        "start": {
-            "connected": [
-                {
-                    "remote_host": "10.0.0.3",
-                }
-            ],
-        },
-        "end": {
-            "sum_received": {"bits_per_second": 3.298164e09},
-        },
-    },
-    {
-        "start": {
-            "connected": [
-                {
-                    "remote_host": "10.0.0.1",
-                }
-            ],
-        },
-        "end": {
-            "sum_received": {"bits_per_second": 0},
-        },
-    }
-]
+    '{         "start": {            "connected": [                {                    "remote_host": "10.0.0.2"                }            ]        },        "end": {            "sum_received": {"bits_per_second": 3.298164e09}        }    }',
+    '{        "start": {            "connected": [                {                    "remote_host": "10.0.0.3"                }            ]        },        "end": {            "sum_received": {"bits_per_second": 3.298164e09}        }    }',
+    '{        "start": {            "connected": [                {                    "remote_host": "10.0.0.1"                }            ]        },        "end": {            "sum_received": {"bits_per_second": 0}        }    }',
+    ]
 
 @pytest.fixture
 def general_result():
-    result = AggregatedResult("netmiko_iperf")
+    ag_result = AggregatedResult("netmiko_iperf")
 
-    multi_result_l1 = MultiResult("netmiko_run_iperf")
-    result_0 = Result(host=None, name="netmiko_run_iperf", result="iperf executed")
-    multi_result_l1.append(result_0)
-    result_l1_1 = Result(host=None, name="netmiko_send_command")
-    result_l1_1.result = result_data[0]
-    multi_result_l1.append(result_l1_1)
-    result_l1_2 = Result(host=None, name="netmiko_send_command")
-    result_l1_2.result = result_data[1]
-    multi_result_l1.append(result_l1_2)
-    result["L1"] = multi_result_l1
+    overall_mr_l1 = MultiResult("netmiko_run_iperf")
+    overall_mr_l1.append(Result(host=None, name="netmiko_run_iperf", result="iperf executed"))
 
-    multi_result_l2 = MultiResult("netmiko_run_iperf")
-    multi_result_l2.append(result_0)
-    result_l2_1 = Result(host=None, name="netmiko_send_command")
-    result_l2_1.result = result_data[2]
-    result["L2"] = multi_result_l2
+    mr_l1_1 = MultiResult(name="_client_iperf")
+    mr_l1_1.append(Result(host=None, name="_client_iperf", result="iperf executed"))
+    l1_result1 = Result(host=None, name="netmiko_send_command")
+    l1_result1.result = result_data[0]
+    mr_l1_1.append(l1_result1)
+    overall_mr_l1.append(mr_l1_1)
 
-    return result
+    mr_l1_2 = MultiResult(name="_client_iperf")
+    mr_l1_2.append(Result(host=None, name="_client_iperf", result="iperf executed"))
+    l1_result2 = Result(host=None, name="netmiko_send_command")
+    l1_result2.result = result_data[1]
+    mr_l1_2.append(l1_result2)
+    overall_mr_l1.append(mr_l1_2)
+
+    ag_result["L1"] = overall_mr_l1
+
+    overall_mr_l2 = MultiResult("netmiko_run_iperf")
+    overall_mr_l2.append(Result(host=None, name="netmiko_run_iperf", result="iperf executed"))
+    mr_l2_1 = MultiResult(name="_client_iperf")
+    mr_l2_1.append(Result(host=None, name="_client_iperf", result="iperf executed"))
+    l2_result1 = Result(host=None, name="netmiko_send_command")
+    l2_result1.result = result_data[2]
+    mr_l2_1.append(l2_result1)
+    overall_mr_l2.append(mr_l2_1)
+
+    ag_result["L2"] = overall_mr_l2
+
+    return ag_result
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["L1"])

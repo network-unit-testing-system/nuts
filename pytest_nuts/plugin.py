@@ -1,4 +1,4 @@
-from typing import Dict, Callable, Any, Iterable, Union
+from typing import Dict, Callable, Iterable, Union
 
 import pytest
 from _pytest.main import Session
@@ -8,7 +8,7 @@ from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.filter import F
 from nornir.core.task import AggregatedResult
-from py.path import LocalPath
+from py._path.local import LocalPath
 
 from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yaml2test import NutsYamlFile, get_parametrize_data

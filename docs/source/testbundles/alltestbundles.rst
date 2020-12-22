@@ -133,7 +133,7 @@ iperf - Bandwidth Test
 
 **Requirement**: `iperf3` must be installed on all Linux hosts and destinations.
 
-**Test Bundle:** Tests if a connection between to hosts achieves a certain minimum bandwidth.
+**Test Bundle:** Tests if a connection between two hosts achieves a certain minimum bandwidth.
 
 **Test Bundle Structure:**
 

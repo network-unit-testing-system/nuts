@@ -1,10 +1,14 @@
+import types
 from importlib import util
-from typing import Iterable, Union, Any
+from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
 
 import py
 import pytest
 import yaml
 from _pytest import nodes, fixtures
+from _pytest.mark import ParameterSet
+from _pytest.nodes import Node
+from _pytest.python import Metafunc
 
 from pytest_nuts.index import ModuleIndex
 
@@ -13,7 +17,7 @@ class NutsYamlFile(pytest.File):
     def __init__(self, parent, fspath: py.path.local):
         super().__init__(fspath, parent)
 
-    def collect(self):
+    def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         with self.fspath.open() as f:
             raw = yaml.safe_load(f)
 
@@ -22,7 +26,7 @@ class NutsYamlFile(pytest.File):
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
-def load_module(module_path, class_name):
+def load_module(module_path: str, class_name: Optional[str]) -> types.ModuleType:
     if not module_path:
         module_path = ModuleIndex().find_test_module_of_class(class_name)
     spec = util.find_spec(module_path)
@@ -41,7 +45,7 @@ class NutsTestFile(pytest.Module):
         """
         Collects a single NutsTestClass instance from this NutsTestFile.
         At the start inject setup_module fixture and parse all fixtures from the module.
-        This is directly adopted from pytest.Module
+        This is directly adopted from pytest.Module.
         """
 
         self._inject_setup_module_fixture()
@@ -66,16 +70,16 @@ class NutsTestClass(pytest.Class):
         self.name = name
         self.class_name = class_name
 
-    def _getobj(self):
+    def _getobj(self) -> Any:
         """
         Get the underlying Python object.
-        Overwritten from PyobjMixin to separate name and classname
-        This allows to group multiple tests of the same class with different parameters to be grouped separately
+        Overwritten from PyobjMixin to separate name and classname.
+        This allows to group multiple tests of the same class with different parameters to be grouped separately.
         """
         return getattr(self.parent.obj, self.class_name)
 
     @classmethod
-    def from_parent(cls, parent, *, name, obj=None, **kw):
+    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw: Any) -> Any:
         """The public constructor."""
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
@@ -85,7 +89,7 @@ class NutsTestClass(pytest.Class):
         Similar to the injection of setup_class and setup_method in pytest.Class::collect
 
         nuts_parameters: Used as fixture for actual tests. Can include optional info on how to run the test.
-        get_parametrizing_data: Used for parametrizing and thus generate tests.
+        nuts_parameters: Used for parametrizing and thus generate tests.
         """
 
         @fixtures.fixture(scope="class")
@@ -97,7 +101,7 @@ class NutsTestClass(pytest.Class):
         return super().collect()
 
 
-def get_parametrize_data(metafunc, nuts_params):
+def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str]) -> Union[list, List[ParameterSet]]:
     fields = [field.strip() for field in nuts_params[0].split(",")]
     required_fields = calculate_required_fields(fields, nuts_params)
     nuts_test_instance = metafunc.definition.parent.parent
@@ -107,7 +111,7 @@ def get_parametrize_data(metafunc, nuts_params):
     return dict_to_tuple_list(data["test_data"], fields, required_fields)
 
 
-def calculate_required_fields(fields, nuts_params):
+def calculate_required_fields(fields: List[str], nuts_params: Tuple[str]) -> Set[str]:
     required_fields = set(fields)
     if len(nuts_params) >= 2:
         optional_fields = {field.strip() for field in nuts_params[1].split(",")}
@@ -115,11 +119,11 @@ def calculate_required_fields(fields, nuts_params):
     return required_fields
 
 
-def dict_to_tuple_list(source, fields, required_fields):
+def dict_to_tuple_list(source: List[Dict], fields: List[str], required_fields: Set[str]):
     return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in source]
 
 
-def wrap_if_needed(source, required_fields, present_fields):
+def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tuple[str]) -> ParameterSet:
     missing_fields = required_fields - set(source)
     if not missing_fields:
         return present_fields
@@ -128,6 +132,6 @@ def wrap_if_needed(source, required_fields, present_fields):
     )
 
 
-def dict_to_tuple(source, fields):
+def dict_to_tuple(source: Dict, fields: List[str]) -> Tuple[Optional[Any]]:
     ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

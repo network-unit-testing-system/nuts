@@ -1,4 +1,5 @@
 import pytest
+from _pytest.python import Metafunc
 from nornir import InitNornir
 
 from pytest_nuts.helpers.result import NutsResult
@@ -53,7 +54,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "nuts: marks the test for nuts parametrization")
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: Metafunc):
     """
     Checks if the the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
     to generate tests based on that information. The placeholder later holds data retrieved

@@ -26,6 +26,7 @@ class ModuleIndex:
             "TestNapalmBgpNeighbors": "pytest_nuts.base_tests.napalm_bgp_neighbors",
             "TestNapalmBgpNeighborsCount": "pytest_nuts.base_tests.napalm_bgp_neighbors",
             "TestNapalmUsers": "pytest_nuts.base_tests.napalm_get_users",
+            "TestNetmikoIperf": "pytest_nuts.base_tests.netmiko_iperf",
         }
 
         self.index = index if index is not None else default_index

@@ -124,6 +124,38 @@ Required fields for specific tests in this bundle:
           remote_port: GigabitEthernet2
 
 
+iperf - Bandwidth Test
+----------------------
+
+.. attention::
+
+  Nornir parallelizes tasks, and this test bundle uses iperf3 to determine the bandwidth. This generates a conflict: A destination may be blocked for Host A because a parallel task for Host B is already connected to the same destination. In this case, task execution fails. As of Dec 2020, the `pull request for iperf3 <https://github.com/esnet/iperf/pull/1074>`__ is still open which allows parallel connections from one server to several clients. Until this is merged and released, please set ``num_workers`` in ``nr-config.yaml`` to ``1`` for a successful execution of this test bundle.
+
+**Requirement**: `iperf3` must be installed on all Linux hosts and destinations.
+
+**Test Bundle:** Tests if a connection between two hosts achieves a certain minimum bandwidth.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+  - test_class: TestNetmikoIperf
+    test_data:
+      - host: <host name, required>
+        destination: <IP address>
+        min_expected: <bits per second>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+  - test_class: TestNetmikoIperf
+    test_data:
+      - host: L1
+        destination: 10.20.2.12
+        min_expected: 10000000
+
+
 LLDP Neighbors
 --------------
 

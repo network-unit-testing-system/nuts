@@ -119,7 +119,7 @@ def calculate_required_fields(fields: List[str], nuts_params: Tuple[str]) -> Set
     return required_fields
 
 
-def dict_to_tuple_list(source: List[Dict], fields: List[str], required_fields: Set[str]):
+def dict_to_tuple_list(source: List[Dict], fields: List[str], required_fields: Set[str]) -> List[ParameterSet]:
     return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in source]
 
 

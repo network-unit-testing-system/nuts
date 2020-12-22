@@ -38,7 +38,7 @@ def check_result(single_result: NutsResult) -> None:
     assert not single_result.failed, "Information gathering failed"
 
 
-def nuts_result_wrapper(nornir_result: Result, single_transform: Callable[[Result], Any]) -> NutsResult:
+def nuts_result_wrapper(nornir_result: Result, single_transform: Callable[[Any], Any]) -> NutsResult:
     """
     Wrap a nornir_result into a NutsResult
 

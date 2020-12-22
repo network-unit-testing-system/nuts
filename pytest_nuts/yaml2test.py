@@ -126,7 +126,7 @@ def dict_to_tuple_list(source: List[Dict], fields: List[str], required_fields: S
 def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tuple[str]) -> ParameterSet:
     missing_fields = required_fields - set(source)
     if not missing_fields:
-        return present_fields
+        return pytest.param(*present_fields)
     return pytest.param(
         *present_fields, marks=pytest.mark.skip(f"required values {missing_fields} not present in test-bundle")
     )

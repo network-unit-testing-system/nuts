@@ -11,7 +11,7 @@ def nornir_config_file():
     return "nr-config.yaml"
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def initialized_nornir(nornir_config_file) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging=False)
 

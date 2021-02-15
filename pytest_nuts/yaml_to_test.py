@@ -65,6 +65,7 @@ class NutsTestClass(pytest.Class):
     Custom nuts test collector for test methods.
     Initialises a corresponding context with externally provided parameters.
     """
+
     def __init__(self, parent: NutsTestFile, name: str, class_name: str, obj: Any, **kw):
         super().__init__(name, parent=parent)
         self.params = kw

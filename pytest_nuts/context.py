@@ -8,6 +8,7 @@ class NutsContext:
     Base context class that holds all necessary information that is needed for a specific test.
     nuts_parameters: test-specific data, that can be retrieved via yaml_to_test from a YAML file.
     """
+
     def __init__(self, nuts_parameters):
         self.nuts_parameters = nuts_parameters
 
@@ -16,6 +17,7 @@ class NornirNutsContext(NutsContext):
     """
     NutsContext class which provides nornir-specific helpers.
     """
+
     def __init__(self, nuts_parameters):
         super().__init__(nuts_parameters)
         self._transformed_result = None

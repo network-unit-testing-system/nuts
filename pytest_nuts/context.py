@@ -34,6 +34,7 @@ class NornirNutsContext(NutsContext):
         return None
 
     def general_result(self):
+        self.setup()
         if not self.nornir:
             raise NutsSetupError("Nornir instance not found in context object")
         nuts_task = self.nuts_task()
@@ -46,7 +47,15 @@ class NornirNutsContext(NutsContext):
         else:
             selected_hosts = initialized_nornir
         overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
+
+        self.teardown()
         return overall_results
+
+    def setup(self):
+        pass
+
+    def teardown(self):
+        pass
 
     @property
     def transformed_result(self):

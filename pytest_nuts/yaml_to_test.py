@@ -61,6 +61,10 @@ class NutsTestFile(pytest.Module):
 
 
 class NutsTestClass(pytest.Class):
+    """
+    Custom nuts test collector for test methods.
+    Initialises a corresponding context with externally provided parameters.
+    """
     def __init__(self, parent: NutsTestFile, name: str, class_name: str, obj: Any, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
@@ -83,11 +87,7 @@ class NutsTestClass(pytest.Class):
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """
-        Inject custom nuts fixture into the test classes
-        Similar to the injection of setup_class and setup_method in pytest.Class::collect
-
-        nuts_parameters: Used as fixture for actual tests. Can include optional info on how to run the test.
-        get_parametrizing_data: Used for parametrizing and thus generate tests.
+        Collects all tests and instantiates the corresponding context.
         """
         if hasattr(self.module, "CONTEXT"):
             context = self.module.CONTEXT(self.params)
@@ -99,6 +99,12 @@ class NutsTestClass(pytest.Class):
 
 
 def get_parametrize_data(metafunc, nuts_params):
+    """
+    Transforms externally provided parameters to be used in parametrized tests.
+    :param metafunc: The annotated test function that will use the parametrized data.
+    :param nuts_params: The fields used in a test and indicated via a custom pytest marker.
+    :return: List of tuples that contain each the parameters for a test.
+    """
     fields = [field.strip() for field in nuts_params[0].split(",")]
     required_fields = calculate_required_fields(fields, nuts_params)
     nuts_test_instance = metafunc.definition.parent.parent

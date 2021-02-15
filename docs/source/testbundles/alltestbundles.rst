@@ -90,6 +90,8 @@ CDP Neighbors
 
 **Test Bundle:** Tests if pre-defined CDP neighbors exist on a host.
 
+**Note**: `ntc-templates <https://github.com/networktocode/ntc-templates>`__ must be pre-installed.
+
 **Test Bundle Structure:**
 
 .. code:: yaml
@@ -120,6 +122,44 @@ Required fields for specific tests in this bundle:
           remote_host: R2
           management_ip: 172.16.12.2
           remote_port: GigabitEthernet2
+
+
+iperf - Bandwidth Test
+----------------------
+
+.. attention::
+
+  Nornir parallelizes tasks, and this test bundle uses iperf3 to determine the bandwidth. This generates a conflict: A destination may be blocked for Host A because a parallel task for Host B is already connected to the same destination. In this case, task execution fails. As of Dec 2020, the `pull request for iperf3 <https://github.com/esnet/iperf/pull/1074>`__ is still open which allows parallel connections from one server to several clients. Until this is merged and released, please see the requirements below for solutions.
+
+**Requirements**: 
+
+  * ``iperf3`` must be installed on all Linux hosts and destinations.
+  * Run nornir with one thread only:
+
+    * Adjust your nornir configuration for this test bundle only: in ``nr-config.yaml`` set ``num_workers: 1``.
+    * Alternative: Define a second nornir configuration ``nr-config-one-worker.yaml``, in which you set ``num_workers: 1``. Then create a file called ``conftest.py`` and place it in the same directory as this test bundle. In the file you overwrite the ``nornir_config_file()`` fixture to return your newly-created nornir configuration.
+
+**Test Bundle:** Tests if a connection between two hosts achieves a certain minimum bandwidth.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+  - test_class: TestNetmikoIperf
+    test_data:
+      - host: <host name, required>
+        destination: <IP address>
+        min_expected: <bits per second>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+  - test_class: TestNetmikoIperf
+    test_data:
+      - host: L1
+        destination: 10.20.2.12
+        min_expected: 10000000
 
 
 LLDP Neighbors
@@ -197,6 +237,8 @@ OSPF Neighbors - Information
 
 **Test Bundle:** Tests if pre-defined OSPF neighbors exist on a host.
 
+**Note**: `ntc-templates <https://github.com/networktocode/ntc-templates>`__ must be pre-installed.
+
 **Test Bundle Structure:**
 
 .. code:: yaml
@@ -234,6 +276,8 @@ OSPF Neighbors - Count
 ----------------------------
 
 **Test Bundle:** Tests the amount of OSPF neighbors a host should have.
+
+**Note**: `ntc-templates <https://github.com/networktocode/ntc-templates>`__ must be pre-installed.
 
 **Test Bundle Structure:**
 
@@ -278,15 +322,14 @@ Ping Hosts
 
 There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``host, destination, expected, max_drop``. 
 
-``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. 
-``FAIL`` means that ``max_drop`` equals the number of attempted pings. Consequentially, ``FAIL`` is ``max_drop == count``. ``FLAPPING`` is everything else in-between.
+``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. ``FAIL`` means every packet was lost. ``FLAPPING`` is everything else in-between.
 
 ``test_execution``: These fields directly control how the ping is executed. Their values are passed on to nornir, which executes the actual network requests in the background. `Nornir uses napalm's ping <https://github.com/nornir-automation/nornir_napalm/blob/master/nornir_napalm/plugins/tasks/napalm_ping.py>`__, which supports the following fields:
 
     * ``ttl``: Max number of hops, optional.
     * ``timeout``: Max seconds to wait after sending final packet, optional.
     * ``size``: Size of request in bytes.
-    * ``count``: Number of ping request to send. ``count == max_drop`` implies ``FAIL``.
+    * ``count``: Number of ping request to send.
     * ``vrf``: Name of VRF.
 
 

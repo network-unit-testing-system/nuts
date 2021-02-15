@@ -3,7 +3,7 @@ from nornir import InitNornir
 from nornir.core import Nornir
 
 from pytest_nuts.helpers.result import NutsResult
-from pytest_nuts.yaml2test import NutsYamlFile, get_parametrize_data
+from pytest_nuts.yaml_to_test import NutsYamlFile, get_parametrize_data
 
 
 @pytest.fixture

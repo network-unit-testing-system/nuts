@@ -1,44 +1,49 @@
-from typing import Dict
+from typing import Dict, Callable
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult
+from nornir.core.task import MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_get
+
+from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
 
-@pytest.fixture(scope="class")
-def nuts_task():
-    return napalm_get
+class BgpNeighborsContext(NornirNutsContext):
+    def nuts_task(self) -> Callable:
+        return napalm_get
+
+    def nuts_arguments(self) -> dict:
+        return {"getters": ["bgp_neighbors"]}
+
+    def nornir_filter(self) -> F:
+        hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
+        return F(name__any=hosts)
+
+    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+        return {
+            host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
+        }
+
+    def _transform_host_results(self, single_result: MultiResult) -> dict:
+        task_result = single_result[0].result
+        neighbors = task_result["bgp_neighbors"]
+        if "global" not in neighbors:
+            return {}
+        global_scope = neighbors["global"]
+        router_id = global_scope["router_id"]
+        return {peer: self._add_local_id(details, router_id) for peer, details in global_scope["peers"].items()}
+
+    def _add_local_id(self, element: dict, router_id: str) -> dict:
+        element["local_id"] = router_id
+        return element
 
 
-@pytest.fixture(scope="class")
-def nuts_arguments():
-    return {"getters": ["bgp_neighbors"]}
-
-
-@pytest.fixture(scope="class")
-def nornir_filter(hosts):
-    return F(name__any=hosts)
-
-
-@pytest.fixture(scope="class")
-def hosts(nuts_parameters):
-    return {entry["host"] for entry in nuts_parameters["test_data"]}
-
-
-@pytest.fixture(scope="class")
-def transformed_result(general_result):
-    return transform_result(general_result)
+CONTEXT = BgpNeighborsContext
 
 
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighborsCount:
-    @pytest.fixture
-    def single_result(self, transformed_result, host):
-        assert host in transformed_result, f"Host {host} not found in aggregated result."
-        return transformed_result[host]
-
     @pytest.mark.nuts("host,neighbor_count")
     def test_neighbor_count(self, single_result, neighbor_count):
         assert len(single_result.result) == neighbor_count
@@ -46,11 +51,6 @@ class TestNapalmBgpNeighborsCount:
 
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighbors:
-    @pytest.fixture
-    def single_result(self, transformed_result, host):
-        assert host in transformed_result, f"Host {host} not found in aggregated result."
-        return transformed_result[host]
-
     @pytest.fixture
     def peer_result(self, single_result, peer):
         return single_result.result[peer]
@@ -78,22 +78,3 @@ class TestNapalmBgpNeighbors:
     @pytest.mark.nuts("host,peer,is_up")
     def test_is_up(self, peer_result, is_up):
         assert peer_result["is_up"] == is_up
-
-
-def transform_result(general_result) -> Dict[str, NutsResult]:
-    return {host: nuts_result_wrapper(result, _transform_single_result) for host, result in general_result.items()}
-
-
-def _transform_single_result(single_result: MultiResult) -> dict:
-    task_result = single_result[0].result
-    neighbors = task_result["bgp_neighbors"]
-    if "global" not in neighbors:
-        return {}
-    global_scope = neighbors["global"]
-    router_id = global_scope["router_id"]
-    return {peer: _add_local_id(details, router_id) for peer, details in global_scope["peers"].items()}
-
-
-def _add_local_id(element: dict, router_id: str) -> dict:
-    element["local_id"] = router_id
-    return element

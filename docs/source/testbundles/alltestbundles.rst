@@ -129,9 +129,15 @@ iperf - Bandwidth Test
 
 .. attention::
 
-  Nornir parallelizes tasks, and this test bundle uses iperf3 to determine the bandwidth. This generates a conflict: A destination may be blocked for Host A because a parallel task for Host B is already connected to the same destination. In this case, task execution fails. As of Dec 2020, the `pull request for iperf3 <https://github.com/esnet/iperf/pull/1074>`__ is still open which allows parallel connections from one server to several clients. Until this is merged and released, please set ``num_workers`` in ``nr-config.yaml`` to ``1`` for a successful execution of this test bundle.
+  Nornir parallelizes tasks, and this test bundle uses iperf3 to determine the bandwidth. This generates a conflict: A destination may be blocked for Host A because a parallel task for Host B is already connected to the same destination. In this case, task execution fails. As of Dec 2020, the `pull request for iperf3 <https://github.com/esnet/iperf/pull/1074>`__ is still open which allows parallel connections from one server to several clients. Until this is merged and released, please see the requirements below for solutions.
 
-**Requirement**: `iperf3` must be installed on all Linux hosts and destinations.
+**Requirements**: 
+
+  * ``iperf3`` must be installed on all Linux hosts and destinations.
+  * Run nornir with one thread only:
+
+    * Adjust your nornir configuration for this test bundle only: in ``nr-config.yaml`` set ``num_workers: 1``.
+    * Alternative: Define a second nornir configuration ``nr-config-one-worker.yaml``, in which you set ``num_workers: 1``. Then create a file called ``conftest.py`` and place it in the same directory as this test bundle. In the file you overwrite the ``nornir_config_file()`` fixture to return your newly-created nornir configuration.
 
 **Test Bundle:** Tests if a connection between two hosts achieves a certain minimum bandwidth.
 

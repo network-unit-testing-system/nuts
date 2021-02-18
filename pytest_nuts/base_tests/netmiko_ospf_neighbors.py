@@ -1,48 +1,36 @@
-from typing import Dict
+from typing import Callable
 
 import pytest
-
 from nornir.core.filter import F
-from nornir.core.task import MultiResult
+from nornir.core.task import MultiResult, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+from pytest_nuts.context import NornirNutsContext
+from pytest_nuts.helpers.result import nuts_result_wrapper
 
 
-@pytest.fixture(scope="class")
-def nuts_task():
-    return netmiko_send_command
+class OspfNeighborsContext(NornirNutsContext):
+    def nuts_task(self) -> Callable:
+        return netmiko_send_command
+
+    def nuts_arguments(self) -> dict:
+        return {"command_string": "show ip ospf neighbor", "use_textfsm": True}
+
+    def nornir_filter(self) -> F:
+        hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
+        return F(name__any=hosts)
+
+    def _transform_host_results(self, single_result: MultiResult) -> dict:
+        neighbors = single_result[0].result
+        return {details["neighbor_id"]: details for details in neighbors}
+
+    def transform_result(self, general_result: AggregatedResult) -> dict:
+        return {
+            host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
+        }
 
 
-@pytest.fixture(scope="class")
-def nuts_arguments():
-    return {"command_string": "show ip ospf neighbor", "use_textfsm": True}
-
-
-@pytest.fixture(scope="class")
-def nuts_filter(hosts):
-    return F(name__any=hosts)
-
-
-@pytest.fixture(scope="class")
-def hosts(destination_list):
-    return {entry["host"] for entry in destination_list}
-
-
-@pytest.fixture(scope="class")
-def transformed_result(general_result):
-    return transform_result(general_result)
-
-
-@pytest.fixture
-def destination_list(nuts_parameters):
-    return nuts_parameters
-
-
-@pytest.fixture
-def single_result(transformed_result, host):
-    assert host in transformed_result, f"Host {host} not found in aggregated result."
-    return transformed_result[host]
+CONTEXT = OspfNeighborsContext
 
 
 @pytest.mark.usefixtures("check_nuts_result")
@@ -72,12 +60,3 @@ class TestNetmikoOspfNeighbors:
     def test_state(self, single_result, neighbor_id, state):
         neighbor = single_result.result[neighbor_id]
         assert neighbor["state"] == state
-
-
-def transform_result(general_result) -> Dict[str, NutsResult]:
-    return {host: nuts_result_wrapper(result, _transform_single_result) for host, result in general_result.items()}
-
-
-def _transform_single_result(single_result: MultiResult) -> dict:
-    neighbors = single_result[0].result
-    return {details["neighbor_id"]: details for details in neighbors}

@@ -1,7 +1,7 @@
-from typing import Any, Optional, Callable
+from typing import Any, Optional, Callable, TypeVar
 
 import pytest
-from nornir.core.task import Result
+from nornir.core.task import Result, MultiResult, AggregatedResult
 
 
 class NutsResult:
@@ -38,7 +38,10 @@ def check_result(single_result: NutsResult) -> None:
     assert not single_result.failed, "Information gathering failed"
 
 
-def nuts_result_wrapper(nornir_result: Result, single_transform: Callable[[Any], Any]) -> NutsResult:
+T = TypeVar("T", Result, MultiResult, AggregatedResult)
+
+
+def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) -> NutsResult:
     """
     Wrap a nornir_result into a NutsResult
 

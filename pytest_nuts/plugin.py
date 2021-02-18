@@ -6,44 +6,37 @@ from _pytest.python import Metafunc
 from _pytest import nodes
 from nornir import InitNornir
 from nornir.core import Nornir
-from nornir.core.filter import F
-from nornir.core.task import AggregatedResult
-from py._path.local import LocalPath
 
 from pytest_nuts.helpers.result import NutsResult
-from pytest_nuts.yaml2test import NutsYamlFile, get_parametrize_data
+from pytest_nuts.yaml_to_test import NutsYamlFile, get_parametrize_data
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def nornir_config_file() -> str:
     return "nr-config.yaml"
 
-
-@pytest.fixture(scope="class")
-def nuts_arguments() -> Dict:
-    return {}
-
-
-@pytest.fixture(scope="class")
-def nornir_filter() -> None:
-    return None
-
-
+    
 @pytest.fixture(scope="session")
-def initialized_nornir(nornir_config_file: str) -> InitNornir:
+def initialized_nornir(nornir_config_file: str) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging=False)
 
 
-@pytest.fixture(scope="class")
-def general_result(
-    initialized_nornir: Nornir, nuts_task: Callable, nuts_arguments: Dict, nornir_filter: F
-) -> AggregatedResult:
-    if nornir_filter:
-        selected_hosts = initialized_nornir.filter(nornir_filter)
-    else:
-        selected_hosts = initialized_nornir
-    overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
-    return overall_results
+@pytest.fixture
+def nuts_ctx(request):
+    ctx = request.node.parent.parent.nuts_ctx
+    return ctx
+
+
+@pytest.fixture
+def nornir_nuts_ctx(nuts_ctx, initialized_nornir):
+    nuts_ctx.nornir = initialized_nornir
+    return nuts_ctx
+
+
+@pytest.fixture
+def single_result(nornir_nuts_ctx, host):
+    assert host in nornir_nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
+    return nornir_nuts_ctx.transformed_result[host]
 
 
 @pytest.fixture

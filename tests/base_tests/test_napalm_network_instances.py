@@ -1,7 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult
 
-from pytest_nuts.base_tests.napalm_network_instances import transform_result
+from pytest_nuts.base_tests.napalm_network_instances import CONTEXT
 from tests.helpers.shared import create_multi_result
 
 
@@ -75,17 +75,22 @@ def general_result(timeouted_multiresult):
     return result
 
 
+@pytest.fixture
+def nuts_ctx():
+    return CONTEXT(None)
+
+
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])
-    def test_contains_hosts_at_toplevel(self, general_result, host):
-        transformed_result = transform_result(general_result)
+    def test_contains_hosts_at_toplevel(self, nuts_ctx, general_result, host):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert host in transformed_result
 
     @pytest.mark.parametrize(
         "host,network_instances", [("R1", ["default", "mgmt", "test", "test2"]), ("R2", ["default", "mgmt"])]
     )
-    def test_contains_network_instances_at_second_level(self, general_result, host, network_instances):
-        transformed_result = transform_result(general_result)
+    def test_contains_network_instances_at_second_level(self, nuts_ctx, general_result, host, network_instances):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize(
@@ -99,8 +104,10 @@ class TestTransformResult:
             ("R2", "mgmt", ["GigabitEthernet1"]),
         ],
     )
-    def test_contains_interfaces_at_network_instance(self, general_result, host, network_instance, interfaces):
-        transformed_result = transform_result(general_result)
+    def test_contains_interfaces_at_network_instance(
+        self, nuts_ctx, general_result, host, network_instance, interfaces
+    ):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[network_instance]["interfaces"] == interfaces
 
     @pytest.mark.parametrize(
@@ -112,12 +119,12 @@ class TestTransformResult:
         ],
     )
     def test_contains_route_distinguisher_at_network_instance(
-        self, general_result, host, network_instance, route_distinguisher
+        self, nuts_ctx, general_result, host, network_instance, route_distinguisher
     ):
-        transformed_result = transform_result(general_result)
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[network_instance]["route_distinguisher"] == route_distinguisher
 
-    def test_marks_as_failed_if_task_failed(self, general_result):
-        transformed_result = transform_result(general_result)
+    def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
+        transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result["R3"].failed
         assert transformed_result["R3"].exception is not None

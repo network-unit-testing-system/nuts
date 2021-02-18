@@ -1,35 +1,42 @@
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, List, Callable
 
 import pytest
 from nornir.core import Task
-from nornir.core.task import Result, MultiResult
+from nornir.core.filter import F
+from nornir.core.task import Result, MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_ping
 
+from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+
+
+class PingContext(NornirNutsContext):
+    def nuts_task(self) -> Callable:
+        return napalm_ping_multi_host
+
+    def nuts_arguments(self) -> dict:
+        return {
+            "destinations_per_host": _destinations_per_host(self.nuts_parameters["test_data"]),
+            **self.nuts_parameters["test_execution"],
+        }
+
+    def nornir_filter(self) -> F:
+        hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
+        return F(name__any=hosts)
+
+    def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
+        test_data = self.nuts_parameters["test_data"]
+        return {
+            host: _parse_ping_results(host, task_results, test_data) for host, task_results in general_result.items()
+        }
+
+
+CONTEXT = PingContext
 
 
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmPing:
-    @pytest.fixture(scope="class")
-    def nuts_task(self):
-        return napalm_ping_multi_host
-
-    @pytest.fixture(scope="class")
-    def nuts_arguments(self, nuts_parameters):
-        return {
-            "destinations_per_host": _destinations_per_host(nuts_parameters["test_data"]),
-            **nuts_parameters["test_execution"],
-        }
-
-    @pytest.fixture(scope="class")
-    def hosts(self, nuts_parameters):
-        return {entry["host"] for entry in nuts_parameters["test_data"]}
-
-    @pytest.fixture(scope="class")
-    def transformed_result(self, general_result, nuts_parameters):
-        return transform_result(general_result, nuts_parameters["test_data"])
-
     @pytest.fixture
     def single_result(self, transformed_result, host, destination):
         assert host in transformed_result, f"Host {host} not found in aggregated result."
@@ -57,10 +64,6 @@ def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Resul
 
 def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
-
-
-def transform_result(general_result, test_data) -> Dict[str, Dict[str, NutsResult]]:
-    return {host: _parse_ping_results(host, task_results, test_data) for host, task_results in general_result.items()}
 
 
 def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[dict]) -> dict:

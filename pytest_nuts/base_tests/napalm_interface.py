@@ -21,3 +21,6 @@ def hosts(hosts_interface_list):
 @pytest.fixture(scope="class")
 def transformed_result(general_result):
     return {key: value[0].result for key, value in general_result.items()}
+
+
+# TODO not implemented

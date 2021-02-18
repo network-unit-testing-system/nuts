@@ -5,11 +5,9 @@ from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
 import py
 import pytest
 import yaml
-from _pytest import nodes, fixtures
-from _pytest.mark import ParameterSet
-from _pytest.nodes import Node
-from _pytest.python import Metafunc
+from _pytest import nodes
 
+from pytest_nuts.context import NutsContext
 from pytest_nuts.index import ModuleIndex
 
 
@@ -64,11 +62,17 @@ class NutsTestFile(pytest.Module):
 
 
 class NutsTestClass(pytest.Class):
+    """
+    Custom nuts test collector for test methods.
+    Initialises a corresponding context with externally provided parameters.
+    """
+
     def __init__(self, parent: NutsTestFile, name: str, class_name: str, obj: Any, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name
         self.class_name = class_name
+        self.nuts_ctx = None
 
     def _getobj(self) -> Any:
         """
@@ -85,30 +89,31 @@ class NutsTestClass(pytest.Class):
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """
-        Inject custom nuts fixture into the test classes
-        Similar to the injection of setup_class and setup_method in pytest.Class::collect
-
-        nuts_parameters: Used as fixture for actual tests. Can include optional info on how to run the test.
-        nuts_parameters: Used for parametrizing and thus generate tests.
+        Collects all tests and instantiates the corresponding context.
         """
-
-        @fixtures.fixture(scope="class")
-        def nuts_parameters(cls):
-            return self.params
-
-        self.obj.nuts_parameters = nuts_parameters
+        if hasattr(self.module, "CONTEXT"):
+            context = self.module.CONTEXT(self.params)
+            self.nuts_ctx = context
+        else:
+            self.nuts_ctx = NutsContext(self.params)
 
         return super().collect()
 
 
 def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str]) -> Union[list, List[ParameterSet]]:
+    """
+    Transforms externally provided parameters to be used in parametrized tests.
+    :param metafunc: The annotated test function that will use the parametrized data.
+    :param nuts_params: The fields used in a test and indicated via a custom pytest marker.
+    :return: List of tuples that contain each the parameters for a test.
+    """
     fields = [field.strip() for field in nuts_params[0].split(",")]
     required_fields = calculate_required_fields(fields, nuts_params)
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "params")
+    data = getattr(nuts_test_instance, "nuts_ctx", None)
     if not data:
         return []
-    return dict_to_tuple_list(data["test_data"], fields, required_fields)
+    return dict_to_tuple_list(data.nuts_parameters["test_data"], fields, required_fields)
 
 
 def calculate_required_fields(fields: List[str], nuts_params: Tuple[str]) -> Set[str]:

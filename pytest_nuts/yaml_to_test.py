@@ -15,7 +15,7 @@ from pytest_nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):
-    def __init__(self, parent, fspath: py.path.local):
+    def __init__(self, parent: Optional[Node], fspath: py.path.local):
         super().__init__(fspath, parent)
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
@@ -37,7 +37,7 @@ def load_module(module_path: str, class_name: Optional[str]) -> types.ModuleType
 
 
 class NutsTestFile(pytest.Module):
-    def __init__(self, fspath, parent, obj, test_entry):
+    def __init__(self, fspath: py.path.local, parent: Optional[Node], obj: Any, test_entry: Any):
         super().__init__(fspath, parent)
         self.obj = obj
         self.test_entry = test_entry
@@ -70,7 +70,7 @@ class NutsTestClass(pytest.Class):
     Initialises a corresponding context with externally provided parameters.
     """
 
-    def __init__(self, parent: NutsTestFile, name: str, class_name: str, obj: Any, **kw):
+    def __init__(self, parent: NutsTestFile, name: str, class_name: str, **kw):
         super().__init__(name, parent=parent)
         self.params = kw
         self.name = name

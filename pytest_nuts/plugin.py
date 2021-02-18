@@ -6,6 +6,7 @@ from _pytest.python import Metafunc
 from _pytest import nodes
 from nornir import InitNornir
 from nornir.core import Nornir
+from py._path.local import LocalPath
 
 from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yaml_to_test import NutsYamlFile, get_parametrize_data

@@ -1,0 +1,61 @@
+stages:
+  - test
+  - sonar
+
+cache:
+  key: "$CI_PIPELINE_ID"
+  paths:
+   - test-reports
+
+test_job:
+  stage: test
+  image: python:3.7
+  before_script:
+    - apt-get update -qq
+    - apt-get install curl -y -qq
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    - source $HOME/.poetry/env
+    - poetry config virtualenvs.create false
+    - echo
+    - echo ===== install requirements =====
+    - poetry install --no-interaction --no-ansi
+  script:
+    - mkdir test-reports
+    - echo
+    - echo "===== py.test ====="
+    - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+  artifacts:
+    when: always
+    paths:
+      - ./**/test-reports/*.xml
+    reports:
+      junit: 
+      - ./**/test-reports/*.xml
+
+black:
+  stage: test
+  image: python:3.7
+  before_script:
+    - apt-get update -qq
+    - apt-get install curl -y -qq
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    - source $HOME/.poetry/env
+    - poetry config virtualenvs.create false
+    - echo
+    - echo ===== install requirements =====
+    - poetry install --no-interaction --no-ansi
+  script:
+    - echo
+    - echo ===== black verification =====
+    - black --check .
+
+sonar:
+  stage: sonar
+  variables:
+    SONAR_HOST_URL: $INS_SONAR_URL
+    SONAR_LOGIN: $INS_SONAR_LOGIN
+  image:
+    name: sonarsource/sonar-scanner-cli
+  script:
+    - sonar-scanner -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.branch.name=$CI_BUILD_REF_NAME -Dsonar.python.coverage.reportPaths=test-reports/coverage.xml
+  allow_failure: true

@@ -36,12 +36,14 @@ class NutsYamlFile(pytest.File):
 def _determine_module(class_name: str) -> str:
     module_path = ModuleIndex().find_test_module_of_class(class_name)
     if not module_path:
-        raise NutsUsageError(f"Module not found for test_class called {class_name}.")
+        raise NutsUsageError(f"A module that corresponds to the test_class called {class_name} could not be found.")
     return module_path
 
 
 def load_module(module_path: str) -> types.ModuleType:
     spec = util.find_spec(module_path)
+    if spec is None:
+        raise NutsUsageError(f"Module path called {module_path} not found.")
     module = util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

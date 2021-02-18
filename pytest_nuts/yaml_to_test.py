@@ -10,7 +10,7 @@ from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
 from _pytest.python import Metafunc
 
-from pytest_nuts.context import NutsContext
+from pytest_nuts.context import NutsContext, NutsUsageError
 from pytest_nuts.index import ModuleIndex
 
 
@@ -23,13 +23,24 @@ class NutsYamlFile(pytest.File):
             raw = yaml.safe_load(f)
 
         for test_entry in raw:
-            module = load_module(test_entry.get("test_module"), test_entry.get("test_class"))
+            module_path = test_entry.get("test_module")
+            class_name = test_entry.get("test_class")
+            if not module_path:
+                if not class_name:
+                    raise NutsUsageError("Class name of the specific test missing in YAML file.")
+                module_path = _determine_module(class_name)
+            module = load_module(module_path)
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
-def load_module(module_path: str, class_name: Optional[str]) -> types.ModuleType:
+def _determine_module(class_name: str) -> str:
+    module_path = ModuleIndex().find_test_module_of_class(class_name)
     if not module_path:
-        module_path = ModuleIndex().find_test_module_of_class(class_name)
+        raise NutsUsageError(f"Module not found for test_class called {class_name}.")
+    return module_path
+
+
+def load_module(module_path: str) -> types.ModuleType:
     spec = util.find_spec(module_path)
     module = util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -75,7 +86,7 @@ class NutsTestClass(pytest.Class):
         self.params = kw
         self.name = name
         self.class_name = class_name
-        self.nuts_ctx = None
+        self.nuts_ctx: Optional[NutsContext] = None
 
     def _getobj(self) -> Any:
         """
@@ -86,13 +97,13 @@ class NutsTestClass(pytest.Class):
         return getattr(self.parent.obj, self.class_name)
 
     @classmethod
-    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw: Any) -> Any:
+    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:
         """The public constructor."""
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """
-        Collects all tests and instantiates the corresponding context.
+        Collects all tests, sets and instantiates the corresponding context for this test class.
         """
         if hasattr(self.module, "CONTEXT"):
             context = self.module.CONTEXT(self.params)

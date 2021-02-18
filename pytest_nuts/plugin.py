@@ -78,5 +78,3 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 def pytest_collect_file(parent: Session, path: LocalPath) -> Iterable[Union[nodes.Item, nodes.Collector]]:
     if path.ext == ".yaml" and path.basename.startswith("test"):
         return NutsYamlFile.from_parent(parent, fspath=path)
-    else:
-        raise FileNotFoundError("No test file starting with 'test' and ending in .yaml found")

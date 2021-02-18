@@ -3,9 +3,18 @@ from typing import Any, Callable
 from nornir.core.task import AggregatedResult
 
 
-class NutsSetupError(Exception):
+class Error(Exception):
+    """ Base class for exceptions. """
+
+
+class NutsSetupError(Error):
+    """ Errors caused during the setup of Nuts. """
     def __init__(self, message: str):
         super(NutsSetupError, self).__init__(message)
+
+
+class NutsUsageError(Error):
+    """ Errors caused by the user. """
 
 
 class NutsContext:

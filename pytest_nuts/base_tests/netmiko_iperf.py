@@ -1,6 +1,6 @@
 import pytest
 import json
-from typing import Dict
+from typing import Dict, Callable
 
 from nornir.core.filter import F
 from nornir.core.task import Task, Result, MultiResult
@@ -11,28 +11,28 @@ from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
 
 class IperfContext(NornirNutsContext):
-    def nuts_task(self):
+    def nuts_task(self) -> Callable:
         return netmiko_run_iperf
 
-    def nuts_arguments(self):
+    def nuts_arguments(self) -> dict:
         return {
             "destinations_per_host": _destinations_per_host(self.nuts_parameters["test_data"]),
         }
 
-    def nornir_filter(self):
+    def nornir_filter(self) -> F:
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 
     def transform_result(self, general_result) -> Dict[str, Dict[str, NutsResult]]:
         return {host: _parse_iperf_result(task_results) for host, task_results in general_result.items()}
 
-    def setup(self):
+    def setup(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         selected_destinations = self.nornir.filter(destinations)
         selected_destinations.run(task=server_setup)
 
-    def teardown(self):
+    def teardown(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         selected_destinations = self.nornir.filter(destinations)
@@ -56,7 +56,7 @@ class TestNetmikoIperf:
         assert single_result.result > min_expected
 
 
-def _destinations_per_host(test_data):
+def _destinations_per_host(test_data) -> Callable:
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
@@ -81,21 +81,21 @@ def _parse_iperf_result(task_results: MultiResult) -> Dict[str, NutsResult]:
     return results_per_host
 
 
-def _extract_bps(iperf_task):
+def _extract_bps(iperf_task) -> int:
     iperf_result = json.loads(iperf_task.result)
     return int(iperf_result["end"]["sum_received"]["bits_per_second"])
 
 
-def _extract_dest(iperf_task):
+def _extract_dest(iperf_task) -> str:
     iperf_result = json.loads(iperf_task.result)
     return iperf_result["start"]["connected"][0]["remote_host"]
 
 
-def server_setup(task: Task):
+def server_setup(task: Task) -> None:
     task.run(task=netmiko_send_command, command_string=f"iperf3 --server --daemon")
 
 
-def server_teardown(task: Task):
+def server_teardown(task: Task) -> None:
     task.run(
         task=netmiko_send_command,
         command_string=f"pkill iperf3",

@@ -1,4 +1,4 @@
-from typing import Dict, Callable
+from typing import Dict, Callable, List
 
 import pytest
 from nornir.core.filter import F
@@ -13,7 +13,7 @@ class UsersContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get
 
-    def nuts_arguments(self) -> dict:
+    def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["users"]}
 
     def nornir_filter(self) -> F:
@@ -25,7 +25,7 @@ class UsersContext(NornirNutsContext):
             host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
         }
 
-    def _transform_host_results(self, single_result: MultiResult) -> dict:
+    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict]:
         return single_result[0].result["users"]
 
 

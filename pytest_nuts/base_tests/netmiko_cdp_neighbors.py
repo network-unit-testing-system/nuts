@@ -1,27 +1,29 @@
+from typing import Callable, Dict
+
 import pytest
 from nornir.core.filter import F
 from nornir.core.task import MultiResult
 from nornir_netmiko import netmiko_send_command
 
-from pytest_nuts.helpers.result import nuts_result_wrapper
+from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 from pytest_nuts.context import NornirNutsContext
 
 
 class CdpNeighborsContext(NornirNutsContext):
-    def nuts_task(self):
+    def nuts_task(self) -> Callable:
         return netmiko_send_command
 
-    def nuts_arguments(self):
+    def nuts_arguments(self) -> dict:
         return {"command_string": "show cdp neighbors detail", "use_textfsm": True}
 
-    def nornir_filter(self):
+    def nornir_filter(self) -> F:
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 
     def _transform_host_results(self, host_results: MultiResult) -> dict:
         return {neighbor["destination_host"]: neighbor for neighbor in host_results[0].result}
 
-    def transform_result(self, general_result):
+    def transform_result(self, general_result) -> Dict[str, NutsResult]:
         return {
             host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
         }

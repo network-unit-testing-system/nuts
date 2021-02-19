@@ -134,6 +134,7 @@ def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str]) -> Union[l
     """
     fields = [field.strip() for field in nuts_params[0].split(",")]
     required_fields = calculate_required_fields(fields, nuts_params)
+    assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
     data = getattr(nuts_test_instance, "nuts_ctx", None)
     if not data:

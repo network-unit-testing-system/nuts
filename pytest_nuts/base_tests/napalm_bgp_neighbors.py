@@ -52,6 +52,7 @@ class TestNapalmBgpNeighborsCount:
 class TestNapalmBgpNeighbors:
     @pytest.fixture
     def peer_result(self, single_result: NutsResult, peer:str):
+        assert single_result.result is not None
         return single_result.result[peer]
 
     @pytest.mark.nuts("host,peer,local_as")

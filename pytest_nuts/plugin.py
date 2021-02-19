@@ -1,7 +1,8 @@
-from typing import Iterable, Union
+from typing import Iterable, Union, Optional
 
 import pytest
 from _pytest.main import Session
+from _pytest.nodes import Collector
 from _pytest.python import Metafunc
 from _pytest.fixtures import FixtureRequest
 from _pytest import nodes
@@ -75,8 +76,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
-def pytest_collect_file(parent: Session, path: LocalPath) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]:
     if path.ext == ".yaml" and path.basename.startswith("test"):
         return NutsYamlFile.from_parent(parent, fspath=path)
-    else:
-        return
+    return None

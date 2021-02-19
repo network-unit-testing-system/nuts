@@ -110,6 +110,7 @@ class NutsTestClass(pytest.Class):
         """The public constructor."""
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
+
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """
         Collects all tests, sets and instantiates the corresponding context for this test class.

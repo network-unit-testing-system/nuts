@@ -77,7 +77,7 @@ class NutsTestFile(pytest.Module):
         test_data = self.test_entry.get("test_data", [])
         test_execution = self.test_entry.get("test_execution")
         yield NutsTestClass.from_parent(
-            self, name=name, class_name=class_name, test_data=test_data, test_execution=test_execution
+             self, name=name, class_name=class_name, test_data=test_data, test_execution=test_execution
         )
 
 
@@ -106,8 +106,9 @@ class NutsTestClass(pytest.Class):
         return getattr(obj, self.class_name)
 
     @classmethod
-    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:
+    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:  # type: ignore[override]
         """The public constructor."""
+        # Mypy: Signature of "from_parent" incompatible with supertype "Node"
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
 

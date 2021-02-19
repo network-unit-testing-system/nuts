@@ -111,7 +111,6 @@ class NutsTestClass(pytest.Class):
         # Mypy: Signature of "from_parent" incompatible with supertype "Node"
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
-
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         """
         Collects all tests, sets and instantiates the corresponding context for this test class.
@@ -125,8 +124,7 @@ class NutsTestClass(pytest.Class):
         return super().collect()
 
 
-
-def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str]) -> Union[list, List[ParameterSet]]:
+def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> Union[list, List[ParameterSet]]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
     :param metafunc: The annotated test function that will use the parametrized data.
@@ -143,9 +141,11 @@ def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str]) -> Union[l
     return dict_to_tuple_list(data.nuts_parameters["test_data"], fields, required_fields)
 
 
-def calculate_required_fields(fields: List[str], nuts_params: Tuple[str]) -> Set[str]:
+def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -> Set[str]:
     required_fields = set(fields)
     if len(nuts_params) >= 2:
+        # optional = field not necessary for the test, e.g.:
+        # @pytest.mark.nuts("host,peer,local_as,device_name,device_name", "device_name")
         optional_fields = {field.strip() for field in nuts_params[1].split(",")}
         required_fields -= optional_fields
     return required_fields
@@ -155,7 +155,7 @@ def dict_to_tuple_list(source: List[Dict], fields: List[str], required_fields: S
     return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in source]
 
 
-def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tuple[str]) -> ParameterSet:
+def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tuple[Optional[Any], ...]) -> ParameterSet:
     missing_fields = required_fields - set(source)
     if not missing_fields:
         return pytest.param(*present_fields)
@@ -164,6 +164,6 @@ def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tupl
     )
 
 
-def dict_to_tuple(source: Dict, fields: List[str]) -> Tuple[Optional[Any]]:
+def dict_to_tuple(source: Dict, fields: List[str]) -> Tuple[Optional[Any], ...]:
     ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

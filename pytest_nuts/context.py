@@ -8,7 +8,7 @@ from pytest_nuts.helpers.errors import NutsSetupError
 class NutsContext:
     """
     Base context class that holds all necessary information that is needed for a specific test.
-    nuts_parameters: test-specific data, that can be retrieved via yaml_to_test from a YAML file.
+    nuts_parameters: test-specific data that can be retrieved via yaml_to_test from a YAML file.
     """
 
     def __init__(self, nuts_parameters: Any):
@@ -38,9 +38,9 @@ class NornirNutsContext(NutsContext):
         return general_result
 
     def general_result(self) -> AggregatedResult:
-        self.setup()
         if not self.nornir:
             raise NutsSetupError("Nornir instance not found in context object")
+        self.setup()
         nuts_task = self.nuts_task()
         nuts_arguments = self.nuts_arguments()
         nornir_filter = self.nornir_filter()

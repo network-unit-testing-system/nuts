@@ -4,6 +4,7 @@ class Error(Exception):
 
 class NutsSetupError(Error):
     """ Errors caused during the setup of Nuts. """
+
     def __init__(self, message: str):
         super(NutsSetupError, self).__init__(message)
 

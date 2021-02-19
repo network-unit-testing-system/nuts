@@ -8,6 +8,7 @@ from nornir_napalm.plugins.tasks import napalm_get
 from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
+
 class BgpNeighborsContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get
@@ -51,7 +52,7 @@ class TestNapalmBgpNeighborsCount:
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighbors:
     @pytest.fixture
-    def peer_result(self, single_result: NutsResult, peer:str):
+    def peer_result(self, single_result: NutsResult, peer: str):
         assert single_result.result is not None
         return single_result.result[peer]
 

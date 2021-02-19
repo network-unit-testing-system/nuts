@@ -19,7 +19,7 @@ from pytest_nuts.yaml_to_test import NutsYamlFile, get_parametrize_data
 def nornir_config_file() -> str:
     return "nr-config.yaml"
 
-    
+
 @pytest.fixture(scope="session")
 def initialized_nornir(nornir_config_file) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging=False)

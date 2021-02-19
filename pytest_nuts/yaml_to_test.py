@@ -77,7 +77,7 @@ class NutsTestFile(pytest.Module):
         test_data = self.test_entry.get("test_data", [])
         test_execution = self.test_entry.get("test_execution")
         yield NutsTestClass.from_parent(
-             self, name=name, class_name=class_name, test_data=test_data, test_execution=test_execution
+            self, name=name, class_name=class_name, test_data=test_data, test_execution=test_execution
         )
 
 

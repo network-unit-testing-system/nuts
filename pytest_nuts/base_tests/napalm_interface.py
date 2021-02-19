@@ -4,6 +4,7 @@ from nornir_napalm.plugins.tasks import napalm_get
 
 # TODO not implemented
 
+
 @pytest.fixture(scope="class")
 def nuts_task():
     return napalm_get
@@ -22,6 +23,3 @@ def hosts(hosts_interface_list):
 @pytest.fixture(scope="class")
 def transformed_result(general_result):
     return {key: value[0].result for key, value in general_result.items()}
-
-
-

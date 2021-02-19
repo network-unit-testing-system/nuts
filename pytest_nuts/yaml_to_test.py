@@ -100,7 +100,10 @@ class NutsTestClass(pytest.Class):
         Overwritten from PyobjMixin to separate name and classname.
         This allows to group multiple tests of the same class with different parameters to be grouped separately.
         """
-        return getattr(self.parent.obj, self.class_name)
+        # cf. https://github.com/pytest-dev/pytest/blob/master/src/_pytest/python.py
+        assert self.parent is not None
+        obj = self.parent.obj  # type: ignore[attr-defined]
+        return getattr(obj, self.class_name)
 
     @classmethod
     def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:

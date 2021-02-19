@@ -123,7 +123,8 @@ class NutsTestClass(pytest.Class):
         return super().collect()
 
 
-def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[Any, ...]) -> Union[list, List[ParameterSet]]:
+
+def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str]) -> Union[list, List[ParameterSet]]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
     :param metafunc: The annotated test function that will use the parametrized data.

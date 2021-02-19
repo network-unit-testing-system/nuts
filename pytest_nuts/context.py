@@ -34,7 +34,7 @@ class NornirNutsContext(NutsContext):
     def nornir_filter(self):
         return None
 
-    def transform_result(self, general_result: Callable) -> Callable:
+    def transform_result(self, general_result: Callable) -> Any:
         return general_result
 
     def general_result(self) -> AggregatedResult:

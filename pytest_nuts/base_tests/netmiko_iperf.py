@@ -29,12 +29,14 @@ class IperfContext(NornirNutsContext):
     def setup(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
+        assert self.nornir is not None and hasattr(self.nornir, "filter")
         selected_destinations = self.nornir.filter(destinations)
         selected_destinations.run(task=server_setup)
 
     def teardown(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
+        assert self.nornir is not None and hasattr(self.nornir, "filter")
         selected_destinations = self.nornir.filter(destinations)
         selected_destinations.run(task=server_teardown)
 

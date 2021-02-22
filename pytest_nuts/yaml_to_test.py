@@ -26,16 +26,15 @@ class NutsYamlFile(pytest.File):
 
         for test_entry in raw:
             module_path = test_entry.get("test_module")
-            class_name = test_entry.get("test_class")
             if not module_path:
-                if not class_name:
-                    raise NutsUsageError("Class name of the specific test missing in YAML file.")
-                module_path = _determine_module(class_name)
+                module_path = determine_module(test_entry.get("test_class"))
             module = load_module(module_path)
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
 def determine_module(class_name: str) -> str:
+    if not class_name:
+        raise NutsUsageError("Class name of the specific test missing in YAML file.")
     module_path = ModuleIndex().find_test_module_of_class(class_name)
     if not module_path:
         raise NutsUsageError(f"A module that corresponds to the test_class called {class_name} could not be found.")

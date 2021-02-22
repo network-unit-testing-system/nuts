@@ -1,7 +1,8 @@
-from typing import Dict
+from typing import Dict, List, Callable
 
 import pytest
 from nornir.core.filter import F
+from nornir.core.task import MultiResult
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
@@ -9,13 +10,13 @@ from pytest_nuts.context import NornirNutsContext
 
 
 class NetworkInstancesContext(NornirNutsContext):
-    def nuts_task(self):
+    def nuts_task(self) -> Callable:
         return napalm_get
 
-    def nuts_arguments(self):
+    def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["network_instances"]}
 
-    def nornir_filter(self):
+    def nornir_filter(self) -> F:
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 
@@ -24,7 +25,7 @@ class NetworkInstancesContext(NornirNutsContext):
             host: nuts_result_wrapper(result, self._transform_single_result) for host, result in general_result.items()
         }
 
-    def _transform_single_result(self, single_result):
+    def _transform_single_result(self, single_result: MultiResult) -> dict:
         task_result = single_result[0].result
         network_instances = task_result["network_instances"]
         return {
@@ -32,16 +33,16 @@ class NetworkInstancesContext(NornirNutsContext):
             for instance, details in network_instances.items()
         }
 
-    def _transform_single_network_instance(self, network_instance):
+    def _transform_single_network_instance(self, network_instance: dict) -> dict:
         return {
             "route_distinguisher": self._extract_route_distinguisher(network_instance),
             "interfaces": self._extract_interfaces(network_instance),
         }
 
-    def _extract_route_distinguisher(self, element):
+    def _extract_route_distinguisher(self, element: dict) -> str:
         return element["state"]["route_distinguisher"]
 
-    def _extract_interfaces(self, element):
+    def _extract_interfaces(self, element: dict) -> List[str]:
         return list(element["interfaces"]["interface"].keys())
 
 

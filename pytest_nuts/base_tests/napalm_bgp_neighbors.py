@@ -1,4 +1,4 @@
-from typing import Dict, Callable
+from typing import Dict, Callable, List
 
 import pytest
 from nornir.core.filter import F
@@ -13,7 +13,7 @@ class BgpNeighborsContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get
 
-    def nuts_arguments(self) -> dict:
+    def nuts_arguments(self) -> Dict[str, List]:
         return {"getters": ["bgp_neighbors"]}
 
     def nornir_filter(self) -> F:
@@ -52,29 +52,30 @@ class TestNapalmBgpNeighborsCount:
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighbors:
     @pytest.fixture
-    def peer_result(self, single_result, peer):
+    def peer_result(self, single_result: NutsResult, peer: str) -> Dict:
+        assert single_result.result is not None
         return single_result.result[peer]
 
     @pytest.mark.nuts("host,peer,local_as")
-    def test_local_as(self, peer_result, local_as):
+    def test_local_as(self, peer_result: Dict, local_as: int):
         assert peer_result["local_as"] == local_as
 
     @pytest.mark.nuts("host,peer,local_id")
-    def test_local_id(self, peer_result, local_id):
+    def test_local_id(self, peer_result: Dict, local_id: str):
         assert peer_result["local_id"] == local_id
 
     @pytest.mark.nuts("host,peer,remote_as")
-    def test_remote_as(self, peer_result, remote_as):
+    def test_remote_as(self, peer_result: Dict, remote_as: int):
         assert peer_result["remote_as"] == remote_as
 
     @pytest.mark.nuts("host,peer,remote_id")
-    def test_remote_id(self, peer_result, remote_id):
+    def test_remote_id(self, peer_result: Dict, remote_id: str):
         assert peer_result["remote_id"] == remote_id
 
     @pytest.mark.nuts("host,peer,is_enabled")
-    def test_is_enabled(self, peer_result, is_enabled):
+    def test_is_enabled(self, peer_result: Dict, is_enabled: bool):
         assert peer_result["is_enabled"] == is_enabled
 
     @pytest.mark.nuts("host,peer,is_up")
-    def test_is_up(self, peer_result, is_up):
+    def test_is_up(self, peer_result: Dict, is_up: bool):
         assert peer_result["is_up"] == is_up

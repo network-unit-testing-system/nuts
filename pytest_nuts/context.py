@@ -1,15 +1,17 @@
-class NutsSetupError(Exception):
-    def __init__(self, message):
-        super(NutsSetupError, self).__init__(message)
+from typing import Any, Callable
+
+from nornir.core.task import AggregatedResult
+
+from pytest_nuts.helpers.errors import NutsSetupError
 
 
 class NutsContext:
     """
     Base context class that holds all necessary information that is needed for a specific test.
-    nuts_parameters: test-specific data, that can be retrieved via yaml_to_test from a YAML file.
+    nuts_parameters: test-specific data that can be retrieved via yaml_to_test from a YAML file.
     """
 
-    def __init__(self, nuts_parameters):
+    def __init__(self, nuts_parameters: Any):
         self.nuts_parameters = nuts_parameters
 
 
@@ -18,27 +20,27 @@ class NornirNutsContext(NutsContext):
     NutsContext class which provides nornir-specific helpers.
     """
 
-    def __init__(self, nuts_parameters):
+    def __init__(self, nuts_parameters: Any):
         super().__init__(nuts_parameters)
         self._transformed_result = None
         self.nornir = None
 
-    def nuts_task(self):
+    def nuts_task(self) -> Callable:
         raise NotImplementedError
 
-    def nuts_arguments(self):
+    def nuts_arguments(self) -> dict:
         return {}
-
-    def transform_result(self, general_result):
-        return general_result
 
     def nornir_filter(self):
         return None
 
-    def general_result(self):
-        self.setup()
+    def transform_result(self, general_result: Callable) -> Any:
+        return general_result
+
+    def general_result(self) -> AggregatedResult:
         if not self.nornir:
             raise NutsSetupError("Nornir instance not found in context object")
+        self.setup()
         nuts_task = self.nuts_task()
         nuts_arguments = self.nuts_arguments()
         nornir_filter = self.nornir_filter()

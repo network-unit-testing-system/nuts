@@ -37,15 +37,10 @@ CONTEXT = PingContext
 
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmPing:
-    @pytest.fixture
-    def single_result(self, transformed_result, host, destination):
-        assert host in transformed_result, f"Host {host} not found in aggregated result."
-        assert destination in transformed_result[host], f"Destination {destination} not found in result."
-        return transformed_result[host][destination]
-
     @pytest.mark.nuts("host,destination,expected")
-    def test_ping(self, single_result, expected):
-        assert single_result.result.name == expected
+    def test_ping(self, single_result, destination, expected):
+        assert destination in single_result, f"Destination {destination} not found in result."
+        assert single_result[destination].result.name == expected
 
 
 class Ping(Enum):

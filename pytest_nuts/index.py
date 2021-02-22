@@ -35,7 +35,7 @@ class ModuleIndex:
         """
         Try to resolve the name of the test class to a module.
 
-        :param name: The name of the test class
-        :return: The path of the module which contains the test class
+        :param name: The name of the test class.
+        :return: The path of the module which contains the test class.
         """
         return self.index.get(name)

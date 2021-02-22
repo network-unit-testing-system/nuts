@@ -1,4 +1,4 @@
-from typing import Dict, Callable
+from typing import Dict, Callable, List
 
 import pytest
 from nornir.core.filter import F
@@ -14,7 +14,7 @@ class LldpNeighborsContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get
 
-    def nuts_arguments(self) -> dict:
+    def nuts_arguments(self) -> Dict[str, List]:
         return {"getters": ["lldp_neighbors_detail"]}
 
     def nornir_filter(self) -> F:

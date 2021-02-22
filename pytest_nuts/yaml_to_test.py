@@ -35,7 +35,7 @@ class NutsYamlFile(pytest.File):
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
-def _determine_module(class_name: str) -> str:
+def determine_module(class_name: str) -> str:
     module_path = ModuleIndex().find_test_module_of_class(class_name)
     if not module_path:
         raise NutsUsageError(f"A module that corresponds to the test_class called {class_name} could not be found.")

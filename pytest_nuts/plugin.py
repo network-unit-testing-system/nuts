@@ -9,6 +9,7 @@ from _pytest.config import Config
 from nornir import InitNornir
 from nornir.core import Nornir
 from py._path.local import LocalPath
+from pytest_nuts.helpers.errors import NutsUsageError, NutsSetupError
 
 from pytest_nuts.context import NutsContext, NornirNutsContext
 from pytest_nuts.helpers.result import NutsResult
@@ -21,7 +22,7 @@ def nornir_config_file() -> str:
 
 
 @pytest.fixture(scope="session")
-def initialized_nornir(nornir_config_file) -> Nornir:
+def initialized_nornir(nornir_config_file: str) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging=False)
 
 
@@ -32,13 +33,15 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture
-def nornir_nuts_ctx(nuts_ctx, initialized_nornir) -> NornirNutsContext:
+def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> NornirNutsContext:
+    if not isinstance(nuts_ctx, NornirNutsContext):
+        raise NutsSetupError("The initialized context does not support the injection of nornir.")
     nuts_ctx.nornir = initialized_nornir
     return nuts_ctx
 
 
 @pytest.fixture
-def single_result(nornir_nuts_ctx, host: str) -> NutsResult:
+def single_result(nornir_nuts_ctx: NornirNutsContext, host: str) -> NutsResult:
     assert host in nornir_nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
     return nornir_nuts_ctx.transformed_result[host]
 

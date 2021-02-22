@@ -47,8 +47,8 @@ def load_module(module_path: str) -> types.ModuleType:
         raise NutsUsageError(f"Module path called {module_path} not found.")
     module = util.module_from_spec(spec)
     # https://github.com/python/typeshed/issues/2793
-    if isinstance(spec.loader, importlib.abc.Loader):
-        spec.loader.exec_module(module)
+    assert isinstance(spec.loader, importlib.abc.Loader)
+    spec.loader.exec_module(module)
     return module
 
 

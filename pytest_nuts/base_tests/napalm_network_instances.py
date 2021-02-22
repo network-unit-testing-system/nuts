@@ -10,7 +10,7 @@ from pytest_nuts.context import NornirNutsContext
 
 
 class NetworkInstancesContext(NornirNutsContext):
-    def nuts_task(self):
+    def nuts_task(self) -> Callable:
         return napalm_get
 
     def nuts_arguments(self) -> Dict[str, List[str]]:

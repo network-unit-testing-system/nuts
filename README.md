@@ -96,13 +96,13 @@ pip install <your_nuts_directory>
 ## Technical details
 
 ### Test classes and their context
-Each test class depends on a similar context, which is modeled by a `NutsContext` class that all test classes must implement. 
+Each test class depends on a context, which is a `NutsContext` or a subclass of it. Each test module can implement a specific context class to provide its tests with module-specific functionality.
 The `NutsContext` class guarantees a consistent interface across all tests for test setup and execution. 
 Currently, the predefined test cases use [nornir](https://nornir.readthedocs.io/en/latest/) in order to communicate 
 with the network devices, therefore the test classes derive from a more specific `NornirNutsContext`, 
 which provides a nornir instance and nornir-specific helpers.
 
-The `NornirNutsContext` contains the following:
+The `NornirNutsContext` contains the following properties:
 
 `nuts_parameters`: Hold all information from the test bundle (i.e. the yaml file mentioned above).
 
@@ -115,14 +115,14 @@ in the `test_execution` part of the test bundle.
 
 `nornir_filter()`: Returns a nornir filter to be applied on the nornir instance.
 
-`general_result()`: Where the magic happens: Nornir is run with the defined task, additional arguments, 
-a nornir filter and returns the raw answer from nornir. If a test setup or teardown is defined, this is run too.
+`general_result()`: Nornir is run with the defined task, additional arguments, 
+a nornir filter and returns the raw answer from nornir. If the setup or teardown method are overwritten, these are executed as well.
 
 `transform_result(general_result)`: Transforms the raw nornir result into something to be processed by the actual test.
 
-`setup()`: Defines what should be run before the nornir task is executed.
+`setup()`: Defines setup code which is executed before the nornir task is executed.
 
-`teardown()`: Defines what should happen after the nornir task has been executed.
+`teardown()`: Defines setup code which is executed after the nornir task is executed.
 
 ### Nuts custom marker
 During test collection, the custom pytest marker "nuts" uses the data that has been defined in the test bundle. 

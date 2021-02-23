@@ -28,8 +28,9 @@ def initialized_nornir(nornir_config_file: str) -> Nornir:
 
 @pytest.fixture
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
-    ctx = request.node.parent.parent.nuts_ctx
-    return ctx
+    params = request.node.parent.parent.params
+    context_class = getattr(request.module, "CONTEXT", NutsContext)
+    return context_class(params)
 
 
 @pytest.fixture

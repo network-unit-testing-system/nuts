@@ -95,6 +95,14 @@ pip install <your_nuts_directory>
 
 ## Technical details
 
+TODO: Wie sieht Architektur aus, mit high-level architecture
+
+Drin lassen: custom marker, NutsContext erwähnen
+
+### Exposed fixtures
+
+TODO: Move to docstrings
+
 ### Nuts custom marker
 
 During test collection, the custom pytest marker "nuts" (usage: `@pytest.mark.nuts`) uses the data that has been defined in the test bundle. 

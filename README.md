@@ -95,62 +95,74 @@ pip install <your_nuts_directory>
 
 ## Technical details
 
+### Nuts custom marker
+
+During test collection, the custom pytest marker "nuts" (usage: `@pytest.mark.nuts`) uses the data that has been defined in the test bundle. 
+This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to use the data entries 
+from the test bundle. For each entry in the `test_data` section of the test bundle, the custom marker generates a single test case.
+Each entry is a dictionary, but `pytest.mark.parametrize` expects a list of n-tuples as input. 
+The plugin therefore transforms those dictionary entries from `test_data` into tuples. 
+This transformation is currently fixed, but more flexibility is very likely to come at a later stage.
+
+The custom nuts marker takes two arguments: The first argument of the annotation determines the required fields. 
+For each entry in `test_data` these fields are extracted and transformed to a tuple considering the correct order.
+If any of these fields are not present in an entry of `test_data`, the corresponding test case will be skipped.
+The second argument determines optional fields that can also be used in a test case as well - non-present values are passed into the function as `None`.
+
+#### Example of a test class with custom marker
+
+```python
+@pytest.mark.usefixtures("check_nuts_result")  # see below
+class TestNetmikoCdpNeighbors:
+    @pytest.mark.nuts("host,remote_host,local_port,management_ip", "management_ip")
+    def test_local_port(self, single_result, remote_host, local_port):
+        assert single_result.result[remote_host]["local_port"] == local_port
+```
+
+This test run of CDP neighbors checks the local port. 
+The required fields are `host`, `remote_host` and `local_port` - they must be present in the custom marker, 
+but also be provided as argument to the test method itself.
+`management_ip` is an optional field and not necessary for the test - an entry in `test_data` is not required to have it.
+
+`single_result` uses the `host` field and provides the result that has been processed via `transform_result` of the `CdpNeighborsContext` class. 
+
 ### Test classes and their context
-Each test class depends on a context, which is a `NutsContext` or a subclass of it. Each test module can implement a specific context class to provide its tests with module-specific functionality.
-The `NutsContext` class guarantees a consistent interface across all tests for test setup and execution. 
-Currently, the predefined test cases use [nornir](https://nornir.readthedocs.io/en/latest/) in order to communicate 
-with the network devices, therefore the test classes derive from a more specific `NornirNutsContext`, 
+Each test module implements a specific context class to provide its tests with module-specific functionality. This context class is a `NutsContext` or a subclass of it. 
+This `NutsContext` guarantees a consistent interface across all tests for test setup and execution. 
+Currently, the predefined test classes use [nornir](https://nornir.readthedocs.io/en/latest/) in order to communicate 
+with the network devices, therefore the test class derive all from a more specific `NornirNutsContext`, 
 which provides a nornir instance and nornir-specific helpers.
 
 The `NornirNutsContext` contains the following properties:
 
-`nuts_parameters`: Hold all information from the test bundle (i.e. the yaml file mentioned above).
+`nuts_parameters`: Holds all information from the test bundle (i.e. the yaml file mentioned above).
 
 `nornir`: Holds the initialized nornir instance.
 
+`transformed_result`: Holds the processed result of the specific nornir task.
+
 `nuts_task()`: Returns the task that nornir should execute for the test class.
 
-`nuts_arguments()`: Returns additional arguments for the nornir task. These can be parameters that are defined 
-in the `test_execution` part of the test bundle. 
+`nuts_arguments()`: Returns additional arguments for the nornir task. These can also be parameters that are defined in the `test_execution` part of the test bundle. 
 
 `nornir_filter()`: Returns a nornir filter to be applied on the nornir instance.
 
 `general_result()`: Nornir is run with the defined task, additional arguments, 
-a nornir filter and returns the raw answer from nornir. If the setup or teardown method are overwritten, these are executed as well.
+a nornir filter, and returns the raw answer from nornir. If the setup or teardown method are overwritten, these are executed as well.
 
-`transform_result(general_result)`: Transforms the raw nornir result into something to be processed by the actual test.
+`transform_result(general_result)`: Transforms the raw nornir result and wraps it into a `NutsResult`.
 
 `setup()`: Defines setup code which is executed before the nornir task is executed.
 
 `teardown()`: Defines setup code which is executed after the nornir task is executed.
 
-### Nuts custom marker
-During test collection, the custom pytest marker "nuts" uses the data that has been defined in the test bundle. 
-This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to use the data entries 
-from the test bundle.
+### NutsContext and pytest
 
-The custom marker generates a single test case for each entry in the `test_data` section of the test bundle. 
-Each entry is a dictionary, but `pytest.mark.parametrize` expects a list of n-tuples as input. 
-The plugin therefore transforms those dictionary entries from `test_data` into tuples. 
-This transformation is currently fixed, but more flexibility is very likely to come at a later stage.
+The context class is integrated into pytest fixtures (`nuts_ctx` for the `NutsContext` class,  `nornir_ctx` for the more specific `NornirNutsContext` class). This is then passed on to another fixture called `single_result(nornir_nuts_ctx, host)` which returns the per-host result of one test. The `single_result`  fixture is then injected into every test case (see example above).
 
-Depending on the test bundle, some fields per entry are mandatory - they are described in the documentation. 
-If any of the optional fields are not present, the corresponding test case is skipped.
+### Result of nornir's information gathering
 
-#### Example of a test class with custom marker
-```python
-class TestNetmikoCdpNeighbors:
-    @pytest.mark.nuts("host,remote_host,local_port")
-    def test_local_port(self, single_result, remote_host, local_port):
-        assert single_result.result[remote_host]["local_port"] == local_port
-```
-
-This test class of CDP neighbors tests the local port. 
-The required fields are `remote_host` and `local_port` - they must be present in the custom marker, 
-but also provided as argument to the test method itself. The `host` field is used by `single_result` to provide the result 
-per host.
-
-`single_result` provides the result that has been processed via `transform_result` of the `CdpNeighborsContext` class. 
+Before each test evaluation, another fixture checks the result of the information that has been gathered by nornir in the background: `@pytest.mark.usefixtures("check_nuts_result")` asserts that that no exception was thrown during information gathering.
 
 ## Development
 Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.

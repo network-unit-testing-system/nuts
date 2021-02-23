@@ -142,8 +142,6 @@ def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> Un
 def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -> Set[str]:
     required_fields = set(fields)
     if len(nuts_params) >= 2:
-        # optional = field not necessary for the test, e.g.:
-        # @pytest.mark.nuts("host,peer,local_as,device_name,device_name", "device_name")
         optional_fields = {field.strip() for field in nuts_params[1].split(",")}
         required_fields -= optional_fields
     return required_fields

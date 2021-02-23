@@ -38,7 +38,8 @@ CONTEXT = PingContext
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmPing:
     @pytest.fixture
-    def single_result(self, transformed_result, host, destination):
+    def single_result(self, nornir_nuts_ctx: NornirNutsContext, host: str, destination: str) -> NutsResult:
+        transformed_result = nornir_nuts_ctx.transformed_result
         assert host in transformed_result, f"Host {host} not found in aggregated result."
         assert destination in transformed_result[host], f"Destination {destination} not found in result."
         return transformed_result[host][destination]

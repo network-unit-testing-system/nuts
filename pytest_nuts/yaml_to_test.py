@@ -105,7 +105,9 @@ class NutsTestClass(pytest.Class):
     @classmethod
     def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:  # type: ignore[override]
         """The public constructor."""
-        # Mypy: Signature of "from_parent" incompatible with supertype "Node"
+        # mypy throws an error because the parent class (pytest.Class) does not accept additional **kw
+        # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
+        # and will be part of a future pytest release. Until then, mypy is instructed to ignore this error
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
 

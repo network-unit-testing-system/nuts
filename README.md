@@ -95,17 +95,9 @@ pip install <your_nuts_directory>
 
 ## Technical Overview
 
-TODO: Wie sieht Architektur aus, mit high-level architecture
-
-Drin lassen: custom marker, NutsContext erwähnen
-
-### Exposed fixtures
-
-TODO: Move to docstrings
-
 ### Nuts custom marker
 
-During test collection, the custom pytest marker "nuts" (usage: `@pytest.mark.nuts`) uses the data that has been defined in the test bundle mentioned above. 
+During test collection, the custom pytest marker "nuts" uses the data that has been defined in the test bundle mentioned above. 
 This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to use the data entries 
 from the test bundle. For each entry in the `test_data` section of the test bundle, the custom marker generates a single test case.
 Each entry is a dictionary, but `pytest.mark.parametrize` expects a list of n-tuples as input. 
@@ -138,42 +130,13 @@ but also be provided as argument to the test method itself.
 `single_result` uses the `host` field and provides the result that has been processed via the specific context of a test.
 
 ### Test classes and their context
-Each test module implements a specific context class to provide its tests with module-specific functionality. This context class is a `NutsContext` or a subclass of it. 
-This `NutsContext` guarantees a consistent interface across all tests for test setup and execution. 
+Each test module implements a context class to provide module-specific functionality to its tests. This context class is a  `NutsContext` or a subclass of it. 
+This guarantees a consistent interface across all tests for test setup and execution. 
 Currently, the predefined test classes use [nornir](https://nornir.readthedocs.io/en/latest/) in order to communicate 
-with the network devices, therefore the test class derive all from a more specific `NornirNutsContext`, 
+with the network devices, therefore the test classes derive all from a more specific `NornirNutsContext`, 
 which provides a nornir instance and nornir-specific helpers.
 
-
-
-
-
-
-
-The `NornirNutsContext` contains the following properties:
-
-`nornir`: Holds the initialized nornir instance.
-
-`transformed_result`: Holds the processed result of the specific nornir task.
-
-`nuts_task()`: Returns the task that nornir should execute for the test class.
-
-`nuts_arguments()`: Returns additional arguments for the nornir task. These can also be parameters that are defined in the `test_execution` part of the test bundle. 
-
-`nornir_filter()`: Returns a nornir filter to be applied on the nornir instance.
-
-`general_result()`: Nornir is run with the defined task, additional arguments, 
-a nornir filter, and returns the raw answer from nornir. If the setup or teardown method are overwritten, these are executed as well.
-
-`transform_result(general_result)`: Transforms the raw nornir result and wraps it into a `NutsResult`.
-
-`setup()`: Defines setup code which is executed before the nornir task is executed.
-
-`teardown()`: Defines setup code which is executed after the nornir task is executed.
-
-### NutsContext and pytest
-
-The context class is integrated into pytest fixtures (`nuts_ctx` for the `NutsContext` class,  `nornir_ctx` for the more specific `NornirNutsContext` class). This is then passed on to another fixture called `single_result(nornir_nuts_ctx, host)` which returns the per-host result of one test. The `single_result`  fixture is then injected into every test case (see example above).
+This context class is then integrated into pytest fixtures. It is passed on to another fixture called `sincle_result` that returns a per-host result of one test.
 
 ## Development
 Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.

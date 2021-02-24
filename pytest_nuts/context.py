@@ -58,7 +58,6 @@ class NornirNutsContext(NutsContext):
     def teardown(self):
         pass
 
-    @property
     def transformed_result(self) -> Any:
         if not self._transformed_result:
             self._transformed_result = self.transform_result(self.general_result())

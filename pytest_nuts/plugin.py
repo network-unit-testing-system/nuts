@@ -43,8 +43,9 @@ def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> Nornir
 
 @pytest.fixture
 def single_result(nornir_nuts_ctx: NornirNutsContext, host: str) -> NutsResult:
-    assert host in nornir_nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
-    return nornir_nuts_ctx.transformed_result[host]
+    transformed_result = nornir_nuts_ctx.transformed_result()
+    assert host in transformed_result, f"Host {host} not found in aggregated result."
+    return transformed_result[host]
 
 
 @pytest.fixture

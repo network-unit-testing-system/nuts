@@ -93,7 +93,7 @@ git clone ssh://git@gitlab.ost.ch:45022/ins/nettowel/nettowel-nuts.git
 pip install <your_nuts_directory>
 ```
 
-## Technical details
+## Technical Overview
 
 TODO: Wie sieht Architektur aus, mit high-level architecture
 
@@ -105,7 +105,7 @@ TODO: Move to docstrings
 
 ### Nuts custom marker
 
-During test collection, the custom pytest marker "nuts" (usage: `@pytest.mark.nuts`) uses the data that has been defined in the test bundle. 
+During test collection, the custom pytest marker "nuts" (usage: `@pytest.mark.nuts`) uses the data that has been defined in the test bundle mentioned above. 
 This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to use the data entries 
 from the test bundle. For each entry in the `test_data` section of the test bundle, the custom marker generates a single test case.
 Each entry is a dictionary, but `pytest.mark.parametrize` expects a list of n-tuples as input. 
@@ -128,11 +128,14 @@ class TestNetmikoCdpNeighbors:
 ```
 
 This test run of CDP neighbors checks the local port. 
+
+Before each test evaluation, the fixture  `@pytest.mark.usefixtures("check_nuts_result")` checks the result of the network information that has been gathered by nornir in the background: It asserts that that no exception was thrown while doing so.
+
 The required fields are `host`, `remote_host` and `local_port` - they must be present in the custom marker, 
 but also be provided as argument to the test method itself.
 `management_ip` is an optional field and not necessary for the test - an entry in `test_data` is not required to have it.
 
-`single_result` uses the `host` field and provides the result that has been processed via `transform_result` of the `CdpNeighborsContext` class. 
+`single_result` uses the `host` field and provides the result that has been processed via the specific context of a test.
 
 ### Test classes and their context
 Each test module implements a specific context class to provide its tests with module-specific functionality. This context class is a `NutsContext` or a subclass of it. 
@@ -141,9 +144,13 @@ Currently, the predefined test classes use [nornir](https://nornir.readthedocs.i
 with the network devices, therefore the test class derive all from a more specific `NornirNutsContext`, 
 which provides a nornir instance and nornir-specific helpers.
 
-The `NornirNutsContext` contains the following properties:
 
-`nuts_parameters`: Holds all information from the test bundle (i.e. the yaml file mentioned above).
+
+
+
+
+
+The `NornirNutsContext` contains the following properties:
 
 `nornir`: Holds the initialized nornir instance.
 
@@ -168,10 +175,6 @@ a nornir filter, and returns the raw answer from nornir. If the setup or teardow
 
 The context class is integrated into pytest fixtures (`nuts_ctx` for the `NutsContext` class,  `nornir_ctx` for the more specific `NornirNutsContext` class). This is then passed on to another fixture called `single_result(nornir_nuts_ctx, host)` which returns the per-host result of one test. The `single_result`  fixture is then injected into every test case (see example above).
 
-### Result of nornir's information gathering
-
-Before each test evaluation, another fixture checks the result of the information that has been gathered by nornir in the background: `@pytest.mark.usefixtures("check_nuts_result")` asserts that that no exception was thrown during information gathering.
-
 ## Development
 Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
 If you have not installed poetry, please read their [installation instructions](https://python-poetry.org/docs/#installation).
@@ -182,7 +185,7 @@ If you have not installed poetry, please read their [installation instructions](
 poetry install
 ```
 
-### Open Shell with venv
+### Open shell with venv
 
 ```bash
 poetry shell
@@ -190,7 +193,7 @@ poetry shell
 
 ### SonarQube
 Our [sonarqube server](sonarqube.ins.work) automatically analyses our project via Gitlab CI.
-If you prefer to run your analysis without pushing you can trigger the analysis locally after executing the tests with coverage.
+If you prefer to run your analysis without pushing, you can trigger the analysis locally after executing the tests with coverage.
 
 Windows PowerShell:
 ```bash

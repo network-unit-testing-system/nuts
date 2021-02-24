@@ -189,7 +189,7 @@ poetry shell
 ```
 
 ### SonarQube
-Our [sonarqube server](sonarqube.ins.work) automatically analyses our project via bamboo.
+Our [sonarqube server](sonarqube.ins.work) automatically analyses our project via Gitlab CI.
 If you prefer to run your analysis without pushing you can trigger the analysis locally after executing the tests with coverage.
 
 Windows PowerShell:

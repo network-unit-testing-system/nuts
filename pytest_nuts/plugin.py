@@ -26,14 +26,14 @@ def initialized_nornir(nornir_config_file: str) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging=False)
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
-    params = request.node.parent.parent.params
+    params = request.node.params
     context_class = getattr(request.module, "CONTEXT", NutsContext)
     return context_class(params)
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> NornirNutsContext:
     if not isinstance(nuts_ctx, NornirNutsContext):
         raise NutsSetupError("The initialized context does not support the injection of nornir.")

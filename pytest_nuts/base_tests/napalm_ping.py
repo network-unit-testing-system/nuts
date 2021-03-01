@@ -16,11 +16,9 @@ class PingContext(NornirNutsContext):
         return napalm_ping_multi_host
 
     def nuts_arguments(self) -> dict:
-        test_execution = self.nuts_parameters.get("test_execution", None)
-        return {
-            "destinations_per_host": _destinations_per_host(self.nuts_parameters["test_data"]),
-            **(test_execution if test_execution is not None else {}),
-        }
+        args = super().nuts_arguments()
+        args["destinations_per_host"] = _destinations_per_host(self.nuts_parameters["test_data"])
+        return args
 
     def nornir_filter(self) -> F:
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}

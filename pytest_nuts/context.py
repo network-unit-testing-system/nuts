@@ -14,6 +14,10 @@ class NutsContext:
     def __init__(self, nuts_parameters: Any):
         self.nuts_parameters = nuts_parameters
 
+    def nuts_arguments(self) -> dict:
+        test_execution = self.nuts_parameters.get("test_execution", None)
+        return {**(test_execution if test_execution is not None else {})}
+
 
 class NornirNutsContext(NutsContext):
     """
@@ -27,10 +31,6 @@ class NornirNutsContext(NutsContext):
 
     def nuts_task(self) -> Callable:
         raise NotImplementedError
-
-    def nuts_arguments(self) -> dict:
-        test_execution = self.nuts_parameters.get("test_execution", None)
-        return {**(test_execution if test_execution is not None else {})}
 
     def nornir_filter(self):
         return None

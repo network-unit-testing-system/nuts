@@ -29,7 +29,10 @@ class NornirNutsContext(NutsContext):
         raise NotImplementedError
 
     def nuts_arguments(self) -> dict:
+        if self.nuts_parameters["test_execution"]:
+            return {**self.nuts_parameters["test_execution"]}
         return {}
+
 
     def nornir_filter(self):
         return None

@@ -75,16 +75,13 @@ class NornirNutsContext(NutsContext):
         if not self.nornir:
             raise NutsSetupError("Nornir instance not found in context object")
         self.setup()
-        nuts_task = self.nuts_task()
-        nuts_arguments = self.nuts_arguments()
         nornir_filter = self.nornir_filter()
-        initialized_nornir = self.nornir
 
         if nornir_filter:
-            selected_hosts = initialized_nornir.filter(nornir_filter)
+            selected_hosts = self.nornir.filter(nornir_filter)
         else:
-            selected_hosts = initialized_nornir
-        overall_results = selected_hosts.run(task=nuts_task, **nuts_arguments)
+            selected_hosts = self.nornir
+        overall_results = selected_hosts.run(task=self.nuts_task(), **self.nuts_arguments())
 
         self.teardown()
         return overall_results
@@ -101,7 +98,6 @@ class NornirNutsContext(NutsContext):
         """
         pass
 
-    @property
     def transformed_result(self) -> Any:
         """
         The result from nornir's task, transformed to be passed on later to a test's fixture

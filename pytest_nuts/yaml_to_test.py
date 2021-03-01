@@ -90,7 +90,6 @@ class NutsTestClass(pytest.Class):
         self.params = kw
         self.name = name
         self.class_name = class_name
-        self.nuts_ctx: Optional[NutsContext] = None
 
     def _getobj(self) -> Any:
         """
@@ -106,20 +105,10 @@ class NutsTestClass(pytest.Class):
     @classmethod
     def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:  # type: ignore[override]
         """The public constructor."""
-        # Mypy: Signature of "from_parent" incompatible with supertype "Node"
+        # mypy throws an error because the parent class (pytest.Class) does not accept additional **kw
+        # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
+        # and will be part of a future pytest release. Until then, mypy is instructed to ignore this error
         return cls._create(parent=parent, name=name, obj=obj, **kw)
-
-    def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
-        """
-        Collects all tests, sets and instantiates the corresponding context for this test class.
-        """
-        if hasattr(self.module, "CONTEXT"):
-            context = self.module.CONTEXT(self.params)
-            self.nuts_ctx = context
-        else:
-            self.nuts_ctx = NutsContext(self.params)
-
-        return super().collect()
 
 
 def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> Union[list, List[ParameterSet]]:
@@ -133,10 +122,10 @@ def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> Un
     required_fields = calculate_required_fields(fields, nuts_params)
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "nuts_ctx", None)
+    data = getattr(nuts_test_instance, "params", None)
     if not data:
         return []
-    return dict_to_tuple_list(data.nuts_parameters["test_data"], fields, required_fields)
+    return dict_to_tuple_list(data["test_data"], fields, required_fields)
 
 
 def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -> Set[str]:

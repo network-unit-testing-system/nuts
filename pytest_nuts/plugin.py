@@ -38,13 +38,14 @@ def initialized_nornir(nornir_config_file: str) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging=False)
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
-    ctx = request.node.parent.parent.nuts_ctx
-    return ctx
+    params = request.node.params
+    context_class = getattr(request.module, "CONTEXT", NutsContext)
+    return context_class(params)
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> NornirNutsContext:
     """
     Injects an initialized nornir instance in the context of a test.
@@ -99,9 +100,8 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     """
     nuts = metafunc.definition.get_closest_marker("nuts")
     if nuts:
-        nuts_params = nuts.args
-        parametrize_data = get_parametrize_data(metafunc, nuts_params)
-        metafunc.parametrize(nuts_params[0], parametrize_data)
+        parametrize_data = get_parametrize_data(metafunc, nuts.args)
+        metafunc.parametrize(nuts.args[0], parametrize_data)
 
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin

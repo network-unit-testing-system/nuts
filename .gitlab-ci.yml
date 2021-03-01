@@ -12,6 +12,7 @@ test_job:
   stage: test
   image: python:3.7
   before_script:
+    - echo ===== install poetry =====
     - apt-get update -qq
     - apt-get install curl -y -qq
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -64,7 +65,6 @@ sonar:
 pytest-master:
   stage: nuts-pytest
   before_script:
-    # Install poetry
     - echo
     - echo ===== install poetry =====
     - apt-get update -qq
@@ -76,14 +76,19 @@ pytest-master:
     - echo ==== retrieving pytest-master ====
     - poetry add git+https://github.com/pytest-dev/pytest.git#master
 
-    # poetry install all requirements
     - echo
     - echo ===== install requirements =====
     - poetry install --no-interaction --no-ansi
 
-    - cd $REPO_ROOT
     - mkdir test-reports
   script:
     - echo
-    - echo ===== running pytest master =====
+    - echo ===== running with pytest master =====
     - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+  artifacts:
+    when: always
+    paths:
+      - ./**/test-reports/*.xml
+    reports:
+      junit: 
+      - ./**/test-reports/*.xml    

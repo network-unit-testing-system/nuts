@@ -30,9 +30,7 @@ class NornirNutsContext(NutsContext):
 
     def nuts_arguments(self) -> dict:
         test_execution = self.nuts_parameters.get("test_execution", None)
-        if test_execution:
-            return {**test_execution}
-        return {}
+        return {**(test_execution if test_execution is not None else {})}
 
     def nornir_filter(self):
         return None

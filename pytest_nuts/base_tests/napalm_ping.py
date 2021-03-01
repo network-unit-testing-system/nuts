@@ -17,13 +17,10 @@ class PingContext(NornirNutsContext):
 
     def nuts_arguments(self) -> dict:
         test_execution = self.nuts_parameters.get("test_execution", None)
-        destinations_per_host = _destinations_per_host(self.nuts_parameters["test_data"])
-        if test_execution:
-            return {
-                "destinations_per_host": destinations_per_host,
-                **test_execution,
-            }
-        return {"destinations_per_host": destinations_per_host}
+        return {
+            "destinations_per_host": _destinations_per_host(self.nuts_parameters["test_data"]),
+            **(test_execution if test_execution is not None else {}),
+        }
 
     def nornir_filter(self) -> F:
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}

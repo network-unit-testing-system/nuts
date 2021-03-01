@@ -82,10 +82,6 @@ class TestNornirNutsContextGeneralResult:
         assert result == nornir_results
 
 
-class TestNornirNutsContextTransformedResult:
-    pass
-
-
 @pytest.fixture
 def nr_wrapper():
     """

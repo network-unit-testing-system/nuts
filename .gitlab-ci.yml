@@ -1,7 +1,6 @@
 stages:
   - test
   - sonar
-  - nuts-pytest
 
 cache:
   key: "$CI_PIPELINE_ID"
@@ -51,19 +50,8 @@ black:
     - echo ===== black verification =====
     - black --check .
 
-sonar:
-  stage: sonar
-  variables:
-    SONAR_HOST_URL: $INS_SONAR_URL
-    SONAR_LOGIN: $INS_SONAR_LOGIN
-  image:
-    name: sonarsource/sonar-scanner-cli
-  script:
-    - sonar-scanner -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.branch.name=$CI_BUILD_REF_NAME -Dsonar.python.coverage.reportPaths=test-reports/coverage.xml
-  allow_failure: true
-
 pytest-master:
-  stage: nuts-pytest
+  stage: test
   before_script:
     - echo
     - echo ===== install poetry =====
@@ -92,3 +80,14 @@ pytest-master:
     reports:
       junit: 
       - ./**/test-reports/*.xml    
+
+sonar:
+  stage: sonar
+  variables:
+    SONAR_HOST_URL: $INS_SONAR_URL
+    SONAR_LOGIN: $INS_SONAR_LOGIN
+  image:
+    name: sonarsource/sonar-scanner-cli
+  script:
+    - sonar-scanner -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.branch.name=$CI_BUILD_REF_NAME -Dsonar.python.coverage.reportPaths=test-reports/coverage.xml
+  allow_failure: true

@@ -55,7 +55,7 @@ class NornirNutsContext(NutsContext):
         """
         return None
 
-    def transform_result(self, general_result: Callable) -> Any:
+    def transform_result(self, general_result: AggregatedResult) -> Any:
         """
         Transforms the raw nornir result and wraps it into a `NutsResult`.
 
@@ -102,7 +102,7 @@ class NornirNutsContext(NutsContext):
         pass
 
     @property
-    def transformed_result(self):
+    def transformed_result(self) -> Any:
         """
         The result from nornir's task, transformed to be passed on later to a test's fixture
         called `single_result`.

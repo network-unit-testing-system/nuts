@@ -62,8 +62,8 @@ def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> Nornir
 @pytest.fixture
 def single_result(nornir_nuts_ctx: NornirNutsContext, host: str) -> NutsResult:
     """
-    The fixture that is passed on to the pytest test class. It returns the result that belongs to a
-    specific host out of the overall set of results that has been returned by nornir's task.
+    Returns the result which belongs to a specific host out of the overall set of results
+    that has been returned by nornir's task.
 
     :param nornir_nuts_ctx: The context for a test with an initialized nornir instance
     :param host: The host for which the corresponding result should be returned

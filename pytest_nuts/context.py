@@ -19,7 +19,7 @@ class NutsContext:
 class NornirNutsContext(NutsContext):
     """
     NutsContext class which provides nornir-specific helpers.
-    It is meant to be inherited and implemented fully by test classes which need an initialized nornir instance.
+    It is meant to be inherited and implemented fully by test classes which use nornir.
 
     :param _transformed_result: All parsed results from a nornir task
     :param nornir: The initialized nornir instance

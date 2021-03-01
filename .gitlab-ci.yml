@@ -31,7 +31,7 @@ test_job:
       - ./**/test-reports/*.xml
     reports:
       junit: 
-      - ./**/test-reports/*.xml
+      - ./**/test-reports/*.xml 
 
 black:
   stage: test
@@ -79,7 +79,10 @@ pytest-master:
       - ./**/test-reports/*.xml
     reports:
       junit: 
-      - ./**/test-reports/*.xml    
+      - ./**/test-reports/*.xml
+  rules:
+    - if:
+        - schedules      
 
 sonar:
   stage: sonar

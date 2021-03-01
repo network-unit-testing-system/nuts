@@ -52,6 +52,7 @@ black:
 
 pytest-master:
   stage: test
+  image: python:3.7
   before_script:
     - echo
     - echo ===== install poetry =====

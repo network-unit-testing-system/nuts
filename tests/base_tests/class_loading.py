@@ -13,4 +13,3 @@ class TestFixture:
 
     def test_always_true(self, nuts_ctx):
         assert nuts_ctx.nuts_parameters["test_data"] == ["test1", "test2"]
-

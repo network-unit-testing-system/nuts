@@ -70,8 +70,9 @@ def single_result(nornir_nuts_ctx: NornirNutsContext, host: str) -> NutsResult:
     :param host: The host for which the corresponding result should be returned
     :return: The `NutsResult` that belongs to a host
     """
-    assert host in nornir_nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
-    return nornir_nuts_ctx.transformed_result[host]
+    result = nornir_nuts_ctx.transformed_result()
+    assert host in result, f"Host {host} not found in aggregated result."
+    return result[host]
 
 
 @pytest.fixture

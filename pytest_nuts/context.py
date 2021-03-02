@@ -17,9 +17,11 @@ class NutsContext:
 
     def nuts_arguments(self) -> dict:
         """
-        Additional arguments for the nornir task to be executed. These can also be parameters
+        Additional arguments for the (network) task to be executed. These can also be parameters
         that are defined in the `test_execution` part of the test bundle.
-        Note that the arguments provided here must match those that the nornir task offers.
+
+        If the subclass is a NornirNutsContext, the arguments are passed on to the nornir task:
+        Note that the arguments then must match those that the nornir task offers.
 
         :return: A dict containing the additional arguments
         """

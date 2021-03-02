@@ -5,7 +5,7 @@ from nornir.core.plugins.connections import ConnectionPluginRegister
 from nornir.core.plugins.inventory import InventoryPluginRegister
 from nornir.core.plugins.runners import RunnersPluginRegister
 
-from pytest_nuts.context import NornirNutsContext, NutsSetupError
+from pytest_nuts.context import NornirNutsContext, NutsSetupError, NutsContext
 from tests.helpers.shared import YAML_EXTENSION
 
 
@@ -36,6 +36,20 @@ def nornir_nuts_ctx(nornir_instance):
     context = CustomNornirNutsContext({})
     context.nornir = nornir_instance
     return context
+
+
+class TestNornirNutsContextTestExecutionField:
+    def test_test_execution_not_existing(self):
+        context = NutsContext({})
+        assert context.nuts_arguments() == {}
+
+    def test_test_execution_exists_but_empty(self):
+        context = NutsContext({"test_execution": None})
+        assert context.nuts_arguments() == {}
+
+    def test_test_execution_contains_data(self):
+        context = NutsContext({"test_execution": {"count": 42, "ref": 23}})
+        assert context.nuts_arguments() == {"count": 42, "ref": 23}
 
 
 class TestNornirNutsContextGeneralResult:

@@ -48,7 +48,7 @@ CONTEXT = IperfContext
 class TestNetmikoIperf:
     @pytest.fixture
     def single_result(self, nornir_nuts_ctx, host, destination):
-        result = nornir_nuts_ctx.transformed_result
+        result = nornir_nuts_ctx.transformed_result()
         assert host in result, f"Host {host} not found in aggregated result."
         assert destination in result[host], f"Destination {destination} not found in result."
         return result[host][destination]

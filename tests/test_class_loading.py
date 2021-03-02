@@ -66,3 +66,37 @@ def test_load_class_from_index(testdir):
 
         result = testdir.runpytest()
         result.assert_outcomes(passed=1)
+
+
+def test_class_with_empty_test_execution_field(testdir):
+    arguments = {
+        "test_class_loading": """
+            ---
+            - test_module: tests.base_tests.class_loading
+              test_class: TestTestExecutionParamsEmpty
+              test_execution:
+              test_data: ['test3', 'test4']
+            """
+    }
+    testdir.makefile(YAML_EXTENSION, **arguments)
+
+    result = testdir.runpytest()
+    result.assert_outcomes(passed=1)
+
+
+def test_class_with_test_execution_field(testdir):
+    arguments = {
+        "test_class_loading": """
+            ---
+            - test_module: tests.base_tests.class_loading
+              test_class: TestTestExecutionParamsExist
+              test_execution:
+                count: 42
+                ref: 23
+              test_data: ['test3', 'test4']
+            """
+    }
+    testdir.makefile(YAML_EXTENSION, **arguments)
+
+    result = testdir.runpytest()
+    result.assert_outcomes(passed=1)

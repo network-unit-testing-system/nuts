@@ -15,6 +15,19 @@ class NutsContext:
     def __init__(self, nuts_parameters: Any):
         self.nuts_parameters = nuts_parameters
 
+    def nuts_arguments(self) -> dict:
+        """
+        Additional arguments for the (network) task to be executed. These can also be parameters
+        that are defined in the `test_execution` part of the test bundle.
+
+        If the subclass is a NornirNutsContext, the arguments are passed on to the nornir task:
+        Note that the arguments then must match those that the nornir task offers.
+
+        :return: A dict containing the additional arguments
+        """
+        test_execution = self.nuts_parameters.get("test_execution", None)
+        return {**(test_execution if test_execution is not None else {})}
+
 
 class NornirNutsContext(NutsContext):
     """
@@ -38,16 +51,6 @@ class NornirNutsContext(NutsContext):
         :return: A task as defined by one of nornir's plugins or a function that calls a nornir task
         """
         raise NotImplementedError
-
-    def nuts_arguments(self) -> dict:
-        """
-        Additional arguments for the nornir task to be executed. These can also be parameters
-        that are defined in the `test_execution` part of the test bundle.
-        Note that the arguments provided here must match those that the nornir task offers.
-
-        :return: A dict containing the additional arguments
-        """
-        return {}
 
     def nornir_filter(self):
         """

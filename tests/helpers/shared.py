@@ -9,7 +9,7 @@ YAML_EXTENSION = ".yaml"
 
 
 def create_multi_result(
-    result_content: Any, failed: Optional[bool] = False, exception: Optional[BaseException] = None
+    result_content: Any, failed: bool = False, exception: Optional[BaseException] = None
 ) -> MultiResult:
     multi_result = MultiResult("napalm_get")
     result = create_result(result_content, failed, exception)
@@ -18,7 +18,7 @@ def create_multi_result(
 
 
 def create_result(
-    result_content: Any, failed: Optional[bool] = False, exception: Optional[BaseException] = None, **kwargs
+    result_content: Any, failed: bool = False, exception: Optional[BaseException] = None, **kwargs
 ) -> Result:
     result = Result(host=None, name="naplam_get", **kwargs)
     result.result = result_content

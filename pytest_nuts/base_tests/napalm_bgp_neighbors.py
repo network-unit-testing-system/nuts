@@ -26,6 +26,7 @@ class BgpNeighborsContext(NornirNutsContext):
         }
 
     def _transform_host_results(self, single_result: MultiResult) -> dict:
+        assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["bgp_neighbors"]
         if "global" not in neighbors:

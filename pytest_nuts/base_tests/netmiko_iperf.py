@@ -1,6 +1,6 @@
 import pytest
 import json
-from typing import Dict, Callable
+from typing import Dict, Callable, cast
 
 from nornir.core.filter import F
 from nornir.core.task import Task, Result, MultiResult
@@ -78,7 +78,9 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
 
 def _parse_iperf_result(task_results: MultiResult) -> Dict[str, NutsResult]:
     results_per_host = {}
-    for iperf_task in task_results[1:]:
+    for elem in task_results[1:]:
+        iperf_task = cast(MultiResult, elem)  # mypy: Even if it's of type Result, treat it as Multiresult
+        # allows a MultiResult to contain other MultiResults
         results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
     return results_per_host
 

@@ -2,9 +2,9 @@
 name = "pytest_nuts"
 version = "0.1.0"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>",
-"Méline Sieber <meline.sieber@ins.hsr.ch",
-"Urs Baumann <urs.baumann@ins.hsr.ch"]
+authors = ["Matthias Gabriel <matthias.gabriel@ost.ch>",
+"Méline Sieber <meline.sieber@ost.ch",
+"Urs Baumann <urs.baumann@ost.ch"]
 classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
@@ -39,18 +39,22 @@ isolated_build = True
 envlist = py36,black,mypy,docs
 
 [testenv]
+description = Run pytest in python 3.6 environment
 deps = pytest
-commands = pytest
+commands = pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
 
 [testenv:black]
+description = Check formatting with black
 deps = black
-commands = black pytest_nuts tests
+commands = black --check .
 
 [testenv:mypy]
+description = Check typing with mypy
 deps = mypy
 commands = mypy pytest_nuts tests
 
 [testenv:docs]
+description = Build docs with sphinx
 deps = sphinx
 changedir = docs/
 commands = sphinx-build source build

@@ -9,8 +9,12 @@ cache:
 
 test_job:
   stage: test
-  image: python:3.7
+  image: python:3.6 # quay.io/python-devs/ci-image
   before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
     - echo ===== install poetry =====
     - apt-get update -qq
     - apt-get install curl -y -qq
@@ -20,11 +24,10 @@ test_job:
     - echo
     - echo ===== install requirements =====
     - poetry install --no-interaction --no-ansi
-  script:
+    - echo ===== create folder for artifacts =====
     - mkdir test-reports
-    - echo
-    - echo "===== py.test ====="
-    - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+  script:
+    - tox
   artifacts:
     when: always
     paths:
@@ -32,23 +35,6 @@ test_job:
     reports:
       junit: 
       - ./**/test-reports/*.xml 
-
-black:
-  stage: test
-  image: python:3.7
-  before_script:
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
-  script:
-    - echo
-    - echo ===== black verification =====
-    - black --check .
 
 pytest-master:
   stage: test

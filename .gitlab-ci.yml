@@ -11,6 +11,7 @@ test_job:
   stage: test
   image: python:3.7
   before_script:
+    - echo ===== install poetry =====
     - apt-get update -qq
     - apt-get install curl -y -qq
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -30,7 +31,7 @@ test_job:
       - ./**/test-reports/*.xml
     reports:
       junit: 
-      - ./**/test-reports/*.xml
+      - ./**/test-reports/*.xml 
 
 black:
   stage: test
@@ -48,6 +49,40 @@ black:
     - echo
     - echo ===== black verification =====
     - black --check .
+
+pytest-master:
+  stage: test
+  image: python:3.7
+  before_script:
+    - echo
+    - echo ===== install poetry =====
+    - apt-get update -qq
+    - apt-get install curl -y -qq
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    - source $HOME/.poetry/env
+    - poetry config virtualenvs.create false
+
+    - echo ==== retrieving pytest-master ====
+    - poetry add git+https://github.com/pytest-dev/pytest.git#master
+
+    - echo
+    - echo ===== install requirements =====
+    - poetry install --no-interaction --no-ansi
+
+    - mkdir test-reports
+  script:
+    - echo
+    - echo ===== running with pytest master =====
+    - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+  artifacts:
+    when: always
+    paths:
+      - ./**/test-reports/*.xml
+    reports:
+      junit: 
+      - ./**/test-reports/*.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"      
 
 sonar:
   stage: sonar

@@ -1,6 +1,6 @@
 import pytest
 import json
-from typing import Dict, Callable
+from typing import Dict, Callable, cast
 
 from nornir.core.filter import F
 from nornir.core.task import Task, Result, MultiResult
@@ -29,14 +29,14 @@ class IperfContext(NornirNutsContext):
     def setup(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
-        assert self.nornir is not None and hasattr(self.nornir, "filter")
+        assert self.nornir is not None
         selected_destinations = self.nornir.filter(destinations)
         selected_destinations.run(task=server_setup)
 
     def teardown(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
-        assert self.nornir is not None and hasattr(self.nornir, "filter")
+        assert self.nornir is not None
         selected_destinations = self.nornir.filter(destinations)
         selected_destinations.run(task=server_teardown)
 
@@ -48,7 +48,7 @@ CONTEXT = IperfContext
 class TestNetmikoIperf:
     @pytest.fixture
     def single_result(self, nornir_nuts_ctx, host, destination):
-        result = nornir_nuts_ctx.transformed_result
+        result = nornir_nuts_ctx.transformed_result()
         assert host in result, f"Host {host} not found in aggregated result."
         assert destination in result[host], f"Destination {destination} not found in result."
         return result[host][destination]
@@ -78,7 +78,9 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
 
 def _parse_iperf_result(task_results: MultiResult) -> Dict[str, NutsResult]:
     results_per_host = {}
-    for iperf_task in task_results[1:]:
+    for elem in task_results[1:]:
+        iperf_task = cast(MultiResult, elem)  # mypy: Even if it's of type Result, treat it as Multiresult
+        # allows a MultiResult to contain other MultiResults
         results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
     return results_per_host
 

@@ -56,6 +56,7 @@ def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> Nornir
     """
     if not isinstance(nuts_ctx, NornirNutsContext):
         raise NutsSetupError("The initialized context does not support the injection of nornir.")
+    assert nuts_ctx.nornir is not None
     nuts_ctx.nornir = initialized_nornir
     return nuts_ctx
 

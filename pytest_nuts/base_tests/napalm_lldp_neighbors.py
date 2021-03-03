@@ -27,6 +27,7 @@ class LldpNeighborsContext(NornirNutsContext):
         }
 
     def _transform_host_results(self, single_result: MultiResult) -> dict:
+        assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["lldp_neighbors_detail"]
         return {peer: self._add_custom_fields(details[0]) for peer, details in neighbors.items()}

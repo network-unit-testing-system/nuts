@@ -58,7 +58,7 @@ def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Resul
     destinations = destinations_per_host(task.host.name)
     for destination in destinations:
         result = task.run(task=napalm_ping, dest=destination, **kwargs)
-        result[0].destination = destination
+        result[0].destination = destination  # type: ignore[attr-defined]
     return Result(host=task.host, result="All pings executed")
 
 
@@ -71,8 +71,8 @@ def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[di
         entry["destination"]: entry.get("max_drop", 0) for entry in test_data if entry["host"] == host
     }
     return {
-        ping_task.destination: nuts_result_wrapper(
-            ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])
+        ping_task.destination: nuts_result_wrapper(  # type: ignore[attr-defined]
+            ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])  # type: ignore[attr-defined]
         )
         for ping_task in task_results[1:]
     }

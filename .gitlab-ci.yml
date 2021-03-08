@@ -9,7 +9,8 @@ cache:
 
 test_job:
   stage: test
-  image: python:3.6 # quay.io/python-devs/ci-image
+  image: python:3.6 
+  # for several python version in 1 image: quay.io/python-devs/ci-image
   before_script:
     - echo ===== update pip =====
     - python -m pip install -U pip
@@ -27,8 +28,7 @@ test_job:
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
-    - pwd test-reports
-    - tox
+    - tox -e 
   artifacts:
     when: always
     paths:
@@ -36,6 +36,66 @@ test_job:
     reports:
       junit: 
       - ./**/test-reports/*.xml 
+
+black:
+  stage: test
+  image: python:3.6 
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+    - echo ===== install poetry =====
+    - apt-get update -qq
+    - apt-get install curl -y -qq
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    - source $HOME/.poetry/env
+    - poetry config virtualenvs.create false
+    - echo
+    - echo ===== install requirements =====
+    - poetry install --no-interaction --no-ansi
+  script:
+    - tox -e black
+
+mypy:
+  stage: test
+  image: python:3.6 
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+    - echo ===== install poetry =====
+    - apt-get update -qq
+    - apt-get install curl -y -qq
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    - source $HOME/.poetry/env
+    - poetry config virtualenvs.create false
+    - echo
+    - echo ===== install requirements =====
+    - poetry install --no-interaction --no-ansi
+  script:
+    - tox -e mypy
+
+docs:
+  stage: test
+  image: python:3.6 
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+    - echo ===== install poetry =====
+    - apt-get update -qq
+    - apt-get install curl -y -qq
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    - source $HOME/.poetry/env
+    - poetry config virtualenvs.create false
+    - echo
+    - echo ===== install requirements =====
+    - poetry install --no-interaction --no-ansi
+  script:
+    - tox -e docs    
 
 pytest-master:
 # run test using directly the pytest master branch  

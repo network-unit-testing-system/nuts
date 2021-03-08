@@ -7,7 +7,7 @@ cache:
   paths:
    - test-reports
 
-test_job:
+pytest:
   stage: test
   image: python:3.6 
   # for several python version in 1 image: quay.io/python-devs/ci-image

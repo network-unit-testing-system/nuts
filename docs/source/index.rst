@@ -39,7 +39,7 @@ Pytest reads in the test bundle (2.) and transforms it into test runs. In the ba
 
 Enhance NUTS
 ------------
-Since NUTS is written as a pytest plugin and in python, you can customize it yourself and write your own test classes. Please see the :doc:`development section <dev/index>` to see how NUTS is structured and how to write your own test classes. The :doc:`API section <api/index>` contains the auto-generated docstrings of the project.
+Since NUTS is written as a pytest plugin and in python, you can customize it yourself and write your own test classes. Please see the :doc:`development section <dev/index>` to see how NUTS is structured and how to write your own test classes.
 
 
 
@@ -54,7 +54,6 @@ Contents
    Tutorial <tutorial/firststeps>
    Test Bundles <testbundles/alltestbundles>
    Development <dev/index>
-   API <api/index>
 
 
 Indices and tables

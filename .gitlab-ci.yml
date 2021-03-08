@@ -25,8 +25,9 @@ test_job:
     - echo ===== install requirements =====
     - poetry install --no-interaction --no-ansi
     - echo ===== create folder for artifacts =====
-    - mkdir test-reports
   script:
+    - mkdir test-reports
+    - pwd test-reports
     - tox
   artifacts:
     when: always
@@ -37,6 +38,7 @@ test_job:
       - ./**/test-reports/*.xml 
 
 pytest-master:
+# run test using directly the pytest master branch  
   stage: test
   image: python:3.7
   before_script:
@@ -55,8 +57,8 @@ pytest-master:
     - echo ===== install requirements =====
     - poetry install --no-interaction --no-ansi
 
-    - mkdir test-reports
   script:
+    - mkdir test-reports
     - echo
     - echo ===== running with pytest master =====
     - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml

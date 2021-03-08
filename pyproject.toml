@@ -36,11 +36,13 @@ filterwarnings = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py36,black,mypy,docs
+envlist = py38,black,mypy,docs
 
 [testenv]
 description = Run pytest in python 3.6 environment
-deps = pytest, pytest-cov
+deps = 
+	pytest
+	pytest-cov
 commands = pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
 
 [testenv:black]

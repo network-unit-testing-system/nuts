@@ -28,7 +28,7 @@ test_job:
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
-    - tox -e 
+    - tox -e py36
   artifacts:
     when: always
     paths:

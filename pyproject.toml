@@ -45,12 +45,14 @@ commands = pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:te
 
 [testenv:black]
 description = Check formatting with black
+skip_install = true
 deps = black
 commands = black --check .
 
 [testenv:mypy]
 description = Check typing with mypy
 deps = mypy
+passenv = TERM
 commands = mypy pytest_nuts tests
 
 [testenv:docs]

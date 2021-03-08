@@ -8,3 +8,6 @@ docs/build/
 
 .pytest-cache/
 .tox/
+
+test-reports/
+.coverage

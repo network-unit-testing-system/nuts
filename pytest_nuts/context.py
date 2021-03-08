@@ -1,5 +1,6 @@
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
+from nornir.core import Nornir
 from nornir.core.task import AggregatedResult
 
 from pytest_nuts.helpers.errors import NutsSetupError
@@ -42,7 +43,7 @@ class NornirNutsContext(NutsContext):
     def __init__(self, nuts_parameters: Any):
         super().__init__(nuts_parameters)
         self._transformed_result = None
-        self.nornir = None
+        self.nornir: Optional[Nornir] = None
 
     def nuts_task(self) -> Callable:
         """

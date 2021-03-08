@@ -46,7 +46,7 @@ exclude_patterns = []
 
 # Defining your own conf.py means re-defining the master doc again:
 # https://stackoverflow.com/questions/56336234/build-fail-sphinx-error-contents-rst-not-found
-master_doc = 'index'
+master_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
 

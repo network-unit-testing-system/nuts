@@ -7,7 +7,7 @@ cache:
   paths:
    - test-reports
 
-pytest:
+pytest36:
   stage: test
   image: python:3.6 
   # for several python version in 1 image: quay.io/python-devs/ci-image
@@ -28,7 +28,7 @@ pytest:
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
-    - tox -e py36
+    - tox -e py
   artifacts:
     when: always
     paths:

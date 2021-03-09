@@ -36,7 +36,7 @@ filterwarnings = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py36,black,mypy,docs
+envlist = py,black,mypy,docs
 
 [testenv]
 description = Run pytest and generate report

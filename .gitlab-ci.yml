@@ -9,7 +9,7 @@ cache:
 
 pytest:
   stage: test
-  image: python:3.6 
+  image: python:3.7 
   # for several python version in 1 image: quay.io/python-devs/ci-image
   before_script:
     - echo ===== update pip =====
@@ -39,7 +39,7 @@ pytest:
 
 black:
   stage: test
-  image: python:3.6 
+  image: python:3.7 
   before_script:
     - echo ===== update pip =====
     - python -m pip install -U pip
@@ -59,7 +59,7 @@ black:
 
 mypy:
   stage: test
-  image: python:3.6 
+  image: python:3.7
   before_script:
     - echo ===== update pip =====
     - python -m pip install -U pip
@@ -79,7 +79,7 @@ mypy:
 
 docs:
   stage: test
-  image: python:3.6 
+  image: python:3.7
   before_script:
     - echo ===== update pip =====
     - python -m pip install -U pip

@@ -26,7 +26,7 @@ pytest:
     - apt-get install curl -y -qq
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
     - source $HOME/.poetry/env
-    - poetry config settings.virtualenvs.in-project true
+    - poetry config virtualenvs.in-project true
     - echo
     - echo ===== install requirements =====
 #    - poetry install --no-interaction --no-ansi

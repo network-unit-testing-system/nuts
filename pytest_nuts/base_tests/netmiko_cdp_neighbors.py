@@ -21,6 +21,7 @@ class CdpNeighborsContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def _transform_host_results(self, host_results: MultiResult) -> dict:
+        assert host_results[0].result is not None
         return {neighbor["destination_host"]: neighbor for neighbor in host_results[0].result}
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:

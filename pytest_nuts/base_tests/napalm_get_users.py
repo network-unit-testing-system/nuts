@@ -26,6 +26,7 @@ class UsersContext(NornirNutsContext):
         }
 
     def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict]:
+        assert single_result[0].result is not None
         return single_result[0].result["users"]
 
 

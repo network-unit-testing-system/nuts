@@ -31,7 +31,7 @@ release = "0.1.0"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.todo"]
+extensions = ["sphinx.ext.todo"]
 # generate API documentation from the docs-folder with: $ sphinx-apidoc -o source/api ../
 todo_include_todos = True
 
@@ -43,6 +43,10 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+
+# Defining your own conf.py means re-defining the master doc again:
+# https://stackoverflow.com/questions/56336234/build-fail-sphinx-error-contents-rst-not-found
+master_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
 

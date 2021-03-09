@@ -2,13 +2,13 @@
 name = "pytest_nuts"
 version = "0.1.0"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Matthias Gabriel <matthias.gabriel@ins.hsr.ch>",
-"Méline Sieber <meline.sieber@ins.hsr.ch",
-"Urs Baumann <urs.baumann@ins.hsr.ch"]
+authors = ["Matthias Gabriel <matthias.gabriel@ost.ch>",
+"Méline Sieber <meline.sieber@ost.ch",
+"Urs Baumann <urs.baumann@ost.ch"]
 classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 pytest = "^6.1.1"
 PyYAML = "^5.3.1"
 nornir = "^3.0.0"
@@ -36,21 +36,32 @@ filterwarnings = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py36,black,mypy,docs
+envlist = py,black,mypy,docs
+testpaths = "tests"
 
 [testenv]
-deps = pytest
-commands = pytest
+description = Run pytest and generate report
+deps = 
+	pytest
+	pytest-cov
+commands = pytest tests --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/pytest_nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
+# envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
+
 
 [testenv:black]
+description = Check formatting with black
+skip_install = true
 deps = black
-commands = black pytest_nuts tests
+commands = black --check .
 
 [testenv:mypy]
+description = Check typing with mypy
 deps = mypy
+passenv = TERM
 commands = mypy pytest_nuts tests
 
 [testenv:docs]
+description = Build docs with sphinx
 deps = sphinx
 changedir = docs/
 commands = sphinx-build source build

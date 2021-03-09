@@ -1,30 +1,29 @@
 stages:
-  - test
+  - pytest
+  - quality
   - sonar
 
-cache:
-  key: "$CI_PIPELINE_ID"
-  paths:
-   - test-reports
+variables:
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
 
-test_job:
-  stage: test
-  image: python:3.7
+cache:
+  key: "${CI_JOB_NAME}"
+  paths:
+    - .cache/pip
+
+pytest:
+  stage: pytest
+  image: python:3.7 
+  # several python versions in 1 image: quay.io/python-devs/ci-image
   before_script:
-    - echo ===== install poetry =====
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
-  script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+    - echo ===== create folder for artifacts =====
     - mkdir test-reports
-    - echo
-    - echo "===== py.test ====="
-    - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+  script:
+    - tox -e py
   artifacts:
     when: always
     paths:
@@ -34,27 +33,47 @@ test_job:
       - ./**/test-reports/*.xml 
 
 black:
-  stage: test
+  stage: quality
+  image: python:3.7 
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+  script:
+    - tox -e black
+
+mypy:
+  stage: quality
   image: python:3.7
   before_script:
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
   script:
-    - echo
-    - echo ===== black verification =====
-    - black --check .
+    - tox -e mypy
+
+docs:
+  stage: quality
+  image: python:3.7
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+  script:
+    - tox -e docs    
 
 pytest-master:
-  stage: test
+# run test using directly the pytest master branch  
+  stage: pytest
   image: python:3.7
   before_script:
-    - echo
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
     - echo ===== install poetry =====
     - apt-get update -qq
     - apt-get install curl -y -qq
@@ -68,11 +87,11 @@ pytest-master:
     - echo
     - echo ===== install requirements =====
     - poetry install --no-interaction --no-ansi
-
+    - echo ===== create folder for artifacts =====    
     - mkdir test-reports
   script:
     - echo
-    - echo ===== running with pytest master =====
+    - echo ===== running tests with pytest-master =====
     - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
   artifacts:
     when: always

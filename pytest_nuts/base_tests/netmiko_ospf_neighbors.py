@@ -21,6 +21,7 @@ class OspfNeighborsContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def _transform_host_results(self, single_result: MultiResult) -> dict:
+        assert single_result[0].result is not None
         neighbors = single_result[0].result
         return {details["neighbor_id"]: details for details in neighbors}
 

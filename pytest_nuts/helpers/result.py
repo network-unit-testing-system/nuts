@@ -36,7 +36,7 @@ def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) 
     :return: NutsResult either containing the transformed result or context information
     """
     if nornir_result.failed:
-        return NutsResult(failed=True, exception=nornir_result.exception)
+        return NutsResult(failed=True, exception=nornir_result.exception)  # type: ignore[attr-defined]
     try:
         return NutsResult(single_transform(nornir_result))
     except Exception as exception:

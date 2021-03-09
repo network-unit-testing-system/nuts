@@ -1,12 +1,19 @@
 stages:
-  - test
+  - pytest
+  - quality
   - sonar
 
+variables:
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
+
 cache:
-  key: "$CI_PIPELINE_ID"
+  key: "${CI_JOB_NAME}"
+  paths:
+    - .cache/pip
+    - .venv
 
 pytest:
-  stage: test
+  stage: pytest
   image: python:3.7 
   # for several python version in 1 image: quay.io/python-devs/ci-image
   before_script:
@@ -19,10 +26,10 @@ pytest:
     - apt-get install curl -y -qq
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
     - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
+    - poetry config settings.virtualenvs.in-project true
     - echo
     - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
+#    - poetry install --no-interaction --no-ansi
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
@@ -36,7 +43,7 @@ pytest:
       - ./**/test-reports/*.xml 
 
 black:
-  stage: test
+  stage: quality
   image: python:3.7 
   before_script:
     - echo ===== update pip =====
@@ -56,7 +63,7 @@ black:
     - tox -e black
 
 mypy:
-  stage: test
+  stage: quality
   image: python:3.7
   before_script:
     - echo ===== update pip =====
@@ -76,7 +83,7 @@ mypy:
     - tox -e mypy
 
 docs:
-  stage: test
+  stage: quality
   image: python:3.7
   before_script:
     - echo ===== update pip =====
@@ -97,7 +104,7 @@ docs:
 
 pytest-master:
 # run test using directly the pytest master branch  
-  stage: test
+  stage: pytest
   image: python:3.7
   before_script:
     - echo

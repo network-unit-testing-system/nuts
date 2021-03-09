@@ -26,9 +26,6 @@ pytest-cov = "^2.10.1"
 [tool.black]
 line-length = 120
 
-[tool.coverage.run]
-omit = [".tox/*"]
-
 [tool.pytest.ini_options]
 filterwarnings = [
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:napalm\\.base\\.helpers",
@@ -40,13 +37,16 @@ legacy_tox_ini = """
 [tox]
 isolated_build = True
 envlist = py,black,mypy,docs
+testpaths = "tests"
 
 [testenv]
 description = Run pytest and generate report
 deps = 
 	pytest
 	pytest-cov
-commands = pytest tests --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+commands = pytest tests --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/pytest_nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
+# envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
+
 
 [testenv:black]
 description = Check formatting with black

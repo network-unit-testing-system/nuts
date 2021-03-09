@@ -51,14 +51,14 @@ black:
     - echo ===== install tox =====
     - pip install tox
     - echo ===== install poetry =====
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
+    #- apt-get update -qq
+    #- apt-get install curl -y -qq
+    #- curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    #- source $HOME/.poetry/env
+    #- poetry config virtualenvs.create true
+    #- echo
+    #- echo ===== install requirements =====
+    # - poetry install --no-interaction --no-ansi
   script:
     - tox -e black
 
@@ -71,14 +71,14 @@ mypy:
     - echo ===== install tox =====
     - pip install tox
     - echo ===== install poetry =====
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
+    # - apt-get update -qq
+    # - apt-get install curl -y -qq
+    # - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    # - source $HOME/.poetry/env
+    # - poetry config virtualenvs.create true
+    # - echo
+    # - echo ===== install requirements =====
+    # - poetry install --no-interaction --no-ansi
   script:
     - tox -e mypy
 
@@ -91,14 +91,14 @@ docs:
     - echo ===== install tox =====
     - pip install tox
     - echo ===== install poetry =====
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
+   # - apt-get update -qq
+   # - apt-get install curl -y -qq
+   # - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+   # - source $HOME/.poetry/env
+   # - poetry config virtualenvs.create true
+   # - echo
+   # - echo ===== install requirements =====
+   # - poetry install --no-interaction --no-ansi
   script:
     - tox -e docs    
 

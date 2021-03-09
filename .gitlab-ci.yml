@@ -10,26 +10,16 @@ cache:
   key: "${CI_JOB_NAME}"
   paths:
     - .cache/pip
-    - .venv
 
 pytest:
   stage: pytest
   image: python:3.7 
-  # for several python version in 1 image: quay.io/python-devs/ci-image
+  # several python versions in 1 image: quay.io/python-devs/ci-image
   before_script:
     - echo ===== update pip =====
     - python -m pip install -U pip
     - echo ===== install tox =====
     - pip install tox
-   # - echo ===== install poetry =====
-    #- apt-get update -qq
-    #- apt-get install curl -y -qq
-    #- curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    #- source $HOME/.poetry/env
-    #- poetry config virtualenvs.in-project true
-    #- echo
-#   - echo ===== install requirements =====
-#   - poetry install --no-interaction --no-ansi
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
@@ -50,7 +40,6 @@ black:
     - python -m pip install -U pip
     - echo ===== install tox =====
     - pip install tox
-    - echo ===== install poetry =====
   script:
     - tox -e black
 
@@ -62,7 +51,6 @@ mypy:
     - python -m pip install -U pip
     - echo ===== install tox =====
     - pip install tox
-    - echo ===== install poetry =====
   script:
     - tox -e mypy
 
@@ -74,7 +62,6 @@ docs:
     - python -m pip install -U pip
     - echo ===== install tox =====
     - pip install tox
-    - echo ===== install poetry =====
   script:
     - tox -e docs    
 
@@ -83,7 +70,10 @@ pytest-master:
   stage: pytest
   image: python:3.7
   before_script:
-    - echo
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
     - echo ===== install poetry =====
     - apt-get update -qq
     - apt-get install curl -y -qq

@@ -4,8 +4,6 @@ stages:
 
 cache:
   key: "$CI_PIPELINE_ID"
-  paths:
-   - test-reports
 
 pytest:
   stage: test

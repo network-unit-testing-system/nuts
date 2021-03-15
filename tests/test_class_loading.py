@@ -119,7 +119,5 @@ def test_bundle_with_labels(testdir):
     testdir.makefile(YAML_EXTENSION, **arguments)
 
     result = testdir.runpytest("--collect-only")
-    label1 = result.outlines[8]
-    label2 = result.outlines[12]
-    assert "testrun23" in label1
-    assert "testrun42" in label2
+    result.stdout.fnmatch_lines(["*NutsTestClass TestClass - testrun23*", "*NutsTestClass TestClass - testrun42*"])
+

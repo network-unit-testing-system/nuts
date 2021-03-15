@@ -120,4 +120,3 @@ def test_bundle_with_labels(testdir):
 
     result = testdir.runpytest("--collect-only")
     result.stdout.fnmatch_lines(["*NutsTestClass TestClass - testrun23*", "*NutsTestClass TestClass - testrun42*"])
-

@@ -100,3 +100,26 @@ def test_class_with_test_execution_field(testdir):
 
     result = testdir.runpytest()
     result.assert_outcomes(passed=1)
+
+
+def test_bundle_with_labels(testdir):
+    arguments = {
+        "test_label_loading": """
+        ---
+        - test_module: tests.base_tests.class_loading
+          label: testrun23
+          test_class: TestClass
+          test_data: ["alice"]
+        - test_module: tests.base_tests.class_loading
+          label: testrun42
+          test_class: TestClass
+          test_data: ["eliza"]
+        """
+    }
+    testdir.makefile(YAML_EXTENSION, **arguments)
+
+    result = testdir.runpytest("--collect-only")
+    label1 = result.outlines[8]
+    label2 = result.outlines[12]
+    assert "testrun23" in label1
+    assert "testrun42" in label2

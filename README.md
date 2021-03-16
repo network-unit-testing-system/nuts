@@ -171,5 +171,5 @@ docker run --volume $PWD:/usr/src --workdir /usr/src --rm -e SONAR_HOST_URL="htt
 
 # Thanks
 
-* Matthias Gabriel, who laid the foundations of Kraken.
+* [Matthias Gabriel](https://github.com/MatthiasGabriel), who laid the foundations of NUTS.
 * [Florian Bruhin](https://github.com/The-Compiler) for invaluable feedback.

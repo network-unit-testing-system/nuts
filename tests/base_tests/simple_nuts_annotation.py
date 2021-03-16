@@ -31,3 +31,9 @@ class TestOptionalAttributes:
     @pytest.mark.nuts("key,value", "key,value")
     def test_key_value(self, key, value):
         assert key == value
+
+
+class TestSingleValue:
+    @pytest.mark.nuts("value", "placeholder")
+    def test_key_value(self, value):
+        assert value == "test"

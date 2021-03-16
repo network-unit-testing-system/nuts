@@ -147,3 +147,17 @@ class TestOptionalAttributes:
 
         result = testdir.runpytest()
         result.assert_outcomes(passed=1)
+
+    def test_single_arguments(self, testdir):
+        arguments = {
+            "test_single_argument": """
+            ---
+            - test_module: tests.base_tests.simple_nuts_annotation
+              test_class: TestSingleValue
+              test_data: [{"value": "test"}]
+                """
+        }
+        testdir.makefile(YAML_EXTENSION, **arguments)
+
+        result = testdir.runpytest()
+        result.assert_outcomes(passed=1)

@@ -168,3 +168,8 @@ UNIX:
 token=<your_token>
 docker run --volume $PWD:/usr/src --workdir /usr/src --rm -e SONAR_HOST_URL="https://sonarqube.ins.work" -e SONAR_LOGIN=$token sonarsource/sonar-scanner-cli -Dsonar.projectKey=nettowel-nuts -Dsonar.branch.name=$(git rev-parse --abbrev-ref HEAD) -Dsonar.python.coverage.reportPaths=/usr/src/test-reports/coverage.xml
 ```
+
+# Thanks
+
+* Matthias Gabriel, who laid the foundations of Kraken.
+* [Florian Bruhin](https://github.com/The-Compiler) for invaluable feedback.

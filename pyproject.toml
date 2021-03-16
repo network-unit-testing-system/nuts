@@ -5,7 +5,7 @@ description = "Network Unit Testing System Component of NetTowel"
 authors = ["Matthias Gabriel <example@example.com>",
 "Méline Sieber <meline.sieber@ost.ch",
 "Urs Baumann <urs.baumann@ost.ch"]
-maintainers = ["Méline Sieber <meline.sieber@ost.ch"]
+maintainers = ["Méline Sieber <meline.sieber@ost.ch>"]
 classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]

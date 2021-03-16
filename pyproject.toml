@@ -2,7 +2,7 @@
 name = "pytest_nuts"
 version = "0.1.0"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Matthias Gabriel",
+authors = ["Matthias Gabriel <example@example.com>",
 "Méline Sieber <meline.sieber@ost.ch",
 "Urs Baumann <urs.baumann@ost.ch"]
 maintainers = ["Méline Sieber <meline.sieber@ost.ch"]

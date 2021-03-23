@@ -18,17 +18,17 @@ class ModuleIndex:
                         If None is specified the default values are taken
         """
         default_index = {
-            "TestNetmikoCdpNeighbors": "pytest_nuts.base_tests.netmiko_cdp_neighbors",
-            "TestNapalmPing": "pytest_nuts.base_tests.napalm_ping",
-            "TestNapalmLldpNeighbors": "pytest_nuts.base_tests.napalm_lldp_neighbors",
-            "TestNetmikoOspfNeighborsCount": "pytest_nuts.base_tests.netmiko_ospf_neighbors",
-            "TestNetmikoOspfNeighbors": "pytest_nuts.base_tests.netmiko_ospf_neighbors",
-            "TestNapalmNetworkInstances": "pytest_nuts.base_tests.napalm_network_instances",
             "TestNapalmBgpNeighbors": "pytest_nuts.base_tests.napalm_bgp_neighbors",
             "TestNapalmBgpNeighborsCount": "pytest_nuts.base_tests.napalm_bgp_neighbors",
+            "TestNapalmInterfaces": "pytest_nuts.base_tests.napalm_interfaces",
+            "TestNapalmLldpNeighbors": "pytest_nuts.base_tests.napalm_lldp_neighbors",
+            "TestNapalmNetworkInstances": "pytest_nuts.base_tests.napalm_network_instances",
+            "TestNapalmPing": "pytest_nuts.base_tests.napalm_ping",
             "TestNapalmUsers": "pytest_nuts.base_tests.napalm_get_users",
+            "TestNetmikoCdpNeighbors": "pytest_nuts.base_tests.netmiko_cdp_neighbors",
             "TestNetmikoIperf": "pytest_nuts.base_tests.netmiko_iperf",
-            "TestInterfaces": "pytest_nuts.base_tests.napalm_interfaces"
+            "TestNetmikoOspfNeighborsCount": "pytest_nuts.base_tests.netmiko_ospf_neighbors",
+            "TestNetmikoOspfNeighbors": "pytest_nuts.base_tests.netmiko_ospf_neighbors",
         }
 
         self.index = index if index is not None else default_index

@@ -28,7 +28,7 @@ class InterfacesContext(NornirNutsContext):
         }
 
     def _transform_host_results(self, single_result: MultiResult) -> dict:
-        assert single_result[0] is not None
+        assert single_result[0].result is not None
         return single_result[0].result["interfaces"]
 
 

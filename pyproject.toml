@@ -29,6 +29,7 @@ line-length = 120
 
 [tool.pytest.ini_options]
 filterwarnings = [
+    "error",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:napalm\\.base\\.helpers",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
 ]

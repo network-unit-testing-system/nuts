@@ -11,7 +11,6 @@ from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
 from _pytest.python import Metafunc
 
-from pytest_nuts.context import NutsContext
 from pytest_nuts.helpers.errors import NutsUsageError
 from pytest_nuts.index import ModuleIndex
 

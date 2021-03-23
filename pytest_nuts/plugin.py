@@ -35,7 +35,7 @@ def initialized_nornir(nornir_config_file: str) -> Nornir:
     :param nornir_config_file: The filename of a nornir configuration file
     :return: An initialized nornir instance
     """
-    return InitNornir(config_file=nornir_config_file, logging=False)
+    return InitNornir(config_file=nornir_config_file, logging={"enabled": False})
 
 
 @pytest.fixture(scope="class")

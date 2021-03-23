@@ -1,3 +1,4 @@
+"""Query users of a device."""
 from typing import Dict, Callable, List
 
 import pytest

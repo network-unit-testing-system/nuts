@@ -1,3 +1,4 @@
+"""Query LLDP neighbors of a device."""
 from typing import Dict, Callable, List
 
 import pytest

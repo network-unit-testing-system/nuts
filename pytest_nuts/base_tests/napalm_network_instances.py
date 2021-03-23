@@ -1,3 +1,4 @@
+"""Query network instances of a device."""
 from typing import Dict, List, Callable
 
 import pytest

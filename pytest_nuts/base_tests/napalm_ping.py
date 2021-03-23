@@ -1,3 +1,4 @@
+"""Let a device ping another device."""
 from enum import Enum
 from typing import Dict, List, Callable
 

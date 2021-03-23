@@ -1,3 +1,4 @@
+"""Allows to indicate only the test class in a test bundle."""
 from typing import Dict, Optional
 
 

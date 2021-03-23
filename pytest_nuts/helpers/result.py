@@ -1,6 +1,7 @@
+"""Results of a network query."""
+
 from typing import Any, Optional, Callable, TypeVar
 
-import pytest
 from nornir.core.task import Result, MultiResult, AggregatedResult
 
 

@@ -14,7 +14,7 @@ from pytest_nuts.helpers.errors import NutsSetupError
 
 from pytest_nuts.context import NutsContext, NornirNutsContext
 from pytest_nuts.helpers.result import NutsResult
-from pytest_nuts.yaml_to_test import NutsYamlFile, get_parametrize_data
+from pytest_nuts.yamlconverter import NutsYamlFile, get_parametrize_data
 
 
 @pytest.fixture

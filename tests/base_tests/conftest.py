@@ -1,7 +1,7 @@
 import pytest
 from napalm.base.exceptions import ConnectionException
 
-from tests.helpers.shared import create_multi_result, create_result
+from tests.helpers.shared import create_multi_result
 
 TIMEOUT_MESSAGE = r"""Traceback (most recent call last):
   File "C:\somepath\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection

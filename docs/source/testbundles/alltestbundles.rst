@@ -124,6 +124,47 @@ Required fields for specific tests in this bundle:
           remote_port: GigabitEthernet2
 
 
+Interfaces
+--------------
+
+**Test Bundle:** Tests if an interface exists on a host and has the required attributes.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestInterfaces
+      test_data:
+        - host: <host name, required>
+          name: <name of the interface, required>
+          is_enabled: <true|false>
+          is_up: <true|false>
+          mac_address: <MAC address>
+          mtu: <MTU value>
+          speed: <int value>
+
+Required fields for specific tests in this bundle:
+
+    * Test if interface is enabled: ``host_name, name, is_enabled``
+    * Test if interface is enabled: ``host_name, name, is_up`` 
+    * Test MAC address of interface: ``host_name, name, mac_address``
+    * Test MTU: ``host_name, name, mtu``
+    * Test speed: ``host_name, name, speed`` 
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestInterfaces
+        test_data:
+        - host: R1
+          name: GigabitEthernet1
+          is_enabled: true
+          is_up: true
+          mac_address: C0:FF:EE:BE:EF:00
+          mtu: 1500
+          speed: 1000
+
 iperf - Bandwidth Test
 ----------------------
 
@@ -160,7 +201,6 @@ iperf - Bandwidth Test
       - host: L1
         destination: 10.20.2.12
         min_expected: 10000000
-
 
 LLDP Neighbors
 --------------

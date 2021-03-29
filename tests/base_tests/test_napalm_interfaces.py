@@ -84,15 +84,9 @@ class TestTransformResult:
         "host,name,is_enabled,is_up,mac_address",
         [
             ("R1", "GigabitEthernet1", True, True, "CA:CA:00:CE:DE:00"),
-            (
-                "R1",
-                "GigabitEthernet2",
-                False,
-                True,
-                "C0:FF:EE:BE:EF:00",
-            ),
-            ("R2", "GigabitEthernet3", False, True, "BE:EF:DE:AD:BE:EF"),
-            ("R2", "Loopback0", False, False, ""),
+            ("R1", "GigabitEthernet2", False, True, "C0:FF:EE:BE:EF:00"),
+            ("R2", "Loopback0", True, False, ""),
+            ("R2", "GigabitEthernet3", False, False, "BE:EF:DE:AD:BE:EF"),
         ],
     )
     def test_contains_information_about_interface(
@@ -100,7 +94,7 @@ class TestTransformResult:
     ):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[name]["is_enabled"] == is_enabled
-        assert transformed_result[host].result[name]["is_up"] == is_enabled
+        assert transformed_result[host].result[name]["is_up"] == is_up
         assert transformed_result[host].result[name]["mac_address"] == mac_address
 
     def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):

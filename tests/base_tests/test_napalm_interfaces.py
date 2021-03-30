@@ -61,27 +61,23 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture
-def nuts_ctx():
-    return CONTEXT(None)
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])
-    def test_contains_host_at_toplevel(self, nuts_ctx, general_result, host):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_host_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
     @pytest.mark.parametrize(
-        "host,interface_name",
+        "host, interface_name",
         [("R1", "GigabitEthernet1"), ("R1", "GigabitEthernet2"), ("R2", "Loopback0"), ("R2", "GigabitEthernet3")],
     )
-    def test_contains_interface_names_at_second_level(self, nuts_ctx, general_result, host, interface_name):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_interface_names_at_second_level(self, transformed_result, host, interface_name):
         assert interface_name in transformed_result[host].result.keys()
 
     @pytest.mark.parametrize(
-        "host,name,is_enabled,is_up,mac_address",
+        "host, name, is_enabled, is_up, mac_address",
         [
             ("R1", "GigabitEthernet1", True, True, "CA:CA:00:CE:DE:00"),
             ("R1", "GigabitEthernet2", False, True, "C0:FF:EE:BE:EF:00"),
@@ -89,17 +85,12 @@ class TestTransformResult:
             ("R2", "GigabitEthernet3", False, False, "BE:EF:DE:AD:BE:EF"),
         ],
     )
-    def test_contains_information_about_interface(
-        self, nuts_ctx, general_result, host, name, is_enabled, is_up, mac_address
-    ):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_information_about_interface(self, transformed_result, host, name, is_enabled, is_up, mac_address):
         interface_result = transformed_result[host].result[name]
-
         assert interface_result["is_enabled"] == is_enabled
         assert interface_result["is_up"] == is_up
         assert interface_result["mac_address"] == mac_address
 
-    def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"].failed
         assert transformed_result["R3"].exception is not None

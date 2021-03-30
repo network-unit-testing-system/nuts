@@ -11,11 +11,11 @@ class NutsContext:
     """
     Base context class. Holds all necessary information that is needed for a specific test.
 
-    :param nuts_parameters: test-specific data that is defined in the test bundle (e.g. the yaml file that is parsed by yaml_to_test)
+    :param nuts_parameters: test-specific data that is defined in the test bundle, i.e. the yaml file that is converted to nuts tests
     """
 
-    def __init__(self, nuts_parameters: Any):
-        self.nuts_parameters = nuts_parameters
+    def __init__(self, nuts_parameters: Any = None):
+        self.nuts_parameters = nuts_parameters or {}
 
     def nuts_arguments(self) -> dict:
         """
@@ -41,7 +41,7 @@ class NornirNutsContext(NutsContext):
 
     """
 
-    def __init__(self, nuts_parameters: Any):
+    def __init__(self, nuts_parameters: Any = None):
         super().__init__(nuts_parameters)
         self._transformed_result = None
         self.nornir: Optional[Nornir] = None

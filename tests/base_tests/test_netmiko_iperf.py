@@ -17,11 +17,6 @@ result_data = [
 
 
 @pytest.fixture
-def nuts_ctx():
-    return CONTEXT(None)
-
-
-@pytest.fixture
 def general_result():
     ag_result = AggregatedResult("netmiko_iperf")
 
@@ -58,10 +53,12 @@ def general_result():
     return ag_result
 
 
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
+
+
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["L1"])
-    def test_contains_host_at_toplevel(self, nuts_ctx, general_result, host):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_host_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
     @pytest.mark.parametrize(
@@ -72,18 +69,15 @@ class TestTransformResult:
             (test_data[2]["host"], test_data[2]["destination"]),
         ],
     )
-    def test_contains_iperf_dest(self, nuts_ctx, general_result, host, destination):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_iperf_dest(self, transformed_result, host, destination):
         assert destination in transformed_result[host]
 
     @pytest.mark.parametrize(
         "host, destination, min_expected", [tuple(test_data[0].values()), tuple(test_data[1].values())]
     )
-    def test_one_host_several_destinations(self, nuts_ctx, general_result, host, destination, min_expected):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_one_host_several_destinations(self, transformed_result, host, destination, min_expected):
         assert transformed_result[host][destination].result > min_expected
 
     @pytest.mark.parametrize("host, destination, min_expected", [tuple(test_data[2].values())])
-    def test_min_expected_fails(self, nuts_ctx, general_result, host, destination, min_expected):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_min_expected_fails(self, transformed_result, host, destination, min_expected):
         assert transformed_result[host][destination].result != min_expected

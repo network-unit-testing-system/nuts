@@ -1,5 +1,12 @@
+from typing import Dict
+
 import pytest
+from _pytest.fixtures import FixtureRequest
 from napalm.base.exceptions import ConnectionException
+from nornir.core.task import AggregatedResult
+from pytest_nuts.helpers.result import NutsResult
+
+from pytest_nuts.context import NornirNutsContext, NutsContext
 
 from tests.helpers.shared import create_multi_result
 
@@ -68,3 +75,33 @@ def timeouted_multiresult():
         failed=True,
         exception=ConnectionException("Cannot connect to 10.20.0.123"),
     )
+
+
+@pytest.fixture
+def test_ctx(request: FixtureRequest) -> NutsContext:
+    """
+    Enable every test to use its specific context class.
+    Uses a custom pytest marker that is set on a test module level, visible in the tests as:
+        pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
+
+    See also: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
+    :param request: The request for the fixture
+    :return: The initialized NutsContext
+    """
+    marker = request.node.get_closest_marker("nuts_test_ctx")
+    if marker is None:
+        raise pytest.UsageError("Custom nuts_test_ctx marker not found")
+    return marker.args[0]
+
+
+@pytest.fixture
+def transformed_result(
+    test_ctx: NornirNutsContext, general_result: AggregatedResult
+) -> Dict[str, Dict[str, NutsResult]]:
+    """
+    Parse the raw result to be used in nuts tests.
+    :param test_ctx: initialized NutsContext
+    :param general_result: mock raw answer that is normally provided by nornir
+    :return: Dict with host as keys, `NutsResult` as values
+    """
+    return test_ctx.transform_result(general_result)

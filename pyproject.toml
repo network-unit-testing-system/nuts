@@ -33,6 +33,9 @@ filterwarnings = [
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:napalm\\.base\\.helpers",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
 ]
+markers = [
+    "nuts_test_ctx: A NutsContext to be used in tests."
+]
 
 [tool.tox]
 legacy_tox_ini = """

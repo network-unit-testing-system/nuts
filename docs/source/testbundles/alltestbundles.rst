@@ -146,7 +146,7 @@ Interfaces
 Required fields for specific tests in this bundle:
 
     * Test if interface is enabled: ``host_name, name, is_enabled``
-    * Test if interface is enabled: ``host_name, name, is_up`` 
+    * Test if interface is up: ``host_name, name, is_up`` 
     * Test MAC address of interface: ``host_name, name, mac_address``
     * Test MTU: ``host_name, name, mtu``
     * Test speed: ``host_name, name, speed`` 

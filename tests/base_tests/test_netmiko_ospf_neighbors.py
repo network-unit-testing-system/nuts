@@ -80,8 +80,7 @@ def general_result(timeouted_multiresult):
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])
-    def test_contains_hosts_at_toplevel(self, nuts_ctx, general_result, host):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_hosts_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
     @pytest.mark.parametrize(
@@ -91,18 +90,15 @@ class TestTransformResult:
             ("R2", ["172.16.255.3", "172.16.255.11", "172.16.255.1"]),
         ],
     )
-    def test_contains_neighbors_at_second_level(self, nuts_ctx, general_result, host, network_instances):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_neighbors_at_second_level(self, transformed_result, host, network_instances):
         assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize("host, neighbor, details", [("R1", "172.16.255.3", neighbor_details)])
-    def test_contains_information_about_neighbor(self, nuts_ctx, general_result, host, neighbor, details):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_information_about_neighbor(self, transformed_result, host, neighbor, details):
         expected_details = transformed_result[host].result[neighbor]
         for key in details:
             assert expected_details[key] == details[key]
 
-    def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"].failed
         assert transformed_result["R3"].exception is not None

@@ -134,38 +134,31 @@ def general_result():
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1"])
-    def test_contains_host_at_toplevel(self, nuts_ctx, general_result, host):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_host_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
     @pytest.mark.parametrize("host, destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"), ("R3", "172.16.23.5")])
-    def test_contains_pinged_destination(self, nuts_ctx, general_result, host, destination):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_pinged_destination(self, transformed_result, host, destination):
         assert destination in transformed_result[host]
 
     @pytest.mark.parametrize("host, destination, ping_result", [("R1", "172.16.23.3", Ping.SUCCESS)])
-    def test_destination_maps_to_enum_success(self, nuts_ctx, general_result, host, destination, ping_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_destination_maps_to_enum_success(self, transformed_result, host, destination, ping_result):
         assert transformed_result[host][destination].result == ping_result
 
     @pytest.mark.parametrize("host, destination, ping_result", [("R2", "172.16.23.4", Ping.FAIL)])
-    def test_destination_maps_to_enum_failure(self, nuts_ctx, general_result, host, destination, ping_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_destination_maps_to_enum_failure(self, transformed_result, host, destination, ping_result):
         assert transformed_result[host][destination].result == ping_result
 
     @pytest.mark.parametrize("host, destination, ping_result", [("R3", "172.16.23.5", Ping.FLAPPING)])
-    def test_destination_maps_to_enum_flapping(self, nuts_ctx, general_result, host, destination, ping_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_destination_maps_to_enum_flapping(self, transformed_result, host, destination, ping_result):
         assert transformed_result[host][destination].result == ping_result
 
     @pytest.mark.parametrize(
         "host, destination, ping_result", [("R1", "172.16.23.3", Ping.SUCCESS), ("R1", "172.16.23.6", Ping.SUCCESS)]
     )
-    def test_one_host_several_destinations(self, nuts_ctx, general_result, host, destination, ping_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_one_host_several_destinations(self, transformed_result, host, destination, ping_result):
         assert transformed_result[host][destination].result == ping_result
 
-    def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"]["172.16.23.6"].failed
         assert transformed_result["R3"]["172.16.23.6"].exception is not None

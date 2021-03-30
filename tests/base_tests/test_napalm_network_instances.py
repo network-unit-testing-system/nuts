@@ -82,15 +82,13 @@ def nuts_ctx():
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])
-    def test_contains_hosts_at_toplevel(self, nuts_ctx, general_result, host):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_hosts_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
     @pytest.mark.parametrize(
         "host, network_instances", [("R1", ["default", "mgmt", "test", "test2"]), ("R2", ["default", "mgmt"])]
     )
-    def test_contains_network_instances_at_second_level(self, nuts_ctx, general_result, host, network_instances):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_network_instances_at_second_level(self, transformed_result, host, network_instances):
         assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize(
@@ -105,11 +103,10 @@ class TestTransformResult:
         ],
     )
     def test_contains_interfaces_at_network_instance(
-        self, nuts_ctx, general_result, host, network_instance, interfaces
+        self, transformed_result, host, network_instance, interfaces
     ):
-        transformed_result = nuts_ctx.transform_result(general_result)
+        
         assert transformed_result[host].result[network_instance]["interfaces"] == interfaces
-
     @pytest.mark.parametrize(
         "host, network_instance, route_distinguisher",
         [
@@ -119,12 +116,10 @@ class TestTransformResult:
         ],
     )
     def test_contains_route_distinguisher_at_network_instance(
-        self, nuts_ctx, general_result, host, network_instance, route_distinguisher
+        self, transformed_result, host, network_instance, route_distinguisher
     ):
-        transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[network_instance]["route_distinguisher"] == route_distinguisher
 
-    def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"].failed
         assert transformed_result["R3"].exception is not None

@@ -78,3 +78,8 @@ def test_ctx(request: FixtureRequest):
     if marker is None:
         raise pytest.UsageError("nuts_test_ctx marker not found")
     return marker.args[0]
+
+
+@pytest.fixture
+def transformed_result(nuts_ctx: NornirNutsContext, general_result):
+    return nuts_ctx.transform_result(general_result)

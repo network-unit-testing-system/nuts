@@ -34,7 +34,7 @@ filterwarnings = [
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
 ]
 markers = [
-    "nuts_test_ctx: A mock CONTEXT to be used in project tests."
+    "nuts_test_ctx: A NutsContext to be used in tests."
 ]
 
 [tool.tox]

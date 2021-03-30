@@ -16,13 +16,11 @@ class IperfContext(NornirNutsContext):
         return netmiko_run_iperf
 
     def nuts_arguments(self) -> dict:
-        assert self.nuts_parameters is not None
         return {
             "destinations_per_host": _destinations_per_host(self.nuts_parameters["test_data"]),
         }
 
     def nornir_filter(self) -> F:
-        assert self.nuts_parameters is not None
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 
@@ -30,7 +28,6 @@ class IperfContext(NornirNutsContext):
         return {host: _parse_iperf_result(task_results) for host, task_results in general_result.items()}
 
     def setup(self) -> None:
-        assert self.nuts_parameters is not None
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         assert self.nornir is not None
@@ -38,7 +35,6 @@ class IperfContext(NornirNutsContext):
         selected_destinations.run(task=server_setup)
 
     def teardown(self) -> None:
-        assert self.nuts_parameters is not None
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         assert self.nornir is not None

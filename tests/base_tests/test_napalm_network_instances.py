@@ -75,9 +75,8 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture
-def nuts_ctx():
-    return CONTEXT(None)
+# apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
+pytestmark = [pytest.mark.nuts_test_ctx(context=CONTEXT)]
 
 
 class TestTransformResult:

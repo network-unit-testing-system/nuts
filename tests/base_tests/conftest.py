@@ -85,4 +85,5 @@ def test_ctx(request: FixtureRequest):
 
 @pytest.fixture
 def transformed_result(test_ctx: NornirNutsContext, general_result):
-    return test_ctx.transform_result(general_result)
+    ctx = test_ctx(nuts_parameters=None)
+    return ctx.transform_result(general_result)

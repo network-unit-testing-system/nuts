@@ -1,6 +1,5 @@
 import pytest
 from nornir.core.task import AggregatedResult
-from pytest_nuts.context import NornirNutsContext
 
 from pytest_nuts.base_tests.napalm_lldp_neighbors import CONTEXT
 from tests.helpers.shared import create_multi_result
@@ -15,11 +14,6 @@ neighbor_details = {
     "remote_system_enable_capab": ["router"],
     "parent_interface": "",
 }
-
-
-# @pytest.fixture
-# def nuts_ctx():
-#     return CONTEXT(nuts_parameters=None)
 
 
 @pytest.fixture

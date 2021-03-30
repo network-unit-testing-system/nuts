@@ -1,6 +1,7 @@
 import pytest
 from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult, MultiResult, Result
+from pytest_nuts.context import NornirNutsContext
 
 from pytest_nuts.base_tests.napalm_ping import CONTEXT
 from pytest_nuts.base_tests.napalm_ping import Ping
@@ -14,12 +15,6 @@ test_data = [
     {"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.6", "max_drop": 1},
     {"expected": "SUCCESS", "host": "R3", "destination": "172.16.23.6", "max_drop": 1},
 ]
-
-
-@pytest.fixture
-def nuts_ctx():
-    return CONTEXT(nuts_parameters={"test_data": test_data})
-
 
 result_data = [
     {
@@ -130,6 +125,16 @@ def general_result():
     )
     result["R3"] = multi_result_r3
     return result
+
+
+# apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
+pytestmark = [pytest.mark.nuts_test_ctx(context=CONTEXT)]
+
+
+@pytest.fixture
+def transformed_result(test_ctx: NornirNutsContext, general_result):
+    ctx = test_ctx(nuts_parameters={"test_data": test_data})
+    return ctx.transform_result(general_result)
 
 
 class TestTransformResult:

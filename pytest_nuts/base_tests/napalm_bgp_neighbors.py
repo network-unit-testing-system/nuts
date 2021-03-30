@@ -10,6 +10,7 @@ from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
 
+
 class BgpNeighborsContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get

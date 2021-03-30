@@ -15,12 +15,6 @@ result_data = [
     '{"start":{"connected":[{"remote_host":"10.0.0.1"}]},"end":{"sum_received":{"bits_per_second":0}}}',
 ]
 
-
-@pytest.fixture
-def nuts_ctx():
-    return CONTEXT(None)
-
-
 @pytest.fixture
 def general_result():
     ag_result = AggregatedResult("netmiko_iperf")
@@ -56,6 +50,9 @@ def general_result():
     ag_result["L2"] = overall_mr_l2
 
     return ag_result
+
+# apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
+pytestmark = [pytest.mark.nuts_test_ctx(context=CONTEXT)]
 
 
 class TestTransformResult:

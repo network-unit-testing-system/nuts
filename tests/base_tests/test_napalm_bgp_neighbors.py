@@ -17,11 +17,6 @@ neighbor_details = {
 
 
 @pytest.fixture
-def nuts_ctx():
-    return CONTEXT(None)
-
-
-@pytest.fixture
 def general_result(timeouted_multiresult):
     result = AggregatedResult("napalm_get")
     result["R1"] = create_multi_result(
@@ -74,6 +69,10 @@ def general_result(timeouted_multiresult):
 
     result["R3"] = timeouted_multiresult
     return result
+
+
+# apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
+pytestmark = [pytest.mark.nuts_test_ctx(context=CONTEXT)]
 
 
 class TestTransformResult:

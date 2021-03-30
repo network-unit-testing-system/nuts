@@ -1,6 +1,8 @@
 import pytest
 from _pytest.fixtures import FixtureRequest
 from napalm.base.exceptions import ConnectionException
+from nornir.core.task import AggregatedResult
+
 from pytest_nuts.context import NornirNutsContext, NutsContext
 
 from tests.helpers.shared import create_multi_result
@@ -81,5 +83,5 @@ def test_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture
-def transformed_result(test_ctx: NornirNutsContext, general_result):
+def transformed_result(test_ctx: NornirNutsContext, general_result: AggregatedResult):
     return test_ctx.transform_result(general_result)

@@ -1,5 +1,6 @@
 import pytest
 from nornir.core.task import AggregatedResult
+from pytest_nuts.context import NornirNutsContext
 
 from pytest_nuts.base_tests.napalm_lldp_neighbors import CONTEXT
 from tests.helpers.shared import create_multi_result
@@ -16,9 +17,12 @@ neighbor_details = {
 }
 
 
+context_mark = pytest.mark.nuts_test_ctx(CONTEXT)
+
+
 @pytest.fixture
 def nuts_ctx():
-    return CONTEXT(None)
+    return CONTEXT(nuts_parameters=None)
 
 
 @pytest.fixture
@@ -79,16 +83,19 @@ def general_result(timeouted_multiresult):
 
 
 class TestTransformResult:
+    @pytest.mark.nuts_test_ctx(CONTEXT)
     @pytest.mark.parametrize("host", ["R1", "R2", "R3"])
-    def test_contains_hosts_at_toplevel(self, nuts_ctx, general_result, host):
-        transformed_result = nuts_ctx.transform_result(general_result)
+    def test_contains_hosts_at_toplevel(self, test_ctx, general_result, host):
+        transformed_result = test_ctx.transform_result(general_result)
         assert host in transformed_result
 
     @pytest.mark.parametrize(
         "host, local_ports",
         [("R1", ["GigabitEthernet4", "GigabitEthernet3"]), ("R2", ["GigabitEthernet4", "GigabitEthernet2"])],
     )
-    def test_contains_results_with_ports_at_second_level(self, nuts_ctx, general_result, host, local_ports):
+    def test_contains_results_with_ports_at_second_level(
+        self, nuts_ctx: NornirNutsContext, general_result, host, local_ports
+    ):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert list(transformed_result[host].result.keys()) == local_ports
 
@@ -96,26 +103,32 @@ class TestTransformResult:
         "host, local_ports",
         [("R3", ["GigabitEthernet4"])],
     )
-    def test_contains_failed_result_at_second_level_if_task_failed(self, nuts_ctx, general_result, host, local_ports):
+    def test_contains_failed_result_at_second_level_if_task_failed(
+        self, nuts_ctx: NornirNutsContext, general_result, host, local_ports
+    ):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].failed
         assert transformed_result[host].exception
 
     @pytest.mark.parametrize("host, local_port, expected_details", [("R1", "GigabitEthernet4", neighbor_details)])
-    def test_contains_information_about_neighbor(self, nuts_ctx, general_result, host, local_port, expected_details):
+    def test_contains_information_about_neighbor(
+        self, nuts_ctx: NornirNutsContext, general_result, host, local_port, expected_details
+    ):
         transformed_result = nuts_ctx.transform_result(general_result)
         actual_details = transformed_result[host].result[local_port]
         for key in expected_details:
             assert actual_details[key] == expected_details[key]
 
     @pytest.mark.parametrize("host, local_port, remote_host", [("R1", "GigabitEthernet4", "R3")])
-    def test_contains_information_remote_host(self, nuts_ctx, general_result, host, local_port, remote_host):
+    def test_contains_information_remote_host(
+        self, nuts_ctx: NornirNutsContext, general_result, host, local_port, remote_host
+    ):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[local_port]["remote_host"] == remote_host
 
     @pytest.mark.parametrize("host, local_port, remote_port_expanded", [("R1", "GigabitEthernet4", "GigabitEthernet2")])
     def test_contains_information_expanded_interface(
-        self, nuts_ctx, general_result, host, local_port, remote_port_expanded
+        self, nuts_ctx: NornirNutsContext, general_result, host, local_port, remote_port_expanded
     ):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[local_port]["remote_port_expanded"] == remote_port_expanded

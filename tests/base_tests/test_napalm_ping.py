@@ -128,13 +128,7 @@ def general_result():
 
 
 # apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
-pytestmark = [pytest.mark.nuts_test_ctx(context=CONTEXT)]
-
-
-@pytest.fixture
-def transformed_result(test_ctx: NornirNutsContext, general_result):
-    ctx = test_ctx(nuts_parameters={"test_data": test_data})
-    return ctx.transform_result(general_result)
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters={"test_data": test_data}))]
 
 
 class TestTransformResult:

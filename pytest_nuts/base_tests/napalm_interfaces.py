@@ -15,7 +15,7 @@ class InterfacesContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get
 
-    def nuts_arguments(self) -> Dict[str, List]:
+    def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["interfaces"]}
 
     def nornir_filter(self) -> F:

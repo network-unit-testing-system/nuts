@@ -55,17 +55,17 @@ class TestTransformResult:
         transformed_result = nuts_ctx.transform_result(general_result)
         assert host in transformed_result
 
-    @pytest.mark.parametrize("host,username", [("R1", "arya"), ("R1", "bran")])
+    @pytest.mark.parametrize("host, username", [("R1", "arya"), ("R1", "bran")])
     def test_contains_multiple_usernames_per_host(self, nuts_ctx, general_result, host, username):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert username in transformed_result[host].result
 
-    @pytest.mark.parametrize("host,username,password,level", _tupelize_dict(test_data))
+    @pytest.mark.parametrize("host, username, password, level", _tupelize_dict(test_data))
     def test_username_has_corresponding_password(self, nuts_ctx, general_result, host, username, password, level):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[username]["password"] == password
 
-    @pytest.mark.parametrize("host,username,password,level", _tupelize_dict(test_data))
+    @pytest.mark.parametrize("host, username, password, level", _tupelize_dict(test_data))
     def test_username_has_matching_privilegelevel(self, nuts_ctx, general_result, host, username, password, level):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host].result[username]["level"] == level

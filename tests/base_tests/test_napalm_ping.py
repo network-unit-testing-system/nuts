@@ -138,28 +138,28 @@ class TestTransformResult:
         transformed_result = nuts_ctx.transform_result(general_result)
         assert host in transformed_result
 
-    @pytest.mark.parametrize("host,destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"), ("R3", "172.16.23.5")])
+    @pytest.mark.parametrize("host, destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"), ("R3", "172.16.23.5")])
     def test_contains_pinged_destination(self, nuts_ctx, general_result, host, destination):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert destination in transformed_result[host]
 
-    @pytest.mark.parametrize("host,destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS)])
+    @pytest.mark.parametrize("host, destination, ping_result", [("R1", "172.16.23.3", Ping.SUCCESS)])
     def test_destination_maps_to_enum_success(self, nuts_ctx, general_result, host, destination, ping_result):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host][destination].result == ping_result
 
-    @pytest.mark.parametrize("host,destination,ping_result", [("R2", "172.16.23.4", Ping.FAIL)])
+    @pytest.mark.parametrize("host, destination, ping_result", [("R2", "172.16.23.4", Ping.FAIL)])
     def test_destination_maps_to_enum_failure(self, nuts_ctx, general_result, host, destination, ping_result):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host][destination].result == ping_result
 
-    @pytest.mark.parametrize("host,destination,ping_result", [("R3", "172.16.23.5", Ping.FLAPPING)])
+    @pytest.mark.parametrize("host, destination, ping_result", [("R3", "172.16.23.5", Ping.FLAPPING)])
     def test_destination_maps_to_enum_flapping(self, nuts_ctx, general_result, host, destination, ping_result):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert transformed_result[host][destination].result == ping_result
 
     @pytest.mark.parametrize(
-        "host, destination,ping_result", [("R1", "172.16.23.3", Ping.SUCCESS), ("R1", "172.16.23.6", Ping.SUCCESS)]
+        "host, destination, ping_result", [("R1", "172.16.23.3", Ping.SUCCESS), ("R1", "172.16.23.6", Ping.SUCCESS)]
     )
     def test_one_host_several_destinations(self, nuts_ctx, general_result, host, destination, ping_result):
         transformed_result = nuts_ctx.transform_result(general_result)

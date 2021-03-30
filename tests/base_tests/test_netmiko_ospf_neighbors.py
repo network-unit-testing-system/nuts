@@ -95,7 +95,7 @@ class TestTransformResult:
         transformed_result = nuts_ctx.transform_result(general_result)
         assert list(transformed_result[host].result.keys()) == network_instances
 
-    @pytest.mark.parametrize("host,neighbor,details", [("R1", "172.16.255.3", neighbor_details)])
+    @pytest.mark.parametrize("host, neighbor, details", [("R1", "172.16.255.3", neighbor_details)])
     def test_contains_information_about_neighbor(self, nuts_ctx, general_result, host, neighbor, details):
         transformed_result = nuts_ctx.transform_result(general_result)
         expected_details = transformed_result[host].result[neighbor]

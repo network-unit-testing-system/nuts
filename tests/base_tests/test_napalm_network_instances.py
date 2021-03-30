@@ -87,14 +87,14 @@ class TestTransformResult:
         assert host in transformed_result
 
     @pytest.mark.parametrize(
-        "host,network_instances", [("R1", ["default", "mgmt", "test", "test2"]), ("R2", ["default", "mgmt"])]
+        "host, network_instances", [("R1", ["default", "mgmt", "test", "test2"]), ("R2", ["default", "mgmt"])]
     )
     def test_contains_network_instances_at_second_level(self, nuts_ctx, general_result, host, network_instances):
         transformed_result = nuts_ctx.transform_result(general_result)
         assert list(transformed_result[host].result.keys()) == network_instances
 
     @pytest.mark.parametrize(
-        "host,network_instance,interfaces",
+        "host, network_instance, interfaces",
         [
             (
                 "R1",
@@ -111,7 +111,7 @@ class TestTransformResult:
         assert transformed_result[host].result[network_instance]["interfaces"] == interfaces
 
     @pytest.mark.parametrize(
-        "host,network_instance,route_distinguisher",
+        "host, network_instance, route_distinguisher",
         [
             ("R1", "default", ""),
             ("R1", "test2", "1:1"),

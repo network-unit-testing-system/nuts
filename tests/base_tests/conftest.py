@@ -1,5 +1,7 @@
 import pytest
+from _pytest.fixtures import FixtureRequest
 from napalm.base.exceptions import ConnectionException
+from pytest_nuts.context import NornirNutsContext, NutsContext
 
 from tests.helpers.shared import create_multi_result
 
@@ -68,3 +70,11 @@ def timeouted_multiresult():
         failed=True,
         exception=ConnectionException("Cannot connect to 10.20.0.123"),
     )
+
+
+@pytest.fixture
+def test_ctx(request: FixtureRequest):
+    marker = request.node.get_closest_marker("nuts_test_ctx")
+    if marker is None:
+        raise pytest.UsageError("nuts_test_ctx marker not found")
+    return marker.args[0]

@@ -73,17 +73,17 @@ def timeouted_multiresult():
 
 
 @pytest.fixture
-def test_ctx(request: FixtureRequest):
+def test_ctx(request: FixtureRequest) -> NutsContext:
     marker = request.node.get_closest_marker("nuts_test_ctx")
     if marker is None:
         raise pytest.UsageError("custom nuts_test_ctx marker not found")
     # intentionally do not use marker.arg[0] because of this: https://github.com/pytest-dev/pytest/issues/8499
     # pytest.marker.with_args() also intentionally not used here, because it can be forgotten
     # https://docs.pytest.org/en/stable/example/markers.html#passing-a-callable-to-custom-markers
-    return marker.kwargs["context"]
+    context_class = marker.kwargs["context"]
+    return context_class(nuts_parameters=None)
 
 
 @pytest.fixture
 def transformed_result(test_ctx: NornirNutsContext, general_result):
-    ctx = test_ctx(nuts_parameters=None)
-    return ctx.transform_result(general_result)
+    return test_ctx.transform_result(general_result)

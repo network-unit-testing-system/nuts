@@ -140,7 +140,7 @@ Interfaces
           is_enabled: <true|false>
           is_up: <true|false>
           mac_address: <MAC address>
-          mtu: <MTU value>
+          mtu: <int value>
           speed: <int value>
 
 Required fields for specific tests in this bundle:

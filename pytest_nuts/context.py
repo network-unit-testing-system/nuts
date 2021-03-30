@@ -15,7 +15,7 @@ class NutsContext:
     """
 
     def __init__(self, nuts_parameters: Any = None):
-        self.nuts_parameters = nuts_parameters
+        self.nuts_parameters = nuts_parameters or {}
 
     def nuts_arguments(self) -> dict:
         """
@@ -27,7 +27,6 @@ class NutsContext:
 
         :return: A dict containing the additional arguments
         """
-        assert self.nuts_parameters is not None
         test_execution = self.nuts_parameters.get("test_execution", None)
         return {**(test_execution if test_execution is not None else {})}
 

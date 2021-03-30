@@ -3,7 +3,7 @@ from typing import Dict, Callable, List
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult
+from nornir.core.task import MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.context import NornirNutsContext
@@ -22,7 +22,7 @@ class LldpNeighborsContext(NornirNutsContext):
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 
-    def transform_result(self, general_result) -> Dict[str, NutsResult]:
+    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
         return {
             host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
         }

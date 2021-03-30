@@ -4,7 +4,7 @@ import json
 from typing import Dict, Callable, cast
 
 from nornir.core.filter import F
-from nornir.core.task import Task, Result, MultiResult
+from nornir.core.task import Task, Result, MultiResult, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.context import NornirNutsContext
@@ -24,7 +24,7 @@ class IperfContext(NornirNutsContext):
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 
-    def transform_result(self, general_result) -> Dict[str, Dict[str, NutsResult]]:
+    def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
         return {host: _parse_iperf_result(task_results) for host, task_results in general_result.items()}
 
     def setup(self) -> None:

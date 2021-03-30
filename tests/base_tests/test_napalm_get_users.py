@@ -44,7 +44,6 @@ def _tupelize_dict(dict_data):
     return [tuple(k.values()) for k in dict_data]
 
 
-# apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 

@@ -93,9 +93,11 @@ class TestTransformResult:
         self, nuts_ctx, general_result, host, name, is_enabled, is_up, mac_address
     ):
         transformed_result = nuts_ctx.transform_result(general_result)
-        assert transformed_result[host].result[name]["is_enabled"] == is_enabled
-        assert transformed_result[host].result[name]["is_up"] == is_up
-        assert transformed_result[host].result[name]["mac_address"] == mac_address
+        interface_result = transformed_result[host].result[name]
+
+        assert interface_result["is_enabled"] == is_enabled
+        assert interface_result["is_up"] == is_up
+        assert interface_result["mac_address"] == mac_address
 
     def test_marks_as_failed_if_task_failed(self, nuts_ctx, general_result):
         transformed_result = nuts_ctx.transform_result(general_result)

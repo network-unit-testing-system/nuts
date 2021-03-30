@@ -73,12 +73,12 @@ class TestTransformResult:
         assert host in transformed_result
 
     @pytest.mark.parametrize(
-        "host,interface_names",
-        [("R1", ["GigabitEthernet1", "GigabitEthernet2"]), ("R2", ["Loopback0", "GigabitEthernet3"])],
+        "host,interface_name",
+        [("R1", "GigabitEthernet1"), ("R1", "GigabitEthernet2"), ("R2", "Loopback0"), ("R2", "GigabitEthernet3")],
     )
-    def test_contains_interface_names_at_second_level(self, nuts_ctx, general_result, host, interface_names):
+    def test_contains_interface_names_at_second_level(self, nuts_ctx, general_result, host, interface_name):
         transformed_result = nuts_ctx.transform_result(general_result)
-        assert list(transformed_result[host].result.keys()) == interface_names
+        assert interface_name in transformed_result[host].result.keys()
 
     @pytest.mark.parametrize(
         "host,name,is_enabled,is_up,mac_address",

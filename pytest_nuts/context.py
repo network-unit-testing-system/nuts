@@ -11,7 +11,7 @@ class NutsContext:
     """
     Base context class. Holds all necessary information that is needed for a specific test.
 
-    :param nuts_parameters: test-specific data that is defined in the test bundle (e.g. the yaml file that is parsed by yaml_to_test)
+    :param nuts_parameters: test-specific data that is defined in the test bundle, i.e. the yaml file that is converted to nuts tests
     """
 
     def __init__(self, nuts_parameters: Any):

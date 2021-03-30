@@ -72,8 +72,10 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
+
 # apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
-pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters=None))]
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
+
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])

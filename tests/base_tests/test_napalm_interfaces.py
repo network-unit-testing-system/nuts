@@ -60,8 +60,10 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
+
 # apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
-pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters=None))]
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
+
 
 class TestTransformResult:
     @pytest.mark.parametrize("host", ["R1", "R2"])
@@ -84,9 +86,7 @@ class TestTransformResult:
             ("R2", "GigabitEthernet3", False, False, "BE:EF:DE:AD:BE:EF"),
         ],
     )
-    def test_contains_information_about_interface(
-        self, transformed_result, host, name, is_enabled, is_up, mac_address
-    ):
+    def test_contains_information_about_interface(self, transformed_result, host, name, is_enabled, is_up, mac_address):
         interface_result = transformed_result[host].result[name]
         assert interface_result["is_enabled"] == is_enabled
         assert interface_result["is_up"] == is_up

@@ -76,7 +76,7 @@ def general_result(timeouted_multiresult):
 
 
 # apply mark at module-level: https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules
-pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters=None))]
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
@@ -101,11 +101,10 @@ class TestTransformResult:
             ("R2", "mgmt", ["GigabitEthernet1"]),
         ],
     )
-    def test_contains_interfaces_at_network_instance(
-        self, transformed_result, host, network_instance, interfaces
-    ):
-        
+    def test_contains_interfaces_at_network_instance(self, transformed_result, host, network_instance, interfaces):
+
         assert transformed_result[host].result[network_instance]["interfaces"] == interfaces
+
     @pytest.mark.parametrize(
         "host, network_instance, route_distinguisher",
         [

@@ -19,6 +19,7 @@ class InterfacesContext(NornirNutsContext):
         return {"getters": ["interfaces"]}
 
     def nornir_filter(self) -> F:
+        assert self.nuts_parameters is not None
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 

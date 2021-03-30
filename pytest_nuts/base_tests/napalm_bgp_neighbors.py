@@ -10,7 +10,6 @@ from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
 
 
-
 class BgpNeighborsContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
         return napalm_get
@@ -19,6 +18,7 @@ class BgpNeighborsContext(NornirNutsContext):
         return {"getters": ["bgp_neighbors"]}
 
     def nornir_filter(self) -> F:
+        assert self.nuts_parameters is not None
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
         return F(name__any=hosts)
 

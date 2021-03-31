@@ -28,6 +28,7 @@ pytest-cov = "^2.10.1"
 line-length = 120
 
 [tool.pytest.ini_options]
+testpaths = "tests"
 filterwarnings = [
     "error",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:napalm\\.base\\.helpers",
@@ -49,7 +50,7 @@ description = Run pytest and generate report
 deps = 
 	pytest
 	pytest-cov
-commands = pytest tests --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/pytest_nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
+commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/pytest_nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 
 
@@ -57,19 +58,19 @@ commands = pytest tests --junitxml=test-reports/pytest.xml --cov="{envsitepackag
 description = Check formatting with black
 skip_install = true
 deps = black
-commands = black --check .
+commands = black --check {posargs} .
 
 [testenv:mypy]
 description = Check typing with mypy
 deps = mypy
 passenv = TERM
-commands = mypy pytest_nuts tests
+commands = mypy {posargs} pytest_nuts tests
 
 [testenv:docs]
 description = Build docs with sphinx
 deps = sphinx
 changedir = docs/
-commands = sphinx-build source build
+commands = sphinx-build {posargs} source build
 """
 
 [build-system]

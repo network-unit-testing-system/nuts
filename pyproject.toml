@@ -71,6 +71,15 @@ description = Build docs with sphinx
 deps = sphinx
 changedir = docs/
 commands = sphinx-build {posargs} source build
+
+[testenv:pytest-master]
+description = Run project tests against pytest-main branch
+deps = 
+	git+https://github.com/pytest-dev/pytest.git#main
+	pytest-cov
+commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/pytest_nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
+# envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
+
 """
 
 [build-system]

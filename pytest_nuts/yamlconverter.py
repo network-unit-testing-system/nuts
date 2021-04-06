@@ -6,7 +6,6 @@ import types
 from importlib import util
 from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
 
-import py
 import pytest
 import yaml
 from _pytest import nodes
@@ -19,9 +18,6 @@ from pytest_nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):
-    def __init__(self, parent: Optional[Node], fspath: py.path.local):
-        super().__init__(fspath, parent)
-
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         with self.fspath.open() as f:
             raw = yaml.safe_load(f)
@@ -54,8 +50,8 @@ def load_module(module_path: str) -> types.ModuleType:
 
 
 class NutsTestFile(pytest.Module):
-    def __init__(self, fspath: py.path.local, parent: Optional[Node], obj: Any, test_entry: Any):
-        super().__init__(fspath, parent)
+    def __init__(self, obj: Any, test_entry: Any, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
         self.obj = obj
         self.test_entry = test_entry
 

@@ -33,6 +33,7 @@ filterwarnings = [
     "error",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:napalm\\.base\\.helpers",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
+    "ignore:NutsYamlFile\\.fspath is deprecated and will be replaced by NutsYamlFile\\.path\\.",
 ]
 markers = [
     "nuts_test_ctx: A NutsContext to be used in tests."
@@ -72,7 +73,7 @@ deps = sphinx
 changedir = docs/
 commands = sphinx-build {posargs} source build
 
-[testenv:pytest-master]
+[testenv:pytest-main]
 description = Run project tests against pytest-main branch
 deps = 
 	git+https://github.com/pytest-dev/pytest.git#main

@@ -86,16 +86,6 @@ pytest-main:
       junit: 
       - ./**/test-reports/*.xml 
 
-  artifacts:
-    when: always
-    paths:
-      - ./**/test-reports/*.xml
-    reports:
-      junit: 
-      - ./**/test-reports/*.xml
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-
 sonar:
   stage: sonar
   variables:

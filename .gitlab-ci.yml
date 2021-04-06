@@ -65,8 +65,8 @@ docs:
   script:
     - tox -e docs    
 
-pytest-master:
-# run test using directly the pytest master branch  
+pytest-main:
+# run test using directly the pytest main branch  
   stage: pytest
   image: python:3.7
   before_script:
@@ -77,7 +77,7 @@ pytest-master:
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
-    - tox -e pytest-master
+    - tox -e pytest-main
   artifacts:
     when: always
     paths:
@@ -94,7 +94,7 @@ pytest-master:
       junit: 
       - ./**/test-reports/*.xml
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"      
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 
 sonar:
   stage: sonar

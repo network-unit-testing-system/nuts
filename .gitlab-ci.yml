@@ -82,7 +82,7 @@ pytest-master:
     - poetry config virtualenvs.create false
 
     - echo ==== retrieving pytest-master ====
-    - poetry add git+https://github.com/pytest-dev/pytest.git
+    - poetry add git+https://github.com/pytest-dev/pytest.git#main
 
     - echo
     - echo ===== install requirements =====

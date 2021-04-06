@@ -10,7 +10,7 @@ classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pytest = "^6.1.1"
+pytest = {git = "https://github.com/pytest-dev/pytest.git", rev = "main"}
 PyYAML = "^5.3.1"
 nornir = "^3.0.0"
 nornir-napalm = "^0.1.1"
@@ -72,7 +72,7 @@ deps = sphinx
 changedir = docs/
 commands = sphinx-build {posargs} source build
 
-[testenv:pytest-master]
+[testenv:pytest-main]
 description = Run project tests against pytest-main branch
 deps = 
 	git+https://github.com/pytest-dev/pytest.git#main

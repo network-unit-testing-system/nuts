@@ -84,7 +84,10 @@ pytest-main:
       - ./**/test-reports/*.xml
     reports:
       junit: 
-      - ./**/test-reports/*.xml 
+      - ./**/test-reports/*.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"      
+
 
 sonar:
   stage: sonar

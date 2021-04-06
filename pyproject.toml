@@ -10,7 +10,7 @@ classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pytest = {git = "https://github.com/pytest-dev/pytest.git", rev = "main"}
+pytest = "^6.1.1"
 PyYAML = "^5.3.1"
 nornir = "^3.0.0"
 nornir-napalm = "^0.1.1"

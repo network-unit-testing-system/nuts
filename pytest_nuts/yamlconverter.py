@@ -2,6 +2,7 @@
 Based on https://docs.pytest.org/en/stable/example/nonpython.html#yaml-plugin
 """
 import importlib
+import pathlib
 import types
 from importlib import util
 from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
@@ -19,13 +20,34 @@ from pytest_nuts.index import ModuleIndex
 
 class NutsYamlFile(pytest.File):
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+        # path uses pathlib.Path and is meant to replace fspath, which uses py.path.local
+        # both variants will be used for some time in parallel
+        # if fspath is used in a newer python version, it triggers a deprecation warning
+        if hasattr(self, "path"):
+            yield from self._collect_path()
+        else:
+            yield from self._collect_fspath()
+
+    def _collect_path(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+        with self.path.open() as f:
+            raw = yaml.safe_load(f)
+
+        for test_entry in raw:
+            module = find_and_load_module(test_entry)
+            yield NutsTestFile.from_parent(self, path=self.path, obj=module, test_entry=test_entry)
+
+    def _collect_fspath(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         with self.fspath.open() as f:
             raw = yaml.safe_load(f)
 
         for test_entry in raw:
-            module_path = find_module_path(test_entry.get("test_module"), test_entry.get("test_class"))
-            module = load_module(module_path)
+            module = find_and_load_module(test_entry)
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
+
+
+def find_and_load_module(test_entry: dict):
+    module_path = find_module_path(test_entry.get("test_module"), test_entry.get("test_class"))
+    return load_module(module_path)
 
 
 def find_module_path(module_path: Optional[str], class_name: str) -> str:

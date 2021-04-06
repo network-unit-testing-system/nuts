@@ -74,25 +74,18 @@ pytest-master:
     - python -m pip install -U pip
     - echo ===== install tox =====
     - pip install tox
-    - echo ===== install poetry =====
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-
-    - echo ==== retrieving pytest-master ====
-    - poetry add git+https://github.com/pytest-dev/pytest.git#main
-
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
-    - echo ===== create folder for artifacts =====    
+    - echo ===== create folder for artifacts =====
     - mkdir test-reports
   script:
-    - echo
-    - echo ===== running tests with pytest-master =====
-    - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+    - tox -e pytest-master
+  artifacts:
+    when: always
+    paths:
+      - ./**/test-reports/*.xml
+    reports:
+      junit: 
+      - ./**/test-reports/*.xml 
+
   artifacts:
     when: always
     paths:

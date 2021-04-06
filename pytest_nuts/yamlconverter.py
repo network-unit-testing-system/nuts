@@ -19,9 +19,6 @@ from pytest_nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):
-    def __init__(self, parent: Optional[Node], fspath: py.path.local):
-        super().__init__(fspath, parent)
-
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         with self.fspath.open() as f:
             raw = yaml.safe_load(f)

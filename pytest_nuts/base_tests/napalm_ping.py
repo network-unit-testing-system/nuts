@@ -26,20 +26,7 @@ class PingContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
-
         return {host: self._transform_host_results(task_results) for host, task_results in general_result.items()}
-
-    def _allowed_maxdrop_for_destination(self, host: str, dest: str) -> int:
-        test_data = self.nuts_parameters["test_data"]
-        for entry in test_data:
-            if entry["host"] == host and entry["destination"] == dest:
-                return entry["max_drop"]
-        return 0
-
-    def _transform_single_entry(self, single_result: Result):
-        assert hasattr(single_result, "destination")
-        max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)
-        return _map_result_to_enum(single_result.result, max_drop)
 
     def _transform_host_results(self, task_results: MultiResult) -> dict:
         return {
@@ -47,7 +34,17 @@ class PingContext(NornirNutsContext):
             for single_result in task_results[1:]
         }
 
+    def _transform_single_entry(self, single_result: Result):
+        assert hasattr(single_result, "destination")
+        max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)
+        return _map_result_to_enum(single_result.result, max_drop)
 
+    def _allowed_maxdrop_for_destination(self, host: str, dest: str) -> int:
+        test_data = self.nuts_parameters["test_data"]
+        for entry in test_data:
+            if entry["host"] == host and entry["destination"] == dest:
+                return entry["max_drop"]
+        return 0
 
 
 CONTEXT = PingContext

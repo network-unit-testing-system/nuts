@@ -27,15 +27,18 @@ class NutsResult:
 
 T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
-def map_host_to_nutsresults(general_result: AggregatedResult, single_transform: Callable[[T], Any])  -> Dict[str, NutsResult]:
-    return {
-        host: nuts_result_wrapper(result, single_transform) for host, result in general_result.items()
-    }
 
-def map_host_to_dest_to_nutsresult(general_result: AggregatedResult, single_transform: Callable[[T], Any], dest) -> Dict[str, Dict[str, NutsResult]]:
-    return {
-        host: { dest: (result, single_transform)} for host, result in general_result.items()
-    }
+def map_host_to_nutsresults(
+    general_result: AggregatedResult, single_transform: Callable[[T], Any]
+) -> Dict[str, NutsResult]:
+    return {host: nuts_result_wrapper(result, single_transform) for host, result in general_result.items()}
+
+
+def map_host_to_dest_to_nutsresult(
+    general_result: AggregatedResult, single_transform: Callable[[T], Any], dest: str
+) -> Dict[str, Dict[str, NutsResult]]:
+    return {host: {dest: (result, single_transform)} for host, result in general_result.items()}
+
 
 def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) -> NutsResult:
     """
@@ -51,5 +54,3 @@ def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) 
         return NutsResult(single_transform(nornir_result))
     except Exception as exception:
         return NutsResult(failed=True, exception=exception)
-
-

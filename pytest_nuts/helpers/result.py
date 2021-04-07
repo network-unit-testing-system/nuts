@@ -1,6 +1,6 @@
 """Results of a network query."""
 
-from typing import Any, Optional, Callable, TypeVar
+from typing import Any, Optional, Callable, TypeVar, Dict
 
 from nornir.core.task import Result, MultiResult, AggregatedResult
 
@@ -27,6 +27,11 @@ class NutsResult:
 
 T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
+def map_host_to_nutsresults(general_result: AggregatedResult, single_transform: Callable[[T], Any])  -> Dict[str, NutsResult]:
+    return {
+        host: nuts_result_wrapper(result, single_transform) for host, result in general_result.items()
+    }
+
 
 def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) -> NutsResult:
     """
@@ -42,3 +47,5 @@ def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) 
         return NutsResult(single_transform(nornir_result))
     except Exception as exception:
         return NutsResult(failed=True, exception=exception)
+
+

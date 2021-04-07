@@ -25,7 +25,16 @@ class IperfContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
-        return {host: _parse_iperf_result(task_results) for host, task_results in general_result.items()}
+        return {host: self._transform_host_results(task_results) for host, task_results in general_result.items()}
+
+    def _transform_host_results(self, task_results: MultiResult) -> Dict[str, NutsResult]:
+        results_per_host = {}
+        for elem in task_results[1:]:
+            iperf_task = cast(MultiResult, elem)  # mypy: Even if it's of type Result, treat it as Multiresult
+            # allows a MultiResult to contain other MultiResults
+            results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
+        return results_per_host
+
 
     def setup(self) -> None:
         test_data = self.nuts_parameters["test_data"]
@@ -76,14 +85,6 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
         task.run(task=_client_iperf, dest=destination)
     return Result(host=task.host, result=f"iperf executed for {task.host}")
 
-
-def _parse_iperf_result(task_results: MultiResult) -> Dict[str, NutsResult]:
-    results_per_host = {}
-    for elem in task_results[1:]:
-        iperf_task = cast(MultiResult, elem)  # mypy: Even if it's of type Result, treat it as Multiresult
-        # allows a MultiResult to contain other MultiResults
-        results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
-    return results_per_host
 
 
 def _extract_bps(iperf_task) -> int:

@@ -7,7 +7,7 @@ from nornir.core.task import MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_get
 
 from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+from pytest_nuts.helpers.result import map_host_to_nutsresults, NutsResult
 
 
 class UsersContext(NornirNutsContext):
@@ -22,9 +22,7 @@ class UsersContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
-        return {
-            host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
-        }
+        return map_host_to_nutsresults(general_result, self._transform_host_results)
 
     def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict]:
         assert single_result[0].result is not None

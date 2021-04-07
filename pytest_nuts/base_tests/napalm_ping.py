@@ -77,6 +77,10 @@ def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Resul
     destinations = destinations_per_host(task.host.name)
     for destination in destinations:
         result = task.run(task=napalm_ping, dest=destination, **kwargs)
+        # the destination is not included in the nornir result if the ping fails
+        # therefore we cannot know which destination was not reachable
+        # so we must patch the destination onto the result object to know later which
+        # host-destination pair actually failed
         result[0].destination = destination  # type: ignore[attr-defined]
     return Result(host=task.host, result="All pings executed")
 

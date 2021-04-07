@@ -26,9 +26,21 @@ class PingContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
-        test_data = self.nuts_parameters["test_data"]
         return {
-            host: _parse_ping_results(host, task_results, test_data) for host, task_results in general_result.items()
+            host: self._parse_ping_results(host, task_results) for host, task_results in general_result.items()
+        }
+
+    def _parse_ping_results(self, host: str, task_results: MultiResult) -> dict:
+        test_data = self.nuts_parameters["test_data"]
+        maxdrop_per_destination = {
+            entry["destination"]: entry.get("max_drop", 0) for entry in test_data if entry["host"] == host
+        }
+        return {
+            ping_task.destination: nuts_result_wrapper(  # type: ignore[attr-defined]
+                ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])
+                # type: ignore[attr-defined]
+            )
+            for ping_task in task_results[1:]
         }
 
 
@@ -67,16 +79,7 @@ def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
-def _parse_ping_results(host: str, task_results: MultiResult, test_data: List[dict]) -> dict:
-    maxdrop_per_destination = {
-        entry["destination"]: entry.get("max_drop", 0) for entry in test_data if entry["host"] == host
-    }
-    return {
-        ping_task.destination: nuts_result_wrapper(  # type: ignore[attr-defined]
-            ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])  # type: ignore[attr-defined]
-        )
-        for ping_task in task_results[1:]
-    }
+
 
 
 def _get_transform_single_entry(max_drop):

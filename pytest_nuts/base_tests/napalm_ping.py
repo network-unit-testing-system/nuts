@@ -1,6 +1,6 @@
 """Let a device ping another device."""
 from enum import Enum
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Optional
 
 import pytest
 from nornir.core import Task
@@ -26,22 +26,28 @@ class PingContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
+
+        return {host: self._transform_host_results(task_results) for host, task_results in general_result.items()}
+
+    def _allowed_maxdrop_for_destination(self, host: str, dest: str) -> int:
+        test_data = self.nuts_parameters["test_data"]
+        for entry in test_data:
+            if entry["host"] == host and entry["destination"] == dest:
+                return entry["max_drop"]
+        return 0
+
+    def _transform_single_entry(self, single_result: Result):
+        assert hasattr(single_result, "destination")
+        max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)
+        return _map_result_to_enum(single_result.result, max_drop)
+
+    def _transform_host_results(self, task_results: MultiResult) -> dict:
         return {
-            host: self._parse_ping_results(host, task_results) for host, task_results in general_result.items()
+            single_result.destination: nuts_result_wrapper(single_result, self._transform_single_entry)
+            for single_result in task_results[1:]
         }
 
-    def _parse_ping_results(self, host: str, task_results: MultiResult) -> dict:
-        test_data = self.nuts_parameters["test_data"]
-        maxdrop_per_destination = {
-            entry["destination"]: entry.get("max_drop", 0) for entry in test_data if entry["host"] == host
-        }
-        return {
-            ping_task.destination: nuts_result_wrapper(  # type: ignore[attr-defined]
-                ping_task, _get_transform_single_entry(maxdrop_per_destination[ping_task.destination])
-                # type: ignore[attr-defined]
-            )
-            for ping_task in task_results[1:]
-        }
+
 
 
 CONTEXT = PingContext
@@ -77,13 +83,6 @@ def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Resul
 
 def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
-
-
-
-
-
-def _get_transform_single_entry(max_drop):
-    return lambda ping_task: _map_result_to_enum(ping_task.result, max_drop)
 
 
 def _map_result_to_enum(result: dict, max_drop: int) -> Ping:

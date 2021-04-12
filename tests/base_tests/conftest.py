@@ -8,7 +8,7 @@ from pytest_nuts.helpers.result import NutsResult
 
 from pytest_nuts.context import NornirNutsContext, NutsContext
 
-from tests.helpers.shared import create_multi_result
+from tests.helpers.shared import create_multi_result, create_result
 
 TIMEOUT_MESSAGE = r"""Traceback (most recent call last):
   File "C:\somepath\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection
@@ -70,11 +70,14 @@ napalm.base.exceptions.ConnectionException: Cannot connect to 10.20.0.123
 
 @pytest.fixture
 def timeouted_multiresult():
-    return create_multi_result(
+    task_name = "failed_task"
+    r = create_result(
         TIMEOUT_MESSAGE,
-        task_name="failed_task",
+        task_name=task_name,
         failed=True,
-        exception=ConnectionException("Cannot connect to 10.20.0.123"),
+        exception=ConnectionException("Cannot connect to 1.2.3.4"),
+    )
+    return create_multi_result([r], task_name=task_name
     )
 
 

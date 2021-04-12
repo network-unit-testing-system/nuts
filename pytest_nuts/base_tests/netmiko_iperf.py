@@ -80,6 +80,8 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
 
 def _extract_bps(iperf_task_result: str) -> int:
     iperf_result = json.loads(iperf_task_result)
+    if "error" in iperf_result.keys():
+        raise Exception
     return int(iperf_result["end"]["sum_received"]["bits_per_second"])
 
 

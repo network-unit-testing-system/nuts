@@ -71,17 +71,10 @@ def _destinations_per_host(test_data) -> Callable:
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
-def _client_iperf(task: Task, dest: str) -> None:
-    task.run(
-        task=netmiko_send_command,
-        command_string=f"iperf3 -c {dest} --json",
-    )
-
-
 def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
     dests = destinations_per_host(task.host.name)
     for destination in dests:
-        task.run(task=_client_iperf, dest=destination)
+        task.run(task=netmiko_send_command, command_string=f"iperf3 -c {destination} --json")
     return Result(host=task.host, result=f"iperf executed for {task.host}")
 
 

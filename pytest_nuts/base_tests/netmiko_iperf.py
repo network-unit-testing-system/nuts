@@ -16,9 +16,9 @@ class IperfContext(NornirNutsContext):
         return netmiko_run_iperf
 
     def nuts_arguments(self) -> dict:
-        return {
-            "destinations_per_host": _destinations_per_host(self.nuts_parameters["test_data"]),
-        }
+        args = super().nuts_arguments()
+        args["destinations_per_host"] = _destinations_per_host(self.nuts_parameters["test_data"])
+        return args
 
     def nornir_filter(self) -> F:
         hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}

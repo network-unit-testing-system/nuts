@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from pytest_nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
-from tests.helpers.shared import create_multi_result
+from tests.helpers.shared import create_multi_result, create_result
 
 neighbor_details = {
     "destination_host": "R2",
@@ -72,14 +72,10 @@ nornir_results = [
 @pytest.fixture
 def general_result(timeouted_multiresult):
     task_name = "netmiko_send_command"
-
+    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
     result = AggregatedResult(task_name)
-    result["R1"] = create_multi_result(
-        result_content=nornir_results[0], task_name=task_name
-    )
-    result["R2"] = create_multi_result(
-        result_content=nornir_results[1], task_name=task_name
-    )
+    result["R1"] = create_multi_result(results_per_host[0], task_name)
+    result["R2"] = create_multi_result(results_per_host[1], task_name)
     result["R3"] = timeouted_multiresult
     return result
 

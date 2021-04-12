@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 import pytest
 from _pytest.fixtures import FixtureRequest
@@ -97,7 +97,7 @@ def test_ctx(request: FixtureRequest) -> NutsContext:
 @pytest.fixture
 def transformed_result(
     test_ctx: NornirNutsContext, general_result: AggregatedResult
-) -> Dict[str, Dict[str, NutsResult]]:
+) -> Dict[str, Any]:
     """
     Parse the raw result to be used in nuts tests.
     :param test_ctx: initialized NutsContext

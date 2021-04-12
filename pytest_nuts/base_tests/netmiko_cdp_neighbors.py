@@ -6,6 +6,7 @@ from nornir.core.filter import F
 from nornir.core.task import MultiResult, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
+from pytest_nuts.helpers.filters import filter_hosts
 from pytest_nuts.helpers.result import NutsResult, map_host_to_nutsresults
 from pytest_nuts.context import NornirNutsContext
 
@@ -18,8 +19,7 @@ class CdpNeighborsContext(NornirNutsContext):
         return {"command_string": "show cdp neighbors detail", "use_textfsm": True}
 
     def nornir_filter(self) -> F:
-        hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
-        return F(name__any=hosts)
+        return filter_hosts(self.nuts_parameters["test_data"])
 
     def _transform_host_results(self, host_results: MultiResult) -> dict:
         assert host_results[0].result is not None

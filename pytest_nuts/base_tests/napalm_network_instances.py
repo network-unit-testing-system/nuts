@@ -6,6 +6,7 @@ from nornir.core.filter import F
 from nornir.core.task import MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_get
 
+from pytest_nuts.helpers.filters import filter_hosts
 from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult, map_host_to_nutsresults
 from pytest_nuts.context import NornirNutsContext
 
@@ -18,8 +19,7 @@ class NetworkInstancesContext(NornirNutsContext):
         return {"getters": ["network_instances"]}
 
     def nornir_filter(self) -> F:
-        hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
-        return F(name__any=hosts)
+        return filter_hosts(self.nuts_parameters["test_data"])
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
         return map_host_to_nutsresults(general_result, self._transform_host_results)

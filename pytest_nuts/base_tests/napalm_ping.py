@@ -1,6 +1,6 @@
 """Let a device ping another device."""
 from enum import Enum
-from typing import Dict, List, Callable, Optional
+from typing import Dict, Callable
 
 import pytest
 from nornir.core import Task
@@ -9,7 +9,8 @@ from nornir.core.task import Result, MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_ping
 
 from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult, map_dest_to_nutsresult, \
+    map_host_to_dest_to_nutsresult
 
 
 class PingContext(NornirNutsContext):
@@ -26,13 +27,7 @@ class PingContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
-        return {host: self._transform_host_results(task_results) for host, task_results in general_result.items()}
-
-    def _transform_host_results(self, task_results: MultiResult) -> dict:
-        return {
-            single_result.destination: nuts_result_wrapper(single_result, self._transform_single_entry)
-            for single_result in task_results[1:]
-        }
+        return map_host_to_dest_to_nutsresult(general_result, self._transform_single_entry)
 
     def _transform_single_entry(self, single_result: Result):
         assert hasattr(single_result, "destination")

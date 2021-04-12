@@ -96,12 +96,12 @@ def general_result():
     task_name = "napalm_ping"
     results = [
         create_result(
-            pair["nornir_result"],
+            data["nornir_result"],
             task_name,
-            host=pair["test_data"]["host"],
-            destination=pair["test_data"]["destination"],
+            host=data["test_data"]["host"],
+            destination=data["test_data"]["destination"],
         )
-        for pair in test_data_and_nornir_results
+        for data in test_data_and_nornir_results
     ]
     confirmation_result = create_result(result_content="All pings executed", task_name="napalm_ping_multihost")
     timeouted = create_result(

@@ -36,7 +36,7 @@ nornir_results = [
             "capabilities": "Router IGMP",
         },
     ],
-[
+    [
         {
             "destination_host": "R3",
             "management_ip": "172.16.23.3",
@@ -64,8 +64,7 @@ nornir_results = [
             "software_version": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
             "capabilities": "Router IGMP",
         },
-    ]
-
+    ],
 ]
 
 

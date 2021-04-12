@@ -14,7 +14,7 @@ neighbor_details = {
 }
 
 nornir_results = [
-[
+    [
         neighbor_details.copy(),
         {
             "neighbor_id": "172.16.255.2",
@@ -33,7 +33,7 @@ nornir_results = [
             "interface": "GigabitEthernet2",
         },
     ],
-[
+    [
         {
             "neighbor_id": "172.16.255.3",
             "priority": "1",
@@ -58,8 +58,9 @@ nornir_results = [
             "address": "172.16.12.1",
             "interface": "GigabitEthernet2",
         },
-    ]
+    ],
 ]
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):

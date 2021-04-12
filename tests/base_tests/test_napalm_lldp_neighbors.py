@@ -60,8 +60,9 @@ nornir_results = [
                 }
             ],
         }
-    }
+    },
 ]
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):

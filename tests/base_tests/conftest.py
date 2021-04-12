@@ -77,8 +77,7 @@ def timeouted_multiresult():
         failed=True,
         exception=ConnectionException("Cannot connect to 1.2.3.4"),
     )
-    return create_multi_result([r], task_name=task_name
-    )
+    return create_multi_result([r], task_name=task_name)
 
 
 @pytest.fixture
@@ -99,9 +98,7 @@ def test_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture
-def transformed_result(
-    test_ctx: NornirNutsContext, general_result: AggregatedResult
-) -> Dict[str, Any]:
+def transformed_result(test_ctx: NornirNutsContext, general_result: AggregatedResult) -> Dict[str, Any]:
     """
     Parse the raw result to be used in nuts tests.
     :param test_ctx: initialized NutsContext

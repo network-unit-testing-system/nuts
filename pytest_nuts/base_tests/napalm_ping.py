@@ -9,8 +9,12 @@ from nornir.core.task import Result, MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_ping
 
 from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult, map_dest_to_nutsresult, \
-    map_host_to_dest_to_nutsresult
+from pytest_nuts.helpers.result import (
+    nuts_result_wrapper,
+    NutsResult,
+    map_dest_to_nutsresult,
+    map_host_to_dest_to_nutsresult,
+)
 
 
 class PingContext(NornirNutsContext):

@@ -37,7 +37,9 @@ def map_host_to_nutsresults(
 def map_host_to_dest_to_nutsresult(
     general_result: AggregatedResult, single_transform: Callable[[T], Any]
 ) -> Dict[str, Dict[str, NutsResult]]:
-    return {host: map_dest_to_nutsresult(task_results, single_transform) for host, task_results in general_result.items()}
+    return {
+        host: map_dest_to_nutsresult(task_results, single_transform) for host, task_results in general_result.items()
+    }
 
 
 def map_dest_to_nutsresult(task_results: MultiResult, single_transform: Callable[[T], Any]) -> Dict[str, NutsResult]:
@@ -45,6 +47,7 @@ def map_dest_to_nutsresult(task_results: MultiResult, single_transform: Callable
         single_result.destination: nuts_result_wrapper(single_result, single_transform)
         for single_result in task_results[1:]
     }
+
 
 def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) -> NutsResult:
     """

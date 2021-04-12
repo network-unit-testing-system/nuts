@@ -35,7 +35,6 @@ class IperfContext(NornirNutsContext):
             results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
         return results_per_host
 
-
     def setup(self) -> None:
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
@@ -84,7 +83,6 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
     for destination in dests:
         task.run(task=_client_iperf, dest=destination)
     return Result(host=task.host, result=f"iperf executed for {task.host}")
-
 
 
 def _extract_bps(iperf_task) -> int:

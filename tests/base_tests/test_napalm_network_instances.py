@@ -63,8 +63,7 @@ nornir_results = [
                 "interfaces": {"interface": {"GigabitEthernet1": {}}},
             },
         }
-    }
-
+    },
 ]
 
 

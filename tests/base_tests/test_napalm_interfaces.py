@@ -48,8 +48,9 @@ nornir_results = [
                 "speed": 1000,
             },
         }
-    }
+    },
 ]
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):

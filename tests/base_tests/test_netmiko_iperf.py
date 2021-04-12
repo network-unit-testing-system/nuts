@@ -1,12 +1,12 @@
-import pytest
-from nornir.core.exceptions import ConnectionException
+from typing import Dict, List, Any
 
-from nornir.core.task import AggregatedResult, MultiResult, Result
+import pytest
+
+from nornir.core.task import AggregatedResult
 from pytest_nuts.base_tests.netmiko_iperf import CONTEXT
-from tests.base_tests.conftest import TIMEOUT_MESSAGE
 from tests.helpers.shared import create_result, create_multi_result
 
-test_data_and_nornir_results = [
+test_data_and_nornir_results: List[Dict[Any, Any]] = [
     {
         "test_data": {"host": "L1", "destination": "10.0.0.2", "min_expected": 10000000},
         "nornir_result": '{"start":{"connected":[{"remote_host":"10.0.0.2"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',

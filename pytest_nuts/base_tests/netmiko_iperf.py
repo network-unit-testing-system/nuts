@@ -28,6 +28,7 @@ class IperfContext(NornirNutsContext):
         return map_host_to_dest_to_nutsresult(general_result, self._transform_single_entry)
 
     def _transform_single_entry(self, single_result: Result) -> int:
+        assert isinstance(single_result.result, str)
         return _extract_bps(single_result.result)
 
     def setup(self) -> None:

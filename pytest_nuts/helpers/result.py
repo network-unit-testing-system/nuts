@@ -29,22 +29,26 @@ T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
 
 def map_host_to_nutsresults(
-    general_result: AggregatedResult, single_transform: Callable[[T], Any]
+    general_result: AggregatedResult, single_transform: Callable[[MultiResult], Any]
 ) -> Dict[str, NutsResult]:
-    return {host: nuts_result_wrapper(result, single_transform) for host, result in general_result.items()}
+    return {host: nuts_result_wrapper(multiresult, single_transform) for host, multiresult in general_result.items()}
 
 
 def map_host_to_dest_to_nutsresult(
-    general_result: AggregatedResult, single_transform: Callable[[T], Any]
+    general_result: AggregatedResult, single_transform: Callable[[Result], Any]
 ) -> Dict[str, Dict[str, NutsResult]]:
     return {
         host: map_dest_to_nutsresult(task_results, single_transform) for host, task_results in general_result.items()
     }
 
 
-def map_dest_to_nutsresult(task_results: MultiResult, single_transform: Callable[[T], Any]) -> Dict[str, NutsResult]:
+def map_dest_to_nutsresult(task_results: MultiResult, single_transform: Callable[[Result], Any]) -> Dict[str, NutsResult]:
+    # the destination is not included in the nornir result if the ping fails
+    # therefore we cannot know which destination was not reachable
+    # so we had to patch the destination onto the result object to know later which
+    # host-destination pair actually failed - but mypy does not know about this
     return {
-        single_result.destination: nuts_result_wrapper(single_result, single_transform)
+        single_result.destination: nuts_result_wrapper(single_result, single_transform)  # type: ignore[attr-defined]
         for single_result in task_results[1:]
     }
 

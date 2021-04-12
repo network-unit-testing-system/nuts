@@ -98,7 +98,7 @@ def general_result():
         create_result(
             pair["nornir_result"],
             task_name,
-            host=Host(pair["test_data"]["host"]),
+            host=pair["test_data"]["host"],
             destination=pair["test_data"]["destination"],
         )
         for pair in test_data_and_nornir_results
@@ -107,7 +107,7 @@ def general_result():
     timeouted = create_result(
         TIMEOUT_MESSAGE,
         task_name=task_name,
-        host=Host("R3"),
+        host="R3",
         destination="172.16.23.6",
         failed=True,
         exception=ConnectionException("Cannot connect to 10.20.0.123"),

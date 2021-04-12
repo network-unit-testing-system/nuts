@@ -1,6 +1,6 @@
 """Let a device ping another device."""
 from enum import Enum
-from typing import Dict, Callable
+from typing import Dict, Callable, Any
 
 import pytest
 from nornir.core import Task
@@ -35,7 +35,8 @@ class PingContext(NornirNutsContext):
 
     def _transform_single_entry(self, single_result: Result):
         assert hasattr(single_result, "destination")
-        max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)
+        assert single_result.host is not None
+        max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)  # type: ignore[attr-defined] # see below
         return _map_result_to_enum(single_result.result, max_drop)
 
     def _allowed_maxdrop_for_destination(self, host: str, dest: str) -> int:
@@ -85,7 +86,8 @@ def _destinations_per_host(test_data):
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
-def _map_result_to_enum(result: dict, max_drop: int) -> Ping:
+def _map_result_to_enum(result: Any, max_drop: int) -> Ping:
+    assert isinstance(result, dict)
     if result["success"]["packet_loss"] == result["success"]["probes_sent"]:
         return Ping.FAIL
     if result["success"]["packet_loss"] <= max_drop:

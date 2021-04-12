@@ -1,14 +1,14 @@
 """Query bandwidth performance between two devices."""
 import pytest
 import json
-from typing import Dict, Callable, cast
+from typing import Dict, Callable
 
 from nornir.core.filter import F
-from nornir.core.task import Task, Result, MultiResult, AggregatedResult
+from nornir.core.task import Task, Result, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+from pytest_nuts.helpers.result import  NutsResult, map_host_to_dest_to_nutsresult
 
 
 class IperfContext(NornirNutsContext):
@@ -25,15 +25,10 @@ class IperfContext(NornirNutsContext):
         return F(name__any=hosts)
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
-        return {host: self._transform_host_results(task_results) for host, task_results in general_result.items()}
+        return map_host_to_dest_to_nutsresult(general_result, self._transform_single_entry)
 
-    def _transform_host_results(self, task_results: MultiResult) -> Dict[str, NutsResult]:
-        results_per_host = {}
-        for elem in task_results[1:]:
-            iperf_task = cast(MultiResult, elem)  # mypy: Even if it's of type Result, treat it as Multiresult
-            # allows a MultiResult to contain other MultiResults
-            results_per_host[_extract_dest(iperf_task[1])] = nuts_result_wrapper(iperf_task[1], _extract_bps)
-        return results_per_host
+    def _transform_single_entry(self, single_result: Result) -> int:
+        return _extract_bps(single_result.result)
 
     def setup(self) -> None:
         test_data = self.nuts_parameters["test_data"]
@@ -74,18 +69,18 @@ def _destinations_per_host(test_data) -> Callable:
 def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
     dests = destinations_per_host(task.host.name)
     for destination in dests:
-        task.run(task=netmiko_send_command, command_string=f"iperf3 -c {destination} --json")
+        result = task.run(task=netmiko_send_command, command_string=f"iperf3 -c {destination} --json")
+        # the destination is not included in the nornir result if the ping fails
+        # therefore we cannot know which destination was not reachable
+        # so we must patch the destination onto the result object to know later which
+        # host-destination pair actually failed
+        result[0].destination = destination  # type: ignore[attr-defined]
     return Result(host=task.host, result=f"iperf executed for {task.host}")
 
 
-def _extract_bps(iperf_task) -> int:
-    iperf_result = json.loads(iperf_task.result)
+def _extract_bps(iperf_task_result: str) -> int:
+    iperf_result = json.loads(iperf_task_result)
     return int(iperf_result["end"]["sum_received"]["bits_per_second"])
-
-
-def _extract_dest(iperf_task) -> str:
-    iperf_result = json.loads(iperf_task.result)
-    return iperf_result["start"]["connected"][0]["remote_host"]
 
 
 def server_setup(task: Task) -> None:

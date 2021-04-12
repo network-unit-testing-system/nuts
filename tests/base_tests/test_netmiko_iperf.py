@@ -45,7 +45,9 @@ def general_result():
     general_result["L1"] = create_multi_result(
         results=[confirmation_result, results[0], results[1]], task_name=task_name
     )
-    general_result["L2"] = create_multi_result(results=[confirmation_result, results[2], results[3]], task_name=task_name)
+    general_result["L2"] = create_multi_result(
+        results=[confirmation_result, results[2], results[3]], task_name=task_name
+    )
     return general_result
 
 
@@ -69,7 +71,9 @@ class TestTransformResult:
     def test_below_min_expected_fails(self, transformed_result, host, destination, min_expected):
         assert not transformed_result[host][destination].result >= min_expected
 
-    @pytest.mark.parametrize("host, destination, min_expected", [tuple(test_data_and_nornir_results[3]["test_data"].values())])
+    @pytest.mark.parametrize(
+        "host, destination, min_expected", [tuple(test_data_and_nornir_results[3]["test_data"].values())]
+    )
     def test_dest_unreachable_failes(self, transformed_result, host, destination, min_expected):
         assert transformed_result[host][destination].failed
         assert transformed_result[host][destination].exception is not None

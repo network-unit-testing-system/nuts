@@ -8,7 +8,7 @@ from nornir.core.task import Task, Result, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.result import  NutsResult, map_host_to_dest_to_nutsresult
+from pytest_nuts.helpers.result import NutsResult, map_host_to_dest_to_nutsresult
 
 
 class IperfContext(NornirNutsContext):

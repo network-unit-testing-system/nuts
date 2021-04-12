@@ -62,7 +62,9 @@ def map_host_to_dest_to_nutsresult(
     }
 
 
-def map_dest_to_nutsresult(task_results: MultiResult, single_transform: Callable[[Result], Any]) -> Dict[str, NutsResult]:
+def map_dest_to_nutsresult(
+    task_results: MultiResult, single_transform: Callable[[Result], Any]
+) -> Dict[str, NutsResult]:
     """
     Maps a destination to the result of a nornir task which both belong to a host.
 

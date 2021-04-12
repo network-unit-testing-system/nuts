@@ -14,6 +14,7 @@ from pytest_nuts.helpers.result import (
     map_host_to_dest_to_nutsresult,
 )
 
+
 class Ping(Enum):
     FAIL = 0
     SUCCESS = 1

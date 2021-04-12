@@ -4,58 +4,65 @@ from nornir.core.task import AggregatedResult
 from pytest_nuts.base_tests.napalm_interfaces import CONTEXT
 from tests.helpers.shared import create_multi_result
 
+nornir_results = [
+    {
+        "interfaces": {
+            "GigabitEthernet1": {
+                "is_enabled": True,
+                "is_up": True,
+                "description": "",
+                "mac_address": "CA:CA:00:CE:DE:00",
+                "last_flapped": -1.0,
+                "mtu": 1500,
+                "speed": 1000,
+            },
+            "GigabitEthernet2": {
+                "is_enabled": False,
+                "is_up": True,
+                "description": "",
+                "mac_address": "C0:FF:EE:BE:EF:00",
+                "last_flapped": -1.0,
+                "mtu": 1500,
+                "speed": 1000,
+            },
+        },
+    },
+    {
+        "interfaces": {
+            "Loopback0": {
+                "is_enabled": True,
+                "is_up": False,
+                "description": "",
+                "mac_address": "",
+                "last_flapped": -1.0,
+                "mtu": 1514,
+                "speed": 8000,
+            },
+            "GigabitEthernet3": {
+                "is_enabled": False,
+                "is_up": False,
+                "description": "",
+                "mac_address": "BE:EF:DE:AD:BE:EF",
+                "last_flapped": -1.0,
+                "mtu": 1500,
+                "speed": 1000,
+            },
+        }
+    }
+]
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
-    result = AggregatedResult("napalm_get")
+    task_name = "napalm_get"
+    result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        {
-            "interfaces": {
-                "GigabitEthernet1": {
-                    "is_enabled": True,
-                    "is_up": True,
-                    "description": "",
-                    "mac_address": "CA:CA:00:CE:DE:00",
-                    "last_flapped": -1.0,
-                    "mtu": 1500,
-                    "speed": 1000,
-                },
-                "GigabitEthernet2": {
-                    "is_enabled": False,
-                    "is_up": True,
-                    "description": "",
-                    "mac_address": "C0:FF:EE:BE:EF:00",
-                    "last_flapped": -1.0,
-                    "mtu": 1500,
-                    "speed": 1000,
-                },
-            },
-        }
+        result_content=nornir_results[0],
+        task_name=task_name
     )
 
     result["R2"] = create_multi_result(
-        {
-            "interfaces": {
-                "Loopback0": {
-                    "is_enabled": True,
-                    "is_up": False,
-                    "description": "",
-                    "mac_address": "",
-                    "last_flapped": -1.0,
-                    "mtu": 1514,
-                    "speed": 8000,
-                },
-                "GigabitEthernet3": {
-                    "is_enabled": False,
-                    "is_up": False,
-                    "description": "",
-                    "mac_address": "BE:EF:DE:AD:BE:EF",
-                    "last_flapped": -1.0,
-                    "mtu": 1500,
-                    "speed": 1000,
-                },
-            }
-        }
+        result_content=nornir_results[1],
+        task_name=task_name
     )
     result["R3"] = timeouted_multiresult
     return result

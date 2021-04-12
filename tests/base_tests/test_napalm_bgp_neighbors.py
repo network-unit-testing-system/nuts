@@ -15,56 +15,64 @@ neighbor_details = {
     "address_family": {"ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}},
 }
 
+nornir_results = [
+    {
+        "bgp_neighbors": {
+            "global": {
+                "router_id": "172.16.255.1",
+                "peers": {
+                    "172.16.255.2": neighbor_details.copy(),
+                    "172.16.255.3": {
+                        "local_as": 45001,
+                        "remote_as": 45003,
+                        "remote_id": "0.0.0.0",
+                        "is_up": False,
+                        "is_enabled": True,
+                        "description": "",
+                        "uptime": -1,
+                        "address_family": {
+                            "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        },
+                    },
+                },
+            }
+        }
+    },
+    {
+        "bgp_neighbors": {
+            "global": {
+                "router_id": "172.16.255.2",
+                "peers": {
+                    "172.16.255.1": {
+                        "local_as": 45002,
+                        "remote_as": 45001,
+                        "remote_id": "0.0.0.0",
+                        "is_up": False,
+                        "is_enabled": True,
+                        "description": "",
+                        "uptime": -1,
+                        "address_family": {
+                            "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        },
+                    }
+                },
+            }
+        }
+    }
+
+]
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
-    result = AggregatedResult("napalm_get")
+    task_name = "napalm_get"
+    result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        {
-            "bgp_neighbors": {
-                "global": {
-                    "router_id": "172.16.255.1",
-                    "peers": {
-                        "172.16.255.2": neighbor_details.copy(),
-                        "172.16.255.3": {
-                            "local_as": 45001,
-                            "remote_as": 45003,
-                            "remote_id": "0.0.0.0",
-                            "is_up": False,
-                            "is_enabled": True,
-                            "description": "",
-                            "uptime": -1,
-                            "address_family": {
-                                "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
-                            },
-                        },
-                    },
-                }
-            }
-        }
+        result_content=nornir_results[0],
+        task_name=task_name
     )
     result["R2"] = create_multi_result(
-        {
-            "bgp_neighbors": {
-                "global": {
-                    "router_id": "172.16.255.2",
-                    "peers": {
-                        "172.16.255.1": {
-                            "local_as": 45002,
-                            "remote_as": 45001,
-                            "remote_id": "0.0.0.0",
-                            "is_up": False,
-                            "is_enabled": True,
-                            "description": "",
-                            "uptime": -1,
-                            "address_family": {
-                                "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
-                            },
-                        }
-                    },
-                }
-            }
-        }
+        result_content=nornir_results[1],
+        task_name=task_name
     )
 
     result["R3"] = timeouted_multiresult

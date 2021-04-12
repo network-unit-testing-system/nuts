@@ -72,6 +72,7 @@ napalm.base.exceptions.ConnectionException: Cannot connect to 10.20.0.123
 def timeouted_multiresult():
     return create_multi_result(
         TIMEOUT_MESSAGE,
+        task_name="failed_task",
         failed=True,
         exception=ConnectionException("Cannot connect to 10.20.0.123"),
     )

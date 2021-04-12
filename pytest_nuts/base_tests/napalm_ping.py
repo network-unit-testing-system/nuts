@@ -5,16 +5,19 @@ from typing import Dict, Callable, Any
 import pytest
 from nornir.core import Task
 from nornir.core.filter import F
-from nornir.core.task import Result, MultiResult, AggregatedResult
+from nornir.core.task import Result, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_ping
 
 from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.result import (
-    nuts_result_wrapper,
     NutsResult,
-    map_dest_to_nutsresult,
     map_host_to_dest_to_nutsresult,
 )
+
+class Ping(Enum):
+    FAIL = 0
+    SUCCESS = 1
+    FLAPPING = 2
 
 
 class PingContext(NornirNutsContext):
@@ -33,7 +36,7 @@ class PingContext(NornirNutsContext):
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
         return map_host_to_dest_to_nutsresult(general_result, self._transform_single_entry)
 
-    def _transform_single_entry(self, single_result: Result):
+    def _transform_single_entry(self, single_result: Result) -> Ping:
         assert hasattr(single_result, "destination")
         assert single_result.host is not None
         max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)  # type: ignore[attr-defined] # see below
@@ -62,12 +65,6 @@ class TestNapalmPing:
     @pytest.mark.nuts("host,destination,expected")
     def test_ping(self, single_result, expected):
         assert single_result.result.name == expected
-
-
-class Ping(Enum):
-    FAIL = 0
-    SUCCESS = 1
-    FLAPPING = 2
 
 
 def napalm_ping_multi_host(task: Task, destinations_per_host, **kwargs) -> Result:

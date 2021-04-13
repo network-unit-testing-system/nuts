@@ -53,7 +53,7 @@ def test_injects_arguments_as_fixture(testdir):
 
 
 def test_load_class_from_index(testdir):
-    with patch("pytest_nuts.yamlconverter.ModuleIndex") as module_index:
+    with patch("pytest_nuts.yamlloader.ModuleIndex") as module_index:
         module_index.return_value = ModuleIndex({"TestFixture": "tests.base_tests.class_loading"})
         arguments = {
             "test_index_loading": """

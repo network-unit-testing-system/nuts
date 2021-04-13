@@ -17,7 +17,7 @@ from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def nornir_config_file() -> str:
     """
     Returns the filename to a nornir configuration file.

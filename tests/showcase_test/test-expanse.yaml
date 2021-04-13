@@ -1,0 +1,24 @@
+---
+- test_module: tests.showcase.dry_run
+  test_class: TestExpanseCrew
+  test_data:
+    - host: rocinante
+      name: naomi_nagata
+      role: engineer
+      origin: belter
+    - host: rocinante
+      name: james_holden
+      role: captain
+      origin: earth
+    - host: rocinante
+      name: amos_burton
+      role: mechanic
+      origin: earth
+    - host: rocinante
+      name: alex_kamal
+      role: pilot
+      origin: mars
+    - host: rocinante
+      name: bobbie_draper
+      role: marine
+      origin: mars

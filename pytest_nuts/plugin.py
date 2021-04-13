@@ -1,4 +1,5 @@
 """Fixtures"""
+import inspect
 from typing import Optional
 
 import pytest
@@ -17,7 +18,7 @@ from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
-@pytest.fixture(scope="session")
+# @pytest.fixture(scope="session")
 def nornir_config_file() -> str:
     """
     Returns the filename to a nornir configuration file.
@@ -28,7 +29,7 @@ def nornir_config_file() -> str:
     return "nr-config.yaml"
 
 
-@pytest.fixture(scope="session")
+# @pytest.fixture(scope="session")
 def initialized_nornir(nornir_config_file: str) -> Nornir:
     """
     Initalizes nornir with a provided configuration file.
@@ -39,6 +40,7 @@ def initialized_nornir(nornir_config_file: str) -> Nornir:
     return InitNornir(config_file=nornir_config_file, logging={"enabled": False})
 
 
+
 @pytest.fixture(scope="class")
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
@@ -47,7 +49,19 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture(scope="class")
-def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> NornirNutsContext:
+def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
+    context = nuts_ctx
+    if inspect.isclass(context) and issubclass(type(context), NornirNutsContext):
+        nornir_config = nornir_config_file()
+        init_nornir = initialized_nornir(nornir_config)
+        context.nornir = init_nornir
+        return context
+    return context
+
+
+
+# @pytest.fixture(scope="class")
+def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> NutsContext:
     """
     Injects an initialized nornir instance in the context of a test.
 
@@ -56,13 +70,14 @@ def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> Nornir
     :return: A NornirNutsContext with an initialized nornir instance
     """
     if not isinstance(nuts_ctx, NornirNutsContext):
-        raise NutsSetupError("The initialized context does not support the injection of nornir.")
+        #  raise NutsSetupError("The initialized context does not support the injection of nornir.")
+        return nuts_ctx
     nuts_ctx.nornir = initialized_nornir
     return nuts_ctx
 
 
 @pytest.fixture
-def single_result(nornir_nuts_ctx: NornirNutsContext, host: str) -> NutsResult:
+def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
     """
     Returns the result which belongs to a specific host out of the overall set of results
     that has been returned by nornir's task.
@@ -71,7 +86,7 @@ def single_result(nornir_nuts_ctx: NornirNutsContext, host: str) -> NutsResult:
     :param host: The host for which the corresponding result should be returned
     :return: The `NutsResult` that belongs to a host
     """
-    result = nornir_nuts_ctx.transformed_result()
+    result = initialized_nuts.transformed_result()
     assert host in result, f"Host {host} not found in aggregated result."
     return result[host]
 

@@ -32,6 +32,10 @@ class IperfContext(NornirNutsContext):
         return _extract_bps(single_result.result)
 
     def setup(self) -> None:
+        """
+        Sets up the all destinations to act as iperf servers.
+        :return: None
+        """
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         assert self.nornir is not None
@@ -39,6 +43,10 @@ class IperfContext(NornirNutsContext):
         selected_destinations.run(task=server_setup)
 
     def teardown(self) -> None:
+        """
+        Stops all destinations that acted as iperf servers.
+        :return: None
+        """
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         assert self.nornir is not None
@@ -68,13 +76,22 @@ def _destinations_per_host(test_data) -> Callable:
 
 
 def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
+    """
+    Runs iperf between a host and several destinations. During setup, the destinations have been set up
+    to act as servers.
+
+    Note: The destination is not included in the nornir result if the ping fails.
+    Therefore we cannot know which destination was not reachable,
+    so we must patch the destination onto the result object to know later which
+    host-destination pair actually failed.
+
+    :param task: nornir task for iperf
+    :param destinations_per_host: all destinations to which a host should set up an iperf connection
+    :return: All iperf results per host
+    """
     dests = destinations_per_host(task.host.name)
     for destination in dests:
         result = task.run(task=netmiko_send_command, command_string=f"iperf3 -c {destination} --json")
-        # the destination is not included in the nornir result if the ping fails
-        # therefore we cannot know which destination was not reachable
-        # so we must patch the destination onto the result object to know later which
-        # host-destination pair actually failed
         result[0].destination = destination  # type: ignore[attr-defined]
     return Result(host=task.host, result=f"iperf executed for {task.host}")
 

@@ -8,7 +8,7 @@ from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.context import NornirNutsContext
 from pytest_nuts.helpers.filters import filter_hosts
-from pytest_nuts.helpers.result import NutsResult, map_host_to_nutsresults
+from pytest_nuts.helpers.result import NutsResult, map_host_to_nutsresult
 
 
 class OspfNeighborsContext(NornirNutsContext):
@@ -27,7 +27,7 @@ class OspfNeighborsContext(NornirNutsContext):
         return {details["neighbor_id"]: details for details in neighbors}
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresults(general_result, self._transform_host_results)
+        return map_host_to_nutsresult(general_result, self._transform_host_results)
 
 
 CONTEXT = OspfNeighborsContext

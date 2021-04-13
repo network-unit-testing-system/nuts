@@ -7,7 +7,7 @@ from nornir.core.task import MultiResult, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
 from pytest_nuts.helpers.filters import filter_hosts
-from pytest_nuts.helpers.result import NutsResult, map_host_to_nutsresults
+from pytest_nuts.helpers.result import NutsResult, map_host_to_nutsresult
 from pytest_nuts.context import NornirNutsContext
 
 
@@ -26,7 +26,7 @@ class CdpNeighborsContext(NornirNutsContext):
         return {neighbor["destination_host"]: neighbor for neighbor in host_results[0].result}
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresults(general_result, self._transform_host_results)
+        return map_host_to_nutsresult(general_result, self._transform_host_results)
 
 
 CONTEXT = CdpNeighborsContext

@@ -46,6 +46,14 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 
 @pytest.fixture(scope="class")
 def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
+    """
+    Initialises the NutsContext depending on its subclass type.
+    If it is of superclass NornirNutsContext, returns a NornirNutsContext
+    with an initialized nornir instance, otherwise the plain NutsContext.
+
+    :param nuts_ctx: the NutsContext to be initialized
+    :return: an instance type NutsContext
+    """
     context = nuts_ctx
     if inspect.isclass(type(context)) and issubclass(type(context), NornirNutsContext):
         context.nornir = initialized_nornir(nornir_config_file())
@@ -61,7 +69,7 @@ def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
     that has been returned by nornir's task.
 
     :param nornir_nuts_ctx: The context for a test with an initialized nornir instance
-    :param host: The host for which the corresponding result should be returned
+    :param host: The host from the test bundle (yaml-file) for which the corresponding result should be returned
     :return: The `NutsResult` that belongs to a host
     """
     result = initialized_nuts.transformed_result()
@@ -110,3 +118,4 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
     if path.ext == ".yaml" and path.basename.startswith("test"):
         return NutsYamlFile.from_parent(parent, fspath=path)
     return None
+

@@ -18,7 +18,6 @@ from pytest_nuts.helpers.result import NutsResult
 from pytest_nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
-# @pytest.fixture(scope="session")
 def nornir_config_file() -> str:
     """
     Returns the filename to a nornir configuration file.
@@ -28,8 +27,6 @@ def nornir_config_file() -> str:
     """
     return "nr-config.yaml"
 
-
-# @pytest.fixture(scope="session")
 def initialized_nornir(nornir_config_file: str) -> Nornir:
     """
     Initalizes nornir with a provided configuration file.
@@ -38,7 +35,6 @@ def initialized_nornir(nornir_config_file: str) -> Nornir:
     :return: An initialized nornir instance
     """
     return InitNornir(config_file=nornir_config_file, logging={"enabled": False})
-
 
 
 @pytest.fixture(scope="class")
@@ -51,29 +47,11 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 @pytest.fixture(scope="class")
 def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
     context = nuts_ctx
-    if inspect.isclass(context) and issubclass(type(context), NornirNutsContext):
-        nornir_config = nornir_config_file()
-        init_nornir = initialized_nornir(nornir_config)
-        context.nornir = init_nornir
+    if inspect.isclass(type(context)) and issubclass(type(context), NornirNutsContext):
+        context.nornir = initialized_nornir(nornir_config_file())
         return context
     return context
 
-
-
-# @pytest.fixture(scope="class")
-def nornir_nuts_ctx(nuts_ctx: NutsContext, initialized_nornir: Nornir) -> NutsContext:
-    """
-    Injects an initialized nornir instance in the context of a test.
-
-    :param nuts_ctx: The context to which the nornir instance should be added
-    :param initialized_nornir: The nornir instance
-    :return: A NornirNutsContext with an initialized nornir instance
-    """
-    if not isinstance(nuts_ctx, NornirNutsContext):
-        #  raise NutsSetupError("The initialized context does not support the injection of nornir.")
-        return nuts_ctx
-    nuts_ctx.nornir = initialized_nornir
-    return nuts_ctx
 
 
 @pytest.fixture

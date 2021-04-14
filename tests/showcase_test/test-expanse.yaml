@@ -2,23 +2,26 @@
 - test_module: tests.showcase.dry_run
   test_class: TestExpanseCrew
   test_data:
-    - host: rocinante
+    - ship: rocinante
       name: naomi_nagata
       role: engineer
       origin: belter
-    - host: rocinante
+    - ship: rocinante
       name: james_holden
       role: captain
       origin: earth
-    - host: rocinante
+    - ship: rocinante
       name: amos_burton
       role: mechanic
       origin: earth
-    - host: rocinante
+    - ship: rocinante
       name: alex_kamal
       role: pilot
       origin: mars
-    - host: rocinante
+    - ship: rocinante
       name: bobbie_draper
       role: marine
       origin: mars
+# Test bundle that shows basic nuts functionality without the need of a network connection
+# make sure nettowel-nuts is installed with `pip install nettowel-nuts`
+# run from the project folder root: $ pytest tests/showcase_test/test-expanse.yaml

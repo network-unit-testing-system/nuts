@@ -1,3 +1,12 @@
+"""
+Showcases minimal setup and usage of nuts. Nuts must be installed.
+
+Test class to use in conjunction with `test-expanse.yaml` to display the minimal
+functionality of nuts.
+
+Subclasses NutsContext and therefore does not need network access.
+"""
+
 __path__ = "tests.showcase.dry_run.TestExpanseCrew"
 
 from typing import List, Dict, Any
@@ -26,14 +35,19 @@ CONTEXT = ExpanseContext
 
 
 class TestExpanseCrew:
-    @pytest.mark.nuts("host,name")
+    @pytest.fixture
+    def single_result(self, initialized_nuts, ship):
+        result = initialized_nuts.transformed_result()
+        return result[ship]
+
+    @pytest.mark.nuts("ship, name")
     def test_name(self, single_result: Dict, name):
         assert name in single_result.keys()
 
-    @pytest.mark.nuts("host, name, role")
+    @pytest.mark.nuts("ship, name, role")
     def test_role(self, single_result: Dict, name, role):
         assert single_result[name]["role"] == role
 
-    @pytest.mark.nuts("host, name, origin")
+    @pytest.mark.nuts("ship, name, origin")
     def test_origin(self, single_result: Dict, name, origin):
         assert single_result[name]["origin"] == origin

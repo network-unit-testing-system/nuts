@@ -72,7 +72,7 @@ def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
     :param host: The host from the test bundle (yaml-file) for which the corresponding result should be returned
     :return: The `NutsResult` that belongs to a host
     """
-    result = initialized_nuts.transformed_result()
+    result = initialized_nuts.network_results()
     assert host in result, f"Host {host} not found in aggregated result."
     return result[host]
 

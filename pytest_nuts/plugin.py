@@ -48,8 +48,8 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
     """
     Initialises the NutsContext depending on its subclass type.
-    If it is of superclass NornirNutsContext, returns a NornirNutsContext
-    with an initialized nornir instance, otherwise the plain NutsContext.
+    If it is of type NornirNutsContext, returns a NornirNutsContext
+    with an initialized nornir instance, otherwise the context object as is.
 
     :param nuts_ctx: the NutsContext to be initialized
     :return: an instance type NutsContext

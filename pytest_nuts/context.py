@@ -38,6 +38,7 @@ class NutsContext(ABC):
         """
         return {}
 
+
 class NornirNutsContext(NutsContext):
     """
     NutsContext class which provides nornir-specific helpers.

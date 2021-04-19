@@ -16,20 +16,26 @@ from pytest_nuts.context import NutsContext
 
 
 class ExpanseContext(NutsContext):
-
     def __init__(self, nuts_parameters: Any = None):
         super().__init__(nuts_parameters)
 
     def general_result(self) -> List[Dict]:
-        return [{'host': 'rocinante', 'name': 'naomi_nagata', 'role': 'engineer', 'origin': 'belter'}, {'host': 'rocinante', 'name': 'james_holden', 'role': 'captain', 'origin': 'earth'}, {'host': 'rocinante', 'name': 'amos_burton', 'role': 'mechanic', 'origin': 'earth'}, {'host': 'rocinante', 'name': 'alex_kamal', 'role': 'pilot', 'origin': 'mars'}, {'host': 'rocinante', 'name': 'bobbie_draper', 'role': 'marine', 'origin': 'mars'}]
+        return [
+            {"host": "rocinante", "name": "naomi_nagata", "role": "engineer", "origin": "belter"},
+            {"host": "rocinante", "name": "james_holden", "role": "captain", "origin": "earth"},
+            {"host": "rocinante", "name": "amos_burton", "role": "mechanic", "origin": "earth"},
+            {"host": "rocinante", "name": "alex_kamal", "role": "pilot", "origin": "mars"},
+            {"host": "rocinante", "name": "bobbie_draper", "role": "marine", "origin": "mars"},
+        ]
 
     def transform_result(self, general_result: List[Dict]):
         return {
-            "rocinante": { entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
+            "rocinante": {entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
         }
 
     def network_results(self) -> Any:
         return self.transform_result(self.general_result())
+
 
 CONTEXT = ExpanseContext
 
@@ -47,8 +53,8 @@ def expanse(initialized_nuts: NutsContext, ship):
     result = initialized_nuts.network_results()
     return result[ship]
 
-class TestExpanseCrew:
 
+class TestExpanseCrew:
     @pytest.mark.nuts("ship, name")
     def test_name(self, expanse: Dict, name):
         assert name in expanse.keys()

@@ -26,6 +26,7 @@ def nornir_config_file() -> str:
     """
     return "nr-config.yaml"
 
+
 def initialized_nornir(nornir_config_file: str) -> Nornir:
     """
     Initalizes nornir with a provided configuration file.
@@ -58,7 +59,6 @@ def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
         context.nornir = initialized_nornir(nornir_config_file())
         return context
     return context
-
 
 
 @pytest.fixture
@@ -118,4 +118,3 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
     if path.ext == ".yaml" and path.basename.startswith("test"):
         return NutsYamlFile.from_parent(parent, fspath=path)
     return None
-

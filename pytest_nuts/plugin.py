@@ -11,7 +11,6 @@ from _pytest.config import Config
 from nornir import InitNornir
 from nornir.core import Nornir
 from py._path.local import LocalPath
-from pytest_nuts.helpers.errors import NutsSetupError
 
 from pytest_nuts.context import NutsContext, NornirNutsContext
 from pytest_nuts.helpers.result import NutsResult
@@ -70,6 +69,7 @@ def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
 
     :param nornir_nuts_ctx: The context for a test with an initialized nornir instance
     :param host: The host from the test bundle (yaml-file) for which the corresponding result should be returned
+    :param destination: The corresponding destination to a host for tests that test a host-destination relationship
     :return: The `NutsResult` that belongs to a host
     """
     result = initialized_nuts.network_results()

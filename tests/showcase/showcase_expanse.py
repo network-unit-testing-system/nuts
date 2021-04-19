@@ -7,7 +7,7 @@ functionality of nuts.
 Subclasses NutsContext and therefore does not need network access.
 """
 
-__path__ = "tests.showcase.dry_run.TestExpanseCrew"
+__path__ = "tests.showcase.showcase_expanse.TestExpanseCrew"
 
 from typing import List, Dict, Any
 
@@ -28,26 +28,35 @@ class ExpanseContext(NutsContext):
             "rocinante": { entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
         }
 
-    def transformed_result(self):
+    def network_results(self) -> Any:
         return self.transform_result(self.general_result())
 
 CONTEXT = ExpanseContext
 
 
+@pytest.fixture
+def expanse(initialized_nuts: NutsContext, ship):
+    """
+    Helps to prepare the results for TestExpanseCrew and generates a fixture that
+    provides the initialized context and the keyword with which the results should be filtered
+    for a test.
+    :param initialized_nuts: The context for a test with an initialized NutsContext subclass
+    :param ship: the parameter from the yaml file
+    :return:
+    """
+    result = initialized_nuts.network_results()
+    return result[ship]
+
 class TestExpanseCrew:
-    @pytest.fixture
-    def single_result(self, initialized_nuts, ship):
-        result = initialized_nuts.transformed_result()
-        return result[ship]
 
     @pytest.mark.nuts("ship, name")
-    def test_name(self, single_result: Dict, name):
-        assert name in single_result.keys()
+    def test_name(self, expanse: Dict, name):
+        assert name in expanse.keys()
 
     @pytest.mark.nuts("ship, name, role")
-    def test_role(self, single_result: Dict, name, role):
-        assert single_result[name]["role"] == role
+    def test_role(self, expanse: Dict, name, role):
+        assert expanse[name]["role"] == role
 
     @pytest.mark.nuts("ship, name, origin")
-    def test_origin(self, single_result: Dict, name, origin):
-        assert single_result[name]["origin"] == origin
+    def test_origin(self, expanse: Dict, name, origin):
+        assert expanse[name]["origin"] == origin

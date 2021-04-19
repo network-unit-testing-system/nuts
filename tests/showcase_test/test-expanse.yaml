@@ -1,5 +1,8 @@
+# Test bundle that shows basic nuts functionality without the need of a network connection
+# make sure nettowel-nuts is installed with `pip install nettowel-nuts`
+# run from the project folder root: $ pytest tests/showcase_test/test-expanse.yaml
 ---
-- test_module: tests.showcase.dry_run
+- test_module: tests.showcase.showcase_expanse
   test_class: TestExpanseCrew
   test_data:
     - ship: rocinante
@@ -22,6 +25,3 @@
       name: bobbie_draper
       role: marine
       origin: mars
-# Test bundle that shows basic nuts functionality without the need of a network connection
-# make sure nettowel-nuts is installed with `pip install nettowel-nuts`
-# run from the project folder root: $ pytest tests/showcase_test/test-expanse.yaml

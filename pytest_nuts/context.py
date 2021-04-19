@@ -33,8 +33,7 @@ class NutsContext(ABC):
 
     def network_results(self) -> Any:
         """
-        The (processed) results of the network task, ready to be passed on to a test's fixture
-        called `single_result`.
+        The (processed) results of the network task, ready to be passed on to a test's fixture.
         :return: the processed result of the network task
         """
         return {}

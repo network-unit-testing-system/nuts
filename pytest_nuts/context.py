@@ -1,4 +1,5 @@
 """Provide necessary information that is needed for a specific test."""
+from abc import ABC
 from typing import Any, Callable, Optional
 
 from nornir.core import Nornir
@@ -7,7 +8,7 @@ from nornir.core.task import AggregatedResult
 from pytest_nuts.helpers.errors import NutsSetupError
 
 
-class NutsContext:
+class NutsContext(ABC):
     """
     Base context class. Holds all necessary information that is needed for a specific test.
 
@@ -30,6 +31,13 @@ class NutsContext:
         test_execution = self.nuts_parameters.get("test_execution", None)
         return {**(test_execution if test_execution is not None else {})}
 
+    def network_results(self) -> Any:
+        """
+        The (processed) results of the network task, ready to be passed on to a test's fixture
+        called `single_result`.
+        :return: the processed result of the network task
+        """
+        return {}
 
 class NornirNutsContext(NutsContext):
     """
@@ -103,7 +111,7 @@ class NornirNutsContext(NutsContext):
         """
         pass
 
-    def transformed_result(self) -> Any:
+    def network_results(self) -> Any:
         """
         The result from nornir's task, transformed to be passed on later to a test's fixture
         called `single_result`.

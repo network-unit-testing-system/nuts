@@ -21,11 +21,11 @@ class ExpanseContext(NutsContext):
 
     def general_result(self) -> List[Dict]:
         return [
-            {"host": "rocinante", "name": "naomi_nagata", "role": "engineer", "origin": "belter"},
-            {"host": "rocinante", "name": "james_holden", "role": "captain", "origin": "earth"},
-            {"host": "rocinante", "name": "amos_burton", "role": "mechanic", "origin": "earth"},
-            {"host": "rocinante", "name": "alex_kamal", "role": "pilot", "origin": "mars"},
-            {"host": "rocinante", "name": "bobbie_draper", "role": "marine", "origin": "mars"},
+            {"host": "rocinante", "name": "naomi nagata", "role": "engineer", "origin": "belter"},
+            {"host": "rocinante", "name": "james holden", "role": "captain", "origin": "earth"},
+            {"host": "rocinante", "name": "amos burton", "role": "mechanic", "origin": "earth"},
+            {"host": "rocinante", "name": "alex kamal", "role": "pilot", "origin": "mars"},
+            {"host": "rocinante", "name": "bobbie draper", "role": "marine", "origin": "mars"},
         ]
 
     def transform_result(self, general_result: List[Dict]):

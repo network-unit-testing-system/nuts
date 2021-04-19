@@ -6,22 +6,22 @@
   test_class: TestExpanseCrew
   test_data:
     - ship: rocinante
-      name: naomi_nagata
+      name: "naomi nagata"
       role: engineer
       origin: belter
     - ship: rocinante
-      name: james_holden
+      name: "james holden"
       role: captain
       origin: earth
     - ship: rocinante
-      name: amos_burton
+      name: "amos burton"
       role: mechanic
       origin: earth
     - ship: rocinante
-      name: alex_kamal
+      name: "alex kamal"
       role: pilot
       origin: mars
     - ship: rocinante
-      name: bobbie_draper
+      name: "bobbie draper"
       role: marine
       origin: mars

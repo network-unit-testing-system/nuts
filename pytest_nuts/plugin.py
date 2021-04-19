@@ -55,7 +55,7 @@ def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
     :return: an instance type NutsContext
     """
     context = nuts_ctx
-    if inspect.isclass(type(context)) and issubclass(type(context), NornirNutsContext):
+    if isinstance(context, NornirNutsContext):
         context.nornir = initialized_nornir(nornir_config_file())
         return context
     return context

@@ -14,7 +14,7 @@ from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
 from _pytest.python import Metafunc
 
-from pytest_nuts.helpers.errors import NutsUsageError
+from pytest_nuts.helpers.errors import NutsUsageError, NutsSetupError
 from pytest_nuts.index import ModuleIndex
 
 
@@ -23,22 +23,29 @@ class NutsYamlFile(pytest.File):
         # path uses pathlib.Path and is meant to replace fspath, which uses py.path.local
         # both variants will be used for some time in parallel
         # if fspath is used in a newer python version, it triggers a deprecation warning
+        # we therefore use a wrapper that can use both path types
         if hasattr(self, "path"):
             yield from self._collect_path()
         else:
             yield from self._collect_fspath()
 
     def _collect_path(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
-        with self.path.open() as f:
-            raw = yaml.safe_load(f)
+        try:
+            with self.path.open() as f:  # type: ignore[attr-defined]
+                raw = yaml.safe_load(f)
+        except OSError as e:
+            raise NutsSetupError(f"Problem while opening yaml file with test bundles:\n{e}")
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
-            yield NutsTestFile.from_parent(self, path=self.path, obj=module, test_entry=test_entry)
+            yield NutsTestFile.from_parent(self, path=self.path, obj=module, test_entry=test_entry)  # type: ignore[attr-defined, call-arg]
 
     def _collect_fspath(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
-        with self.fspath.open() as f:
-            raw = yaml.safe_load(f)
+        try:
+            with self.fspath.open() as f:
+                raw = yaml.safe_load(f)
+        except OSError as e:
+            raise NutsSetupError(f"Problem while opening yaml file with test bundles:\n{e}")
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)

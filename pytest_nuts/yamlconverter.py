@@ -34,7 +34,7 @@ class NutsYamlFile(pytest.File):
             with self.path.open() as f:  # type: ignore[attr-defined]
                 raw = yaml.safe_load(f)
         except OSError as e:
-            raise NutsSetupError(f"Problem while opening yaml file with test bundles:\n{e}")
+            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{e}")
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
@@ -45,7 +45,7 @@ class NutsYamlFile(pytest.File):
             with self.fspath.open() as f:
                 raw = yaml.safe_load(f)
         except OSError as e:
-            raise NutsSetupError(f"Problem while opening yaml file with test bundles:\n{e}")
+            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{e}")
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
@@ -53,13 +53,14 @@ class NutsYamlFile(pytest.File):
 
 
 def find_and_load_module(test_entry: dict):
-    module_path = find_module_path(test_entry.get("test_module"), test_entry.get("test_class"))
+    test_class = test_entry.get("test_class")
+    if not test_class:
+        raise NutsUsageError("Class name of the specific test missing in YAML file.")
+    module_path = find_module_path(test_entry.get("test_module"), test_class)
     return load_module(module_path)
 
 
 def find_module_path(module_path: Optional[str], class_name: str) -> str:
-    if not class_name:
-        raise NutsUsageError("Class name of the specific test missing in YAML file.")
     if not module_path:
         module_path = ModuleIndex().find_test_module_of_class(class_name)
         if not module_path:

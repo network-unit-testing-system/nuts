@@ -87,13 +87,12 @@ This example creates three different tests, one for each entry in the `test_data
 ...
 ```
 
-## Installation instructions
-NetTowel nuts is currently not published via pip. It has to be cloned and installed manually.
+## Manual installation instructions
+Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
 
-```
-git clone ssh://git@gitlab.ost.ch:45022/ins/nettowel/nettowel-nuts.git
-pip install <your_nuts_directory>
-```
+1. [Install poetry](https://python-poetry.org/docs/#installation)
+2. Clone this repository.
+3. Run `$ poetry install`
 
 ## Technical Overview
 
@@ -116,7 +115,7 @@ The second argument determines optional fields that can also be used in a test c
 ```python
 @pytest.mark.usefixtures("check_nuts_result")  # see below
 class TestNetmikoCdpNeighbors:
-    @pytest.mark.nuts("host,remote_host,local_port,management_ip", "management_ip")
+    @pytest.mark.nuts("host, remote_host, local_port, management_ip", "management_ip")
     def test_local_port(self, single_result, remote_host, local_port):
         assert single_result.result[remote_host]["local_port"] == local_port
 ```
@@ -141,20 +140,11 @@ which provides a nornir instance and nornir-specific helpers.
 This context class is then integrated into pytest fixtures. It is passed on to another fixture called `sincle_result` that returns a per-host result of one test.
 
 ## Development
-Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
-If you have not installed poetry, please read their [installation instructions](https://python-poetry.org/docs/#installation).
 
-### Installation requirements
+Nuts is essentially designed as a pytest-plugin and it is possible to add your own, self-written test classes. 
+A dev documentation on how to write your own test classes is planned for the future. 
+Until then, please read the regular [documentation of Nuts](https://nuts.readthedocs.io/en/latest/) on how to use it.
 
-```bash
-poetry install
-```
-
-### Open shell with venv
-
-```bash
-poetry shell
-```
 # Thanks
 
 * [Matthias Gabriel](https://github.com/MatthiasGabriel), who laid the foundations of NUTS.

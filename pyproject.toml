@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytest_nuts"
-version = "0.1.0"
+version = "3.0.0-alpha-1"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Matthias Gabriel <example@example.com>",
 "Méline Sieber <meline.sieber@ost.ch",

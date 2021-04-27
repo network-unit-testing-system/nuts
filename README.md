@@ -64,7 +64,7 @@ This example creates three different tests, one for each entry in the `test_data
 
 ```yaml
 ---
-- test_module: pytest_nuts.base_tests.netmiko_cdp_neighbors
+- test_module: nuts.base_tests.netmiko_cdp_neighbors
   test_class: TestNetmikoCdpNeighbors
   test_data:
     - source: R1

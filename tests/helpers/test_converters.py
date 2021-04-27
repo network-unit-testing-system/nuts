@@ -1,6 +1,6 @@
 import pytest
 
-from pytest_nuts.helpers.converters import InterfaceNameConverter
+from nuts.helpers.converters import InterfaceNameConverter
 
 interface_test_data = [
     ("Gi1/0/1", "GigabitEthernet1/0/1"),

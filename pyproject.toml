@@ -7,15 +7,14 @@ name = "nuts"
 version = "3.0.0-alpha-1"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Matthias Gabriel <example@example.com>",
-"Méline Sieber <meline.sieber@ost.ch",
-"Urs Baumann <urs.baumann@ost.ch"]
+           "Méline Sieber <meline.sieber@ost.ch",
+           "Urs Baumann <urs.baumann@ost.ch"]
 maintainers = ["Méline Sieber <meline.sieber@ost.ch>"]
-classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
+classifiers = ["Framework :: Pytest", "Development Status :: 3 - Alpha"]
 homepage = "https://github.com/INSRapperswil/Nuts"
 repository = "https://github.com/INSRapperswil/Nuts"
-include = [
-    "LICENSE",
-]
+include = ["LICENSE",]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"

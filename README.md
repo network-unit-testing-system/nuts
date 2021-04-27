@@ -153,22 +153,6 @@ poetry install
 ```bash
 poetry shell
 ```
-
-### SonarQube
-Our [sonarqube server](sonarqube.ins.work) automatically analyses our project via Gitlab CI.
-If you prefer to run your analysis without pushing, you can trigger the analysis locally after executing the tests with coverage.
-
-Windows PowerShell:
-```bash
-$token=<your_token>
-docker run --volume ${pwd}:/usr/src --workdir /usr/src --rm -e SONAR_HOST_URL="https://sonarqube.ins.work" -e SONAR_LOGIN=$token sonarsource/sonar-scanner-cli "-Dsonar.projectKey=nettowel-nuts" "-Dsonar.branch.name=$(git rev-parse --abbrev-ref HEAD)" "-Dsonar.python.coverage.reportPaths=/usr/src/test-reports/coverage.xml"
-```
-UNIX:
-```bash
-token=<your_token>
-docker run --volume $PWD:/usr/src --workdir /usr/src --rm -e SONAR_HOST_URL="https://sonarqube.ins.work" -e SONAR_LOGIN=$token sonarsource/sonar-scanner-cli -Dsonar.projectKey=nettowel-nuts -Dsonar.branch.name=$(git rev-parse --abbrev-ref HEAD) -Dsonar.python.coverage.reportPaths=/usr/src/test-reports/coverage.xml
-```
-
 # Thanks
 
 * [Matthias Gabriel](https://github.com/MatthiasGabriel), who laid the foundations of NUTS.

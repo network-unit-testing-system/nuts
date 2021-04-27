@@ -25,6 +25,8 @@ The test definition is modelled as a custom `pytest.Class`, and a predefined set
 The test bundle is a file that is parsed by pytest. The file provides data on the actual network configuration and describes which test definitions should be collected and executed by pytest. 
 The structure of the test bundle should enable people without in-depth python knowledge to add new test bundles or update existing ones to reflect changes in the network. 
 
+While the readme here is only a short overview, find the [documentation of Nuts on readthedocs](https://nuts.readthedocs.io/en/latest/).
+
 ## Test bundle structure
 
 Currently only yaml files are supported as test bundles, 

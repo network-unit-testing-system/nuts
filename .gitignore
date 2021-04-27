@@ -11,3 +11,6 @@ docs/build/
 
 test-reports/
 .coverage
+
+# ignore dists
+dist/

@@ -1,5 +1,9 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
-name = "pytest_nuts"
+name = "nuts"
 version = "3.0.0-alpha-1"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Matthias Gabriel <example@example.com>",
@@ -7,6 +11,11 @@ authors = ["Matthias Gabriel <example@example.com>",
 "Urs Baumann <urs.baumann@ost.ch"]
 maintainers = ["Méline Sieber <meline.sieber@ost.ch>"]
 classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
+homepage = "https://github.com/INSRapperswil/Nuts"
+repository = "https://github.com/INSRapperswil/Nuts"
+include = [
+    "LICENSE",
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -83,6 +92,3 @@ commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepa
 
 """
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"

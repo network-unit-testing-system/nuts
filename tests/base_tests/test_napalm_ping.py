@@ -1,10 +1,10 @@
 import pytest
 from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult, MultiResult, Result
-from pytest_nuts.context import NornirNutsContext
+from nuts.context import NornirNutsContext
 
-from pytest_nuts.base_tests.napalm_ping import CONTEXT
-from pytest_nuts.base_tests.napalm_ping import Ping
+from nuts.base_tests.napalm_ping import CONTEXT
+from nuts.base_tests.napalm_ping import Ping
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
 from tests.helpers.shared import create_result
 

@@ -6,8 +6,8 @@ from nornir.core.filter import F
 from nornir.core.task import MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_get
 
-from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.result import nuts_result_wrapper, NutsResult
+from nuts.context import NornirNutsContext
+from nuts.helpers.result import nuts_result_wrapper, NutsResult
 
 
 class UsersContext(NornirNutsContext):

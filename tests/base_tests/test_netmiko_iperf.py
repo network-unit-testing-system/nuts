@@ -1,7 +1,7 @@
 import pytest
 
 from nornir.core.task import AggregatedResult, MultiResult, Result
-from pytest_nuts.base_tests.netmiko_iperf import CONTEXT
+from nuts.base_tests.netmiko_iperf import CONTEXT
 
 test_data = [
     {"host": "L1", "destination": "10.0.0.2", "min_expected": 10000000},

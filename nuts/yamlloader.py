@@ -13,8 +13,8 @@ from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
 from _pytest.python import Metafunc
 
-from pytest_nuts.helpers.errors import NutsUsageError
-from pytest_nuts.index import ModuleIndex
+from nuts.helpers.errors import NutsUsageError
+from nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):

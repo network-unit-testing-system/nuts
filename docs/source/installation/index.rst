@@ -25,6 +25,9 @@ NUTS is currently not published on the Python Package Index (`PyPI <https://pypi
    # install NUTS
    pip install <your_nuts_directory>
 
+   # install NUTS directly from git without clone first
+   pip install git+https://github.com/INSRapperswil/Nuts.git
+
 Parsing with ntc-templates
 --------------------------
 

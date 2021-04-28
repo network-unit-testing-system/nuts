@@ -1,15 +1,16 @@
 # https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
-name: Publish nuts to PyPI
+# https://www.ianwootten.co.uk/2020/10/23/publishing-to-pypi-using-github-actions/
+name: Publish nuts to PyPI and release to GitHub
 on: [push]
-jobs: 
-  build-and-publish:
+jobs:
+  build-and-publish-to-pypi:
     if: startsWith(github.ref, 'refs/tags')
     name: Build and publish nuts to PyPI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1  
+        uses: actions/setup-python@v2
         with:
           python-version: 3.7
       - name: Install poetry
@@ -18,3 +19,18 @@ jobs:
         run: poetry config pypi-token.pypi "${{ secrets.PYPI_API_TOKEN }}"
       - name: Build and then publish nuts to PyPI
         run: poetry publish --build
+  create-github-release:
+    if: startsWith(github.ref, 'refs/tags')
+    name: Release on GitHub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Generate Changelog
+        run: echo "# New nuts release" > ${{ github.workflow }}-CHANGELOG
+      - name: Release on Github
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: ${{ github.workflow }}-CHANGELOG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: my_gh_org/my_gh_repo # TODO

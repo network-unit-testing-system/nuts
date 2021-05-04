@@ -1,3 +1,13 @@
+default:
+  image: python:3.7
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+    - echo ===== create folder for artifacts =====
+    - mkdir test-reports
+
 stages:
   - pytest
   - quality
@@ -13,15 +23,6 @@ cache:
 
 pytest:
   stage: pytest
-  image: python:3.7 
-  # several python versions in 1 image: quay.io/python-devs/ci-image
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
-    - echo ===== create folder for artifacts =====
-    - mkdir test-reports
   script:
     - tox -e py
   artifacts:
@@ -35,47 +36,22 @@ pytest:
 black:
   stage: quality
   image: python:3.7 
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
   script:
     - tox -e black
 
 mypy:
   stage: quality
-  image: python:3.7
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
   script:
     - tox -e mypy
 
 docs:
   stage: quality
-  image: python:3.7
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
   script:
     - tox -e docs    
 
 pytest-main:
 # run test using directly the pytest main branch  
   stage: pytest
-  image: python:3.7
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
-    - echo ===== create folder for artifacts =====
-    - mkdir test-reports
   script:
     - tox -e pytest-main
   artifacts:

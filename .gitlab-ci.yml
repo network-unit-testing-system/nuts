@@ -5,8 +5,6 @@ default:
     - python -m pip install -U pip
     - echo ===== install tox =====
     - pip install tox
-    - echo ===== create folder for artifacts =====
-    - mkdir test-reports
 
 stages:
   - pytest
@@ -24,6 +22,8 @@ cache:
 pytest:
   stage: pytest
   script:
+    - echo ===== create folder for artifacts =====
+    - mkdir test-reports
     - tox -e py
   artifacts:
     when: always
@@ -53,6 +53,8 @@ pytest-main:
 # run test using directly the pytest main branch  
   stage: pytest
   script:
+    - echo ===== create folder for artifacts =====
+    - mkdir test-reports
     - tox -e pytest-main
   artifacts:
     when: always

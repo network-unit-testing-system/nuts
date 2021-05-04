@@ -34,4 +34,4 @@ jobs:
           body_path: release_notes/${{ steps.tag-val.outputs.SOURCE_TAG }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: bytinbit/nuts-test
+          GITHUB_REPOSITORY: INSRapperswil/nuts

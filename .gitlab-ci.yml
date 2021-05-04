@@ -67,12 +67,12 @@ pytest-main:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
 sonar:
+  image: sonarsource/sonar-scanner-cli
   stage: sonar
+  before_script: []
   variables:
     SONAR_HOST_URL: $INS_SONAR_URL
     SONAR_LOGIN: $INS_SONAR_LOGIN
-  image:
-    name: sonarsource/sonar-scanner-cli
   script:
     - sonar-scanner -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.branch.name=$CI_BUILD_REF_NAME -Dsonar.python.coverage.reportPaths=test-reports/coverage.xml
   allow_failure: true

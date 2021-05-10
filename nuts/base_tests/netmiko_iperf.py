@@ -78,7 +78,7 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
     Runs iperf between a host and several destinations. During setup, the destinations have been set up
     to act as servers.
 
-    Note: The destination is not included in the nornir result if the ping fails.
+    Note: The destination is not included in the nornir result if the iperf test fails.
     Therefore we cannot know which destination was not reachable,
     so we must patch the destination onto the result object to know later which
     host-destination pair actually failed.
@@ -96,8 +96,8 @@ def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
 
 def _extract_bps(iperf_task_result: str) -> int:
     iperf_result = json.loads(iperf_task_result)
-    if "error" in iperf_result.keys():
-        raise Exception
+    if "error" in iperf_result:
+        raise Exception(iperf_result["error"])
     return int(iperf_result["end"]["sum_received"]["bits_per_second"])
 
 

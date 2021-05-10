@@ -24,12 +24,7 @@ class Ping(Enum):
 
 class PingContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
-        return napalm_ping_multi_dests
-
-    def nuts_arguments(self) -> dict:
-        args = super().nuts_arguments()
-        args["destinations_per_host"] = _destinations_per_host(self.nuts_parameters["test_data"])
-        return args
+        return self.napalm_ping_multi_dests
 
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
@@ -59,6 +54,26 @@ class PingContext(NornirNutsContext):
                 return entry["max_drop"]
         return 0
 
+    def napalm_ping_multi_dests(self, task: Task, **kwargs) -> Result:
+        """
+        One host pings all destinations as defined in the test bundle.
+
+        Note: The destination is not included in the nornir result if the ping fails.
+        Therefore we cannot know which destination was not reachable,
+        so we must patch the destination onto the result object to know later which
+        host-destination pair actually failed.
+
+        :param task: nornir task for ping
+        :param kwargs: arguments from the test bundle for the napalm ping task, such as
+        count, ttl, timeout
+        :return: all pinged destinations per host
+        """
+        destinations_per_hosts = [entry["destination"] for entry in self.nuts_parameters["test_data"] if entry["host"] == task.host.name]
+        for destination in destinations_per_hosts:
+            result = task.run(task=napalm_ping, dest=destination, **kwargs)
+            result[0].destination = destination  # type: ignore[attr-defined]
+        return Result(host=task.host, result="All pings executed")
+
 
 CONTEXT = PingContext
 
@@ -77,47 +92,9 @@ class TestNapalmPing:
         assert single_result.result.name == expected
 
 
-def napalm_ping_multi_dests(task: Task, destinations_per_host, **kwargs) -> Result:
-    """
-    One host pings all destinations as defined in the test bundle.
-
-    Note: The destination is not included in the nornir result if the ping fails.
-    Therefore we cannot know which destination was not reachable,
-    so we must patch the destination onto the result object to know later which
-    host-destination pair actually failed.
-
-    :param task: nornir task for ping
-    :param destinations_per_host: all destinations one host should ping
-    :param kwargs: arguments from the test bundle for the napalm ping task, such as
-    count, ttl, timeout
-    :return: all pinged destinations per host
-    """
-    destinations = destinations_per_host(task.host.name)
-    for destination in destinations:
-        result = task.run(task=napalm_ping, dest=destination, **kwargs)
-        result[0].destination = destination  # type: ignore[attr-defined]
-    return Result(host=task.host, result="All pings executed")
-
-
-def _destinations_per_host(test_data: List[Dict[str, Any]]) -> Callable:
-    """
-    Matches the host-destination pair from a nornir task to the
-    host-destination pair from test_data and retrieves its
-    max_drop value that has been defined for that pair.
-
-    :param host: host entry from the nornir task
-    :param dest: destination that was pinged by a host from the nornir task
-    :return: max_drop value from test_data
-
-    :param test_data: The test_data field from a test bundle
-    :return:
-    """
-    return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
-
-
 def _map_result_to_enum(result: Dict[str, Dict[Any, Any]], max_drop: int) -> Ping:
     """
-    Evaulates the ping that has been conducted with nornir and matches it
+    Evaluates the ping that has been conducted with nornir and matches it
     to a Ping-Enum which can be either FAIL, SUCCESS or FLAPPING.
 
     FAIL: Packet loss equals probes sent.

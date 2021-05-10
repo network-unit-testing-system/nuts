@@ -39,10 +39,20 @@ class PingContext(NornirNutsContext):
 
     def _transform_single_entry(self, single_result: Result) -> Ping:
         assert single_result.host is not None
+        assert single_result.result is not None
         max_drop = self._allowed_max_drop_for_destination(single_result.host.name, single_result.destination)  # type: ignore[attr-defined] # see below
         return _map_result_to_enum(single_result.result, max_drop)
 
     def _allowed_max_drop_for_destination(self, host: str, dest: str) -> int:
+        """
+        Matches the host-destination pair from a nornir task to the
+        host-destination pair from test_data and retrieves its
+        max_drop value that has been defined for that pair.
+
+        :param host: host entry from the nornir task
+        :param dest: destination that was pinged by a host from the nornir task
+        :return: max_drop value from test_data
+        """
         test_data: List[Dict[str, Any]] = self.nuts_parameters["test_data"]
         for entry in test_data:
             if entry["host"] == host and entry["destination"] == dest:
@@ -91,6 +101,13 @@ def napalm_ping_multi_dests(task: Task, destinations_per_host, **kwargs) -> Resu
 
 def _destinations_per_host(test_data: List[Dict[str, Any]]) -> Callable:
     """
+    Matches the host-destination pair from a nornir task to the
+    host-destination pair from test_data and retrieves its
+    max_drop value that has been defined for that pair.
+
+    :param host: host entry from the nornir task
+    :param dest: destination that was pinged by a host from the nornir task
+    :return: max_drop value from test_data
 
     :param test_data: The test_data field from a test bundle
     :return:
@@ -98,8 +115,19 @@ def _destinations_per_host(test_data: List[Dict[str, Any]]) -> Callable:
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 
-def _map_result_to_enum(result: Any, max_drop: int) -> Ping:
-    assert isinstance(result, dict)
+def _map_result_to_enum(result: Dict[str, Dict[Any, Any]], max_drop: int) -> Ping:
+    """
+    Evaulates the ping that has been conducted with nornir and matches it
+    to a Ping-Enum which can be either FAIL, SUCCESS or FLAPPING.
+
+    FAIL: Packet loss equals probes sent.
+    SUCCESS: Packet loss is below or equal max_drop.
+    FLAPPING: Everything else.
+
+    :param result: a single nornir Result
+    :param max_drop: max_drop threshold
+    :return: evaluated ping result
+    """
     if result["success"]["packet_loss"] == result["success"]["probes_sent"]:
         return Ping.FAIL
     if result["success"]["packet_loss"] <= max_drop:

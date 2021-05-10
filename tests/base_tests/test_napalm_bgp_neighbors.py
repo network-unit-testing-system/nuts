@@ -1,7 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult
 
-from pytest_nuts.base_tests.napalm_bgp_neighbors import CONTEXT
+from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
 from tests.helpers.shared import create_multi_result
 
 neighbor_details = {

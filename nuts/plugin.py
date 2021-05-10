@@ -11,10 +11,11 @@ from _pytest.config import Config
 from nornir import InitNornir
 from nornir.core import Nornir
 from py._path.local import LocalPath
+from nuts.helpers.errors import NutsSetupError
 
-from pytest_nuts.context import NutsContext, NornirNutsContext
-from pytest_nuts.helpers.result import NutsResult
-from pytest_nuts.yamlloader import NutsYamlFile, get_parametrize_data
+from nuts.context import NutsContext, NornirNutsContext
+from nuts.helpers.result import NutsResult
+from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
 def nornir_config_file() -> str:

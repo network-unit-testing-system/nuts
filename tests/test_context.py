@@ -5,7 +5,7 @@ from nornir.core.plugins.connections import ConnectionPluginRegister
 from nornir.core.plugins.inventory import InventoryPluginRegister
 from nornir.core.plugins.runners import RunnersPluginRegister
 
-from pytest_nuts.context import NornirNutsContext, NutsSetupError, NutsContext
+from nuts.context import NornirNutsContext, NutsSetupError, NutsContext
 from tests.helpers.shared import YAML_EXTENSION
 
 
@@ -144,7 +144,7 @@ class TestNornirNutsContextIntegration:
     def test_fails_if_no_task_is_defined(self, testdir):
         testdir.makepyfile(
             basic_task="""
-            from pytest_nuts.context import NornirNutsContext
+            from nuts.context import NornirNutsContext
 
 
             class FailingNornirNutsContext(NornirNutsContext):
@@ -172,7 +172,7 @@ class TestNornirNutsContextIntegration:
     def test_executes_specified_task(self, testdir):
         testdir.makepyfile(
             basic_task="""
-    from pytest_nuts.context import NornirNutsContext
+    from nuts.context import NornirNutsContext
 
 
     class CustomNornirNutsContext(NornirNutsContext):

@@ -34,7 +34,6 @@ class IperfContext(NornirNutsContext):
     def setup(self) -> None:
         """
         Sets up the all destinations to act as iperf servers.
-        :return: None
         """
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
@@ -45,7 +44,6 @@ class IperfContext(NornirNutsContext):
     def teardown(self) -> None:
         """
         Stops all destinations that acted as iperf servers.
-        :return: None
         """
         test_data = self.nuts_parameters["test_data"]
         destinations = F(hostname__any={entry["destination"] for entry in test_data})

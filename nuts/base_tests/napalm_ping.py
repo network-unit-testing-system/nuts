@@ -68,7 +68,9 @@ class PingContext(NornirNutsContext):
         count, ttl, timeout
         :return: all pinged destinations per host
         """
-        destinations_per_hosts = [entry["destination"] for entry in self.nuts_parameters["test_data"] if entry["host"] == task.host.name]
+        destinations_per_hosts = [
+            entry["destination"] for entry in self.nuts_parameters["test_data"] if entry["host"] == task.host.name
+        ]
         for destination in destinations_per_hosts:
             result = task.run(task=napalm_ping, dest=destination, **kwargs)
             result[0].destination = destination  # type: ignore[attr-defined]

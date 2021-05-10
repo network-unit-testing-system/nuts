@@ -40,8 +40,9 @@ class IperfContext(NornirNutsContext):
         :param task: nornir task for iperf
         :return: All iperf results per host
         """
-        destinations_per_host = [entry["destination"] for entry in self.nuts_parameters["test_data"] if
-                                 entry["host"] == task.host.name]
+        destinations_per_host = [
+            entry["destination"] for entry in self.nuts_parameters["test_data"] if entry["host"] == task.host.name
+        ]
         for destination in destinations_per_host:
             escaped_dest = shlex.quote(destination)
             result = task.run(task=netmiko_send_command, command_string=f"iperf3 -c {escaped_dest} --json")

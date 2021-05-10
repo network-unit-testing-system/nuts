@@ -2,6 +2,7 @@
 import pytest
 import json
 from typing import Dict, Callable
+import shlex
 
 from nornir.core.filter import F
 from nornir.core.task import Task, Result, AggregatedResult
@@ -14,12 +15,7 @@ from nuts.helpers.result import NutsResult, map_host_to_dest_to_nutsresult
 
 class IperfContext(NornirNutsContext):
     def nuts_task(self) -> Callable:
-        return netmiko_run_iperf
-
-    def nuts_arguments(self) -> dict:
-        args = super().nuts_arguments()
-        args["destinations_per_host"] = _destinations_per_host(self.nuts_parameters["test_data"])
-        return args
+        return self.netmiko_run_iperf
 
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
@@ -30,6 +26,27 @@ class IperfContext(NornirNutsContext):
     def _transform_single_entry(self, single_result: Result) -> int:
         assert isinstance(single_result.result, str)
         return _extract_bps(single_result.result)
+
+    def netmiko_run_iperf(self, task: Task) -> Result:
+        """
+        Runs iperf between a host and several destinations. During setup, the destinations have been set up
+        to act as servers.
+
+        Note: The destination is not included in the nornir result if the iperf test fails.
+        Therefore we cannot know which destination was not reachable,
+        so we must patch the destination onto the result object to know later which
+        host-destination pair actually failed.
+
+        :param task: nornir task for iperf
+        :return: All iperf results per host
+        """
+        destinations_per_host = [entry["destination"] for entry in self.nuts_parameters["test_data"] if
+                                 entry["host"] == task.host.name]
+        for destination in destinations_per_host:
+            escaped_dest = shlex.quote(destination)
+            result = task.run(task=netmiko_send_command, command_string=f"iperf3 -c {escaped_dest} --json")
+            result[0].destination = destination  # type: ignore[attr-defined]
+        return Result(host=task.host, result=f"iperf executed for {task.host}")
 
     def setup(self) -> None:
         """
@@ -69,31 +86,6 @@ class TestNetmikoIperf:
         assert single_result.result > min_expected
 
 
-def _destinations_per_host(test_data) -> Callable:
-    return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
-
-
-def netmiko_run_iperf(task: Task, destinations_per_host) -> Result:
-    """
-    Runs iperf between a host and several destinations. During setup, the destinations have been set up
-    to act as servers.
-
-    Note: The destination is not included in the nornir result if the iperf test fails.
-    Therefore we cannot know which destination was not reachable,
-    so we must patch the destination onto the result object to know later which
-    host-destination pair actually failed.
-
-    :param task: nornir task for iperf
-    :param destinations_per_host: all destinations to which a host should set up an iperf connection
-    :return: All iperf results per host
-    """
-    dests = destinations_per_host(task.host.name)
-    for destination in dests:
-        result = task.run(task=netmiko_send_command, command_string=f"iperf3 -c {destination} --json")
-        result[0].destination = destination  # type: ignore[attr-defined]
-    return Result(host=task.host, result=f"iperf executed for {task.host}")
-
-
 def _extract_bps(iperf_task_result: str) -> int:
     iperf_result = json.loads(iperf_task_result)
     if "error" in iperf_result:
@@ -102,11 +94,11 @@ def _extract_bps(iperf_task_result: str) -> int:
 
 
 def server_setup(task: Task) -> None:
-    task.run(task=netmiko_send_command, command_string=f"iperf3 --server --daemon")
+    task.run(task=netmiko_send_command, command_string="iperf3 --server --daemon")
 
 
 def server_teardown(task: Task) -> None:
     task.run(
         task=netmiko_send_command,
-        command_string=f"pkill iperf3",
+        command_string="pkill iperf3",
     )

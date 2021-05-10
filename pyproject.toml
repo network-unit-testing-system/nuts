@@ -1,12 +1,18 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
-name = "pytest_nuts"
-version = "0.1.0"
+name = "nuts"
+version = "3.0.0-alpha-3"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Matthias Gabriel <example@example.com>",
-"Méline Sieber <meline.sieber@ost.ch",
-"Urs Baumann <urs.baumann@ost.ch"]
+authors = ["Méline Sieber, Urs Baumann, Matthias Gabriel"]
 maintainers = ["Méline Sieber <meline.sieber@ost.ch>"]
-classifiers=["Framework :: Pytest", "Development Status :: 3 - Alpha"]
+classifiers = ["Framework :: Pytest", "Development Status :: 3 - Alpha"]
+homepage = "https://github.com/INSRapperswil/Nuts"
+repository = "https://github.com/INSRapperswil/Nuts"
+license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -22,7 +28,7 @@ black = "^20.8b1"
 pytest-cov = "^2.10.1"
 
 [tool.poetry.plugins."pytest11"]
-"pytest_nuts"="pytest_nuts.plugin"
+"nuts"="nuts.plugin"
 
 [tool.black]
 line-length = 120
@@ -33,6 +39,7 @@ filterwarnings = [
     "error",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:napalm\\.base\\.helpers",
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
+    "ignore:NutsYamlFile\\.fspath is deprecated and will be replaced by NutsYamlFile\\.path\\.",
 ]
 markers = [
     "nuts_test_ctx: A NutsContext to be used in tests."
@@ -48,9 +55,9 @@ testpaths = "tests"
 [testenv]
 description = Run pytest and generate report
 deps = 
-	pytest
-	pytest-cov
-commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/pytest_nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
+    pytest
+    pytest-cov
+commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 
 
@@ -64,15 +71,21 @@ commands = black --check {posargs} .
 description = Check typing with mypy
 deps = mypy
 passenv = TERM
-commands = mypy {posargs} pytest_nuts tests
+commands = mypy {posargs} nuts tests
 
 [testenv:docs]
 description = Build docs with sphinx
 deps = sphinx
 changedir = docs/
 commands = sphinx-build {posargs} source build
+
+[testenv:pytest-main]
+description = Run project tests against pytest-main branch
+deps = 
+    git+https://github.com/pytest-dev/pytest.git#main
+    pytest-cov
+commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
+# envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
+
 """
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"

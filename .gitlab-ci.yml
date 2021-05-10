@@ -1,3 +1,11 @@
+default:
+  image: python:3.7
+  before_script:
+    - echo ===== update pip =====
+    - python -m pip install -U pip
+    - echo ===== install tox =====
+    - pip install tox
+
 stages:
   - pytest
   - quality
@@ -13,16 +21,9 @@ cache:
 
 pytest:
   stage: pytest
-  image: python:3.7 
-  # several python versions in 1 image: quay.io/python-devs/ci-image
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
+  script:
     - echo ===== create folder for artifacts =====
     - mkdir test-reports
-  script:
     - tox -e py
   artifacts:
     when: always
@@ -35,64 +36,26 @@ pytest:
 black:
   stage: quality
   image: python:3.7 
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
   script:
     - tox -e black
 
 mypy:
   stage: quality
-  image: python:3.7
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
   script:
     - tox -e mypy
 
 docs:
   stage: quality
-  image: python:3.7
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
   script:
     - tox -e docs    
 
-pytest-master:
-# run test using directly the pytest master branch  
+pytest-main:
+# run test using directly the pytest main branch  
   stage: pytest
-  image: python:3.7
-  before_script:
-    - echo ===== update pip =====
-    - python -m pip install -U pip
-    - echo ===== install tox =====
-    - pip install tox
-    - echo ===== install poetry =====
-    - apt-get update -qq
-    - apt-get install curl -y -qq
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    - source $HOME/.poetry/env
-    - poetry config virtualenvs.create false
-
-    - echo ==== retrieving pytest-master ====
-    - poetry add git+https://github.com/pytest-dev/pytest.git
-
-    - echo
-    - echo ===== install requirements =====
-    - poetry install --no-interaction --no-ansi
-    - echo ===== create folder for artifacts =====    
-    - mkdir test-reports
   script:
-    - echo
-    - echo ===== running tests with pytest-master =====
-    - pytest --junitxml=test-reports/pytest.xml --cov=. --cov-report xml:test-reports/coverage.xml
+    - echo ===== create folder for artifacts =====
+    - mkdir test-reports
+    - tox -e pytest-main
   artifacts:
     when: always
     paths:
@@ -101,15 +64,15 @@ pytest-master:
       junit: 
       - ./**/test-reports/*.xml
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"      
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 
 sonar:
+  image: sonarsource/sonar-scanner-cli
   stage: sonar
+  before_script: []
   variables:
     SONAR_HOST_URL: $INS_SONAR_URL
     SONAR_LOGIN: $INS_SONAR_LOGIN
-  image:
-    name: sonarsource/sonar-scanner-cli
   script:
     - sonar-scanner -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.branch.name=$CI_BUILD_REF_NAME -Dsonar.python.coverage.reportPaths=test-reports/coverage.xml
   allow_failure: true

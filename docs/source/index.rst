@@ -42,7 +42,6 @@ Enhance NUTS
 Since NUTS is written as a pytest plugin and in python, you can customize it yourself and write your own test classes. Please see the :doc:`development section <dev/index>` to see how NUTS is structured and how to write your own test classes.
 
 
-
 Contents
 ========
 

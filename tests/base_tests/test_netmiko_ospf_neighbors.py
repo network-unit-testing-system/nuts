@@ -1,7 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
-from pytest_nuts.base_tests.netmiko_ospf_neighbors import CONTEXT
+from nuts.base_tests.netmiko_ospf_neighbors import CONTEXT
 from tests.helpers.shared import create_multi_result, create_result
 
 neighbor_details = {

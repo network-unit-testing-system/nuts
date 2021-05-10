@@ -8,9 +8,9 @@ from nornir.core.filter import F
 from nornir.core.task import Result, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_ping
 
-from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.filters import filter_hosts
-from pytest_nuts.helpers.result import (
+from nuts.context import NornirNutsContext
+from nuts.helpers.filters import filter_hosts
+from nuts.helpers.result import (
     NutsResult,
     map_host_to_dest_to_nutsresult,
 )

@@ -6,10 +6,10 @@ from nornir.core.filter import F
 from nornir.core.task import MultiResult, AggregatedResult
 from nornir_napalm.plugins.tasks import napalm_get
 
-from pytest_nuts.context import NornirNutsContext
-from pytest_nuts.helpers.converters import InterfaceNameConverter
-from pytest_nuts.helpers.filters import filter_hosts
-from pytest_nuts.helpers.result import NutsResult, map_host_to_nutsresult
+from nuts.context import NornirNutsContext
+from nuts.helpers.converters import InterfaceNameConverter
+from nuts.helpers.filters import filter_hosts
+from nuts.helpers.result import NutsResult, map_host_to_nutsresult
 
 
 class LldpNeighborsContext(NornirNutsContext):

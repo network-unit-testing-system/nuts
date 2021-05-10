@@ -1,7 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult
 
-from pytest_nuts.base_tests.napalm_interfaces import CONTEXT
+from nuts.base_tests.napalm_interfaces import CONTEXT
 from tests.helpers.shared import create_multi_result, create_result
 
 nornir_results = [

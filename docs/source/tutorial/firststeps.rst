@@ -1,9 +1,9 @@
 First Steps with NUTS
 =====================
 
-This tutorial guides you through a minimal setup of NUTS.
+This tutorial guides you through a minimal setup of the NetTowel Unit Testing System (NUTS, or nuts).
 
-Two major components are needed for NUTS:
+Two major components are needed for nuts:
 
     #. A network inventory
     #. Test bundles
@@ -71,7 +71,7 @@ If you set up the above folders and files, you're ready to write test bundles.
 
 A test bundle is a collection of tests are logically related to each other, for example tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
 
-Currently only YAML files are supported as test bundle format, but other data sources could be integrated in later versions of NUTS.
+Currently only YAML files are supported as test bundle format, but other data sources could be integrated in later versions of nuts.
 
 Structure of a Test Bundle
 **************************
@@ -93,7 +93,7 @@ Each test bundle contains the following structure:
 ``label``: Optional. Additional identifier that can be used to distinguish between multiple occurrences of the same 
 test class in a test bundle.
 
-``test_execution``: Optional. NUTS uses nornir tasks to automatically interact with the network. This field contains additional information that is directly passed to the nornir task in the background. Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
+``test_execution``: Optional. Nuts uses nornir tasks to automatically interact with the network. This field contains additional information that is directly passed to the nornir task in the background. Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
 As an example, the test definition ``TestNapalmPing`` calls a nornir task to execute napalm's ping-command. 
 This allows the additional ``count`` parameter in ``test execution``, since it is in turn pre-defined by napalm. Please see the :doc:`chapter on test bundles <../testbundles/alltestbundles>` for more detailed explanations.
 

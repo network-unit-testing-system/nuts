@@ -12,7 +12,7 @@ __path__ = "tests.showcase.showcase_expanse.TestExpanseCrew"
 from typing import List, Dict, Any
 
 import pytest
-from pytest_nuts.context import NutsContext
+from nuts.context import NutsContext
 
 
 class ExpanseContext(NutsContext):

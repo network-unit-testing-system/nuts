@@ -1,6 +1,6 @@
 """Let a device ping another device."""
 from enum import Enum
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, List
 
 import pytest
 from nornir.core import Task
@@ -43,7 +43,7 @@ class PingContext(NornirNutsContext):
         return _map_result_to_enum(single_result.result, max_drop)
 
     def _allowed_max_drop_for_destination(self, host: str, dest: str) -> int:
-        test_data = self.nuts_parameters["test_data"]
+        test_data: List[Dict[str, Any]] = self.nuts_parameters["test_data"]
         for entry in test_data:
             if entry["host"] == host and entry["destination"] == dest:
                 return entry["max_drop"]
@@ -89,7 +89,12 @@ def napalm_ping_multi_dests(task: Task, destinations_per_host, **kwargs) -> Resu
     return Result(host=task.host, result="All pings executed")
 
 
-def _destinations_per_host(test_data):
+def _destinations_per_host(test_data: List[Dict[str, Any]]) -> Callable:
+    """
+
+    :param test_data: The test_data field from a test bundle
+    :return:
+    """
     return lambda host_name: [entry["destination"] for entry in test_data if entry["host"] == host_name]
 
 

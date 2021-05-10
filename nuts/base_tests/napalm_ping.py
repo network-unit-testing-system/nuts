@@ -39,10 +39,10 @@ class PingContext(NornirNutsContext):
 
     def _transform_single_entry(self, single_result: Result) -> Ping:
         assert single_result.host is not None
-        max_drop = self._allowed_maxdrop_for_destination(single_result.host.name, single_result.destination)  # type: ignore[attr-defined] # see below
+        max_drop = self._allowed_max_drop_for_destination(single_result.host.name, single_result.destination)  # type: ignore[attr-defined] # see below
         return _map_result_to_enum(single_result.result, max_drop)
 
-    def _allowed_maxdrop_for_destination(self, host: str, dest: str) -> int:
+    def _allowed_max_drop_for_destination(self, host: str, dest: str) -> int:
         test_data = self.nuts_parameters["test_data"]
         for entry in test_data:
             if entry["host"] == host and entry["destination"] == dest:

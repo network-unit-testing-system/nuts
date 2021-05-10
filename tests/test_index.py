@@ -1,6 +1,6 @@
 import pytest
 
-from pytest_nuts.index import ModuleIndex
+from nuts.index import ModuleIndex
 
 
 @pytest.fixture

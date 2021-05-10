@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult
 
-from pytest_nuts.helpers.errors import NutsSetupError
+from nuts.helpers.errors import NutsSetupError
 
 
 class NutsContext:

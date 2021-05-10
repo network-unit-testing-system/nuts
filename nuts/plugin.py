@@ -10,14 +10,14 @@ from _pytest.config import Config
 from nornir import InitNornir
 from nornir.core import Nornir
 from py._path.local import LocalPath
-from pytest_nuts.helpers.errors import NutsSetupError
+from nuts.helpers.errors import NutsSetupError
 
-from pytest_nuts.context import NutsContext, NornirNutsContext
-from pytest_nuts.helpers.result import NutsResult
-from pytest_nuts.yamlconverter import NutsYamlFile, get_parametrize_data
+from nuts.context import NutsContext, NornirNutsContext
+from nuts.helpers.result import NutsResult
+from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def nornir_config_file() -> str:
     """
     Returns the filename to a nornir configuration file.

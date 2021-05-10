@@ -2,14 +2,14 @@ from unittest.mock import Mock
 
 from nornir.core.task import Result
 
-from pytest_nuts.helpers.result import nuts_result_wrapper
+from nuts.helpers.result import nuts_result_wrapper
 
 
 def test_check_result(testdir):
     arguments = {
         "test_check_result": """
 import pytest
-from pytest_nuts.helpers.result import NutsResult
+from nuts.helpers.result import NutsResult
 
 failed_result = NutsResult(failed=True)
 exception_result = NutsResult(exception=Exception("TestException"))

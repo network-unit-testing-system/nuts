@@ -185,7 +185,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "importlib-metadata"
-version = "4.0.0"
+version = "4.0.1"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
@@ -223,16 +223,16 @@ i18n = ["Babel (>=0.8)"]
 
 [[package]]
 name = "junos-eznc"
-version = "2.5.4"
+version = "2.6.0"
 description = "Junos 'EZ' automation for non-programmers"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=3.*, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.dependencies]
 jinja2 = ">=2.7.1"
 lxml = ">=3.2.4"
-ncclient = ">=0.6.3"
+ncclient = "0.6.9"
 netaddr = "*"
 paramiko = ">=1.15.2"
 pyparsing = "*"
@@ -320,7 +320,7 @@ python-versions = "*"
 
 [[package]]
 name = "netmiko"
-version = "3.3.3"
+version = "3.4.0"
 description = "Multi-vendor library to simplify Paramiko SSH connections to network devices"
 category = "main"
 optional = false
@@ -338,7 +338,7 @@ test = ["pyyaml (>=5.1.2)", "pytest (>=5.1.2)"]
 
 [[package]]
 name = "nornir"
-version = "3.1.0"
+version = "3.1.1"
 description = "Pluggable multi-threaded framework with inventory management to help operate collections of devices"
 category = "main"
 optional = false
@@ -913,8 +913,8 @@ idna = [
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.0.0-py3-none-any.whl", hash = "sha256:19192b88d959336bfa6bdaaaef99aeafec179eca19c47c804e555703ee5f07ef"},
-    {file = "importlib_metadata-4.0.0.tar.gz", hash = "sha256:2e881981c9748d7282b374b68e759c87745c25427b67ecf0cc67fb6637a1bff9"},
+    {file = "importlib_metadata-4.0.1-py3-none-any.whl", hash = "sha256:d7eb1dea6d6a6086f8be21784cc9e3bcfa55872b52309bc5fad53a8ea444465d"},
+    {file = "importlib_metadata-4.0.1.tar.gz", hash = "sha256:8c501196e49fb9df5df43833bdb1e4328f64847763ec8a50703148b73784d581"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
@@ -925,8 +925,8 @@ jinja2 = [
     {file = "Jinja2-2.11.3.tar.gz", hash = "sha256:a6d58433de0ae800347cab1fa3043cebbabe8baa9d29e668f1c768cb87a333c6"},
 ]
 junos-eznc = [
-    {file = "junos-eznc-2.5.4.tar.gz", hash = "sha256:bf036d0af9ee5c5e4f517cb5fc902fe891fa120e18f459805862c53d4a97193a"},
-    {file = "junos_eznc-2.5.4-py2.py3-none-any.whl", hash = "sha256:e05c36d56d8b8d13b1fb3bb763828bb3ee80fa1dcadc3a6762e8e2568504676d"},
+    {file = "junos-eznc-2.6.0.tar.gz", hash = "sha256:761a85a1485f8dc41b983ae7296889c7a78394b78d2de68f0831b7efa5f6ca34"},
+    {file = "junos_eznc-2.6.0-py2.py3-none-any.whl", hash = "sha256:598c3569b21f362f0bad626ad3756f9f8a3f4d507a0ff37ff76e33b3ed73859e"},
 ]
 lxml = [
     {file = "lxml-4.6.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:df7c53783a46febb0e70f6b05df2ba104610f2fb0d27023409734a3ecbb78fb2"},
@@ -1036,12 +1036,12 @@ netaddr = [
     {file = "netaddr-0.8.0.tar.gz", hash = "sha256:d6cc57c7a07b1d9d2e917aa8b36ae8ce61c35ba3fcd1b83ca31c5a0ee2b5a243"},
 ]
 netmiko = [
-    {file = "netmiko-3.3.3-py3-none-any.whl", hash = "sha256:be165b81930aa779a2a34f4437af9f9807553030d2e3ef8da002314fb6b1366d"},
-    {file = "netmiko-3.3.3.tar.gz", hash = "sha256:ead6ea70b46307cce03d121d4da96fd862f76619474d6e962d1019560bb4c5a1"},
+    {file = "netmiko-3.4.0-py3-none-any.whl", hash = "sha256:b66f25717db3609878f83c85604349dd40a0ab494d8eafd817dcde8388131136"},
+    {file = "netmiko-3.4.0.tar.gz", hash = "sha256:acadb9dd97864ee848e2032f1f0e301c7b31e7a4153757d98f5c8ba1b9614993"},
 ]
 nornir = [
-    {file = "nornir-3.1.0-py3-none-any.whl", hash = "sha256:0eed0ca73122ce8f4b90a560ada79d81174845a8a5320972292417eb19efa587"},
-    {file = "nornir-3.1.0.tar.gz", hash = "sha256:f96b0e2b8983045eef5345de5a6e61198ed2658a0e42049e4bd9a127b2bae034"},
+    {file = "nornir-3.1.1-py3-none-any.whl", hash = "sha256:217199f923c810f4a54dec8d440eb08682c8a4ea4746325bd3067dca2e32cf9f"},
+    {file = "nornir-3.1.1.tar.gz", hash = "sha256:6abf8ca245aab8e36b5770ec94fdb456b6bf53696c6d68f2ee0882898630a392"},
 ]
 nornir-napalm = [
     {file = "nornir_napalm-0.1.2-py3-none-any.whl", hash = "sha256:313986bbb16eeaf3a80daf61f6a97e93ecebc47d0c586a2eb856ea91edc2cc1d"},

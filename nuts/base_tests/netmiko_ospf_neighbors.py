@@ -7,7 +7,8 @@ from nornir.core.task import MultiResult, AggregatedResult
 from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext
-from nuts.helpers.result import nuts_result_wrapper, NutsResult
+from nuts.helpers.filters import filter_hosts
+from nuts.helpers.result import NutsResult, map_host_to_nutsresult
 
 
 class OspfNeighborsContext(NornirNutsContext):
@@ -18,8 +19,7 @@ class OspfNeighborsContext(NornirNutsContext):
         return {"command_string": "show ip ospf neighbor", "use_textfsm": True}
 
     def nornir_filter(self) -> F:
-        hosts = {entry["host"] for entry in self.nuts_parameters["test_data"]}
-        return F(name__any=hosts)
+        return filter_hosts(self.nuts_parameters["test_data"])
 
     def _transform_host_results(self, single_result: MultiResult) -> dict:
         assert single_result[0].result is not None
@@ -27,9 +27,7 @@ class OspfNeighborsContext(NornirNutsContext):
         return {details["neighbor_id"]: details for details in neighbors}
 
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
-        return {
-            host: nuts_result_wrapper(result, self._transform_host_results) for host, result in general_result.items()
-        }
+        return map_host_to_nutsresult(general_result, self._transform_host_results)
 
 
 CONTEXT = OspfNeighborsContext

@@ -6,7 +6,7 @@ from nornir.core.plugins.inventory import InventoryPluginRegister
 from nornir.core.plugins.runners import RunnersPluginRegister
 
 from nuts.context import NornirNutsContext, NutsSetupError, NutsContext
-from tests.helpers.shared import YAML_EXTENSION
+from tests.utils import YAML_EXTENSION
 
 
 class CustomNornirNutsContext(NornirNutsContext):

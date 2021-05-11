@@ -2,6 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from nuts.base_tests.netmiko_ospf_neighbors import CONTEXT
+from tests.utils import create_multi_result, create_result
 
 neighbor_details = {
     "neighbor_id": "172.16.255.3",
@@ -12,13 +13,8 @@ neighbor_details = {
     "interface": "GigabitEthernet4",
 }
 
-
-@pytest.fixture
-def general_result(timeouted_multiresult):
-    result = AggregatedResult("netmiko_send_command")
-    multi_result_r1 = MultiResult("netmiko_send_command")
-    result_r1 = Result(host=None, name="netmiko_send_command")
-    result_r1.result = [
+nornir_results = [
+    [
         neighbor_details.copy(),
         {
             "neighbor_id": "172.16.255.2",
@@ -36,12 +32,8 @@ def general_result(timeouted_multiresult):
             "address": "172.16.14.4",
             "interface": "GigabitEthernet2",
         },
-    ]
-    multi_result_r1.append(result_r1)
-    result["R1"] = multi_result_r1
-    multi_result_r2 = MultiResult("netmiko_send_command")
-    result_r2 = Result(host=None, name="naplam_get")
-    result_r2.result = [
+    ],
+    [
         {
             "neighbor_id": "172.16.255.3",
             "priority": "1",
@@ -66,9 +58,17 @@ def general_result(timeouted_multiresult):
             "address": "172.16.12.1",
             "interface": "GigabitEthernet2",
         },
-    ]
-    multi_result_r2.append(result_r2)
-    result["R2"] = multi_result_r2
+    ],
+]
+
+
+@pytest.fixture
+def general_result(timeouted_multiresult):
+    task_name = "netmiko_send_command"
+    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
+    result = AggregatedResult(task_name)
+    result["R1"] = create_multi_result(results_per_host[0], task_name)
+    result["R2"] = create_multi_result(results_per_host[1], task_name)
     result["R3"] = timeouted_multiresult
     return result
 

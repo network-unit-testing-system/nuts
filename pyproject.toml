@@ -29,6 +29,8 @@ pytest-cov = "^2.10.1"
 
 [tool.poetry.plugins."pytest11"]
 "nuts"="nuts.plugin"
+# why "pytest11": https://github.com/pytest-dev/pytest/commit/ed03eef81b220199a819632a27f9c452b8e1fb81
+# https://docs.pytest.org/en/latest/how-to/writing_plugins.html#making-your-plugin-installable-by-others
 
 [tool.black]
 line-length = 120

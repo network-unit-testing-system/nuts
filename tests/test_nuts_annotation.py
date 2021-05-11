@@ -1,4 +1,4 @@
-from tests.helpers.shared import YAML_EXTENSION
+from tests.utils import YAML_EXTENSION
 
 
 def test_skips_execution_without_arguments(testdir):

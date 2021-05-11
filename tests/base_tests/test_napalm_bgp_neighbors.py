@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
-from tests.helpers.shared import create_multi_result
+from tests.utils import create_multi_result, create_result
 
 neighbor_details = {
     "local_as": 45001,
@@ -15,58 +15,60 @@ neighbor_details = {
     "address_family": {"ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}},
 }
 
+nornir_results = [
+    {
+        "bgp_neighbors": {
+            "global": {
+                "router_id": "172.16.255.1",
+                "peers": {
+                    "172.16.255.2": neighbor_details.copy(),
+                    "172.16.255.3": {
+                        "local_as": 45001,
+                        "remote_as": 45003,
+                        "remote_id": "0.0.0.0",
+                        "is_up": False,
+                        "is_enabled": True,
+                        "description": "",
+                        "uptime": -1,
+                        "address_family": {
+                            "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        },
+                    },
+                },
+            }
+        }
+    },
+    {
+        "bgp_neighbors": {
+            "global": {
+                "router_id": "172.16.255.2",
+                "peers": {
+                    "172.16.255.1": {
+                        "local_as": 45002,
+                        "remote_as": 45001,
+                        "remote_id": "0.0.0.0",
+                        "is_up": False,
+                        "is_enabled": True,
+                        "description": "",
+                        "uptime": -1,
+                        "address_family": {
+                            "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        },
+                    }
+                },
+            }
+        }
+    },
+]
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
-    result = AggregatedResult("napalm_get")
-    result["R1"] = create_multi_result(
-        {
-            "bgp_neighbors": {
-                "global": {
-                    "router_id": "172.16.255.1",
-                    "peers": {
-                        "172.16.255.2": neighbor_details.copy(),
-                        "172.16.255.3": {
-                            "local_as": 45001,
-                            "remote_as": 45003,
-                            "remote_id": "0.0.0.0",
-                            "is_up": False,
-                            "is_enabled": True,
-                            "description": "",
-                            "uptime": -1,
-                            "address_family": {
-                                "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
-                            },
-                        },
-                    },
-                }
-            }
-        }
-    )
-    result["R2"] = create_multi_result(
-        {
-            "bgp_neighbors": {
-                "global": {
-                    "router_id": "172.16.255.2",
-                    "peers": {
-                        "172.16.255.1": {
-                            "local_as": 45002,
-                            "remote_as": 45001,
-                            "remote_id": "0.0.0.0",
-                            "is_up": False,
-                            "is_enabled": True,
-                            "description": "",
-                            "uptime": -1,
-                            "address_family": {
-                                "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
-                            },
-                        }
-                    },
-                }
-            }
-        }
-    )
-
+    task_name = "napalm_get"
+    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
+    result = AggregatedResult(task_name)
+    result["R1"] = create_multi_result(results_per_host[0], task_name)
+    result["R2"] = create_multi_result(results_per_host[1], task_name)
     result["R3"] = timeouted_multiresult
     return result
 

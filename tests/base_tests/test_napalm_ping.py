@@ -3,7 +3,6 @@ from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_ping import CONTEXT
-from tests.helpers.selftest_helpers import tupelize
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
 from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
 
@@ -121,11 +120,21 @@ def general_result():
     )
     return general_result
 
+
 @pytest.fixture
 def all_testdata():
     return [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
 
-pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters={"test_data": [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]}))]
+
+pytestmark = [
+    pytest.mark.nuts_test_ctx(
+        CONTEXT(
+            nuts_parameters={
+                "test_data": [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
+            }
+        )
+    )
+]
 
 
 class TestTransformResult:

@@ -5,59 +5,59 @@ from nuts.base_tests.netmiko_ospf_neighbors import CONTEXT
 from tests.helpers.selftest_helpers import create_multi_result, create_result
 
 raw_nornir_result_r1 = [
-        {
-            "neighbor_id": "172.16.255.3",
-            "priority": "1",
-            "state": "FULL/BDR",
-            "dead_time": "00:00:33",
-            "address": "172.16.13.3",
-            "interface": "GigabitEthernet4",
-        }
-        ,
-        {
-            "neighbor_id": "172.16.255.2",
-            "priority": "1",
-            "state": "FULL/BDR",
-            "dead_time": "00:00:32",
-            "address": "172.16.12.2",
-            "interface": "GigabitEthernet3",
-        },
-        {
-            "neighbor_id": "172.16.255.4",
-            "priority": "1",
-            "state": "FULL/BDR",
-            "dead_time": "00:00:32",
-            "address": "172.16.14.4",
-            "interface": "GigabitEthernet2",
-        },
-    ]
+    {
+        "neighbor_id": "172.16.255.3",
+        "priority": "1",
+        "state": "FULL/BDR",
+        "dead_time": "00:00:33",
+        "address": "172.16.13.3",
+        "interface": "GigabitEthernet4",
+    },
+    {
+        "neighbor_id": "172.16.255.2",
+        "priority": "1",
+        "state": "FULL/BDR",
+        "dead_time": "00:00:32",
+        "address": "172.16.12.2",
+        "interface": "GigabitEthernet3",
+    },
+    {
+        "neighbor_id": "172.16.255.4",
+        "priority": "1",
+        "state": "FULL/BDR",
+        "dead_time": "00:00:32",
+        "address": "172.16.14.4",
+        "interface": "GigabitEthernet2",
+    },
+]
 
 raw_nornir_result_r2 = [
-        {
-            "neighbor_id": "172.16.255.3",
-            "priority": "1",
-            "state": "FULL/BDR",
-            "dead_time": "00:00:34",
-            "address": "172.16.23.3",
-            "interface": "GigabitEthernet4",
-        },
-        {
-            "neighbor_id": "172.16.255.11",
-            "priority": "1",
-            "state": "FULL/BDR",
-            "dead_time": "00:00:35",
-            "address": "172.16.211.11",
-            "interface": "GigabitEthernet3",
-        },
-        {
-            "neighbor_id": "172.16.255.1",
-            "priority": "1",
-            "state": "FULL/DR",
-            "dead_time": "00:00:33",
-            "address": "172.16.12.1",
-            "interface": "GigabitEthernet2",
-        },
-    ]
+    {
+        "neighbor_id": "172.16.255.3",
+        "priority": "1",
+        "state": "FULL/BDR",
+        "dead_time": "00:00:34",
+        "address": "172.16.23.3",
+        "interface": "GigabitEthernet4",
+    },
+    {
+        "neighbor_id": "172.16.255.11",
+        "priority": "1",
+        "state": "FULL/BDR",
+        "dead_time": "00:00:35",
+        "address": "172.16.211.11",
+        "interface": "GigabitEthernet3",
+    },
+    {
+        "neighbor_id": "172.16.255.1",
+        "priority": "1",
+        "state": "FULL/DR",
+        "dead_time": "00:00:33",
+        "address": "172.16.12.1",
+        "interface": "GigabitEthernet2",
+    },
+]
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):

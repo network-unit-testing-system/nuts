@@ -133,10 +133,11 @@ class TestTransformResult:
         assert all(entry["peer"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
     def test_contains_information_about_neighbor(self, transformed_result):
-        r1 = bgp_r1_1.test_data["host"]
-        neighbor_details = transformed_result[r1].result[bgp_r1_1.test_data["peer"]]
+        neighbor_details = transformed_result["R1"].result[bgp_r1_1.test_data["peer"]]
         for key in bgp_r1_1.test_data:
-            if key == "host" or key == "peer":
+            if (
+                key == "host" or key == "peer"
+            ):  # skip, because these are keys into the data entries and not part of the test
                 continue
             assert bgp_r1_1.test_data[key] == neighbor_details[key]
 

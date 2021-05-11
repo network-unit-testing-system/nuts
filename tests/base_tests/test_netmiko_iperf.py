@@ -24,7 +24,9 @@ iperf_l2_2 = SelfTestData(
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
 )
 
-reachable_hosts = [tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1]]
+reachable_hosts = [
+    tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1]
+]
 
 
 @pytest.fixture
@@ -33,10 +35,20 @@ def general_result():
     confirmation_result = create_result(result_content="iperf executed for host", task_name=task_name)
     general_result = AggregatedResult(task_name)
     general_result["L1"] = create_multi_result(
-        results=[confirmation_result, iperf_l1_1.create_nornir_result(task_name), iperf_l1_2.create_nornir_result(task_name)], task_name=task_name
+        results=[
+            confirmation_result,
+            iperf_l1_1.create_nornir_result(task_name),
+            iperf_l1_2.create_nornir_result(task_name),
+        ],
+        task_name=task_name,
     )
     general_result["L2"] = create_multi_result(
-        results=[confirmation_result, iperf_l2_1.create_nornir_result(task_name), iperf_l2_2.create_nornir_result(task_name)], task_name=task_name
+        results=[
+            confirmation_result,
+            iperf_l2_1.create_nornir_result(task_name),
+            iperf_l2_2.create_nornir_result(task_name),
+        ],
+        task_name=task_name,
     )
     return general_result
 
@@ -44,6 +56,7 @@ def general_result():
 @pytest.fixture
 def all_testdata():
     return [iperf_l1_1.test_data, iperf_l1_2.test_data, iperf_l2_2.test_data, iperf_l2_2.test_data]
+
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 

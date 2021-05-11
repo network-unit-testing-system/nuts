@@ -84,8 +84,11 @@ class TestTransformResult:
         assert all(h in transformed_result for h in ["R1", "R2"])
 
     def test_contains_network_instances_at_second_level(self, transformed_result):
-        assert list(transformed_result["R1"].result.keys()) == ["default", "mgmt", "space", "ship"]
-        assert list(transformed_result["R2"].result.keys()) == ["default", "mgmt"]
+        assert all(
+            network_instances in transformed_result["R1"].result
+            for network_instances in ["default", "mgmt", "space", "ship"]
+        )
+        assert all(network_instances in transformed_result["R2"].result for network_instances in ["default", "mgmt"])
 
     def test_contains_interfaces_at_network_instance(self, transformed_result):
         assert transformed_result["R1"].result["default"]["interfaces"] == [

@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 from nuts.index import ModuleIndex
-from tests.helpers.shared import YAML_EXTENSION
+from tests.helpers.selftest_helpers import YAML_EXTENSION
 
 
 def test_load_class_and_execute_tests(testdir):

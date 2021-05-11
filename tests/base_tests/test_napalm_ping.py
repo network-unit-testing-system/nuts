@@ -5,7 +5,7 @@ from nornir.core.task import AggregatedResult, MultiResult, Result
 from nuts.base_tests.napalm_ping import CONTEXT
 from nuts.base_tests.napalm_ping import Ping
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
-from tests.helpers.shared import create_result, create_multi_result, Host
+from tests.helpers.selftest_helpers import create_result, create_multi_result, Host
 
 test_data_and_nornir_results = [
     {

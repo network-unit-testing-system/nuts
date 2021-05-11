@@ -4,7 +4,7 @@ import pytest
 
 from nornir.core.task import AggregatedResult
 from nuts.base_tests.netmiko_iperf import CONTEXT
-from tests.helpers.shared import create_result, create_multi_result
+from tests.helpers.selftest_helpers import create_result, create_multi_result
 
 test_data_and_nornir_results: List[Dict[Any, Any]] = [
     {

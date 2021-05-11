@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
-from tests.helpers.shared import create_multi_result, create_result
+from tests.helpers.selftest_helpers import create_multi_result, create_result
 
 neighbor_details = {
     "destination_host": "R2",

@@ -1,4 +1,4 @@
-from tests.helpers.shared import YAML_EXTENSION
+from tests.helpers.selftest_helpers import YAML_EXTENSION
 
 
 def test_load_module_fixture(testdir):

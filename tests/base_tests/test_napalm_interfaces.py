@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_interfaces import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result
+from tests.utils import create_multi_result, create_result
 
 nornir_results = [
     {

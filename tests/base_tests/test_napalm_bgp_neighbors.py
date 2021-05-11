@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result
+from tests.utils import create_multi_result, create_result
 
 neighbor_details = {
     "local_as": 45001,

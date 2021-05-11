@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from nuts.base_tests.netmiko_ospf_neighbors import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result
+from tests.utils import create_multi_result, create_result
 
 neighbor_details = {
     "neighbor_id": "172.16.255.3",

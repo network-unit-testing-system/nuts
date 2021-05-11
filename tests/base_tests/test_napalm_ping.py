@@ -3,9 +3,9 @@ from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_ping import CONTEXT
-from tests.helpers.selftest_helpers import tupelize
+from tests.utils import tupelize
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
-from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
+from tests.utils import create_result, create_multi_result, SelfTestData
 
 ping_r1_1 = SelfTestData(
     nornir_raw_result={

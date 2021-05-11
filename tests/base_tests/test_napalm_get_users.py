@@ -35,27 +35,25 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
+@pytest.fixture
+def all_testdata():
+    return [users_r1_1.test_data, users_r1_2.test_data, users_r2.test_data]
+
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
-    @pytest.mark.parametrize("host", ["R1", "R2", "R3"])
-    def test_contains_host_at_toplevel(self, transformed_result, host):
-        assert host in transformed_result
+    def test_contains_host_at_toplevel(self, transformed_result):
+        assert all(h in transformed_result for h in ["R1", "R2", "R3"])
 
-    def test_contains_multiple_usernames_per_host(self, transformed_result):
-        expected_r1_users = [users_r1_1.test_data["username"], users_r1_2.test_data["username"]]
-        assert all(u in transformed_result["R1"].result for u in expected_r1_users)
+    def test_contains_multiple_usernames_per_host(self, transformed_result, all_testdata):
+        assert all(e["username"] in transformed_result[e["host"]].result for e in all_testdata)
 
-    def test_username_has_corresponding_password(self, transformed_result):
-        expected = [users_r1_1.test_data, users_r1_2.test_data, users_r2.test_data]
-        for entry in expected:
-            assert transformed_result[entry["host"]].result[entry["username"]]["password"] == entry["password"]
+    def test_username_has_corresponding_password(self, transformed_result, all_testdata):
+        assert all(transformed_result[entry["host"]].result[entry["username"]]["password"] == entry["password"] for entry in all_testdata)
 
-    def test_username_has_matching_privilegelevel(self, transformed_result):
-        expected = [users_r1_1.test_data, users_r1_2.test_data, users_r2.test_data]
-        for entry in expected:
-            assert transformed_result[entry["host"]].result[entry["username"]]["level"] == entry["level"]
+    def test_username_has_matching_privilegelevel(self, transformed_result, all_testdata):
+        assert all(transformed_result[entry["host"]].result[entry["username"]]["level"] == entry["level"] for entry in all_testdata)
 
     def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"].failed

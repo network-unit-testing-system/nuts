@@ -30,8 +30,7 @@ class SelfTestData:
 
 def create_multi_result(results: List[Result], task_name: str) -> MultiResult:
     multi_result = MultiResult(task_name)
-    for result in results:
-        multi_result.append(result)
+    multi_result += results
     return multi_result
 
 

@@ -121,46 +121,38 @@ def general_result():
     )
     return general_result
 
+@pytest.fixture
+def all_testdata():
+    return [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
 
-test_data = [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
-pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters={"test_data": test_data}))]
+pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters={"test_data": [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]}))]
 
 
 class TestTransformResult:
-    @pytest.mark.parametrize("host", ["R1"])
-    def test_contains_host_at_toplevel(self, transformed_result, host):
-        assert host in transformed_result
+    def test_contains_host_at_toplevel(self, transformed_result, all_testdata):
+        hosts = [e["host"] for e in all_testdata]
+        assert all(h in transformed_result for h in hosts)
 
-    @pytest.mark.parametrize(
-        "host, destination", [tupelize(entry, ["host", "destination"]) for entry in test_data]
-    )
-    def test_contains_pinged_destination(self, transformed_result, host, destination):
-        assert destination in transformed_result[host].keys()
+    def test_contains_pinged_destination(self, transformed_result, all_testdata):
+        assert all(entry["destination"] in transformed_result[entry["host"]] for entry in all_testdata)
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result", [tupelize(ping_r1_1.test_data, ["host", "destination", "expected"])]
-    )
-    def test_destination_maps_to_enum_success(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
+    def test_destination_maps_to_enum_success(self, transformed_result):
+        expected_success = ping_r1_1.test_data
+        assert transformed_result["R1"][expected_success["destination"]].result.name == expected_success["expected"]
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result", [tupelize(ping_r2.test_data, ["host", "destination", "expected"])]
-    )
-    def test_destination_maps_to_enum_failure(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
+    def test_destination_maps_to_enum_failure(self, transformed_result):
+        expected_fail = ping_r2.test_data
+        assert transformed_result["R2"][expected_fail["destination"]].result.name == expected_fail["expected"]
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result", [tupelize(ping_r3.test_data, ["host", "destination", "expected"])]
-    )
-    def test_destination_maps_to_enum_flapping(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
+    def test_destination_maps_to_enum_flapping(self, transformed_result):
+        expected_flapping = ping_r3.test_data
+        assert transformed_result["R3"][expected_flapping["destination"]].result.name == expected_flapping["expected"]
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result",
-        [tupelize(e.test_data, ["host", "destination", "expected"]) for e in [ping_r1_1, ping_r1_2]],
-    )
-    def test_one_host_several_destinations(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
+    def test_one_host_several_destinations(self, transformed_result):
+        expected1 = ping_r1_1.test_data
+        expected2 = ping_r1_2.test_data
+        assert transformed_result["R1"][expected1["destination"]].result.name == expected1["expected"]
+        assert transformed_result["R1"][expected2["destination"]].result.name == expected2["expected"]
 
     def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"]["172.16.23.6"].failed

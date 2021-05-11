@@ -131,9 +131,7 @@ class TestTransformResult:
     def test_contains_host_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
-    @pytest.mark.parametrize(
-        "host, destination", [tupelize(entry, ["host", "destination"]) for entry in test_data]
-    )
+    @pytest.mark.parametrize("host, destination", [tupelize(entry, ["host", "destination"]) for entry in test_data])
     def test_contains_pinged_destination(self, transformed_result, host, destination):
         assert destination in transformed_result[host].keys()
 

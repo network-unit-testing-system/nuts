@@ -26,7 +26,9 @@ iperf_l2_2 = SelfTestData(
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
 )
 
-reachable_hosts = [tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1]]
+reachable_hosts = [
+    tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1]
+]
 
 
 @pytest.fixture
@@ -35,10 +37,20 @@ def general_result():
     confirmation_result = create_result(result_content="iperf executed for host", task_name=task_name)
     general_result = AggregatedResult(task_name)
     general_result["L1"] = create_multi_result(
-        results=[confirmation_result, iperf_l1_1.create_nornir_result(task_name), iperf_l1_2.create_nornir_result(task_name)], task_name=task_name
+        results=[
+            confirmation_result,
+            iperf_l1_1.create_nornir_result(task_name),
+            iperf_l1_2.create_nornir_result(task_name),
+        ],
+        task_name=task_name,
     )
     general_result["L2"] = create_multi_result(
-        results=[confirmation_result, iperf_l2_1.create_nornir_result(task_name), iperf_l2_2.create_nornir_result(task_name)], task_name=task_name
+        results=[
+            confirmation_result,
+            iperf_l2_1.create_nornir_result(task_name),
+            iperf_l2_2.create_nornir_result(task_name),
+        ],
+        task_name=task_name,
     )
     return general_result
 
@@ -47,19 +59,32 @@ pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
-    @pytest.mark.parametrize("host", [tupelize(e.test_data, ["host"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2]])
+    @pytest.mark.parametrize(
+        "host", [tupelize(e.test_data, ["host"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2]]
+    )
     def test_contains_host_at_toplevel(self, transformed_result, host):
         assert host[0] in transformed_result
 
-    @pytest.mark.parametrize("host, destination, min_expected", [tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2]])
+    @pytest.mark.parametrize(
+        "host, destination, min_expected",
+        [
+            tupelize(e.test_data, ["host", "destination", "min_expected"])
+            for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2]
+        ],
+    )
     def test_contains_iperf_dest(self, transformed_result, host, destination, min_expected):
         assert destination in transformed_result[host]
 
-    @pytest.mark.parametrize("host, destination, min_expected", [tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2]])
+    @pytest.mark.parametrize(
+        "host, destination, min_expected",
+        [tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2]],
+    )
     def test_one_host_several_destinations(self, transformed_result, host, destination, min_expected):
         assert transformed_result[host][destination].result >= min_expected
 
-    @pytest.mark.parametrize("host, destination, min_expected", [tupelize(iperf_l2_1.test_data, ["host", "destination", "min_expected"])])
+    @pytest.mark.parametrize(
+        "host, destination, min_expected", [tupelize(iperf_l2_1.test_data, ["host", "destination", "min_expected"])]
+    )
     def test_below_min_expected_fails(self, transformed_result, host, destination, min_expected):
         assert not transformed_result[host][destination].result >= min_expected
 

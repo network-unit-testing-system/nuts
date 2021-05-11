@@ -126,13 +126,13 @@ pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
-    def test_contains_host_at_toplevel(self, transformed_result):
+    def test_contains_host_at_toplevel(self, transformed_result):  # transformed_result.keys() == ["R1", "R2", "R3"]
         assert all(h in transformed_result for h in ["R1", "R2"])
 
     def test_contains_interface_names_at_second_level(self, transformed_result, all_testdata):
         assert all(entry["name"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
-    def test_contains_information_about_interface(self, transformed_result, all_testdata):
+    def test_contains_information_about_interface(self, transformed_result, all_testdata): # parametrize entry, key, is_enabled
         assert all(
             transformed_result[entry["host"]].result[entry["name"]]["is_enabled"] == entry["is_enabled"]
             for entry in all_testdata

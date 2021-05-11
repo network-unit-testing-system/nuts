@@ -117,21 +117,20 @@ def general_result(timeouted_multiresult):
     return result
 
 
+@pytest.fixture
+def all_testdata():
+    return [bgp_r1_1.test_data, bgp_r1_2.test_data, bgp_r2.test_data]
+
+
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
-    @pytest.mark.parametrize("host", [e.test_data["host"] for e in [bgp_r1_1, bgp_r1_2, bgp_r2]])
-    def test_contains_hosts_at_toplevel(self, transformed_result, host):
-        assert host in transformed_result
+    def test_contains_hosts_at_toplevel(self, transformed_result):
+        assert all(h in transformed_result for h in ["R1", "R2", "R3"])
 
-    def test_contains_peers_at_second_level(self, transformed_result):
-        r1 = bgp_r1_1.test_data["host"]
-        r1_peers = [bgp_r1_1.test_data["peer"], bgp_r1_2.test_data["peer"]]
-        r2 = bgp_r2.test_data["host"]
-        r2_peers = bgp_r2.test_data["peer"]
-        assert list(transformed_result[r1].result.keys()) == r1_peers
-        assert r2_peers in transformed_result[r2].result.keys()
+    def test_contains_peers_at_second_level(self, transformed_result, all_testdata):
+        assert all(entry["peer"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
     def test_contains_information_about_neighbor(self, transformed_result):
         r1 = bgp_r1_1.test_data["host"]

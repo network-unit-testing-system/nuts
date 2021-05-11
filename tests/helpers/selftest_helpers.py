@@ -13,7 +13,13 @@ YAML_EXTENSION = ".yaml"
 @dataclass
 class SelfTestData:
     """
-    Helper-Class that pairs the raw result that is sent over the wire with the test data (expected values).
+    Helper-Class that matches raw nornir results with a test data entry.
+    There are two possible structures:
+        1) 1 raw nornir results contains data that matches several test data entries
+        2) 1 raw nornir result contains data that matches exactly one test data entry
+
+        For 1), several instances of this class have to be created containing the same
+        raw nornir results but different test data entries.
     """
 
     nornir_raw_result: Any

@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData, tupelize
+from tests.helpers.selftest_helpers import create_multi_result, SelfTestData
 
 nornir_raw_r1 = {
     "bgp_neighbors": {

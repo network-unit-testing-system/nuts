@@ -2,7 +2,7 @@ import pytest
 
 from nornir.core.task import AggregatedResult
 from nuts.base_tests.netmiko_iperf import CONTEXT
-from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData, tupelize
+from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
 
 iperf_l1_1 = SelfTestData(
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.2"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',
@@ -23,10 +23,6 @@ iperf_l2_2 = SelfTestData(
     nornir_raw_result='{"start":{"connected":[],"version":"iperf 3.1.3","system_info":"Linux"},"intervals":[],"end":{},"error":"error - unable to connect to server: No route to host"}',
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
 )
-
-reachable_hosts = [
-    tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1]
-]
 
 
 @pytest.fixture

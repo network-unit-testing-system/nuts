@@ -54,8 +54,3 @@ def create_result(
     result.failed = failed
     result.exception = exception
     return result
-
-
-def tupelize(source: Dict, fields: List[str]) -> Tuple[Optional[Any], ...]:
-    ordered_fields = [source.get(field) for field in fields]
-    return tuple(ordered_fields)

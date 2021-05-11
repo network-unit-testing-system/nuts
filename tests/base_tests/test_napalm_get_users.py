@@ -1,8 +1,8 @@
 import pytest
-from nornir.core.task import AggregatedResult, MultiResult, Result
+from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_get_users import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData, tupelize
+from tests.helpers.selftest_helpers import create_multi_result, SelfTestData
 
 nornir_raw_result_r1 = {
     "users": {

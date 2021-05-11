@@ -2,96 +2,148 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_interfaces import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result
+from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData
 
-nornir_results = [
-    {
-        "interfaces": {
-            "GigabitEthernet1": {
-                "is_enabled": True,
-                "is_up": True,
-                "description": "",
-                "mac_address": "CA:CA:00:CE:DE:00",
-                "last_flapped": -1.0,
-                "mtu": 1500,
-                "speed": 1000,
-            },
-            "GigabitEthernet2": {
-                "is_enabled": False,
-                "is_up": True,
-                "description": "",
-                "mac_address": "C0:FF:EE:BE:EF:00",
-                "last_flapped": -1.0,
-                "mtu": 1500,
-                "speed": 1000,
-            },
+nornir_raw_result_r1 = {
+    "interfaces": {
+        "GigabitEthernet1": {
+            "is_enabled": True,
+            "is_up": True,
+            "description": "",
+            "mac_address": "CA:CA:00:CE:DE:00",
+            "last_flapped": -1.0,
+            "mtu": 1500,
+            "speed": 1000,
+        },
+        "GigabitEthernet2": {
+            "is_enabled": False,
+            "is_up": True,
+            "description": "",
+            "mac_address": "C0:FF:EE:BE:EF:00",
+            "last_flapped": -1.0,
+            "mtu": 1500,
+            "speed": 1000,
         },
     },
-    {
-        "interfaces": {
-            "Loopback0": {
-                "is_enabled": True,
-                "is_up": False,
-                "description": "",
-                "mac_address": "",
-                "last_flapped": -1.0,
-                "mtu": 1514,
-                "speed": 8000,
-            },
-            "GigabitEthernet3": {
-                "is_enabled": False,
-                "is_up": False,
-                "description": "",
-                "mac_address": "BE:EF:DE:AD:BE:EF",
-                "last_flapped": -1.0,
-                "mtu": 1500,
-                "speed": 1000,
-            },
-        }
+}
+
+nornir_raw_result_r2 = {
+    "interfaces": {
+        "Loopback0": {
+            "is_enabled": True,
+            "is_up": False,
+            "description": "",
+            "mac_address": "",
+            "last_flapped": -1.0,
+            "mtu": 1514,
+            "speed": 8000,
+        },
+        "GigabitEthernet3": {
+            "is_enabled": False,
+            "is_up": False,
+            "description": "",
+            "mac_address": "BE:EF:DE:AD:BE:EF",
+            "last_flapped": -1.0,
+            "mtu": 1500,
+            "speed": 1000,
+        },
+    }
+}
+
+interfaces_r1_1 = SelfTestData(
+    nornir_raw_result=nornir_raw_result_r1,
+    test_data={
+        "is_enabled": True,
+        "host": "R1",
+        "name": "GigabitEthernet1",
+        "is_up": True,
+        "mac_address": "CA:CA:00:CE:DE:00",
+        "speed": 1000,
+        "mtu": 1500,
     },
-]
+)
+
+interfaces_r1_2 = SelfTestData(
+    nornir_raw_result=nornir_raw_result_r1,
+    test_data={
+        "is_enabled": False,
+        "host": "R1",
+        "name": "GigabitEthernet2",
+        "is_up": True,
+        "mac_address": "C0:FF:EE:BE:EF:00",
+        "speed": 1000,
+        "mtu": 1500,
+    },
+)
+
+interfaces_r2_1 = SelfTestData(
+    nornir_raw_result=nornir_raw_result_r2,
+    test_data={
+        "is_enabled": True,
+        "host": "R2",
+        "name": "Loopback0",
+        "is_up": False,
+        "mac_address": "",
+        "speed": 1000,
+        "mtu": 1500,
+    },
+)
+
+interfaces_r2_2 = SelfTestData(
+    nornir_raw_result=nornir_raw_result_r2,
+    test_data={
+        "is_enabled": False,
+        "host": "R2",
+        "name": "GigabitEthernet3",
+        "is_up": False,
+        "mac_address": "BE:EF:DE:AD:BE:EF",
+        "speed": 1000,
+        "mtu": 1500,
+    },
+)
 
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
     task_name = "napalm_get"
-    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
     result = AggregatedResult(task_name)
-    result["R1"] = create_multi_result(results_per_host[0], task_name)
-    result["R2"] = create_multi_result(results_per_host[1], task_name)
+    result["R1"] = create_multi_result(
+        [interfaces_r1_1.create_nornir_result(task_name), interfaces_r1_2.create_nornir_result(task_name)], task_name
+    )
+    result["R2"] = create_multi_result(
+        [interfaces_r2_1.create_nornir_result(task_name), interfaces_r2_2.create_nornir_result(task_name)], task_name
+    )
     result["R3"] = timeouted_multiresult
     return result
+
+
+@pytest.fixture
+def all_testdata():
+    return [interfaces_r1_1.test_data, interfaces_r1_2.test_data, interfaces_r2_1.test_data, interfaces_r2_2.test_data]
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 class TestTransformResult:
-    @pytest.mark.parametrize("host", ["R1", "R2"])
-    def test_contains_host_at_toplevel(self, transformed_result, host):
-        assert host in transformed_result
+    def test_contains_host_at_toplevel(self, transformed_result):
+        assert all(h in transformed_result for h in ["R1", "R2"])
 
-    @pytest.mark.parametrize(
-        "host, interface_name",
-        [("R1", "GigabitEthernet1"), ("R1", "GigabitEthernet2"), ("R2", "Loopback0"), ("R2", "GigabitEthernet3")],
-    )
-    def test_contains_interface_names_at_second_level(self, transformed_result, host, interface_name):
-        assert interface_name in transformed_result[host].result.keys()
+    def test_contains_interface_names_at_second_level(self, transformed_result, all_testdata):
+        assert all(entry["name"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
-    @pytest.mark.parametrize(
-        "host, name, is_enabled, is_up, mac_address",
-        [
-            ("R1", "GigabitEthernet1", True, True, "CA:CA:00:CE:DE:00"),
-            ("R1", "GigabitEthernet2", False, True, "C0:FF:EE:BE:EF:00"),
-            ("R2", "Loopback0", True, False, ""),
-            ("R2", "GigabitEthernet3", False, False, "BE:EF:DE:AD:BE:EF"),
-        ],
-    )
-    def test_contains_information_about_interface(self, transformed_result, host, name, is_enabled, is_up, mac_address):
-        interface_result = transformed_result[host].result[name]
-        assert interface_result["is_enabled"] == is_enabled
-        assert interface_result["is_up"] == is_up
-        assert interface_result["mac_address"] == mac_address
+    def test_contains_information_about_interface(self, transformed_result, all_testdata):
+        assert all(
+            transformed_result[entry["host"]].result[entry["name"]]["is_enabled"] == entry["is_enabled"]
+            for entry in all_testdata
+        )
+        assert all(
+            transformed_result[entry["host"]].result[entry["name"]]["is_up"] == entry["is_up"] for entry in all_testdata
+        )
+        assert all(
+            transformed_result[entry["host"]].result[entry["name"]]["mac_address"] == entry["mac_address"]
+            for entry in all_testdata
+        )
 
     def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"].failed

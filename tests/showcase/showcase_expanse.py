@@ -7,8 +7,6 @@ functionality of nuts.
 Subclasses NutsContext and therefore does not need network access.
 """
 
-__path__ = "tests.showcase.showcase_expanse.TestExpanseCrew"
-
 from typing import List, Dict, Any
 
 import pytest

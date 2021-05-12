@@ -35,16 +35,16 @@ CONTEXT = ExpanseContext
 
 
 @pytest.fixture
-def expanse(initialized_nuts: NutsContext, ship):
+def expanse(nuts_ctx: NutsContext, ship):
     """
     Helps to prepare the results for TestExpanseCrew and generates a fixture that
     provides the initialized context and the keyword with which the results should be filtered
     for a test.
-    :param initialized_nuts: The context for a test with an initialized NutsContext subclass
+    :param nuts_ctx: The context for a test with an initialized NutsContext subclass
     :param ship: the parameter from the yaml file
     :return: processed results ready to be passed on to a test
     """
-    return initialized_nuts.transformed_result[ship]
+    return nuts_ctx.transformed_result[ship]
 
 
 class TestExpanseCrew:

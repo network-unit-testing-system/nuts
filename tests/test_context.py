@@ -153,8 +153,8 @@ class TestNornirNutsContextIntegration:
             CONTEXT = FailingNornirNutsContext
 
             class TestBasicTask:
-                def test_basic_task(self, initialized_nuts):
-                    assert initialized_nuts.general_result()["R1"].result == "R1"
+                def test_basic_task(self, nuts_ctx):
+                    assert nuts_ctx.general_result()["R1"].result == "R1"
             """
         )
         arguments = {
@@ -184,8 +184,8 @@ class TestNornirNutsContextIntegration:
 
 
     class TestBasicTask:
-        def test_basic_task(self, initialized_nuts):
-            assert initialized_nuts.general_result()["R1"].result == "R1"
+        def test_basic_task(self, nuts_ctx):
+            assert nuts_ctx.general_result()["R1"].result == "R1"
     """
         )
         arguments = {

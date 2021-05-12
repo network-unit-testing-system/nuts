@@ -20,25 +20,13 @@ from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
     context_class = getattr(request.module, "CONTEXT", NutsContext)
-    return context_class(params)
-
-
-@pytest.fixture(scope="class")
-def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
-    """
-    Initialises the NutsContext depending on its subclass type.
-    If it is of type NornirNutsContext, returns a NornirNutsContext
-    with an initialized nornir instance, otherwise the context object as is.
-
-    :param nuts_ctx: the NutsContext to be initialized
-    :return: an instance type NutsContext
-    """
-    nuts_ctx.initialize()
-    return nuts_ctx
+    ctx = context_class(params)
+    ctx.initialize()
+    return ctx
 
 
 @pytest.fixture
-def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
+def single_result(nuts_ctx: NutsContext, host: str) -> NutsResult:
     """
     Returns the result which belongs to a specific host out of the overall set of results
     that has been returned by nornir's task.
@@ -48,7 +36,7 @@ def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
     :param destination: The corresponding destination to a host for tests that test a host-destination relationship
     :return: The `NutsResult` that belongs to a host
     """
-    result = initialized_nuts.transformed_result
+    result = nuts_ctx.transformed_result
     assert host in result, f"Host {host} not found in aggregated result."
     return result[host]
 

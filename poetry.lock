@@ -299,7 +299,7 @@ textfsm = "*"
 
 [[package]]
 name = "ncclient"
-version = "0.6.9"
+version = "0.6.10"
 description = "Python library for NETCONF clients"
 category = "main"
 optional = false
@@ -1029,7 +1029,7 @@ napalm = [
     {file = "napalm-3.2.0.tar.gz", hash = "sha256:6e69a505f5d4a678c42f048d13153afabf10b7fec72868e3bfb53ff4089206fc"},
 ]
 ncclient = [
-    {file = "ncclient-0.6.9.tar.gz", hash = "sha256:0112f2ad41fb658f52446d870853a63691d69299c73c7351c520d38dbd8dc0c4"},
+    {file = "ncclient-0.6.10.tar.gz", hash = "sha256:67b1eba5a6c7c6075746d8c33d4e8f4ded17604034c1fcd1c78996ef52bf66ff"},
 ]
 netaddr = [
     {file = "netaddr-0.8.0-py2.py3-none-any.whl", hash = "sha256:9666d0232c32d2656e5e5f8d735f58fd6c7457ce52fc21c98d45f2af78f990ac"},

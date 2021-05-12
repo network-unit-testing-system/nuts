@@ -2,6 +2,7 @@
 Based on https://docs.pytest.org/en/stable/example/nonpython.html#yaml-plugin
 """
 import importlib
+import pathlib
 import types
 from importlib import util
 from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
@@ -13,24 +14,53 @@ from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
 from _pytest.python import Metafunc
 
-from nuts.helpers.errors import NutsUsageError
+from nuts.helpers.errors import NutsUsageError, NutsSetupError
 from nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
-        with self.fspath.open() as f:
-            raw = yaml.safe_load(f)
+        # path uses pathlib.Path and is meant to replace fspath, which uses py.path.local
+        # both variants will be used for some time in parallel within pytest.
+        # If fspath is used in a newer pytest version, it triggers a deprecation warning.
+        # We therefore use a wrapper that can use both path types
+        if hasattr(self, "path"):
+            yield from self._collect_path()
+        else:
+            yield from self._collect_fspath()
+
+    def _collect_path(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+        try:
+            with self.path.open() as f:  # type: ignore[attr-defined]
+                raw = yaml.safe_load(f)
+        except OSError as e:
+            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{e}")
 
         for test_entry in raw:
-            module_path = find_module_path(test_entry.get("test_module"), test_entry.get("test_class"))
-            module = load_module(module_path)
+            module = find_and_load_module(test_entry)
+            yield NutsTestFile.from_parent(self, path=self.path, obj=module, test_entry=test_entry)  # type: ignore[attr-defined, call-arg]
+
+    def _collect_fspath(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+        try:
+            with self.fspath.open() as f:
+                raw = yaml.safe_load(f)
+        except OSError as e:
+            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{e}")
+
+        for test_entry in raw:
+            module = find_and_load_module(test_entry)
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
-def find_module_path(module_path: Optional[str], class_name: str) -> str:
-    if not class_name:
+def find_and_load_module(test_entry: dict):
+    test_class = test_entry.get("test_class")
+    if not test_class:
         raise NutsUsageError("Class name of the specific test missing in YAML file.")
+    module_path = find_module_path(test_entry.get("test_module"), test_class)
+    return load_module(module_path)
+
+
+def find_module_path(module_path: Optional[str], class_name: str) -> str:
     if not module_path:
         module_path = ModuleIndex().find_test_module_of_class(class_name)
         if not module_path:

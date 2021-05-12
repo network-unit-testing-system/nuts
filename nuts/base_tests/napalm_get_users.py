@@ -51,4 +51,4 @@ class TestNapalmUsers:
 class TestNapalmOnlyDefinedUsersExist:
     @pytest.mark.nuts("host,usernames")
     def test_no_rogue_users(self, single_result, usernames):
-        assert list(single_result.result.keys()) == usernames
+        assert list(single_result.result) == usernames

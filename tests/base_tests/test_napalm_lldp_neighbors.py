@@ -88,7 +88,7 @@ class TestTransformResult:
         [("R1", ["GigabitEthernet4", "GigabitEthernet3"]), ("R2", ["GigabitEthernet4", "GigabitEthernet2"])],
     )
     def test_contains_results_with_ports_at_second_level(self, transformed_result, host, local_ports):
-        assert list(transformed_result[host].result.keys()) == local_ports
+        assert list(transformed_result[host].result) == local_ports
 
     @pytest.mark.parametrize(
         "host, local_ports",

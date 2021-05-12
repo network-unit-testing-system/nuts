@@ -95,7 +95,7 @@ class TestTransformResult:
         ],
     )
     def test_contains_neighbors_at_second_level(self, transformed_result, host, network_instances):
-        assert list(transformed_result[host].result.keys()) == network_instances
+        assert list(transformed_result[host].result) == network_instances
 
     @pytest.mark.parametrize("host, neighbor, details", [("R1", "R2", neighbor_details)])
     def test_contains_information_about_neighbor(self, transformed_result, host, neighbor, details):

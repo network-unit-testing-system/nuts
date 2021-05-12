@@ -76,7 +76,7 @@ class TestTransformResult:
         [("R1", "GigabitEthernet1"), ("R1", "GigabitEthernet2"), ("R2", "Loopback0"), ("R2", "GigabitEthernet3")],
     )
     def test_contains_interface_names_at_second_level(self, transformed_result, host, interface_name):
-        assert interface_name in transformed_result[host].result.keys()
+        assert interface_name in transformed_result[host].result
 
     @pytest.mark.parametrize(
         "host, name, is_enabled, is_up, mac_address",

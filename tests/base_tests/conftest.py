@@ -4,7 +4,6 @@ import pytest
 from _pytest.fixtures import FixtureRequest
 from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
-from nuts.helpers.result import NutsResult
 
 from nuts.context import NornirNutsContext, NutsContext
 

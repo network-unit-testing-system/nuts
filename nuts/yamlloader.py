@@ -21,9 +21,9 @@ from nuts.index import ModuleIndex
 class NutsYamlFile(pytest.File):
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         # path uses pathlib.Path and is meant to replace fspath, which uses py.path.local
-        # both variants will be used for some time in parallel
-        # if fspath is used in a newer python version, it triggers a deprecation warning
-        # we therefore use a wrapper that can use both path types
+        # both variants will be used for some time in parallel within pytest.
+        # If fspath is used in a newer pytest version, it triggers a deprecation warning.
+        # We therefore use a wrapper that can use both path types
         if hasattr(self, "path"):
             yield from self._collect_path()
         else:

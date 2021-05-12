@@ -46,7 +46,7 @@ class NutsContext:
         raise NotImplementedError
 
     @functools.cached_property
-    def transformed_results(self) -> Dict[str, Any]:
+    def transformed_result(self) -> Dict[str, Any]:
         """
         The (processed) results of the network task, ready to be passed on to a test's fixture.
         The results are cached, so that general_result does not need to be called multiple times as it might

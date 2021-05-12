@@ -45,7 +45,7 @@ def expanse(initialized_nuts: NutsContext, ship):
     :param ship: the parameter from the yaml file
     :return: processed results ready to be passed on to a test
     """
-    return initialized_nuts.transformed_results[ship]
+    return initialized_nuts.transformed_result[ship]
 
 
 class TestExpanseCrew:

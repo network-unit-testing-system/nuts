@@ -36,9 +36,8 @@ def single_result(nuts_ctx: NutsContext, host: str) -> NutsResult:
     :param destination: The corresponding destination to a host for tests that test a host-destination relationship
     :return: The `NutsResult` that belongs to a host
     """
-    result = nuts_ctx.transformed_result
-    assert host in result, f"Host {host} not found in aggregated result."
-    return result[host]
+    assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
+    return nuts_ctx.transformed_result[host]
 
 
 @pytest.fixture

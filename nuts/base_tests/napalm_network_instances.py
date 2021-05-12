@@ -45,7 +45,7 @@ class NetworkInstancesContext(NornirNutsContext):
         return element["state"]["route_distinguisher"]
 
     def _extract_interfaces(self, element: dict) -> List[str]:
-        return list(element["interfaces"]["interface"].keys())
+        return list(element["interfaces"]["interface"])
 
 
 CONTEXT = NetworkInstancesContext

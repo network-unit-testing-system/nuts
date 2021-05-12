@@ -48,7 +48,7 @@ def expanse(nuts_ctx: NutsContext, ship):
 class TestExpanseCrew:
     @pytest.mark.nuts("ship, name")
     def test_name(self, expanse: Dict, name):
-        assert name in expanse.keys()
+        assert name in expanse
 
     @pytest.mark.nuts("ship, name, role")
     def test_role(self, expanse: Dict, name, role):

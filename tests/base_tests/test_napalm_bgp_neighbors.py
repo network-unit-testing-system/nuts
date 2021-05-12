@@ -81,7 +81,7 @@ class TestTransformResult:
 
     @pytest.mark.parametrize("host, neighbors", [("R1", ["172.16.255.2", "172.16.255.3"]), ("R2", ["172.16.255.1"])])
     def test_contains_peers_at_second_level(self, transformed_result, host, neighbors):
-        assert list(transformed_result[host].result.keys()) == neighbors
+        assert list(transformed_result[host].result) == neighbors
 
     @pytest.mark.parametrize("host, neighbor, details", [("R1", "172.16.255.2", neighbor_details)])
     def test_contains_information_about_neighbor(self, transformed_result, host, neighbor, details):

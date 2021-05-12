@@ -16,8 +16,6 @@ from nuts.context import NutsContext
 
 
 class ExpanseContext(NutsContext):
-    def __init__(self, nuts_parameters: Any = None):
-        super().__init__(nuts_parameters)
 
     def general_result(self) -> List[Dict]:
         return [
@@ -33,9 +31,6 @@ class ExpanseContext(NutsContext):
             "rocinante": {entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
         }
 
-    def transformed_results(self) -> Any:
-        return self.transform_result(self.general_result())
-
 
 CONTEXT = ExpanseContext
 
@@ -48,10 +43,9 @@ def expanse(initialized_nuts: NutsContext, ship):
     for a test.
     :param initialized_nuts: The context for a test with an initialized NutsContext subclass
     :param ship: the parameter from the yaml file
-    :return:
+    :return: processed results ready to be passed on to a test
     """
-    result = initialized_nuts.transformed_results()
-    return result[ship]
+    return initialized_nuts.transformed_results[ship]
 
 
 class TestExpanseCrew:

@@ -1,10 +1,12 @@
 """Provide necessary information that is needed for a specific test."""
-from typing import Any, Callable, Optional, Dict
+import functools
+from typing import Any, Callable, Optional, Dict, Union
 
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult
 
 from nuts.helpers.errors import NutsSetupError
+from nuts.helpers.result import NutsResult
 
 
 class NutsContext:
@@ -30,19 +32,28 @@ class NutsContext:
         test_execution = self.nuts_parameters.get("test_execution", None)
         return {**(test_execution if test_execution is not None else {})}
 
-
-    def transform_result(self, general_result: AggregatedResult) -> Any:
-        raise NotImplementedError
-
     def general_result(self) -> Any:
+        """
+        :return: raw, unprocessed result
+        """
         raise NotImplementedError
 
+    def transform_result(self, general_result: Any) -> Any:
+        """
+        :param general_result: raw result
+        :return: processed result ready to be passed to a test
+        """
+        raise NotImplementedError
+
+    @functools.cached_property
     def transformed_results(self) -> Dict[str, Any]:
         """
         The (processed) results of the network task, ready to be passed on to a test's fixture.
-        :return: the processed result of the network task
+        The results are cached, so that general_result does not need to be called multiple times as it might
+        access the network.
         """
-        raise NotImplementedError
+        return self.transform_result(self.general_result())
+
 
 class NornirNutsContext(NutsContext):
     """
@@ -56,7 +67,6 @@ class NornirNutsContext(NutsContext):
 
     def __init__(self, nuts_parameters: Any = None):
         super().__init__(nuts_parameters)
-        self._transformed_result = None
         self.nornir: Optional[Nornir] = None
 
     def nuts_task(self) -> Callable:
@@ -73,14 +83,14 @@ class NornirNutsContext(NutsContext):
         """
         return None
 
-    def transform_result(self, general_result: AggregatedResult) -> Any:
+    def transform_result(self, general_result: AggregatedResult) -> Dict[str, Any]:
         """
         Transforms the raw nornir result and wraps it into a `NutsResult`.
 
         :param general_result: The raw answer as provided by nornir's executed task
-        :return: Usually a dict where keys are the hosts, values are a `NutsResult`
+        :return: A dict where keys are the hosts, values are a `NutsResult`
         """
-        return general_result
+        raise NotImplementedError
 
     def general_result(self) -> AggregatedResult:
         """
@@ -116,12 +126,4 @@ class NornirNutsContext(NutsContext):
         """
         pass
 
-    def transformed_results(self) -> Any:
-        """
-        The result from nornir's task, transformed to be passed on later to a test's fixture
-        called `single_result`.
-        :return: The transformed result
-        """
-        if not self._transformed_result:
-            self._transformed_result = self.transform_result(self.general_result())
-        return self._transformed_result
+

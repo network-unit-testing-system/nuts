@@ -16,7 +16,6 @@ from nuts.context import NutsContext
 
 
 class ExpanseContext(NutsContext):
-
     def general_result(self) -> List[Dict]:
         return [
             {"host": "rocinante", "name": "naomi nagata", "role": "engineer", "origin": "belter"},

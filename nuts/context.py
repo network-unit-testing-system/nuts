@@ -38,7 +38,7 @@ class NutsContext:
         """
         raise NotImplementedError
 
-    def transform_result(self, general_result: Any) -> Any:
+    def transform_result(self, general_result: Any) -> Dict[str, Any]:
         """
         :param general_result: raw result
         :return: processed result ready to be passed to a test
@@ -125,5 +125,3 @@ class NornirNutsContext(NutsContext):
         Defines code which is executed after the nornir task.
         """
         pass
-
-

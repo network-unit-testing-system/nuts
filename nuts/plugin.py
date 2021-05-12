@@ -7,11 +7,9 @@ from _pytest.nodes import Collector
 from _pytest.python import Metafunc
 from _pytest.fixtures import FixtureRequest
 from _pytest.config import Config
-from nornir import InitNornir
-from nornir.core import Nornir
 from py._path.local import LocalPath
 
-from nuts.context import NutsContext, NornirNutsContext
+from nuts.context import NutsContext
 from nuts.helpers.result import NutsResult
 from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 

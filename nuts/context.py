@@ -22,6 +22,7 @@ class NutsContext:
         self.nuts_parameters = nuts_parameters or {}
 
     def initialize(self) -> None:
+        """Initialize dependencies for this context after it has been created."""
         pass
 
     def nuts_arguments(self) -> dict:

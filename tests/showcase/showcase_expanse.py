@@ -33,7 +33,7 @@ class ExpanseContext(NutsContext):
             "rocinante": {entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
         }
 
-    def network_results(self) -> Any:
+    def transformed_results(self) -> Any:
         return self.transform_result(self.general_result())
 
 
@@ -50,7 +50,7 @@ def expanse(initialized_nuts: NutsContext, ship):
     :param ship: the parameter from the yaml file
     :return:
     """
-    result = initialized_nuts.network_results()
+    result = initialized_nuts.transformed_results()
     return result[ship]
 
 

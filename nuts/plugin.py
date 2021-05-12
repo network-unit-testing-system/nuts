@@ -73,7 +73,7 @@ def single_result(initialized_nuts: NutsContext, host: str) -> NutsResult:
     :param destination: The corresponding destination to a host for tests that test a host-destination relationship
     :return: The `NutsResult` that belongs to a host
     """
-    result = initialized_nuts.network_results()
+    result = initialized_nuts.transformed_results()
     assert host in result, f"Host {host} not found in aggregated result."
     return result[host]
 

@@ -32,12 +32,12 @@ class NutsContext:
 
 
     def transform_result(self, general_result: AggregatedResult) -> Any:
-        pass
+        raise NotImplementedError
 
     def general_result(self) -> Any:
         raise NotImplementedError
 
-    def network_results(self) -> Dict[str, Any]:
+    def transformed_results(self) -> Dict[str, Any]:
         """
         The (processed) results of the network task, ready to be passed on to a test's fixture.
         :return: the processed result of the network task
@@ -116,7 +116,7 @@ class NornirNutsContext(NutsContext):
         """
         pass
 
-    def network_results(self) -> Any:
+    def transformed_results(self) -> Any:
         """
         The result from nornir's task, transformed to be passed on later to a test's fixture
         called `single_result`.

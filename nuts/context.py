@@ -1,7 +1,9 @@
 """Provide necessary information that is needed for a specific test."""
 import functools
+import pathlib
 from typing import Any, Callable, Optional, Dict, Union
 
+from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult
 
@@ -18,6 +20,9 @@ class NutsContext:
 
     def __init__(self, nuts_parameters: Any = None):
         self.nuts_parameters = nuts_parameters or {}
+
+    def initialize(self) -> None:
+        pass
 
     def nuts_arguments(self) -> dict:
         """
@@ -65,9 +70,19 @@ class NornirNutsContext(NutsContext):
 
     """
 
+    #: The path to a nornir configuration file.
+    #: https://nornir.readthedocs.io/en/stable/configuration/index.html
+    NORNIR_CONFIG_FILE = pathlib.Path("nr-config.yaml")
+
     def __init__(self, nuts_parameters: Any = None):
         super().__init__(nuts_parameters)
         self.nornir: Optional[Nornir] = None
+
+    def initialize(self) -> None:
+        self.nornir = InitNornir(
+            config_file=str(self.NORNIR_CONFIG_FILE),
+            logging={"enabled": False},
+        )
 
     def nuts_task(self) -> Callable:
         """

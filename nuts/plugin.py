@@ -16,26 +16,6 @@ from nuts.helpers.result import NutsResult
 from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
-def nornir_config_file() -> str:
-    """
-    Returns the filename to a nornir configuration file.
-    https://nornir.readthedocs.io/en/stable/configuration/index.html
-
-    :return: The filename of the configuration
-    """
-    return "nr-config.yaml"
-
-
-def initialized_nornir(nornir_config_file: str) -> Nornir:
-    """
-    Initalizes nornir with a provided configuration file.
-
-    :param nornir_config_file: The filename of a nornir configuration file
-    :return: An initialized nornir instance
-    """
-    return InitNornir(config_file=nornir_config_file, logging={"enabled": False})
-
-
 @pytest.fixture(scope="class")
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
@@ -53,11 +33,8 @@ def initialized_nuts(nuts_ctx: NutsContext) -> NutsContext:
     :param nuts_ctx: the NutsContext to be initialized
     :return: an instance type NutsContext
     """
-    context = nuts_ctx
-    if isinstance(context, NornirNutsContext):
-        context.nornir = initialized_nornir(nornir_config_file())
-        return context
-    return context
+    nuts_ctx.initialize()
+    return nuts_ctx
 
 
 @pytest.fixture

@@ -1,6 +1,5 @@
 """Provide necessary information that is needed for a specific test."""
-from abc import ABC
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Dict
 
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult
@@ -8,7 +7,7 @@ from nornir.core.task import AggregatedResult
 from nuts.helpers.errors import NutsSetupError
 
 
-class NutsContext(ABC):
+class NutsContext:
     """
     Base context class. Holds all necessary information that is needed for a specific test.
 
@@ -31,13 +30,19 @@ class NutsContext(ABC):
         test_execution = self.nuts_parameters.get("test_execution", None)
         return {**(test_execution if test_execution is not None else {})}
 
-    def network_results(self) -> Any:
+
+    def transform_result(self, general_result: AggregatedResult) -> Any:
+        pass
+
+    def general_result(self) -> Any:
+        raise NotImplementedError
+
+    def network_results(self) -> Dict[str, Any]:
         """
         The (processed) results of the network task, ready to be passed on to a test's fixture.
         :return: the processed result of the network task
         """
-        return {}
-
+        raise NotImplementedError
 
 class NornirNutsContext(NutsContext):
     """

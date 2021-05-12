@@ -1,5 +1,4 @@
 """Fixtures"""
-import inspect
 from typing import Optional
 
 import pytest
@@ -11,7 +10,6 @@ from _pytest.config import Config
 from nornir import InitNornir
 from nornir.core import Nornir
 from py._path.local import LocalPath
-from nuts.helpers.errors import NutsSetupError
 
 from nuts.context import NutsContext, NornirNutsContext
 from nuts.helpers.result import NutsResult

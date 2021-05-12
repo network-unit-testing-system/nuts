@@ -1,5 +1,4 @@
 """Provide necessary information that is needed for a specific test."""
-import functools
 import pathlib
 from typing import Any, Callable, Optional, Dict, Union
 
@@ -11,6 +10,9 @@ from nuts.helpers.errors import NutsSetupError
 from nuts.helpers.result import NutsResult
 
 
+_TransformedResult = Dict[str, Any]
+
+
 class NutsContext:
     """
     Base context class. Holds all necessary information that is needed for a specific test.
@@ -20,6 +22,7 @@ class NutsContext:
 
     def __init__(self, nuts_parameters: Any = None):
         self.nuts_parameters = nuts_parameters or {}
+        self._cached_result: Optional[_TransformedResult] = None
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -44,21 +47,23 @@ class NutsContext:
         """
         raise NotImplementedError
 
-    def transform_result(self, general_result: Any) -> Dict[str, Any]:
+    def transform_result(self, general_result: Any) -> _TransformedResult:
         """
         :param general_result: raw result
         :return: processed result ready to be passed to a test
         """
         raise NotImplementedError
 
-    @functools.cached_property
-    def transformed_result(self) -> Dict[str, Any]:
+    @property
+    def transformed_result(self) -> _TransformedResult:
         """
         The (processed) results of the network task, ready to be passed on to a test's fixture.
         The results are cached, so that general_result does not need to be called multiple times as it might
         access the network.
         """
-        return self.transform_result(self.general_result())
+        if self._cached_result is None:
+            self._cached_result = self.transform_result(self.general_result())
+        return self._cached_result
 
 
 class NornirNutsContext(NutsContext):

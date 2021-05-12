@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_lldp_neighbors import CONTEXT
-from tests.helpers.shared import create_multi_result
+from tests.utils import create_multi_result, create_result
 
 neighbor_details = {
     "remote_chassis_id": "001e.e611.3500",
@@ -15,60 +15,62 @@ neighbor_details = {
     "parent_interface": "",
 }
 
+nornir_results = [
+    {
+        "lldp_neighbors_detail": {
+            "GigabitEthernet4": [neighbor_details.copy()],
+            "GigabitEthernet3": [
+                {
+                    "remote_chassis_id": "001e.f62f.a600",
+                    "remote_port": "Gi2",
+                    "remote_port_description": "GigabitEthernet2",
+                    "remote_system_name": "R2",
+                    "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+                    "remote_system_capab": ["bridge", "router"],
+                    "remote_system_enable_capab": ["router"],
+                    "parent_interface": "",
+                }
+            ],
+        }
+    },
+    {
+        "lldp_neighbors_detail": {
+            "GigabitEthernet4": [
+                {
+                    "remote_chassis_id": "001e.e611.3500",
+                    "remote_port": "Gi3",
+                    "remote_port_description": "GigabitEthernet3",
+                    "remote_system_name": "R3",
+                    "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+                    "remote_system_capab": ["bridge", "router"],
+                    "remote_system_enable_capab": ["router"],
+                    "parent_interface": "",
+                }
+            ],
+            "GigabitEthernet2": [
+                {
+                    "remote_chassis_id": "001e.e547.df00",
+                    "remote_port": "Gi3",
+                    "remote_port_description": "GigabitEthernet3",
+                    "remote_system_name": "R1",
+                    "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+                    "remote_system_capab": ["bridge", "router"],
+                    "remote_system_enable_capab": ["router"],
+                    "parent_interface": "",
+                }
+            ],
+        }
+    },
+]
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
-    result = AggregatedResult("napalm_get")
-    result["R1"] = create_multi_result(
-        {
-            "lldp_neighbors_detail": {
-                "GigabitEthernet4": [neighbor_details.copy()],
-                "GigabitEthernet3": [
-                    {
-                        "remote_chassis_id": "001e.f62f.a600",
-                        "remote_port": "Gi2",
-                        "remote_port_description": "GigabitEthernet2",
-                        "remote_system_name": "R2",
-                        "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-                        "remote_system_capab": ["bridge", "router"],
-                        "remote_system_enable_capab": ["router"],
-                        "parent_interface": "",
-                    }
-                ],
-            }
-        }
-    )
-    result["R2"] = create_multi_result(
-        {
-            "lldp_neighbors_detail": {
-                "GigabitEthernet4": [
-                    {
-                        "remote_chassis_id": "001e.e611.3500",
-                        "remote_port": "Gi3",
-                        "remote_port_description": "GigabitEthernet3",
-                        "remote_system_name": "R3",
-                        "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-                        "remote_system_capab": ["bridge", "router"],
-                        "remote_system_enable_capab": ["router"],
-                        "parent_interface": "",
-                    }
-                ],
-                "GigabitEthernet2": [
-                    {
-                        "remote_chassis_id": "001e.e547.df00",
-                        "remote_port": "Gi3",
-                        "remote_port_description": "GigabitEthernet3",
-                        "remote_system_name": "R1",
-                        "remote_system_description": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-                        "remote_system_capab": ["bridge", "router"],
-                        "remote_system_enable_capab": ["router"],
-                        "parent_interface": "",
-                    }
-                ],
-            }
-        }
-    )
-
+    task_name = "napalm_get"
+    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
+    result = AggregatedResult(task_name)
+    result["R1"] = create_multi_result(results_per_host[0], task_name)
+    result["R2"] = create_multi_result(results_per_host[1], task_name)
     result["R3"] = timeouted_multiresult
     return result
 
@@ -86,7 +88,7 @@ class TestTransformResult:
         [("R1", ["GigabitEthernet4", "GigabitEthernet3"]), ("R2", ["GigabitEthernet4", "GigabitEthernet2"])],
     )
     def test_contains_results_with_ports_at_second_level(self, transformed_result, host, local_ports):
-        assert list(transformed_result[host].result.keys()) == local_ports
+        assert list(transformed_result[host].result) == local_ports
 
     @pytest.mark.parametrize(
         "host, local_ports",

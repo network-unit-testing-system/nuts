@@ -1,23 +1,14 @@
 import pytest
 from napalm.base.exceptions import ConnectionException
-from nornir.core.task import AggregatedResult, MultiResult, Result
-from nuts.context import NornirNutsContext
+from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_ping import CONTEXT
-from nuts.base_tests.napalm_ping import Ping
+from tests.utils import tupelize
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
-from tests.helpers.shared import create_result
+from tests.utils import create_result, create_multi_result, SelfTestData
 
-test_data = [
-    {"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.3", "max_drop": 1},
-    {"expected": "FAIL", "host": "R2", "destination": "172.16.23.4", "max_drop": 1},
-    {"expected": "FLAPPING", "host": "R3", "destination": "172.16.23.5", "max_drop": 1},
-    {"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.6", "max_drop": 1},
-    {"expected": "SUCCESS", "host": "R3", "destination": "172.16.23.6", "max_drop": 1},
-]
-
-result_data = [
-    {
+ping_r1_1 = SelfTestData(
+    nornir_raw_result={
         "success": {
             "probes_sent": 5,
             "packet_loss": 1,
@@ -34,7 +25,32 @@ result_data = [
             ],
         }
     },
-    {
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.3", "max_drop": 1},
+)
+
+ping_r1_2 = SelfTestData(
+    nornir_raw_result={
+        "success": {
+            "probes_sent": 5,
+            "packet_loss": 1,
+            "rtt_min": 1.0,
+            "rtt_max": 1.0,
+            "rtt_avg": 1.0,
+            "rtt_stddev": 0.0,
+            "results": [
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+            ],
+        }
+    },
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.6", "max_drop": 1},
+)
+
+ping_r2 = SelfTestData(
+    nornir_raw_result={
         "success": {
             "probes_sent": 5,
             "packet_loss": 5,
@@ -51,27 +67,14 @@ result_data = [
             ],
         }
     },
-    {
+    test_data={"expected": "FAIL", "host": "R2", "destination": "172.16.23.4", "max_drop": 1},
+)
+
+ping_r3 = SelfTestData(
+    nornir_raw_result={
         "success": {
             "probes_sent": 5,
             "packet_loss": 3,
-            "rtt_min": 1.0,
-            "rtt_max": 1.0,
-            "rtt_avg": 1.0,
-            "rtt_stddev": 0.0,
-            "results": [
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-            ],
-        }
-    },
-    {
-        "success": {
-            "probes_sent": 5,
-            "packet_loss": 1,
             "rtt_min": 1.0,
             "rtt_max": 2.0,
             "rtt_avg": 1.0,
@@ -85,48 +88,41 @@ result_data = [
             ],
         }
     },
-]
+    test_data={"expected": "FLAPPING", "host": "R3", "destination": "172.16.23.5", "max_drop": 1},
+)
 
 
 @pytest.fixture
 def general_result():
-    result = AggregatedResult("napalm_ping_multi_host")
-    result_r0 = Result(host=None, destination=None, result="All pings executed", name="napalm_ping_multi_host")
-
-    multi_result_r1 = MultiResult("napalm_ping_multi_host")
-    multi_result_r1.append(result_r0)
-    result_r1_1 = Result(host=None, name="napalm_ping", destination="172.16.23.3")
-    result_r1_1.result = result_data[0]
-    multi_result_r1.append(result_r1_1)
-    result_r1_2 = Result(host=None, name="napalm_ping", destination="172.16.23.6")
-    result_r1_2.result = result_data[3]
-    multi_result_r1.append(result_r1_2)
-    result["R1"] = multi_result_r1
-
-    multi_result_r2 = MultiResult("napalm_ping_multi_host")
-    multi_result_r2.append(result_r0)
-    result_r2 = Result(host=None, name="napalm_ping", destination="172.16.23.4")
-    result_r2.result = result_data[1]
-    multi_result_r2.append(result_r2)
-    result["R2"] = multi_result_r2
-
-    multi_result_r3 = MultiResult("napalm_ping_multi_host")
-    multi_result_r3.append(result_r0)
-    result_r3 = Result(host=None, name="napalm_ping", destination="172.16.23.5")
-    result_r3.result = result_data[2]
-    multi_result_r3.append(result_r3)
-    multi_result_r3.append(
-        create_result(
-            TIMEOUT_MESSAGE,
-            failed=True,
-            exception=ConnectionException("Cannot connect to 10.20.0.123"),
-            destination="172.16.23.6",
-        )
+    task_name = "napalm_ping"
+    confirmation_result = create_result(result_content="All pings executed", task_name="napalm_ping_multihost")
+    timeouted = create_result(
+        TIMEOUT_MESSAGE,
+        task_name=task_name,
+        host="R3",
+        destination="172.16.23.6",
+        failed=True,
+        exception=ConnectionException("Cannot connect to 10.20.0.123"),
     )
-    result["R3"] = multi_result_r3
-    return result
+    general_result = AggregatedResult(task_name)
+    general_result["R1"] = create_multi_result(
+        results=[
+            confirmation_result,
+            ping_r1_1.create_nornir_result(task_name),
+            ping_r1_2.create_nornir_result(task_name),
+        ],
+        task_name=task_name,
+    )
+    general_result["R2"] = create_multi_result(
+        results=[confirmation_result, ping_r2.create_nornir_result(task_name)], task_name=task_name
+    )
+    general_result["R3"] = create_multi_result(
+        results=[confirmation_result, ping_r3.create_nornir_result(task_name), timeouted], task_name=task_name
+    )
+    return general_result
 
 
+test_data = [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters={"test_data": test_data}))]
 
 
@@ -135,27 +131,34 @@ class TestTransformResult:
     def test_contains_host_at_toplevel(self, transformed_result, host):
         assert host in transformed_result
 
-    @pytest.mark.parametrize("host, destination", [("R1", "172.16.23.3"), ("R2", "172.16.23.4"), ("R3", "172.16.23.5")])
+    @pytest.mark.parametrize("host, destination", [tupelize(entry, ["host", "destination"]) for entry in test_data])
     def test_contains_pinged_destination(self, transformed_result, host, destination):
-        assert destination in transformed_result[host]
-
-    @pytest.mark.parametrize("host, destination, ping_result", [("R1", "172.16.23.3", Ping.SUCCESS)])
-    def test_destination_maps_to_enum_success(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result == ping_result
-
-    @pytest.mark.parametrize("host, destination, ping_result", [("R2", "172.16.23.4", Ping.FAIL)])
-    def test_destination_maps_to_enum_failure(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result == ping_result
-
-    @pytest.mark.parametrize("host, destination, ping_result", [("R3", "172.16.23.5", Ping.FLAPPING)])
-    def test_destination_maps_to_enum_flapping(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result == ping_result
+        assert destination in transformed_result[host].keys()
 
     @pytest.mark.parametrize(
-        "host, destination, ping_result", [("R1", "172.16.23.3", Ping.SUCCESS), ("R1", "172.16.23.6", Ping.SUCCESS)]
+        "host, destination, ping_result", [tupelize(ping_r1_1.test_data, ["host", "destination", "expected"])]
+    )
+    def test_destination_maps_to_enum_success(self, transformed_result, host, destination, ping_result):
+        assert transformed_result[host][destination].result.name == ping_result
+
+    @pytest.mark.parametrize(
+        "host, destination, ping_result", [tupelize(ping_r2.test_data, ["host", "destination", "expected"])]
+    )
+    def test_destination_maps_to_enum_failure(self, transformed_result, host, destination, ping_result):
+        assert transformed_result[host][destination].result.name == ping_result
+
+    @pytest.mark.parametrize(
+        "host, destination, ping_result", [tupelize(ping_r3.test_data, ["host", "destination", "expected"])]
+    )
+    def test_destination_maps_to_enum_flapping(self, transformed_result, host, destination, ping_result):
+        assert transformed_result[host][destination].result.name == ping_result
+
+    @pytest.mark.parametrize(
+        "host, destination, ping_result",
+        [tupelize(e.test_data, ["host", "destination", "expected"]) for e in [ping_r1_1, ping_r1_2]],
     )
     def test_one_host_several_destinations(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result == ping_result
+        assert transformed_result[host][destination].result.name == ping_result
 
     def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"]["172.16.23.6"].failed

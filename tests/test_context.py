@@ -6,7 +6,7 @@ from nornir.core.plugins.inventory import InventoryPluginRegister
 from nornir.core.plugins.runners import RunnersPluginRegister
 
 from nuts.context import NornirNutsContext, NutsSetupError, NutsContext
-from tests.helpers.shared import YAML_EXTENSION
+from tests.utils import YAML_EXTENSION
 
 
 class CustomNornirNutsContext(NornirNutsContext):
@@ -153,8 +153,8 @@ class TestNornirNutsContextIntegration:
             CONTEXT = FailingNornirNutsContext
 
             class TestBasicTask:
-                def test_basic_task(self, nornir_nuts_ctx):
-                    assert nornir_nuts_ctx.general_result()["R1"].result == "R1"
+                def test_basic_task(self, nuts_ctx):
+                    assert nuts_ctx.general_result()["R1"].result == "R1"
             """
         )
         arguments = {
@@ -184,8 +184,8 @@ class TestNornirNutsContextIntegration:
 
 
     class TestBasicTask:
-        def test_basic_task(self, nornir_nuts_ctx):
-            assert nornir_nuts_ctx.general_result()["R1"].result == "R1"
+        def test_basic_task(self, nuts_ctx):
+            assert nuts_ctx.general_result()["R1"].result == "R1"
     """
         )
         arguments = {

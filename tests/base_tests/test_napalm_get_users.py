@@ -2,6 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from nuts.base_tests.napalm_get_users import CONTEXT
+from tests.utils import create_multi_result, create_result
 
 test_data = [
     {"host": "R1", "username": "arya", "password": "stark", "level": 11},
@@ -9,7 +10,7 @@ test_data = [
     {"host": "R2", "username": "jon", "password": "snow", "level": 5},
 ]
 
-result_data = [
+nornir_results = [
     {
         "users": {
             "arya": {"level": 11, "password": "stark", "sshkeys": []},
@@ -22,20 +23,11 @@ result_data = [
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
-    result = AggregatedResult("napalm_get_facts")
-
-    multi_result_r1 = MultiResult("napalm_get_facts")
-    result_r1 = Result(host=None, name="napalm_get_facts")
-    result_r1.result = result_data[0]
-    multi_result_r1.append(result_r1)
-    result["R1"] = multi_result_r1
-
-    multi_result_r2 = MultiResult("napalm_get_facts")
-    result_r2 = Result(host=None, name="napalm_get_facts")
-    result_r2.result = result_data[1]
-    multi_result_r2.append(result_r2)
-    result["R2"] = multi_result_r2
-
+    task_name = "napalm_get_facts"
+    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
+    result = AggregatedResult(task_name)
+    result["R1"] = create_multi_result(results_per_host[0], task_name)
+    result["R2"] = create_multi_result(results_per_host[1], task_name)
     result["R3"] = timeouted_multiresult
     return result
 

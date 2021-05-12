@@ -2,6 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
+from tests.utils import create_multi_result, create_result
 
 neighbor_details = {
     "destination_host": "R2",
@@ -13,13 +14,8 @@ neighbor_details = {
     "capabilities": "Router IGMP",
 }
 
-
-@pytest.fixture
-def general_result(timeouted_multiresult):
-    result = AggregatedResult("netmiko_send_command")
-    multi_result_r1 = MultiResult("netmiko_send_command")
-    result_r1 = Result(host=None, name="netmiko_send_command")
-    result_r1.result = [
+nornir_results = [
+    [
         neighbor_details.copy(),
         {
             "destination_host": "R3",
@@ -39,13 +35,8 @@ def general_result(timeouted_multiresult):
             "software_version": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
             "capabilities": "Router IGMP",
         },
-    ]
-
-    multi_result_r1.append(result_r1)
-    result["R1"] = multi_result_r1
-    multi_result_r2 = MultiResult("netmiko_send_command")
-    result_r2 = Result(host=None, name="naplam_get")
-    result_r2.result = [
+    ],
+    [
         {
             "destination_host": "R3",
             "management_ip": "172.16.23.3",
@@ -73,9 +64,17 @@ def general_result(timeouted_multiresult):
             "software_version": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
             "capabilities": "Router IGMP",
         },
-    ]
-    multi_result_r2.append(result_r2)
-    result["R2"] = multi_result_r2
+    ],
+]
+
+
+@pytest.fixture
+def general_result(timeouted_multiresult):
+    task_name = "netmiko_send_command"
+    results_per_host = [[create_result(result, task_name)] for result in nornir_results]
+    result = AggregatedResult(task_name)
+    result["R1"] = create_multi_result(results_per_host[0], task_name)
+    result["R2"] = create_multi_result(results_per_host[1], task_name)
     result["R3"] = timeouted_multiresult
     return result
 
@@ -96,7 +95,7 @@ class TestTransformResult:
         ],
     )
     def test_contains_neighbors_at_second_level(self, transformed_result, host, network_instances):
-        assert list(transformed_result[host].result.keys()) == network_instances
+        assert list(transformed_result[host].result) == network_instances
 
     @pytest.mark.parametrize("host, neighbor, details", [("R1", "R2", neighbor_details)])
     def test_contains_information_about_neighbor(self, transformed_result, host, neighbor, details):

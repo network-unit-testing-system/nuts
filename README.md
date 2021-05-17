@@ -141,7 +141,11 @@ If you want to learn more how nuts works but do not have a running network in th
 
 Nuts is essentially designed as a pytest-plugin and it is possible to add your own, self-written test classes. 
 A dev documentation on how to write your own test classes is planned for a future release.
-Still, it is possible to write your own test classes nevertheless, even if we cannot guarantee that upcoming planned refactorings  do not introduce breaking changes. 
+Still, it is possible to write your own test classes nevertheless, even if we cannot guarantee that upcoming planned refactorings  do not introduce breaking changes.
+
+## Community-provided test classes
+
+* [Cisco IOSXE Test Class](https://github.com/briantsaunders/nuts-cisco-iosxe-tests) by [briantsaunders](https://github.com/briantsaunders)
 
 # Thanks
 

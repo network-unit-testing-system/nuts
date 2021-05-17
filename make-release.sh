@@ -1,6 +1,6 @@
 #!/bin/bash
 if [[ $# != 1 ]] ; then
-    echo "error: please provide a version tag in the form 'v.1.0.0'" >&2
+    echo "error: please provide a version tag in the form 'v1.0.0'" >&2
     exit 1
 fi
 

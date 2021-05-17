@@ -4,11 +4,11 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nuts"
-version = "3.0.0-alpha-3"
+version = "3.0.0"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Méline Sieber, Urs Baumann, Matthias Gabriel"]
 maintainers = ["Méline Sieber <meline.sieber@ost.ch>"]
-classifiers = ["Framework :: Pytest", "Development Status :: 3 - Alpha"]
+classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
 homepage = "https://github.com/INSRapperswil/Nuts"
 repository = "https://github.com/INSRapperswil/Nuts"
 license = "MIT"

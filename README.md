@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The NetTowel Network Unit Testing System or "nuts" in short is the testing component of the NetTowel Project.
+The NetTowel Network Unit Testing System or "nuts" in short is the testing component of the NetTowel Project, which is developed at the Institute of Networked Solutions in Rapperswil, Switzerland.
 It draws on the concept of unit tests, known from the domain of programming, and applies it to the domain of networking.
 
 One major difference between unit tests in programming and 
@@ -132,13 +132,15 @@ but also be provided as argument to the test method itself.
 Each test module implements a context class to provide module-specific functionality to its tests. This context class is a  `NutsContext` or a subclass of it. 
 This guarantees a consistent interface across all tests for test setup and execution. 
 Currently, the predefined test classes use [nornir](https://nornir.readthedocs.io/en/latest/) in order to communicate 
-with the network devices, therefore the test classes derive all from a more specific `NornirNutsContext`, 
+with the network devices. Those test classes derive all from a more specific `NornirNutsContext`, 
 which provides a nornir instance and nornir-specific helpers. In the example above, it is a class called `CdpNeighborsContext` that derives from `NornirNutsContext`.
+
+If you want to learn more how nuts works but do not have a running network in the background, there's a nuts showcase - an offline test class that displays the basic functionality of nuts. See the [tutorial](https://nuts.readthedocs.io/en/latest/tutorial/firststeps.html) for further information.
 
 ## Develop Your Own Test Classes
 
 Nuts is essentially designed as a pytest-plugin and it is possible to add your own, self-written test classes. 
-A dev documentation on how to write your own test classes is planned for a future release. 
+A dev documentation on how to write your own test classes is planned for a future release.
 Still, it is possible to write your own test classes nevertheless, even if we cannot guarantee that upcoming planned refactorings  do not introduce breaking changes. 
 
 # Thanks

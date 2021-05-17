@@ -12,6 +12,7 @@
 #
 import os
 import sys
+import datetime
 
 sys.path.insert(0, os.path.abspath("../.."))
 sys.setrecursionlimit(1500)
@@ -19,11 +20,11 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = "NUTS"
-copyright = "2020, Matthias Gabriel, Méline Sieber, Urs Baumann"
-author = "Matthias Gabriel, Méline Sieber, Urs Baumann"
+copyright = f"{datetime.date.today().year}, Méline Sieber, Urs Baumann"
+author = "Méline Sieber"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = "1.0.0"
 
 
 # -- General configuration ---------------------------------------------------

@@ -5,7 +5,7 @@ A test bundle contains one ore more tests that are logically related to each oth
 
 This section contains all test bundles which have been implemented in NUTS, you can incorporate them in your own bundles. They can be executed with the command ``$ pytest <test>.yaml`` from your project root. 
 
-Note that you need an inventory for the tests to work. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
+Note that you need an inventory of network devices for the tests to work. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
 
 In some test bundles you can directly pass arguments to the nornir task, i.e. the network query that is executed in the background. For those test bundles we indicate the specific task which is used to query the devices, so that you can look up all available arguments. 
 

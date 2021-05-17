@@ -4,29 +4,25 @@ Installation of NUTS
 Installation Instructions
 -------------------------
 
-NUTS is currently not published on the Python Package Index (`PyPI <https://pypi.org/>`_). It has to be cloned and installed manually.
+Nuts requires Python 3.7 or higher.
 
-.. todo::
-    
-    Use public repository to access code and retest the installation instructions.
+Installation via pip
+....................
+
+NUTS is published on the Python Package Index (`PyPI <https://pypi.org/>`_), therefore you can install nuts using ``pip``:
 
 .. code:: shell
 
-   git clone <public repository>
+    pip install nuts
 
-   cd nettowel-nuts
+Installation via poetry
+.......................
 
-   # create virtual environment
-   python -m venv .venv
+Nuts uses `poetry <https://python-poetry.org/>`__ as a dependency manager.
 
-   # activate virtual environment
-   source .venv/bin/activate
-
-   # install NUTS
-   pip install <your_nuts_directory>
-
-   # install NUTS directly from git without clone first
-   pip install git+https://github.com/INSRapperswil/Nuts.git
+1. `Install poetry <https://python-poetry.org/docs/#installation>`__.
+2. Clone the `nuts repository <https://github.com/INSRapperswil/Nuts.git>`__
+3. Run ``$ poetry install``
 
 Parsing with ntc-templates
 --------------------------
@@ -54,7 +50,7 @@ Deinstallation
 
 .. code:: shell
     
-    pip uninstall nettowel-nuts
+    pip uninstall nuts
 
 
 If you installed everything in a virtual environment, you can delete the folder that contains the virtual environment.

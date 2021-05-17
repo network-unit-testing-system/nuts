@@ -14,18 +14,34 @@ pre-defined test cases. Such a single test case might be "can host A reach neigh
 This is what nuts tries to achieve:
 Apply test cases based on your pre-defined network topology to your actual network and have the tests confirm the correct state.
 
+## Installation Instructions
+
+### Using pip
+
+Run `pip install nuts` 
+
+### Using poetry
+
+Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
+
+1. [Install poetry](https://python-poetry.org/docs/#installation).
+2. Clone this repository.
+3. Run `$ poetry install`
+
+## How It Works: Test Bundles and Test Definitions
+
 The project relies on the [pytest framework](https://docs.pytest.org/) to setup and execute the tests. 
 Nuts itself is written as a custom pytest plugin. In the background, [nornir](https://nornir.readthedocs.io/) 
 executes specific network tasks for the actual tests.
 
-Additionally, nuts treats the test definition and the so-called test bundle as separate entities. The *test definition* is modeled as a custom `pytest.Class`, and a predefined set of test definitions can be found in the module `base_tests`. New test definitions can be added easily by the user of the plugin.
+Nuts treats the test definition and the so-called test bundle as separate entities. The *test definition* is modeled as a custom `pytest.Class`, and a predefined set of test definitions can be found in the nuts module `base_tests`. New test definitions can be added easily by the user of the plugin.
 
 The *test bundle* is a file that is parsed by pytest. The file provides data on the desired network state and describes which test definitions should be collected and executed by pytest. 
 The structure of the test bundle should enable people without in-depth python knowledge to add new test bundles or update existing ones to reflect changes in the network. 
 
 While the readme here is only a short overview, find the [documentation of nuts on readthedocs](https://nuts.readthedocs.io/en/latest/).
 
-## Test bundle structure
+### Test Bundle Structure
 
 Currently only yaml files are supported as test bundles, 
 but other sources such as other file formats or database entries can be considered in later nuts versions.
@@ -42,7 +58,7 @@ Each test bundle contains the following structure:
 ```
 `test_module`: The full path of the python module that contains the test class to be used.
 This value is optional if the test class is registered in `index.py` of the pytest-nuts plugin.
-Note that it can be relevant in which directory `pytest` is started if local test modules are used.
+Note that it can be relevant in which directory `pytest` is started if local test modules are used. Using `test_modules` allows you to write your own test classes. **Note: We currently do not support self-written test modules, since upcoming refactorings might introduce breaking changes.**
 
 `test_class`: The name of the python class which contains the tests that should be executed.
 Note that currently every test in this class will be executed.
@@ -58,7 +74,7 @@ This allows the additional `max_drop` parameter in `test_execution`, since it is
 
 `test_data`: Data that is used to parametrize the tests in the test class which have the `pytest.mark.nuts` annotation. It is additionally part of the `nuts_parameters` property.
 
-### Examples
+### Example: CDP Neighbors
 Example of a test bundle for `TestNetmikoCdpNeighbors` which tests that `R1` is a CDP Neighbor of both `R2` and `R3`.
 This example creates three different tests, one for each entry in the `test_data` list.
 
@@ -85,14 +101,7 @@ This example creates three different tests, one for each entry in the `test_data
 ...
 ```
 
-## Manual installation instructions
-Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
-
-1. [Install poetry](https://python-poetry.org/docs/#installation).
-2. Clone this repository.
-3. Run `$ poetry install`
-
-## Technical Overview
+### How the Test Bundle Is Converted to a Pytest Test
 
 When nuts is executed, pytest converts the test bundles (the yaml files) into tests. During test collection, the custom pytest marker `nuts` uses the data that has been defined in the test bundle mentioned above. 
 This annotation is a wrapper around the `pytest.mark.parametrize` annotation and allows the plugin to use the data entries from the test bundle. For each entry in the `test_data` section of the test bundle, the custom marker generates a single test case. To achieve this, the plugin transforms the entries into n-tuples, since `pytest.mark.parametrize` expects a list of n-tuples as input. 
@@ -102,17 +111,15 @@ For each entry in `test_data` these fields are extracted and transformed to a tu
 If any of these fields are not present in an entry of `test_data`, the corresponding test case will be skipped.
 A second argument determines optional fields that can also be used in a test case as well - non-present values are passed into the function as `None`.
 
-#### Example of a test class with custom marker
+The following test-run of CDP neighbors for example checks the local port:
 
 ```python
-@pytest.mark.usefixtures("check_nuts_result")  # see below
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoCdpNeighbors:       
     @pytest.mark.nuts("host,remote_host,local_port")
     def test_local_port(self, single_result, remote_host, local_port):
         assert single_result.result[remote_host]["local_port"] == local_port        
 ```
-
-This test-run of CDP neighbors checks the local port. 
 
 Before each test evaluation, the fixture  `@pytest.mark.usefixtures("check_nuts_result")` checks the result of the network information that has been gathered by nornir in the background: It asserts that that no exception was thrown while doing so.
 
@@ -126,15 +133,15 @@ Each test module implements a context class to provide module-specific functiona
 This guarantees a consistent interface across all tests for test setup and execution. 
 Currently, the predefined test classes use [nornir](https://nornir.readthedocs.io/en/latest/) in order to communicate 
 with the network devices, therefore the test classes derive all from a more specific `NornirNutsContext`, 
-which provides a nornir instance and nornir-specific helpers.
+which provides a nornir instance and nornir-specific helpers. In the example above, it is a class called `CdpNeighborsContext` that derives from `NornirNutsContext`.
 
-## Development
+## Develop Your Own Test Classes
 
 Nuts is essentially designed as a pytest-plugin and it is possible to add your own, self-written test classes. 
-A dev documentation on how to write your own test classes is planned for the future. 
-Until then, please read the regular [documentation of nuts](https://nuts.readthedocs.io/en/latest/) on how to use it.
+A dev documentation on how to write your own test classes is planned for a future release. 
+Still, it is possible to write your own test classes nevertheless, even if we cannot guarantee that upcoming planned refactorings  do not introduce breaking changes. 
 
 # Thanks
 
 * [Matthias Gabriel](https://github.com/MatthiasGabriel), who laid the foundations of nuts.
-* [Florian Bruhin](https://github.com/The-Compiler) for invaluable feedback.
+* [Florian Bruhin (The Compiler)](https://github.com/The-Compiler) for invaluable feedback and advice.

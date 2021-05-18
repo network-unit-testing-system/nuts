@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional, Dict, Union
 
 from nornir import InitNornir
 from nornir.core import Nornir
-from nornir.core.task import AggregatedResult
+from nornir.core.task import AggregatedResult, Result
 
 from nuts.helpers.errors import NutsSetupError
 from nuts.helpers.result import NutsResult
@@ -28,7 +28,7 @@ class NutsContext:
         """Initialize dependencies for this context after it has been created."""
         pass
 
-    def nuts_arguments(self) -> dict:
+    def nuts_arguments(self) -> Dict[str, Any]:
         """
         Additional arguments for the (network) task to be executed. These can also be parameters
         that are defined in the `test_execution` part of the test bundle.
@@ -90,7 +90,7 @@ class NornirNutsContext(NutsContext):
             logging={"enabled": False},
         )
 
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         """
         Returns the task that nornir should execute for the test module.
 

@@ -50,6 +50,6 @@ def create_result(
     return result
 
 
-def tupelize(source: Dict, fields: List[str]) -> Tuple[Optional[Any], ...]:
+def tupelize(source: Dict[str, Any], fields: List[str]) -> Tuple[Optional[Any], ...]:
     ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

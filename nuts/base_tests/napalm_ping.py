@@ -23,7 +23,7 @@ class Ping(Enum):
 
 
 class PingContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return self.napalm_ping_multi_dests
 
     def nornir_filter(self) -> F:

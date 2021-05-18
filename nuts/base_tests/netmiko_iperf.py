@@ -14,7 +14,7 @@ from nuts.helpers.result import NutsResult, map_host_to_dest_to_nutsresult
 
 
 class IperfContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return self.netmiko_run_iperf
 
     def nornir_filter(self) -> F:

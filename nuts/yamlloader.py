@@ -52,7 +52,7 @@ class NutsYamlFile(pytest.File):
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
-def find_and_load_module(test_entry: dict):
+def find_and_load_module(test_entry: dict) -> types.ModuleType:
     test_class = test_entry.get("test_class")
     if not test_class:
         raise NutsUsageError("Class name of the specific test missing in YAML file.")
@@ -113,11 +113,11 @@ class NutsTestClass(pytest.Class):
     Initialises a corresponding context with externally provided parameters.
     """
 
-    def __init__(self, parent: NutsTestFile, name: str, class_name: str, **kw):
+    def __init__(self, parent: NutsTestFile, name: str, class_name: str, **kw: Any):
         super().__init__(name, parent=parent)
-        self.params = kw
-        self.name = name
-        self.class_name = class_name
+        self.params: Any = kw
+        self.name: str = name
+        self.class_name: str = class_name
 
     def _getobj(self) -> Any:
         """
@@ -131,7 +131,7 @@ class NutsTestClass(pytest.Class):
         return getattr(obj, self.class_name)
 
     @classmethod
-    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:  # type: ignore[override]
+    def from_parent(cls, parent: Node, *, name: str, obj: Any=None, **kw: Any) -> Any:  # type: ignore[override]
         """The public constructor."""
         # mypy throws an error because the parent class (pytest.Class) does not accept additional **kw
         # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367

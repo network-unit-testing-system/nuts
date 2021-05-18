@@ -23,7 +23,7 @@ class ExpanseContext(NutsContext):
             {"ship": "rocinante", "name": "bobbie draper", "role": "marine", "origin": "mars"},
         ]
 
-    def transform_result(self, general_result: List[Dict]):
+    def transform_result(self, general_result: List[Dict]) -> Dict[str, Dict]:
         return {
             "rocinante": {entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
         }
@@ -33,7 +33,7 @@ CONTEXT = ExpanseContext
 
 
 @pytest.fixture
-def expanse(nuts_ctx: NutsContext, ship):
+def expanse(nuts_ctx: NutsContext, ship: str) -> Dict[str, Any]:
     """
     Helps to prepare the results for TestExpanseCrew and generates a fixture that
     provides the initialized context and the keyword with which the results should be filtered
@@ -47,13 +47,13 @@ def expanse(nuts_ctx: NutsContext, ship):
 
 class TestExpanseCrew:
     @pytest.mark.nuts("ship, name")
-    def test_name(self, expanse: Dict, name):
+    def test_name(self, expanse: Dict, name: str) -> None:
         assert name in expanse
 
     @pytest.mark.nuts("ship, name, role")
-    def test_role(self, expanse: Dict, name, role):
+    def test_role(self, expanse: Dict, name: str, role: str) -> None:
         assert expanse[name]["role"] == role
 
     @pytest.mark.nuts("ship, name, origin")
-    def test_origin(self, expanse: Dict, name, origin):
+    def test_origin(self, expanse: Dict, name: str, origin: str) -> None:
         assert expanse[name]["origin"] == origin

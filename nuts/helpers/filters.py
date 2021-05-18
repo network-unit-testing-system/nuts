@@ -7,7 +7,7 @@ from typing import Optional, Dict
 from nornir.core.filter import F
 
 
-def filter_hosts(test_data: Optional[Dict]):
+def filter_hosts(test_data: Optional[Dict]) -> F:
     assert test_data is not None
     hosts = {entry["host"] for entry in test_data}
     return F(name__any=hosts)

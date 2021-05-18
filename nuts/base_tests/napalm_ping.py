@@ -54,7 +54,7 @@ class PingContext(NornirNutsContext):
                 return entry["max_drop"]
         return 0
 
-    def napalm_ping_multi_dests(self, task: Task, **kwargs) -> Result:
+    def napalm_ping_multi_dests(self, task: Task, **kwargs: Any) -> Result:
         """
         One host pings all destinations as defined in the test bundle.
 

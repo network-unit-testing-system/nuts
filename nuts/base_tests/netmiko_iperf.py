@@ -1,7 +1,7 @@
 """Query bandwidth performance between two devices."""
 import pytest
 import json
-from typing import Dict, Callable
+from typing import Dict, Callable, Any
 import shlex
 
 from nornir.core.filter import F
@@ -76,7 +76,7 @@ CONTEXT = IperfContext
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoIperf:
     @pytest.fixture
-    def single_result(self, nuts_ctx: NornirNutsContext, host, destination):
+    def single_result(self, nuts_ctx: NornirNutsContext, host: str, destination: str) -> Dict[str, Any]:
         assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
         assert destination in nuts_ctx.transformed_result[host], f"Destination {destination} not found in result."
         return nuts_ctx.transformed_result[host][destination]

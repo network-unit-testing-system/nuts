@@ -57,25 +57,25 @@ class TestNapalmBgpNeighbors:
         return single_result.result[peer]
 
     @pytest.mark.nuts("host,peer,local_as")
-    def test_local_as(self, peer_result: Dict, local_as: int):
+    def test_local_as(self, peer_result: Dict, local_as: int) -> None:
         assert peer_result["local_as"] == local_as
 
     @pytest.mark.nuts("host,peer,local_id")
-    def test_local_id(self, peer_result: Dict, local_id: str):
+    def test_local_id(self, peer_result: Dict, local_id: str) -> None:
         assert peer_result["local_id"] == local_id
 
     @pytest.mark.nuts("host,peer,remote_as")
-    def test_remote_as(self, peer_result: Dict, remote_as: int):
+    def test_remote_as(self, peer_result: Dict, remote_as: int) -> None:
         assert peer_result["remote_as"] == remote_as
 
     @pytest.mark.nuts("host,peer,remote_id")
-    def test_remote_id(self, peer_result: Dict, remote_id: str):
+    def test_remote_id(self, peer_result: Dict, remote_id: str) -> None:
         assert peer_result["remote_id"] == remote_id
 
     @pytest.mark.nuts("host,peer,is_enabled")
-    def test_is_enabled(self, peer_result: Dict, is_enabled: bool):
+    def test_is_enabled(self, peer_result: Dict, is_enabled: bool) -> None:
         assert peer_result["is_enabled"] == is_enabled
 
     @pytest.mark.nuts("host,peer,is_up")
-    def test_is_up(self, peer_result: Dict, is_up: bool):
+    def test_is_up(self, peer_result: Dict, is_up: bool) -> None:
         assert peer_result["is_up"] == is_up

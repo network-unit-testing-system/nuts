@@ -1,9 +1,9 @@
 """Query OSPF neighbors of a device or count them."""
-from typing import Callable, Dict
+from typing import Callable, Dict, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult
+from nornir.core.task import MultiResult, AggregatedResult, Result, Task
 from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext
@@ -12,16 +12,16 @@ from nuts.helpers.result import NutsResult, map_host_to_nutsresult
 
 
 class OspfNeighborsContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return netmiko_send_command
 
-    def nuts_arguments(self) -> dict:
+    def nuts_arguments(self) -> Dict[str, Any]:
         return {"command_string": "show ip ospf neighbor", "use_textfsm": True}
 
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def _transform_host_results(self, single_result: MultiResult) -> dict:
+    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Any]:
         assert single_result[0].result is not None
         neighbors = single_result[0].result
         return {details["neighbor_id"]: details for details in neighbors}

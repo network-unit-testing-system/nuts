@@ -19,6 +19,10 @@ from nuts.index import ModuleIndex
 
 
 class NutsYamlFile(pytest.File):
+    """
+    Collect tests from a yaml file.
+    """
+
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         # path uses pathlib.Path and is meant to replace fspath, which uses py.path.local
         # both variants will be used for some time in parallel within pytest.
@@ -31,10 +35,10 @@ class NutsYamlFile(pytest.File):
 
     def _collect_path(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         try:
-            with self.path.open() as f:  # type: ignore[attr-defined]
-                raw = yaml.safe_load(f)
-        except OSError as e:
-            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{e}")
+            with self.path.open() as fo:  # type: ignore[attr-defined]
+                raw = yaml.safe_load(fo)
+        except OSError as ex:
+            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{ex}")
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
@@ -52,7 +56,7 @@ class NutsYamlFile(pytest.File):
             yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
 
 
-def find_and_load_module(test_entry: dict):
+def find_and_load_module(test_entry: Dict[str, str]) -> types.ModuleType:
     test_class = test_entry.get("test_class")
     if not test_class:
         raise NutsUsageError("Class name of the specific test missing in YAML file.")
@@ -80,6 +84,10 @@ def load_module(module_path: str) -> types.ModuleType:
 
 
 class NutsTestFile(pytest.Module):
+    """
+    Custom nuts collector for test classes and functions.
+    """
+
     def __init__(self, obj: Any, test_entry: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.obj = obj
@@ -113,11 +121,11 @@ class NutsTestClass(pytest.Class):
     Initialises a corresponding context with externally provided parameters.
     """
 
-    def __init__(self, parent: NutsTestFile, name: str, class_name: str, **kw):
+    def __init__(self, parent: NutsTestFile, name: str, class_name: str, **kw: Any):
         super().__init__(name, parent=parent)
-        self.params = kw
-        self.name = name
-        self.class_name = class_name
+        self.params: Any = kw
+        self.name: str = name
+        self.class_name: str = class_name
 
     def _getobj(self) -> Any:
         """
@@ -131,7 +139,7 @@ class NutsTestClass(pytest.Class):
         return getattr(obj, self.class_name)
 
     @classmethod
-    def from_parent(cls, parent: Node, *, name: str, obj=None, **kw) -> Any:  # type: ignore[override]
+    def from_parent(cls, parent: Node, *, name: str, obj: Any = None, **kw: Any) -> Any:  # type: ignore[override]
         """The public constructor."""
         # mypy throws an error because the parent class (pytest.Class) does not accept additional **kw
         # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
@@ -139,7 +147,7 @@ class NutsTestClass(pytest.Class):
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
 
-def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> Union[list, List[ParameterSet]]:
+def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> List[ParameterSet]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
     :param metafunc: The annotated test function that will use the parametrized data.
@@ -164,11 +172,15 @@ def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -
     return required_fields
 
 
-def dict_to_tuple_list(source: List[Dict], fields: List[str], required_fields: Set[str]) -> List[ParameterSet]:
-    return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in source]
+def dict_to_tuple_list(
+    test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str]
+) -> List[ParameterSet]:
+    return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in test_data]
 
 
-def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tuple[Optional[Any], ...]) -> ParameterSet:
+def wrap_if_needed(
+    source: Dict[str, Any], required_fields: Set[str], present_fields: Tuple[Optional[Any], ...]
+) -> ParameterSet:
     missing_fields = required_fields - set(source)
     if not missing_fields:
         return pytest.param(*present_fields)
@@ -177,6 +189,6 @@ def wrap_if_needed(source: Dict, required_fields: Set[str], present_fields: Tupl
     )
 
 
-def dict_to_tuple(source: Dict, fields: List[str]) -> Tuple[Optional[Any], ...]:
+def dict_to_tuple(source: Dict[str, Any], fields: List[str]) -> Tuple[Optional[Any], ...]:
     ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

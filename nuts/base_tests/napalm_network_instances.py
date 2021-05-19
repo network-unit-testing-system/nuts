@@ -1,10 +1,11 @@
 """Query network instances of a device."""
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult
+from nornir.core.task import MultiResult, AggregatedResult, Result, Task
 from nornir_napalm.plugins.tasks import napalm_get
+from nornir_napalm.plugins.tasks.napalm_get import GetterOptionsDict
 
 from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import nuts_result_wrapper, NutsResult, map_host_to_nutsresult
@@ -12,7 +13,7 @@ from nuts.context import NornirNutsContext
 
 
 class NetworkInstancesContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return napalm_get
 
     def nuts_arguments(self) -> Dict[str, List[str]]:
@@ -24,7 +25,7 @@ class NetworkInstancesContext(NornirNutsContext):
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
-    def _transform_host_results(self, single_result: MultiResult) -> dict:
+    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         network_instances = task_result["network_instances"]
@@ -33,17 +34,11 @@ class NetworkInstancesContext(NornirNutsContext):
             for instance, details in network_instances.items()
         }
 
-    def _transform_single_network_instance(self, network_instance: dict) -> dict:
+    def _transform_single_network_instance(self, network_instance: Dict[str, Any]) -> Dict[str, Any]:
         return {
-            "route_distinguisher": self._extract_route_distinguisher(network_instance),
-            "interfaces": self._extract_interfaces(network_instance),
+            "route_distinguisher": network_instance["state"]["route_distinguisher"],
+            "interfaces": list(network_instance["interfaces"]["interface"]),
         }
-
-    def _extract_route_distinguisher(self, element: dict) -> str:
-        return element["state"]["route_distinguisher"]
-
-    def _extract_interfaces(self, element: dict) -> List[str]:
-        return list(element["interfaces"]["interface"])
 
 
 CONTEXT = NetworkInstancesContext

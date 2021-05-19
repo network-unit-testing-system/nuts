@@ -23,7 +23,7 @@ class Ping(Enum):
 
 
 class PingContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return self.napalm_ping_multi_dests
 
     def nornir_filter(self) -> F:
@@ -54,7 +54,7 @@ class PingContext(NornirNutsContext):
                 return entry["max_drop"]
         return 0
 
-    def napalm_ping_multi_dests(self, task: Task, **kwargs) -> Result:
+    def napalm_ping_multi_dests(self, task: Task, **kwargs: Any) -> Result:
         """
         One host pings all destinations as defined in the test bundle.
 

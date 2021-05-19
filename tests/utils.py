@@ -19,7 +19,7 @@ class SelfTestData:
     nornir_raw_result: Any
     test_data: Dict[str, Any]
 
-    def create_nornir_result(self, task_name: str):
+    def create_nornir_result(self, task_name: str) -> Result:
         return create_result(
             result_content=self.nornir_raw_result,
             task_name=task_name,
@@ -41,7 +41,7 @@ def create_result(
     destination: Optional[str] = None,
     failed: bool = False,
     exception: Optional[BaseException] = None,
-    **kwargs
+    **kwargs: Any
 ) -> Result:
     result = Result(host=Host(name=host), name=task_name, destination=destination, **kwargs)
     result.result = result_content
@@ -50,6 +50,6 @@ def create_result(
     return result
 
 
-def tupelize(source: Dict, fields: List[str]) -> Tuple[Optional[Any], ...]:
+def tupelize(source: Dict[str, Any], fields: List[str]) -> Tuple[Optional[Any], ...]:
     ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

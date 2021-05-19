@@ -1,7 +1,17 @@
 from unittest.mock import patch
 
-from nuts.index import ModuleIndex
+import pytest
+
+from nuts import index
 from tests.utils import YAML_EXTENSION
+
+test_index = {"TestFixture": "tests.base_tests.class_loading"}
+
+
+@pytest.fixture
+def mock_index(monkeypatch):
+    """Mocks index to a module"""
+    monkeypatch.setattr(index, "default_index", test_index)
 
 
 def test_load_class_and_execute_tests(testdir):
@@ -52,20 +62,18 @@ def test_injects_arguments_as_fixture(testdir):
     result.assert_outcomes(passed=1)
 
 
-def test_load_class_from_index(testdir):
-    with patch("nuts.yamlloader.ModuleIndex") as module_index:
-        module_index.return_value = ModuleIndex({"TestFixture": "tests.base_tests.class_loading"})
-        arguments = {
-            "test_index_loading": """
-                ---
-                - test_class: TestFixture
-                  test_data: ['test1', 'test2']
-                """
-        }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+def test_load_class_from_index(testdir, mock_index):
+    arguments = {
+        "test_index_loading": """
+            ---
+            - test_class: TestFixture
+              test_data: ['test1', 'test2']
+            """
+    }
+    testdir.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
-        result.assert_outcomes(passed=1)
+    result = testdir.runpytest()
+    result.assert_outcomes(passed=1)
 
 
 def test_class_with_empty_test_execution_field(testdir):
@@ -120,3 +128,9 @@ def test_bundle_with_labels(testdir):
 
     result = testdir.runpytest("--collect-only")
     result.stdout.fnmatch_lines(["*NutsTestClass TestClass - testrun23*", "*NutsTestClass TestClass - testrun42*"])
+
+
+def test_find_test_module_of_class(mock_index):
+    path = index.find_test_module_of_class("TestFixture")
+    expected = "tests.base_tests.class_loading"
+    assert path == expected

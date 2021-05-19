@@ -2,7 +2,6 @@
 Based on https://docs.pytest.org/en/stable/example/nonpython.html#yaml-plugin
 """
 import importlib
-import pathlib
 import types
 from importlib import util
 from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
@@ -15,7 +14,7 @@ from _pytest.nodes import Node
 from _pytest.python import Metafunc
 
 from nuts.helpers.errors import NutsUsageError, NutsSetupError
-from nuts.index import ModuleIndex
+from nuts import index
 
 
 class NutsYamlFile(pytest.File):
@@ -66,7 +65,7 @@ def find_and_load_module(test_entry: Dict[str, str]) -> types.ModuleType:
 
 def find_module_path(module_path: Optional[str], class_name: str) -> str:
     if not module_path:
-        module_path = ModuleIndex().find_test_module_of_class(class_name)
+        module_path = index.find_test_module_of_class(class_name)
         if not module_path:
             raise NutsUsageError(f"A module that corresponds to the test_class called {class_name} could not be found.")
     return module_path

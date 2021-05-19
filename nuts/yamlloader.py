@@ -22,6 +22,7 @@ class NutsYamlFile(pytest.File):
     """
     Collect tests from a yaml file.
     """
+
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         # path uses pathlib.Path and is meant to replace fspath, which uses py.path.local
         # both variants will be used for some time in parallel within pytest.
@@ -41,10 +42,9 @@ class NutsYamlFile(pytest.File):
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
-            yield NutsTestFile.from_parent(self,
-                                           path=self.path, # type: ignore[attr-defined, call-arg]
-                                           obj=module,
-                                           test_entry=test_entry)
+            yield NutsTestFile.from_parent(
+                self, path=self.path, obj=module, test_entry=test_entry  # type: ignore[attr-defined, call-arg]
+            )
 
     def _collect_fspath(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         try:
@@ -89,6 +89,7 @@ class NutsTestFile(pytest.Module):
     """
     Custom nuts collector for test classes and functions.
     """
+
     def __init__(self, obj: Any, test_entry: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.obj = obj
@@ -140,7 +141,7 @@ class NutsTestClass(pytest.Class):
         return getattr(obj, self.class_name)
 
     @classmethod
-    def from_parent(cls, parent: Node, *, name: str, obj: Any=None, **kw: Any) -> Any:  # type: ignore[override]
+    def from_parent(cls, parent: Node, *, name: str, obj: Any = None, **kw: Any) -> Any:  # type: ignore[override]
         """The public constructor."""
         # mypy throws an error because the parent class (pytest.Class) does not accept additional **kw
         # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
@@ -173,15 +174,15 @@ def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -
     return required_fields
 
 
-def dict_to_tuple_list(test_data: List[Dict[str, Any]],
-                       fields: List[str],
-                       required_fields: Set[str]) -> List[ParameterSet]:
+def dict_to_tuple_list(
+    test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str]
+) -> List[ParameterSet]:
     return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in test_data]
 
 
-def wrap_if_needed(source: Dict[str, Any],
-                   required_fields: Set[str],
-                   present_fields: Tuple[Optional[Any], ...]) -> ParameterSet:
+def wrap_if_needed(
+    source: Dict[str, Any], required_fields: Set[str], present_fields: Tuple[Optional[Any], ...]
+) -> ParameterSet:
     missing_fields = required_fields - set(source)
     if not missing_fields:
         return pytest.param(*present_fields)

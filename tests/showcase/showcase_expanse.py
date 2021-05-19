@@ -14,6 +14,7 @@ from nuts.context import NutsContext
 
 E = Dict[str, Dict[str, str]]
 
+
 class ExpanseContext(NutsContext):
     def general_result(self) -> List[Dict[str, str]]:
         return [

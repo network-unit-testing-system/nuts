@@ -39,9 +39,9 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture
-def all_testdata():
-    return [users_r1_1.test_data, users_r1_2.test_data, users_r2.test_data]
+@pytest.fixture(params=[users_r1_1.test_data, users_r1_2.test_data, users_r2.test_data])
+def testdata(request):
+    return request.param
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -49,22 +49,20 @@ pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 class TestTransformResult:
     def test_contains_host_at_toplevel(self, transformed_result):
-        assert all(h in transformed_result for h in ["R1", "R2", "R3"])
+        assert transformed_result.keys() == {"R1", "R2", "R3"}
 
-    def test_contains_multiple_usernames_per_host(self, transformed_result, all_testdata):
-        assert all(e["username"] in transformed_result[e["host"]].result for e in all_testdata)
+    @pytest.fixture
+    def single_result(self, transformed_result, testdata):
+        return transformed_result[testdata["host"]].result
 
-    def test_username_has_corresponding_password(self, transformed_result, all_testdata):
-        assert all(
-            transformed_result[entry["host"]].result[entry["username"]]["password"] == entry["password"]
-            for entry in all_testdata
-        )
+    def test_contains_multiple_usernames_per_host(self, single_result, testdata):
+        assert testdata["username"] in single_result
 
-    def test_username_has_matching_privilegelevel(self, transformed_result, all_testdata):
-        assert all(
-            transformed_result[entry["host"]].result[entry["username"]]["level"] == entry["level"]
-            for entry in all_testdata
-        )
+    def test_username_has_corresponding_password(self, single_result, testdata):
+        assert single_result[testdata["username"]]["password"] == testdata["password"]
+
+    def test_username_has_matching_privilegelevel(self, single_result, testdata):
+        assert single_result[testdata["username"]]["level"] == testdata["level"]
 
     def test_marks_as_failed_if_task_failed(self, transformed_result):
         assert transformed_result["R3"].failed

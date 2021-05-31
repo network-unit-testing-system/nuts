@@ -53,52 +53,32 @@ nornir_raw_result_r2 = {
 interfaces_r1_1 = SelfTestData(
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
-        "is_enabled": True,
         "host": "R1",
         "name": "GigabitEthernet1",
-        "is_up": True,
-        "mac_address": "CA:CA:00:CE:DE:00",
-        "speed": 1000,
-        "mtu": 1500,
     },
 )
 
 interfaces_r1_2 = SelfTestData(
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
-        "is_enabled": False,
         "host": "R1",
         "name": "GigabitEthernet2",
-        "is_up": True,
-        "mac_address": "C0:FF:EE:BE:EF:00",
-        "speed": 1000,
-        "mtu": 1500,
     },
 )
 
 interfaces_r2_1 = SelfTestData(
     nornir_raw_result=nornir_raw_result_r2,
     test_data={
-        "is_enabled": True,
         "host": "R2",
         "name": "Loopback0",
-        "is_up": False,
-        "mac_address": "",
-        "speed": 1000,
-        "mtu": 1500,
     },
 )
 
 interfaces_r2_2 = SelfTestData(
     nornir_raw_result=nornir_raw_result_r2,
     test_data={
-        "is_enabled": False,
         "host": "R2",
         "name": "GigabitEthernet3",
-        "is_up": False,
-        "mac_address": "BE:EF:DE:AD:BE:EF",
-        "speed": 1000,
-        "mtu": 1500,
     },
 )
 
@@ -117,9 +97,14 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[interfaces_r1_1.test_data, interfaces_r1_2.test_data, interfaces_r2_1.test_data, interfaces_r2_2.test_data])
-def testdata(request):
+@pytest.fixture(params=[interfaces_r1_1, interfaces_r1_2, interfaces_r2_1, interfaces_r2_2])
+def raw_testdata(request):
     return request.param
+
+
+@pytest.fixture
+def testdata(raw_testdata):
+    return raw_testdata.test_data
 
 
 @pytest.fixture
@@ -138,9 +123,9 @@ def test_contains_interface_names_at_second_level(single_result, testdata):
     assert testdata["name"] in single_result
 
 
-@pytest.mark.parametrize('key', ['is_enabled', 'is_up', 'mac_address'])
-def test_contains_information_about_interface(single_result, testdata, key):
-    assert single_result[testdata["name"]][key] == testdata[key]
+def test_contains_information_about_interface(single_result, raw_testdata, testdata):
+    if_name = testdata["name"]
+    assert single_result[if_name] == raw_testdata.nornir_raw_result["interfaces"][if_name]
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

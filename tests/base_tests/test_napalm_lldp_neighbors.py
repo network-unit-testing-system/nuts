@@ -93,20 +93,30 @@ def general_result(timeouted_multiresult):
     return result
 
 
+@pytest.fixture(params=[lldp_r1_1, lldp_r1_2, lldp_r2_1, lldp_r2_2])
+def raw_testdata(request):
+    return request.param
+
+
 @pytest.fixture
-def all_testdata():
-    return [lldp_r1_1.test_data, lldp_r1_2.test_data, lldp_r2_1.test_data, lldp_r2_2.test_data]
+def testdata(raw_testdata):
+    return raw_testdata.test_data
+
+
+@pytest.fixture
+def interface_result(testdata, transformed_result):
+    return transformed_result[testdata["host"]].result[testdata["local_port"]]
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
 def test_contains_hosts_at_toplevel(transformed_result):
-    assert all(h in transformed_result for h in ["R1", "R2", "R3"])
+    assert transformed_result.keys() == {"R1", "R2", "R3"}
 
 
-def test_contains_results_with_ports_at_second_level(transformed_result, all_testdata):
-    assert all(entry["local_port"] in transformed_result[entry["host"]].result for entry in all_testdata)
+def test_contains_results_with_ports_at_second_level(transformed_result, testdata):
+    assert testdata["local_port"] in transformed_result[testdata["host"]].result
 
 
 def test_contains_failed_result_at_second_level_if_task_failed(transformed_result):
@@ -114,27 +124,15 @@ def test_contains_failed_result_at_second_level_if_task_failed(transformed_resul
     assert transformed_result["R3"].exception
 
 
-def test_contains_information_about_neighbor(transformed_result):
-    expected_details = lldp_r1_1.test_data
-    actual_details = transformed_result["R1"].result["GigabitEthernet4"]
-    assert actual_details["remote_host"] == expected_details["remote_host"]
-    assert (
-        actual_details["remote_port"] == expected_details["remote_port"]
-        or actual_details["remote_port_expanded"] == expected_details["remote_port"]
-    )
+def test_contains_information_about_neighbor(interface_result, raw_testdata, testdata):
+    expected = raw_testdata.nornir_raw_result["lldp_neighbors_detail"][testdata["local_port"]][0]
+    assert interface_result == expected
 
 
-def test_contains_information_remote_host(transformed_result):
-    expected_details = lldp_r1_1.test_data
-    assert transformed_result["R1"].result["GigabitEthernet4"]["remote_host"] == expected_details["remote_host"]
+
+def test_contains_information_remote_host(interface_result, testdata):
+    assert interface_result["remote_host"] == testdata["remote_host"]
 
 
-def test_contains_information_expanded_interface(transformed_result):
-    expected_details1 = lldp_r1_1.test_data
-    expected_details2 = lldp_r1_2.test_data
-    assert (
-        transformed_result["R1"].result["GigabitEthernet4"]["remote_port_expanded"] == expected_details1["remote_port"]
-    )
-    assert (
-        transformed_result["R1"].result["GigabitEthernet4"]["remote_port_expanded"] == expected_details2["remote_port"]
-    )
+def test_contains_information_expanded_interface(interface_result, testdata):
+    assert interface_result["remote_port_expanded"] == testdata["remote_port"]

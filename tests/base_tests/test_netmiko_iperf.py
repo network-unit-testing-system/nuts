@@ -57,23 +57,26 @@ def all_testdata():
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_host_at_toplevel(self, transformed_result):
-        assert all(h in transformed_result for h in ["L1", "L2"])
+def test_contains_host_at_toplevel(transformed_result):
+    assert all(h in transformed_result for h in ["L1", "L2"])
 
-    def test_contains_iperf_dest(self, transformed_result, all_testdata):
-        assert all(entry["destination"] in transformed_result[entry["host"]] for entry in all_testdata)
 
-    def test_one_host_several_destinations(self, transformed_result):
-        expected1 = iperf_l1_1.test_data
-        expected2 = iperf_l1_2.test_data
-        assert transformed_result["L1"][expected1["destination"]].result >= expected1["min_expected"]
-        assert transformed_result["L1"][expected2["destination"]].result >= expected2["min_expected"]
+def test_contains_iperf_dest(transformed_result, all_testdata):
+    assert all(entry["destination"] in transformed_result[entry["host"]] for entry in all_testdata)
 
-    def test_below_min_expected_fails(self, transformed_result):
-        expected1 = iperf_l2_1.test_data
-        assert not transformed_result["L2"][expected1["destination"]].result >= expected1["min_expected"]
 
-    def test_dest_unreachable_fails(self, transformed_result):
-        assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].failed
-        assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].exception is not None
+def test_one_host_several_destinations(transformed_result):
+    expected1 = iperf_l1_1.test_data
+    expected2 = iperf_l1_2.test_data
+    assert transformed_result["L1"][expected1["destination"]].result >= expected1["min_expected"]
+    assert transformed_result["L1"][expected2["destination"]].result >= expected2["min_expected"]
+
+
+def test_below_min_expected_fails(transformed_result):
+    expected1 = iperf_l2_1.test_data
+    assert not transformed_result["L2"][expected1["destination"]].result >= expected1["min_expected"]
+
+
+def test_dest_unreachable_fails(transformed_result):
+    assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].failed
+    assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].exception is not None

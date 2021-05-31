@@ -124,29 +124,31 @@ def general_result(timeouted_multiresult):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_hosts_at_toplevel(self, transformed_result):
-        assert transformed_result.keys() == {"R1", "R2", "R3"}
+def test_contains_hosts_at_toplevel(transformed_result):
+    assert transformed_result.keys() == {"R1", "R2", "R3"}
 
-    @pytest.mark.parametrize("host, neighbors", [("R1", {R2_IP, R3_IP}), ("R2", {R1_IP})])
-    def test_contains_peers_at_second_level(self, transformed_result, host, neighbors):
-        assert transformed_result[host].result.keys() == neighbors
 
-    def test_contains_information_about_neighbor(self, transformed_result):
-        neighbor_details = transformed_result["R1"].result[bgp_r1_1.test_data["peer"]]
-        expected = {
-            "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
-            "description": "",
-            "is_enabled": bgp_r1_1.test_data["is_enabled"],
-            "is_up": bgp_r1_1.test_data["is_up"],
-            "local_as": bgp_r1_1.test_data["local_as"],
-            "local_id": R1_IP,
-            "remote_as": bgp_r1_1.test_data["remote_as"],
-            "remote_id": bgp_r1_1.test_data["remote_id"],
-            "uptime": -1,
-        }
-        assert neighbor_details == expected
+@pytest.mark.parametrize("host, neighbors", [("R1", {R2_IP, R3_IP}), ("R2", {R1_IP})])
+def test_contains_peers_at_second_level(transformed_result, host, neighbors):
+    assert transformed_result[host].result.keys() == neighbors
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception is not None
+
+def test_contains_information_about_neighbor(transformed_result):
+    neighbor_details = transformed_result["R1"].result[bgp_r1_1.test_data["peer"]]
+    expected = {
+        "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
+        "description": "",
+        "is_enabled": bgp_r1_1.test_data["is_enabled"],
+        "is_up": bgp_r1_1.test_data["is_up"],
+        "local_as": bgp_r1_1.test_data["local_as"],
+        "local_id": R1_IP,
+        "remote_as": bgp_r1_1.test_data["remote_as"],
+        "remote_id": bgp_r1_1.test_data["remote_id"],
+        "uptime": -1,
+    }
+    assert neighbor_details == expected
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception is not None

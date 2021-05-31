@@ -72,27 +72,29 @@ def general_result(timeouted_multiresult):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_hosts_at_toplevel(self, transformed_result):
-        assert all(h in transformed_result for h in ["R1", "R2"])
+def test_contains_hosts_at_toplevel(transformed_result):
+    assert all(h in transformed_result for h in ["R1", "R2"])
 
-    def test_contains_neighbors_at_second_level(self, transformed_result):
-        assert all(n in transformed_result["R1"].result for n in ["172.16.255.3", "172.16.255.2", "172.16.255.4"])
-        assert all(n in transformed_result["R2"].result for n in ["172.16.255.3", "172.16.255.11", "172.16.255.1"])
 
-    def test_contains_information_about_neighbor(self, transformed_result):
-        details = {
-            "neighbor_id": "172.16.255.3",
-            "priority": "1",
-            "state": "FULL/BDR",
-            "dead_time": "00:00:33",
-            "address": "172.16.13.3",
-            "interface": "GigabitEthernet4",
-        }
-        expected_details = transformed_result["R1"].result["172.16.255.3"]
-        for key in details:
-            assert expected_details[key] == details[key]
+def test_contains_neighbors_at_second_level(transformed_result):
+    assert all(n in transformed_result["R1"].result for n in ["172.16.255.3", "172.16.255.2", "172.16.255.4"])
+    assert all(n in transformed_result["R2"].result for n in ["172.16.255.3", "172.16.255.11", "172.16.255.1"])
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception is not None
+
+def test_contains_information_about_neighbor(transformed_result):
+    details = {
+        "neighbor_id": "172.16.255.3",
+        "priority": "1",
+        "state": "FULL/BDR",
+        "dead_time": "00:00:33",
+        "address": "172.16.13.3",
+        "interface": "GigabitEthernet4",
+    }
+    expected_details = transformed_result["R1"].result["172.16.255.3"]
+    for key in details:
+        assert expected_details[key] == details[key]
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception is not None

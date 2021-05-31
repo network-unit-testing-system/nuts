@@ -101,38 +101,40 @@ def all_testdata():
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_hosts_at_toplevel(self, transformed_result):
-        assert all(h in transformed_result for h in ["R1", "R2", "R3"])
+def test_contains_hosts_at_toplevel(transformed_result):
+    assert all(h in transformed_result for h in ["R1", "R2", "R3"])
 
-    def test_contains_results_with_ports_at_second_level(self, transformed_result, all_testdata):
-        assert all(entry["local_port"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
-    def test_contains_failed_result_at_second_level_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception
+def test_contains_results_with_ports_at_second_level(transformed_result, all_testdata):
+    assert all(entry["local_port"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
-    def test_contains_information_about_neighbor(self, transformed_result):
-        expected_details = lldp_r1_1.test_data
-        actual_details = transformed_result["R1"].result["GigabitEthernet4"]
-        assert actual_details["remote_host"] == expected_details["remote_host"]
-        assert (
-            actual_details["remote_port"] == expected_details["remote_port"]
-            or actual_details["remote_port_expanded"] == expected_details["remote_port"]
-        )
 
-    def test_contains_information_remote_host(self, transformed_result):
-        expected_details = lldp_r1_1.test_data
-        assert transformed_result["R1"].result["GigabitEthernet4"]["remote_host"] == expected_details["remote_host"]
+def test_contains_failed_result_at_second_level_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception
 
-    def test_contains_information_expanded_interface(self, transformed_result):
-        expected_details1 = lldp_r1_1.test_data
-        expected_details2 = lldp_r1_2.test_data
-        assert (
-            transformed_result["R1"].result["GigabitEthernet4"]["remote_port_expanded"]
-            == expected_details1["remote_port"]
-        )
-        assert (
-            transformed_result["R1"].result["GigabitEthernet4"]["remote_port_expanded"]
-            == expected_details2["remote_port"]
-        )
+
+def test_contains_information_about_neighbor(transformed_result):
+    expected_details = lldp_r1_1.test_data
+    actual_details = transformed_result["R1"].result["GigabitEthernet4"]
+    assert actual_details["remote_host"] == expected_details["remote_host"]
+    assert (
+        actual_details["remote_port"] == expected_details["remote_port"]
+        or actual_details["remote_port_expanded"] == expected_details["remote_port"]
+    )
+
+
+def test_contains_information_remote_host(transformed_result):
+    expected_details = lldp_r1_1.test_data
+    assert transformed_result["R1"].result["GigabitEthernet4"]["remote_host"] == expected_details["remote_host"]
+
+
+def test_contains_information_expanded_interface(transformed_result):
+    expected_details1 = lldp_r1_1.test_data
+    expected_details2 = lldp_r1_2.test_data
+    assert (
+        transformed_result["R1"].result["GigabitEthernet4"]["remote_port_expanded"] == expected_details1["remote_port"]
+    )
+    assert (
+        transformed_result["R1"].result["GigabitEthernet4"]["remote_port_expanded"] == expected_details2["remote_port"]
+    )

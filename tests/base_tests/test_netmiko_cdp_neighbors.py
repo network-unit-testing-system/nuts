@@ -78,28 +78,30 @@ def general_result(timeouted_multiresult):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_hosts_at_toplevel(self, transformed_result):
-        assert all(h in transformed_result for h in ["R1", "R2"])
+def test_contains_hosts_at_toplevel(transformed_result):
+    assert all(h in transformed_result for h in ["R1", "R2"])
 
-    def test_contains_neighbors_at_second_level(self, transformed_result):
-        assert all(network_instances in transformed_result["R1"].result for network_instances in ["R2", "R3", "R4"])
-        assert all(network_instances in transformed_result["R2"].result for network_instances in ["R3", "R1", "R5"])
 
-    def test_contains_information_about_neighbor(self, transformed_result):
-        expected_details = transformed_result["R1"].result["R2"]
-        details = {
-            "destination_host": "R2",
-            "management_ip": "172.16.12.2",
-            "platform": "cisco CSR1000V",
-            "remote_port": "GigabitEthernet2",
-            "local_port": "GigabitEthernet3",
-            "software_version": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-            "capabilities": "Router IGMP",
-        }
-        for key in details:
-            assert expected_details[key] == details[key]
+def test_contains_neighbors_at_second_level(transformed_result):
+    assert all(network_instances in transformed_result["R1"].result for network_instances in ["R2", "R3", "R4"])
+    assert all(network_instances in transformed_result["R2"].result for network_instances in ["R3", "R1", "R5"])
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception is not None
+
+def test_contains_information_about_neighbor(transformed_result):
+    expected_details = transformed_result["R1"].result["R2"]
+    details = {
+        "destination_host": "R2",
+        "management_ip": "172.16.12.2",
+        "platform": "cisco CSR1000V",
+        "remote_port": "GigabitEthernet2",
+        "local_port": "GigabitEthernet3",
+        "software_version": "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+        "capabilities": "Router IGMP",
+    }
+    for key in details:
+        assert expected_details[key] == details[key]
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception is not None

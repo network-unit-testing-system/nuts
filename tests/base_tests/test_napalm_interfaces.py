@@ -125,26 +125,28 @@ def all_testdata():
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_host_at_toplevel(self, transformed_result):  # transformed_result.keys() == ["R1", "R2", "R3"]
-        assert all(h in transformed_result for h in ["R1", "R2"])
+def test_contains_host_at_toplevel(transformed_result):  # transformed_result.keys() == ["R1", "R2", "R3"]
+    assert all(h in transformed_result for h in ["R1", "R2"])
 
-    def test_contains_interface_names_at_second_level(self, transformed_result, all_testdata):
-        assert all(entry["name"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
-    def test_contains_information_about_interface(self, transformed_result, all_testdata): # parametrize entry, key, is_enabled
-        assert all(
-            transformed_result[entry["host"]].result[entry["name"]]["is_enabled"] == entry["is_enabled"]
-            for entry in all_testdata
-        )
-        assert all(
-            transformed_result[entry["host"]].result[entry["name"]]["is_up"] == entry["is_up"] for entry in all_testdata
-        )
-        assert all(
-            transformed_result[entry["host"]].result[entry["name"]]["mac_address"] == entry["mac_address"]
-            for entry in all_testdata
-        )
+def test_contains_interface_names_at_second_level(transformed_result, all_testdata):
+    assert all(entry["name"] in transformed_result[entry["host"]].result for entry in all_testdata)
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception is not None
+
+def test_contains_information_about_interface(transformed_result, all_testdata):  # parametrize entry, key, is_enabled
+    assert all(
+        transformed_result[entry["host"]].result[entry["name"]]["is_enabled"] == entry["is_enabled"]
+        for entry in all_testdata
+    )
+    assert all(
+        transformed_result[entry["host"]].result[entry["name"]]["is_up"] == entry["is_up"] for entry in all_testdata
+    )
+    assert all(
+        transformed_result[entry["host"]].result[entry["name"]]["mac_address"] == entry["mac_address"]
+        for entry in all_testdata
+    )
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception is not None

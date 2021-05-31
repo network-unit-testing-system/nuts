@@ -47,23 +47,27 @@ def testdata(request):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_host_at_toplevel(self, transformed_result):
-        assert transformed_result.keys() == {"R1", "R2", "R3"}
+def test_contains_host_at_toplevel(transformed_result):
+    assert transformed_result.keys() == {"R1", "R2", "R3"}
 
-    @pytest.fixture
-    def single_result(self, transformed_result, testdata):
-        return transformed_result[testdata["host"]].result
 
-    def test_contains_multiple_usernames_per_host(self, single_result, testdata):
-        assert testdata["username"] in single_result
+@pytest.fixture
+def single_result(transformed_result, testdata):
+    return transformed_result[testdata["host"]].result
 
-    def test_username_has_corresponding_password(self, single_result, testdata):
-        assert single_result[testdata["username"]]["password"] == testdata["password"]
 
-    def test_username_has_matching_privilegelevel(self, single_result, testdata):
-        assert single_result[testdata["username"]]["level"] == testdata["level"]
+def test_contains_multiple_usernames_per_host(single_result, testdata):
+    assert testdata["username"] in single_result
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception is not None
+
+def test_username_has_corresponding_password(single_result, testdata):
+    assert single_result[testdata["username"]]["password"] == testdata["password"]
+
+
+def test_username_has_matching_privilegelevel(single_result, testdata):
+    assert single_result[testdata["username"]]["level"] == testdata["level"]
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception is not None

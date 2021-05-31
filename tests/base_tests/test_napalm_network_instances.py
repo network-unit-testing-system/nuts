@@ -79,32 +79,35 @@ def general_result(timeouted_multiresult):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    def test_contains_hosts_at_toplevel(self, transformed_result):
-        assert all(h in transformed_result for h in ["R1", "R2"])
+def test_contains_hosts_at_toplevel(transformed_result):
+    assert all(h in transformed_result for h in ["R1", "R2"])
 
-    def test_contains_network_instances_at_second_level(self, transformed_result):
-        assert all(
-            network_instances in transformed_result["R1"].result
-            for network_instances in ["default", "mgmt", "space", "ship"]
-        )
-        assert all(network_instances in transformed_result["R2"].result for network_instances in ["default", "mgmt"])
 
-    def test_contains_interfaces_at_network_instance(self, transformed_result):
-        assert transformed_result["R1"].result["default"]["interfaces"] == [
-            "GigabitEthernet2",
-            "GigabitEthernet3",
-            "GigabitEthernet4",
-            "GigabitEthernet5",
-            "Loopback0",
-        ]
-        assert transformed_result["R2"].result["mgmt"]["interfaces"] == ["GigabitEthernet1"]
+def test_contains_network_instances_at_second_level(transformed_result):
+    assert all(
+        network_instances in transformed_result["R1"].result
+        for network_instances in ["default", "mgmt", "space", "ship"]
+    )
+    assert all(network_instances in transformed_result["R2"].result for network_instances in ["default", "mgmt"])
 
-    def test_contains_route_distinguisher_at_network_instance(self, transformed_result):
-        assert transformed_result["R1"].result["default"]["route_distinguisher"] == ""
-        assert transformed_result["R1"].result["ship"]["route_distinguisher"] == "1:1"
-        assert transformed_result["R2"].result["mgmt"]["route_distinguisher"] == ""
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"].failed
-        assert transformed_result["R3"].exception is not None
+def test_contains_interfaces_at_network_instance(transformed_result):
+    assert transformed_result["R1"].result["default"]["interfaces"] == [
+        "GigabitEthernet2",
+        "GigabitEthernet3",
+        "GigabitEthernet4",
+        "GigabitEthernet5",
+        "Loopback0",
+    ]
+    assert transformed_result["R2"].result["mgmt"]["interfaces"] == ["GigabitEthernet1"]
+
+
+def test_contains_route_distinguisher_at_network_instance(transformed_result):
+    assert transformed_result["R1"].result["default"]["route_distinguisher"] == ""
+    assert transformed_result["R1"].result["ship"]["route_distinguisher"] == "1:1"
+    assert transformed_result["R2"].result["mgmt"]["route_distinguisher"] == ""
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"].failed
+    assert transformed_result["R3"].exception is not None

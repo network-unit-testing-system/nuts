@@ -121,11 +121,6 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture
-def all_testdata():
-    return [bgp_r1_1.test_data, bgp_r1_2.test_data, bgp_r2.test_data]
-
-
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 

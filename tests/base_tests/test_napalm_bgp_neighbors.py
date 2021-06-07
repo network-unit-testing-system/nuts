@@ -69,7 +69,13 @@ bgp_r1_1 = SelfTestData(
     nornir_raw_result=nornir_raw_r1,
     test_data={
         "host": "R1",
+        "local_id": R1_IP,
         "peer": R2_IP,
+        "is_enabled": True,
+        "remote_as": 45002,
+        "remote_id": "0.0.0.0",
+        "local_as": 45001,
+        "is_up": False,
     },
 )
 
@@ -77,7 +83,13 @@ bgp_r1_2 = SelfTestData(
     nornir_raw_result=nornir_raw_r1,
     test_data={
         "host": "R1",
+        "local_id": R1_IP,
         "peer": R3_IP,
+        "is_enabled": True,
+        "remote_as": 45001,
+        "remote_id": "0.0.0.0",
+        "local_as": 45002,
+        "is_up": False,
     },
 )
 
@@ -85,7 +97,13 @@ bgp_r2 = SelfTestData(
     nornir_raw_result=nornir_raw_r2,
     test_data={
         "host": "R2",
+        "local_id": R2_IP,
         "peer": R1_IP,
+        "is_enabled": True,
+        "remote_as": 45001,
+        "remote_id": "0.0.0.0",
+        "local_as": 45002,
+        "is_up": False,
     },
 )
 
@@ -106,11 +124,6 @@ def general_result(timeouted_multiresult):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-@pytest.fixture(params=[bgp_r1_1, bgp_r1_2, bgp_r2])
-def raw_test_data(request):
-    return request.param
-
-
 def test_contains_hosts_at_toplevel(transformed_result):
     assert transformed_result.keys() == {"R1", "R2", "R3"}
 
@@ -120,11 +133,19 @@ def test_contains_peers_at_second_level(transformed_result, host, neighbors):
     assert transformed_result[host].result.keys() == neighbors
 
 
-def test_contains_information_about_neighbor(transformed_result, raw_test_data):
-    host = raw_test_data.test_data["host"]
-    peer = raw_test_data.test_data["peer"]
-    neighbor_details = transformed_result[host].result[peer]
-    expected = raw_test_data.nornir_raw_result["bgp_neighbors"]["global"]["peers"][peer]
+def test_contains_information_about_neighbor(transformed_result):
+    neighbor_details = transformed_result["R1"].result[bgp_r1_1.test_data["peer"]]
+    expected = {
+        "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
+        "description": "",
+        "is_enabled": bgp_r1_1.test_data["is_enabled"],
+        "is_up": bgp_r1_1.test_data["is_up"],
+        "local_as": bgp_r1_1.test_data["local_as"],
+        "local_id": R1_IP,
+        "remote_as": bgp_r1_1.test_data["remote_as"],
+        "remote_id": bgp_r1_1.test_data["remote_id"],
+        "uptime": -1,
+    }
     assert neighbor_details == expected
 
 

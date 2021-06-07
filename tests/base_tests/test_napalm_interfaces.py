@@ -84,8 +84,8 @@ interfaces_r2_1 = SelfTestData(
         "name": "Loopback0",
         "is_up": False,
         "mac_address": "",
-        "speed": 1000,
-        "mtu": 1500,
+        "speed": 8000,
+        "mtu": 1514,
     },
 )
 
@@ -117,7 +117,12 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[interfaces_r1_1.test_data, interfaces_r1_2.test_data, interfaces_r2_1.test_data, interfaces_r2_2.test_data])
+@pytest.fixture(params=[
+    pytest.param(interfaces_r1_1.test_data, id="r1_1"),
+    pytest.param(interfaces_r1_2.test_data, id="r1_2"),
+    pytest.param(interfaces_r2_1.test_data, id="r2_1"),
+    pytest.param(interfaces_r2_2.test_data, id="r2_2"),
+])
 def testdata(request):
     return request.param
 
@@ -138,9 +143,17 @@ def test_contains_interface_names_at_second_level(single_result, testdata):
     assert testdata["name"] in single_result
 
 
-@pytest.mark.parametrize('key', ['is_enabled', 'is_up', 'mac_address'])
-def test_contains_information_about_interface(single_result, testdata, key):
-    assert single_result[testdata["name"]][key] == testdata[key]
+def test_contains_information_about_interface(single_result, testdata):
+    expected = {
+        "is_enabled": testdata["is_enabled"],
+        "is_up": testdata["is_up"],
+        "mac_address": testdata["mac_address"],
+        "mtu": testdata["mtu"],
+        "speed": testdata["speed"],
+        "description": "",
+        "last_flapped": -1.0,
+    }
+    assert single_result[testdata["name"]] == expected
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

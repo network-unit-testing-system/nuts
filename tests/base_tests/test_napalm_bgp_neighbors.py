@@ -8,15 +8,21 @@ R1_IP = "172.16.255.1"
 R2_IP = "172.16.255.2"
 R3_IP = "172.16.255.3"
 
+AS1 = 45001
+AS2 = 45002
+AS3 = 45003
+
+AS_ID = "0.0.0.0"
+
 nornir_raw_r1 = {
     "bgp_neighbors": {
         "global": {
             "router_id": R1_IP,
             "peers": {
                 R2_IP: {
-                    "local_as": 45001,
-                    "remote_as": 45002,
-                    "remote_id": "0.0.0.0",
+                    "local_as": AS1,
+                    "remote_as": AS2,
+                    "remote_id": AS_ID,
                     "is_up": False,
                     "is_enabled": True,
                     "description": "",
@@ -26,9 +32,9 @@ nornir_raw_r1 = {
                     },
                 },
                 R3_IP: {
-                    "local_as": 45001,
-                    "remote_as": 45003,
-                    "remote_id": "0.0.0.0",
+                    "local_as": AS1,
+                    "remote_as": AS3,
+                    "remote_id": AS_ID,
                     "is_up": False,
                     "is_enabled": True,
                     "description": "",
@@ -48,9 +54,9 @@ nornir_raw_r2 = {
             "router_id": R2_IP,
             "peers": {
                 R1_IP: {
-                    "local_as": 45002,
-                    "remote_as": 45001,
-                    "remote_id": "0.0.0.0",
+                    "local_as": AS2,
+                    "remote_as": AS1,
+                    "remote_id": AS_ID,
                     "is_up": False,
                     "is_enabled": True,
                     "description": "",
@@ -72,9 +78,9 @@ bgp_r1_1 = SelfTestData(
         "local_id": R1_IP,
         "peer": R2_IP,
         "is_enabled": True,
-        "remote_as": 45002,
-        "remote_id": "0.0.0.0",
-        "local_as": 45001,
+        "remote_as": AS2,
+        "remote_id": AS_ID,
+        "local_as": AS1,
         "is_up": False,
     },
 )
@@ -86,9 +92,9 @@ bgp_r1_2 = SelfTestData(
         "local_id": R1_IP,
         "peer": R3_IP,
         "is_enabled": True,
-        "remote_as": 45001,
-        "remote_id": "0.0.0.0",
-        "local_as": 45002,
+        "remote_as": AS1,
+        "remote_id": AS_ID,
+        "local_as": AS2,
         "is_up": False,
     },
 )
@@ -100,9 +106,9 @@ bgp_r2 = SelfTestData(
         "local_id": R2_IP,
         "peer": R1_IP,
         "is_enabled": True,
-        "remote_as": 45001,
-        "remote_id": "0.0.0.0",
-        "local_as": 45002,
+        "remote_as": AS1,
+        "remote_id": AS_ID,
+        "local_as": AS2,
         "is_up": False,
     },
 )
@@ -136,14 +142,14 @@ def test_contains_peers_at_second_level(transformed_result, host, neighbors):
 def test_contains_information_about_neighbor(transformed_result):
     neighbor_details = transformed_result["R1"].result[bgp_r1_1.test_data["peer"]]
     expected = {
-        "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
-        "description": "",
         "is_enabled": bgp_r1_1.test_data["is_enabled"],
         "is_up": bgp_r1_1.test_data["is_up"],
         "local_as": bgp_r1_1.test_data["local_as"],
-        "local_id": R1_IP,
+        "local_id": bgp_r1_1.test_data["local_id"],
         "remote_as": bgp_r1_1.test_data["remote_as"],
         "remote_id": bgp_r1_1.test_data["remote_id"],
+        "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
+        "description": "",
         "uptime": -1,
     }
     assert neighbor_details == expected

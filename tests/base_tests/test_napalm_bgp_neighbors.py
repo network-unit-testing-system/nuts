@@ -92,9 +92,9 @@ bgp_r1_2 = SelfTestData(
         "local_id": R1_IP,
         "peer": R3_IP,
         "is_enabled": True,
-        "remote_as": AS1,
+        "remote_as": AS3,
         "remote_id": AS_ID,
-        "local_as": AS2,
+        "local_as": AS1,
         "is_up": False,
     },
 )
@@ -127,6 +127,15 @@ def general_result(timeouted_multiresult):
     return result
 
 
+@pytest.fixture(params=[
+    pytest.param(bgp_r1_1.test_data, id="bgp_r1_1"),
+    pytest.param(bgp_r1_2.test_data, id="bgp_r1_2"),
+    pytest.param(bgp_r2.test_data, id="bgp_r2"),
+])
+def testdata(request):
+    return request.param
+
+
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
@@ -139,15 +148,16 @@ def test_contains_peers_at_second_level(transformed_result, host, neighbors):
     assert transformed_result[host].result.keys() == neighbors
 
 
-def test_contains_information_about_neighbor(transformed_result):
-    neighbor_details = transformed_result["R1"].result[bgp_r1_1.test_data["peer"]]
+def test_contains_information_about_neighbor(transformed_result, testdata):
+    print(testdata)
+    neighbor_details = transformed_result[testdata["host"]].result[testdata["peer"]]
     expected = {
-        "is_enabled": bgp_r1_1.test_data["is_enabled"],
-        "is_up": bgp_r1_1.test_data["is_up"],
-        "local_as": bgp_r1_1.test_data["local_as"],
-        "local_id": bgp_r1_1.test_data["local_id"],
-        "remote_as": bgp_r1_1.test_data["remote_as"],
-        "remote_id": bgp_r1_1.test_data["remote_id"],
+        "is_enabled": testdata["is_enabled"],
+        "is_up": testdata["is_up"],
+        "local_as": testdata["local_as"],
+        "local_id": testdata["local_id"],
+        "remote_as": testdata["remote_as"],
+        "remote_id": testdata["remote_id"],
         "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
         "description": "",
         "uptime": -1,

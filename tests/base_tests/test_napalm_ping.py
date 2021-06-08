@@ -45,7 +45,7 @@ ping_r1_2 = SelfTestData(
             ],
         }
     },
-    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.6", "max_drop": 1},
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.5", "max_drop": 1},
 )
 
 ping_r2 = SelfTestData(
@@ -79,11 +79,11 @@ ping_r3 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": "172.16.23.5", "rtt": 0.0},
             ],
         }
     },
@@ -101,7 +101,7 @@ def general_result():
         host="R3",
         destination="172.16.23.6",
         failed=True,
-        exception=ConnectionException("Cannot connect to 10.20.0.123"),
+        exception=ConnectionException("Cannot connect to 172.16.23.6"),
     )
     general_result = AggregatedResult(task_name)
     general_result["R1"] = create_multi_result(

@@ -2,6 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
+from nornir_napalm.plugins import tasks
 
 from tests.utils import create_multi_result, SelfTestData
 
@@ -139,8 +140,13 @@ def general_result(timeouted_multiresult):
     ],
     ids=lambda data: data.name,
 )
-def testdata(request):
-    return request.param.test_data
+def raw_testdata(request):
+    return request.param
+
+
+@pytest.fixture
+def testdata(raw_testdata):
+    return raw_testdata.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -175,3 +181,9 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
+
+
+def test_integration(raw_testdata: SelfTestData, integration_tester):
+    integration_tester(
+        raw_testdata, test_class="TestNapalmBgpNeighbors", task_module=tasks, task_name="napalm_get", passed_count=6
+    )

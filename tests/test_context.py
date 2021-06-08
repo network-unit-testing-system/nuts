@@ -127,16 +127,10 @@ def default_nr_init(testdir):
               hostname: 10.20.0.32""",
     }
     testdir.makefile(YAML_EXTENSION, **arguments)
-    nr_path = testdir.tmpdir.join(f"nr-config{YAML_EXTENSION}")
-    conf_test = f"""
-          from nornir.core import Task
-          import pytest
 
-          @pytest.fixture(scope="session")
-          def nornir_config_file():
-              return r"{nr_path}"
-                  """
-    testdir.makeconftest(conf_test)
+    # We need to have the test tmpdir in sys.path, so NUTS can import the test
+    # modules (e.g. basic_task.py).
+    testdir.syspathinsert()
 
 
 @pytest.mark.usefixtures("default_nr_init", "nr_wrapper")

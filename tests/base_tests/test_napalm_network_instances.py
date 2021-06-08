@@ -79,7 +79,7 @@ r1_default = SelfTestData(
             "Loopback0",
         ],
         "route_distinguisher": "",
-    }
+    },
 )
 
 
@@ -90,7 +90,7 @@ r1_mgmt = SelfTestData(
         "network_instance": "mgmt",
         "interfaces": ["GigabitEthernet1"],
         "route_distinguisher": "",
-    }
+    },
 )
 
 
@@ -101,7 +101,7 @@ r1_space = SelfTestData(
         "network_instance": "space",
         "interfaces": [],
         "route_distinguisher": "",
-    }
+    },
 )
 
 
@@ -112,7 +112,7 @@ r1_ship = SelfTestData(
         "network_instance": "ship",
         "interfaces": ["Loopback2"],
         "route_distinguisher": "1:1",
-    }
+    },
 )
 
 
@@ -128,7 +128,7 @@ r2_default = SelfTestData(
             "Loopback0",
         ],
         "route_distinguisher": "",
-    }
+    },
 )
 
 
@@ -139,7 +139,7 @@ r2_mgmt = SelfTestData(
         "network_instance": "mgmt",
         "interfaces": ["GigabitEthernet1"],
         "route_distinguisher": "",
-    }
+    },
 )
 
 
@@ -153,14 +153,16 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[
-    pytest.param(r1_default.test_data, id="r1_default"),
-    pytest.param(r1_mgmt.test_data, id="r1_mgmt"),
-    pytest.param(r1_space.test_data, id="r1_space"),
-    pytest.param(r1_ship.test_data, id="r1_ship"),
-    pytest.param(r2_default.test_data, id="r2_default"),
-    pytest.param(r2_mgmt.test_data, id="r2_mgmt"),
-])
+@pytest.fixture(
+    params=[
+        pytest.param(r1_default.test_data, id="r1_default"),
+        pytest.param(r1_mgmt.test_data, id="r1_mgmt"),
+        pytest.param(r1_space.test_data, id="r1_space"),
+        pytest.param(r1_ship.test_data, id="r1_ship"),
+        pytest.param(r2_default.test_data, id="r2_default"),
+        pytest.param(r2_mgmt.test_data, id="r2_mgmt"),
+    ]
+)
 def testdata(request):
     return request.param
 
@@ -172,10 +174,13 @@ def test_contains_hosts_at_toplevel(transformed_result):
     assert transformed_result.keys() == {"R1", "R2", "R3"}
 
 
-@pytest.mark.parametrize("host, network_instances", [
-    ("R1", {"default", "mgmt", "space", "ship"}),
-    ("R2", {"default", "mgmt"}),
-])
+@pytest.mark.parametrize(
+    "host, network_instances",
+    [
+        ("R1", {"default", "mgmt", "space", "ship"}),
+        ("R2", {"default", "mgmt"}),
+    ],
+)
 def test_contains_network_instances_at_second_level(transformed_result, host, network_instances):
     assert transformed_result[host].result.keys() == network_instances
 

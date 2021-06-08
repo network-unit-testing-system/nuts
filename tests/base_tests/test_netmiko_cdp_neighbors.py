@@ -4,9 +4,11 @@ from nornir.core.task import AggregatedResult, MultiResult, Result
 from nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
 from tests.helpers.selftest_helpers import SelfTestData, create_multi_result, create_result
 
-SOFTWARE_VERSION = "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
-CAPABILITIES = "Router IGMP",
-PLATFORM = "cisco CSR1000V",
+SOFTWARE_VERSION = (
+    "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+)
+CAPABILITIES = ("Router IGMP",)
+PLATFORM = ("cisco CSR1000V",)
 
 raw_nornir_result_r1 = [
     {
@@ -146,14 +148,16 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[
-    pytest.param(r1_r2.test_data, id="r1_r2"),
-    pytest.param(r1_r3.test_data, id="r1_r3"),
-    pytest.param(r1_r4.test_data, id="r1_r4"),
-    pytest.param(r2_r3.test_data, id="r2_r3"),
-    pytest.param(r2_r1.test_data, id="r2_r1"),
-    pytest.param(r2_r5.test_data, id="r2_r5"),
-])
+@pytest.fixture(
+    params=[
+        pytest.param(r1_r2.test_data, id="r1_r2"),
+        pytest.param(r1_r3.test_data, id="r1_r3"),
+        pytest.param(r1_r4.test_data, id="r1_r4"),
+        pytest.param(r2_r3.test_data, id="r2_r3"),
+        pytest.param(r2_r1.test_data, id="r2_r1"),
+        pytest.param(r2_r5.test_data, id="r2_r5"),
+    ]
+)
 def testdata(request):
     return request.param
 
@@ -165,10 +169,13 @@ def test_contains_hosts_at_toplevel(transformed_result):
     assert transformed_result.keys() == {"R1", "R2", "R3"}
 
 
-@pytest.mark.parametrize('host, neighbors', [
-    ("R1", {"R2", "R3", "R4"}),
-    ("R2", {"R3", "R1", "R5"}),
-])
+@pytest.mark.parametrize(
+    "host, neighbors",
+    [
+        ("R1", {"R2", "R3", "R4"}),
+        ("R2", {"R3", "R1", "R5"}),
+    ],
+)
 def test_contains_neighbors_at_second_level(transformed_result, host, neighbors):
     assert transformed_result[host].result.keys() == neighbors
 

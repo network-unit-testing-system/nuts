@@ -127,11 +127,13 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[
-    pytest.param(bgp_r1_1.test_data, id="bgp_r1_1"),
-    pytest.param(bgp_r1_2.test_data, id="bgp_r1_2"),
-    pytest.param(bgp_r2.test_data, id="bgp_r2"),
-])
+@pytest.fixture(
+    params=[
+        pytest.param(bgp_r1_1.test_data, id="bgp_r1_1"),
+        pytest.param(bgp_r1_2.test_data, id="bgp_r1_2"),
+        pytest.param(bgp_r2.test_data, id="bgp_r2"),
+    ]
+)
 def testdata(request):
     return request.param
 

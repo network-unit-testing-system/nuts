@@ -7,7 +7,9 @@ from tests.helpers.selftest_helpers import create_multi_result, create_result, S
 R1_CHASSIS_ID = "001e.e547.df00"
 R2_CHASSIS_ID = "001e.f62f.a600"
 R3_CHASSIS_ID = "001e.e611.3500"
-REMOTE_SYSTEM_DESCRIPTION = "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+REMOTE_SYSTEM_DESCRIPTION = (
+    "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+)
 REMOTE_SYSTEM_CAPAB = ["bridge", "router"]
 REMOTE_SYSTEM_ENABLE_CAPAB = ["router"]
 
@@ -104,12 +106,14 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[
-    pytest.param(lldp_r1_1, id="r1_1"),
-    pytest.param(lldp_r1_2, id="r1_2"),
-    pytest.param(lldp_r2_1, id="r2_1"),
-    pytest.param(lldp_r2_2, id="r2_2"),
-])
+@pytest.fixture(
+    params=[
+        pytest.param(lldp_r1_1, id="r1_1"),
+        pytest.param(lldp_r1_2, id="r1_2"),
+        pytest.param(lldp_r2_1, id="r2_1"),
+        pytest.param(lldp_r2_2, id="r2_2"),
+    ]
+)
 def raw_testdata(request):
     return request.param
 

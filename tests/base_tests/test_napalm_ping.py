@@ -126,9 +126,14 @@ def general_result():
     return general_result
 
 
-@pytest.fixture
-def all_testdata():
-    return [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
+@pytest.fixture(params=[
+    pytest.param(ping_r1_1.test_data, id="r1_1"),
+    pytest.param(ping_r1_2.test_data, id="r1_2"),
+    pytest.param(ping_r2.test_data, id="r2"),
+    pytest.param(ping_r3.test_data, id="r3"),
+])
+def testdata(request):
+    return request.param
 
 
 pytestmark = [
@@ -142,35 +147,19 @@ pytestmark = [
 ]
 
 
-def test_contains_host_at_toplevel(transformed_result, all_testdata):
-    hosts = [e["host"] for e in all_testdata]
-    assert all(h in transformed_result for h in hosts)
+def test_contains_host_at_toplevel(transformed_result):
+    assert transformed_result.keys() == {"R1", "R2", "R3"}
 
 
-def test_contains_pinged_destination(transformed_result, all_testdata):
-    assert all(entry["destination"] in transformed_result[entry["host"]] for entry in all_testdata)
+def test_contains_pinged_destination(transformed_result, testdata):
+    assert testdata["destination"] in transformed_result[testdata["host"]]
 
 
-def test_destination_maps_to_enum_success(transformed_result):
-    expected_success = ping_r1_1.test_data
-    assert transformed_result["R1"][expected_success["destination"]].result.name == expected_success["expected"]
-
-
-def test_destination_maps_to_enum_failure(transformed_result):
-    expected_fail = ping_r2.test_data
-    assert transformed_result["R2"][expected_fail["destination"]].result.name == expected_fail["expected"]
-
-
-def test_destination_maps_to_enum_flapping(transformed_result):
-    expected_flapping = ping_r3.test_data
-    assert transformed_result["R3"][expected_flapping["destination"]].result.name == expected_flapping["expected"]
-
-
-def test_one_host_several_destinations(transformed_result):
-    expected1 = ping_r1_1.test_data
-    expected2 = ping_r1_2.test_data
-    assert transformed_result["R1"][expected1["destination"]].result.name == expected1["expected"]
-    assert transformed_result["R1"][expected2["destination"]].result.name == expected2["expected"]
+def test_destination_maps_to_enum(transformed_result, testdata):
+    host = testdata["host"]
+    destination = testdata["destination"]
+    expected = testdata["expected"]
+    assert transformed_result[host][destination].result.name == expected
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

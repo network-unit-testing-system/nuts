@@ -6,6 +6,11 @@ from nuts.base_tests.napalm_ping import CONTEXT
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
 from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
 
+IP_3 = "172.16.23.3"
+IP_4 = "172.16.23.4"
+IP_5 = "172.16.23.5"
+IP_6 = "172.16.23.6"
+
 ping_r1_1 = SelfTestData(
     nornir_raw_result={
         "success": {
@@ -16,15 +21,15 @@ ping_r1_1 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.3", "max_drop": 1},
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": IP_3, "max_drop": 1},
 )
 
 ping_r1_2 = SelfTestData(
@@ -37,15 +42,15 @@ ping_r1_2 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.5", "max_drop": 1},
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": IP_5, "max_drop": 1},
 )
 
 ping_r2 = SelfTestData(
@@ -58,15 +63,15 @@ ping_r2 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "FAIL", "host": "R2", "destination": "172.16.23.4", "max_drop": 1},
+    test_data={"expected": "FAIL", "host": "R2", "destination": IP_4, "max_drop": 1},
 )
 
 ping_r3 = SelfTestData(
@@ -79,15 +84,15 @@ ping_r3 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "FLAPPING", "host": "R3", "destination": "172.16.23.5", "max_drop": 1},
+    test_data={"expected": "FLAPPING", "host": "R3", "destination": IP_5, "max_drop": 1},
 )
 
 
@@ -99,9 +104,9 @@ def general_result():
         TIMEOUT_MESSAGE,
         task_name=task_name,
         host="R3",
-        destination="172.16.23.6",
+        destination=IP_6,
         failed=True,
-        exception=ConnectionException("Cannot connect to 172.16.23.6"),
+        exception=ConnectionException(f"Cannot connect to {IP_6}"),
     )
     general_result = AggregatedResult(task_name)
     general_result["R1"] = create_multi_result(
@@ -169,5 +174,5 @@ def test_one_host_several_destinations(transformed_result):
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):
-    assert transformed_result["R3"]["172.16.23.6"].failed
-    assert transformed_result["R3"]["172.16.23.6"].exception is not None
+    assert transformed_result["R3"][IP_6].failed
+    assert transformed_result["R3"][IP_6].exception is not None

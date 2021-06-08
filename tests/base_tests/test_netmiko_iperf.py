@@ -2,7 +2,7 @@ import pytest
 
 from nornir.core.task import AggregatedResult
 from nuts.base_tests.netmiko_iperf import CONTEXT
-from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
+from tests.utils import create_result, create_multi_result, SelfTestData
 
 
 iperf_l1_1 = SelfTestData(

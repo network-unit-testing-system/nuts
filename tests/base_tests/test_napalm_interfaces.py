@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_interfaces import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData
+from tests.utils import create_multi_result, SelfTestData
 
 nornir_raw_result_r1 = {
     "interfaces": {
@@ -167,4 +167,3 @@ def test_contains_information_about_interface(single_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
-

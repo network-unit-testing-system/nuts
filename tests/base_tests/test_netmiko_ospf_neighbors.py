@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 from nuts.base_tests.netmiko_ospf_neighbors import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData
+from tests.utils import create_multi_result, create_result, SelfTestData
 
 NEIGHBOR_ID_1 = "172.16.255.1"
 NEIGHBOR_ID_2 = "172.16.255.2"
@@ -182,7 +182,6 @@ def testdata(request):
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-
 def test_contains_hosts_at_toplevel(transformed_result):
     assert transformed_result.keys() == {"R1", "R2", "R3"}
 
@@ -215,4 +214,3 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
-

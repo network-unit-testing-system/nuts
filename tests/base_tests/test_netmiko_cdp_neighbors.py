@@ -1,8 +1,8 @@
 import pytest
-from nornir.core.task import AggregatedResult, MultiResult, Result
+from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
-from tests.helpers.selftest_helpers import SelfTestData, create_multi_result, create_result
+from tests.utils import SelfTestData, create_multi_result, create_result
 
 SOFTWARE_VERSION = (
     "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
@@ -207,4 +207,3 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
-

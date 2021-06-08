@@ -103,10 +103,9 @@ ping_r3 = SelfTestData(
 @pytest.fixture
 def general_result():
     task_name = "napalm_ping"
-    confirmation_result = create_result(result_content="All pings executed", task_name="napalm_ping_multihost")
+    confirmation_result = create_result(result_content="All pings executed")
     timeouted = create_result(
         TIMEOUT_MESSAGE,
-        task_name=task_name,
         host="R3",
         destination=IP_6,
         failed=True,
@@ -116,16 +115,16 @@ def general_result():
     general_result["R1"] = create_multi_result(
         results=[
             confirmation_result,
-            ping_r1_1.create_nornir_result(task_name),
-            ping_r1_2.create_nornir_result(task_name),
+            ping_r1_1.create_nornir_result(),
+            ping_r1_2.create_nornir_result(),
         ],
         task_name=task_name,
     )
     general_result["R2"] = create_multi_result(
-        results=[confirmation_result, ping_r2.create_nornir_result(task_name)], task_name=task_name
+        results=[confirmation_result, ping_r2.create_nornir_result()], task_name=task_name
     )
     general_result["R3"] = create_multi_result(
-        results=[confirmation_result, ping_r3.create_nornir_result(task_name), timeouted], task_name=task_name
+        results=[confirmation_result, ping_r3.create_nornir_result(), timeouted], task_name=task_name
     )
     return general_result
 

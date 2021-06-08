@@ -72,7 +72,6 @@ def timeouted_multiresult():
     task_name = "failed_task"
     r = create_result(
         TIMEOUT_MESSAGE,
-        task_name=task_name,
         failed=True,
         exception=ConnectionException("Cannot connect to 1.2.3.4"),
     )

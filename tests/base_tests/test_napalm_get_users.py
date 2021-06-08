@@ -37,9 +37,9 @@ def general_result(timeouted_multiresult):
     task_name = "napalm_get_facts"
     result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        [users_r1_1.create_nornir_result(task_name), users_r1_2.create_nornir_result(task_name)], task_name
+        [users_r1_1.create_nornir_result(), users_r1_2.create_nornir_result()], task_name
     )
-    result["R2"] = create_multi_result([users_r2.create_nornir_result(task_name)], task_name)
+    result["R2"] = create_multi_result([users_r2.create_nornir_result()], task_name)
     result["R3"] = timeouted_multiresult
     return result
 

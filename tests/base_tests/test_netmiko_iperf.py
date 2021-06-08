@@ -33,21 +33,21 @@ iperf_l2_2 = SelfTestData(
 @pytest.fixture
 def general_result():
     task_name = "netmiko_run_iperf"
-    confirmation_result = create_result(result_content="iperf executed for host", task_name=task_name)
+    confirmation_result = create_result(result_content="iperf executed for host")
     general_result = AggregatedResult(task_name)
     general_result["L1"] = create_multi_result(
         results=[
             confirmation_result,
-            iperf_l1_1.create_nornir_result(task_name),
-            iperf_l1_2.create_nornir_result(task_name),
+            iperf_l1_1.create_nornir_result(),
+            iperf_l1_2.create_nornir_result(),
         ],
         task_name=task_name,
     )
     general_result["L2"] = create_multi_result(
         results=[
             confirmation_result,
-            iperf_l2_1.create_nornir_result(task_name),
-            iperf_l2_2.create_nornir_result(task_name),
+            iperf_l2_1.create_nornir_result(),
+            iperf_l2_2.create_nornir_result(),
         ],
         task_name=task_name,
     )

@@ -27,10 +27,9 @@ class SelfTestData:
     test_data: Dict[str, Any]
     additional_data: Optional[Dict[str, Any]] = None
 
-    def create_nornir_result(self, task_name: str) -> Result:
+    def create_nornir_result(self) -> Result:
         return create_result(
             result_content=self.nornir_raw_result,
-            task_name=task_name,
             host=self.test_data["host"],
             destination=self.test_data.get("destination", None),
         )
@@ -44,14 +43,13 @@ def create_multi_result(results: List[Result], task_name: str) -> MultiResult:
 
 def create_result(
     result_content: Any,
-    task_name: str,
     host: str = "",
     destination: Optional[str] = None,
     failed: bool = False,
     exception: Optional[BaseException] = None,
     **kwargs: Any
 ) -> Result:
-    result = Result(host=Host(name=host), name=task_name, destination=destination, **kwargs)
+    result = Result(host=Host(name=host), destination=destination, **kwargs)
     result.result = result_content
     result.failed = failed
     result.exception = exception

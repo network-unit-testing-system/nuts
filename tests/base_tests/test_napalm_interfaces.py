@@ -112,10 +112,10 @@ def general_result(timeouted_multiresult):
     task_name = "napalm_get"
     result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        [interfaces_r1_1.create_nornir_result(task_name), interfaces_r1_2.create_nornir_result(task_name)], task_name
+        [interfaces_r1_1.create_nornir_result(), interfaces_r1_2.create_nornir_result()], task_name
     )
     result["R2"] = create_multi_result(
-        [interfaces_r2_1.create_nornir_result(task_name), interfaces_r2_2.create_nornir_result(task_name)], task_name
+        [interfaces_r2_1.create_nornir_result(), interfaces_r2_2.create_nornir_result()], task_name
     )
     result["R3"] = timeouted_multiresult
     return result

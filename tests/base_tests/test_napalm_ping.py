@@ -12,6 +12,7 @@ IP_5 = "172.16.23.5"
 IP_6 = "172.16.23.6"
 
 ping_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -33,6 +34,7 @@ ping_r1_1 = SelfTestData(
 )
 
 ping_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -54,6 +56,7 @@ ping_r1_2 = SelfTestData(
 )
 
 ping_r2 = SelfTestData(
+    name="r2",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -75,6 +78,7 @@ ping_r2 = SelfTestData(
 )
 
 ping_r3 = SelfTestData(
+    name="r3",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -126,14 +130,12 @@ def general_result():
     return general_result
 
 
-@pytest.fixture(params=[
-    pytest.param(ping_r1_1.test_data, id="r1_1"),
-    pytest.param(ping_r1_2.test_data, id="r1_2"),
-    pytest.param(ping_r2.test_data, id="r2"),
-    pytest.param(ping_r3.test_data, id="r3"),
-])
+@pytest.fixture(
+    params=[ping_r1_1, ping_r1_2, ping_r2, ping_r3],
+    ids=lambda data: data.name,
+)
 def testdata(request):
-    return request.param
+    return request.param.test_data
 
 
 pytestmark = [

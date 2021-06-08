@@ -25,6 +25,7 @@ class SelfTestData:
     nornir_raw_result: Any
     test_data: Dict[str, Any]
     additional_data: Optional[Dict[str, Any]] = None
+    name: Optional[str] = None  # FIXME: not Optional, first arg
 
     def create_nornir_result(self, task_name: str):
         return create_result(

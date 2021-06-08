@@ -1,9 +1,6 @@
 from unittest.mock import Mock, ANY
 
 import pytest
-from nornir.core.plugins.connections import ConnectionPluginRegister
-from nornir.core.plugins.inventory import InventoryPluginRegister
-from nornir.core.plugins.runners import RunnersPluginRegister
 
 from nuts.context import NornirNutsContext, NutsSetupError, NutsContext
 from tests.utils import YAML_EXTENSION
@@ -96,44 +93,7 @@ class TestNornirNutsContextGeneralResult:
         assert result == nornir_results
 
 
-@pytest.fixture
-def nr_wrapper():
-    """
-    Cleanup Nornir's PluginRegisters.
-
-    This is necessary as InitNornir is initiated for every test case, but the PluginRegisters are (somehow) shared.
-    This results in a PluginAlreadyRegistered Exception as the plugins are registered multiple times.
-    """
-    yield None
-    ConnectionPluginRegister.deregister_all()
-    InventoryPluginRegister.deregister_all()
-    RunnersPluginRegister.deregister_all()
-
-
-@pytest.fixture
-def default_nr_init(testdir):
-    """Create initial Nornir files and expose the location as nornir_config_file fixture."""
-    hosts_path = testdir.tmpdir.join(f"hosts{YAML_EXTENSION}")
-    config = f"""inventory:
-                          plugin: SimpleInventory
-                          options:
-                              host_file: {hosts_path}"""
-    arguments = {
-        "nr-config": config,
-        "hosts": """
-            R1:
-              hostname: 10.20.0.31
-            R2:
-              hostname: 10.20.0.32""",
-    }
-    testdir.makefile(YAML_EXTENSION, **arguments)
-
-    # We need to have the test tmpdir in sys.path, so NUTS can import the test
-    # modules (e.g. basic_task.py).
-    testdir.syspathinsert()
-
-
-@pytest.mark.usefixtures("default_nr_init", "nr_wrapper")
+@pytest.mark.usefixtures("default_nr_init")
 class TestNornirNutsContextIntegration:
     def test_fails_if_no_task_is_defined(self, testdir):
         testdir.makepyfile(

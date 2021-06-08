@@ -1,2 +1,44 @@
-# content of conftest.py
+import pytest
+
+from nornir.core.plugins.connections import ConnectionPluginRegister
+from nornir.core.plugins.inventory import InventoryPluginRegister
+from nornir.core.plugins.runners import RunnersPluginRegister
+
+from tests.utils import YAML_EXTENSION
+
+
 pytest_plugins = ["pytester", "nuts"]
+
+
+@pytest.fixture
+def default_nr_init(testdir):
+    """Create initial Nornir files and expose the location as nornir_config_file fixture."""
+    hosts_path = testdir.tmpdir.join(f"hosts{YAML_EXTENSION}")
+    config = f"""inventory:
+                          plugin: SimpleInventory
+                          options:
+                              host_file: {hosts_path}"""
+    arguments = {
+        "nr-config": config,
+        "hosts": """
+            R1:
+              hostname: 10.20.0.31
+            R2:
+              hostname: 10.20.0.32""",
+    }
+    testdir.makefile(YAML_EXTENSION, **arguments)
+
+    # We need to have the test tmpdir in sys.path, so NUTS can import the test
+    # modules (e.g. basic_task.py).
+    testdir.syspathinsert()
+
+    yield
+
+    # Cleanup Nornir's PluginRegisters.
+    # This is necessary as InitNornir is initiated for every test case, but the
+    # PluginRegisters are (somehow) shared. This results in a
+    # PluginAlreadyRegistered Exception as the plugins are registered multiple
+    # times.
+    ConnectionPluginRegister.deregister_all()
+    InventoryPluginRegister.deregister_all()
+    RunnersPluginRegister.deregister_all()

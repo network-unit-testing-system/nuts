@@ -4,6 +4,7 @@ from nornir.core.task import AggregatedResult
 from nuts.base_tests.netmiko_iperf import CONTEXT
 from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
 
+
 iperf_l1_1 = SelfTestData(
     name="l1_1",
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.2"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',

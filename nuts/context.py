@@ -1,10 +1,16 @@
 """Provide necessary information that is needed for a specific test."""
-from typing import Any, Callable, Optional
+import pathlib
+from typing import Any, Callable, Optional, Dict, Union
 
+from nornir import InitNornir
 from nornir.core import Nornir
-from nornir.core.task import AggregatedResult
+from nornir.core.task import AggregatedResult, Result
 
 from nuts.helpers.errors import NutsSetupError
+from nuts.helpers.result import NutsResult
+
+
+_TransformedResult = Dict[str, Any]
 
 
 class NutsContext:
@@ -16,8 +22,13 @@ class NutsContext:
 
     def __init__(self, nuts_parameters: Any = None):
         self.nuts_parameters = nuts_parameters or {}
+        self._cached_result: Optional[_TransformedResult] = None
 
-    def nuts_arguments(self) -> dict:
+    def initialize(self) -> None:
+        """Initialize dependencies for this context after it has been created."""
+        pass
+
+    def nuts_arguments(self) -> Dict[str, Any]:
         """
         Additional arguments for the (network) task to be executed. These can also be parameters
         that are defined in the `test_execution` part of the test bundle.
@@ -30,6 +41,30 @@ class NutsContext:
         test_execution = self.nuts_parameters.get("test_execution", None)
         return {**(test_execution if test_execution is not None else {})}
 
+    def general_result(self) -> Any:
+        """
+        :return: raw, unprocessed result
+        """
+        raise NotImplementedError
+
+    def transform_result(self, general_result: Any) -> _TransformedResult:
+        """
+        :param general_result: raw result
+        :return: processed result ready to be passed to a test
+        """
+        raise NotImplementedError
+
+    @property
+    def transformed_result(self) -> _TransformedResult:
+        """
+        The (processed) results of the network task, ready to be passed on to a test's fixture.
+        The results are cached, so that general_result does not need to be called multiple times as it might
+        access the network.
+        """
+        if self._cached_result is None:
+            self._cached_result = self.transform_result(self.general_result())
+        return self._cached_result
+
 
 class NornirNutsContext(NutsContext):
     """
@@ -41,12 +76,21 @@ class NornirNutsContext(NutsContext):
 
     """
 
+    #: The path to a nornir configuration file.
+    #: https://nornir.readthedocs.io/en/stable/configuration/index.html
+    NORNIR_CONFIG_FILE = pathlib.Path("nr-config.yaml")
+
     def __init__(self, nuts_parameters: Any = None):
         super().__init__(nuts_parameters)
-        self._transformed_result = None
         self.nornir: Optional[Nornir] = None
 
-    def nuts_task(self) -> Callable:
+    def initialize(self) -> None:
+        self.nornir = InitNornir(
+            config_file=str(self.NORNIR_CONFIG_FILE),
+            logging={"enabled": False},
+        )
+
+    def nuts_task(self) -> Callable[..., Result]:
         """
         Returns the task that nornir should execute for the test module.
 
@@ -60,14 +104,14 @@ class NornirNutsContext(NutsContext):
         """
         return None
 
-    def transform_result(self, general_result: AggregatedResult) -> Any:
+    def transform_result(self, general_result: AggregatedResult) -> Dict[str, Any]:
         """
         Transforms the raw nornir result and wraps it into a `NutsResult`.
 
         :param general_result: The raw answer as provided by nornir's executed task
-        :return: Usually a dict where keys are the hosts, values are a `NutsResult`
+        :return: A dict where keys are the hosts, values are a `NutsResult`
         """
-        return general_result
+        raise NotImplementedError
 
     def general_result(self) -> AggregatedResult:
         """
@@ -102,13 +146,3 @@ class NornirNutsContext(NutsContext):
         Defines code which is executed after the nornir task.
         """
         pass
-
-    def transformed_result(self) -> Any:
-        """
-        The result from nornir's task, transformed to be passed on later to a test's fixture
-        called `single_result`.
-        :return: The transformed result
-        """
-        if not self._transformed_result:
-            self._transformed_result = self.transform_result(self.general_result())
-        return self._transformed_result

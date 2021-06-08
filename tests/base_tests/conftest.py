@@ -4,11 +4,10 @@ import pytest
 from _pytest.fixtures import FixtureRequest
 from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
-from nuts.helpers.result import NutsResult
 
 from nuts.context import NornirNutsContext, NutsContext
 
-from tests.helpers.selftest_helpers import create_multi_result, create_result
+from tests.utils import create_multi_result, create_result
 
 TIMEOUT_MESSAGE = r"""Traceback (most recent call last):
   File "C:\somepath\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection

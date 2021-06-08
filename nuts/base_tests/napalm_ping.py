@@ -23,7 +23,7 @@ class Ping(Enum):
 
 
 class PingContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return self.napalm_ping_multi_dests
 
     def nornir_filter(self) -> F:
@@ -54,7 +54,7 @@ class PingContext(NornirNutsContext):
                 return entry["max_drop"]
         return 0
 
-    def napalm_ping_multi_dests(self, task: Task, **kwargs) -> Result:
+    def napalm_ping_multi_dests(self, task: Task, **kwargs: Any) -> Result:
         """
         One host pings all destinations as defined in the test bundle.
 
@@ -83,11 +83,10 @@ CONTEXT = PingContext
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmPing:
     @pytest.fixture
-    def single_result(self, nornir_nuts_ctx: NornirNutsContext, host: str, destination: str) -> NutsResult:
-        transformed_result = nornir_nuts_ctx.transformed_result()
-        assert host in transformed_result, f"Host {host} not found in aggregated result."
-        assert destination in transformed_result[host], f"Destination {destination} not found in result."
-        return transformed_result[host][destination]
+    def single_result(self, nuts_ctx: NornirNutsContext, host: str, destination: str) -> NutsResult:
+        assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
+        assert destination in nuts_ctx.transformed_result[host], f"Destination {destination} not found in result."
+        return nuts_ctx.transformed_result[host][destination]
 
     @pytest.mark.nuts("host,destination,expected")
     def test_ping(self, single_result, expected):

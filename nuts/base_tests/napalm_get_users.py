@@ -1,11 +1,11 @@
 """Query users of a device."""
-from typing import Dict, Callable, List
+from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult
+from nornir.core.task import MultiResult, AggregatedResult, Result, Task
 from nornir_napalm.plugins.tasks import napalm_get
-
+from nornir_napalm.plugins.tasks.napalm_get import GetterOptionsDict
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
@@ -13,7 +13,7 @@ from nuts.helpers.result import map_host_to_nutsresult, NutsResult
 
 
 class UsersContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return napalm_get
 
     def nuts_arguments(self) -> Dict[str, List[str]]:
@@ -25,7 +25,7 @@ class UsersContext(NornirNutsContext):
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
-    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict]:
+    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         return single_result[0].result["users"]
 
@@ -51,4 +51,4 @@ class TestNapalmUsers:
 class TestNapalmOnlyDefinedUsersExist:
     @pytest.mark.nuts("host,usernames")
     def test_no_rogue_users(self, single_result, usernames):
-        assert list(single_result.result.keys()) == usernames
+        assert list(single_result.result) == usernames

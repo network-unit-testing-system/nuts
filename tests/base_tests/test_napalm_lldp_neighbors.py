@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_lldp_neighbors import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData
+from tests.utils import create_multi_result, create_result, SelfTestData
 
 R1_CHASSIS_ID = "001e.e547.df00"
 R2_CHASSIS_ID = "001e.f62f.a600"

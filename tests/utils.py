@@ -27,7 +27,7 @@ class SelfTestData:
     test_data: Dict[str, Any]
     additional_data: Optional[Dict[str, Any]] = None
 
-    def create_nornir_result(self, task_name: str):
+    def create_nornir_result(self, task_name: str) -> Result:
         return create_result(
             result_content=self.nornir_raw_result,
             task_name=task_name,
@@ -49,7 +49,7 @@ def create_result(
     destination: Optional[str] = None,
     failed: bool = False,
     exception: Optional[BaseException] = None,
-    **kwargs
+    **kwargs: Any
 ) -> Result:
     result = Result(host=Host(name=host), name=task_name, destination=destination, **kwargs)
     result.result = result_content

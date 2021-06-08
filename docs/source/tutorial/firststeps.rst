@@ -1,14 +1,14 @@
 First Steps with NUTS
 =====================
 
-This tutorial guides you through a minimal setup of the NetTowel Unit Testing System (NUTS, or nuts).
+This tutorial guides you through a minimal setup of the NetTowel Unit Testing System (NUTS, or nuts). A showcase is included in nuts' code that allows you to learn the basic mechanics of nuts without the need of an actual network -- find those details at the end of this tutorial.
 
 Two major components are needed for nuts:
 
     #. A network inventory
     #. Test bundles
 
-Here's an overview on how to organise your files so that NUTS can find everything it needs. The root folder also contains the virtual environment with the :doc:`NUTS installation <../installation/index>`.
+Here's an overview on how to organise your files so that NUTS can find everything it needs. The root folder also contains the virtual environment with the :doc:`nuts installation <../installation/install>`.
 
 .. code:: shell
 
@@ -22,7 +22,7 @@ Here's an overview on how to organise your files so that NUTS can find everythin
 1. Network Inventory
 --------------------
 
-You must provide information on your network configuration so that NUTS can actually interact with it. Currently, NUTS uses a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ and ``nr-config.yaml`` which uses that inventory.
+You must provide information on your network configuration so that nuts can actually interact with it. Currently, NUTS uses a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ and ``nr-config.yaml`` which uses that inventory.
 
 A sample ``hosts.yaml`` might look like this:
 
@@ -69,9 +69,9 @@ If you set up the above folders and files, you're ready to write test bundles.
 2. Test Bundle
 --------------
 
-A test bundle is a collection of tests are logically related to each other, for example tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
+A test bundle is a collection of tests that are logically related to each other, for example tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
 
-Currently only YAML files are supported as test bundle format, but other data sources could be integrated in later versions of nuts.
+Currently only YAML files are supported as test bundle format, but other data sources could be integrated in later versions of nuts. 
 
 Structure of a Test Bundle
 **************************
@@ -86,7 +86,7 @@ Each test bundle contains the following structure:
     test_execution: <additional data used to execute the test> # optional
     test_data: <data used to generate the test instances>
 
-``test_module``: Optional. The full path of the python module that contains the test class to be used. This value is optional if the test class is registered in ``index.py`` of the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started if local test modules are used.
+``test_module``: Optional. The full path of the python module that contains the test class to be used. This value is optional if the test class is registered in ``index.py`` of the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started if local test modules are used. Using ``test_modules`` allows you to write your own test classes. **Note: We currently do not support self-written test modules, since upcoming refactorings might introduce breaking changes.**
 
 ``test_class``: Required. The name of the python class which contains the tests that should be executed. Note that currently every test in this class is executed.
 
@@ -124,16 +124,37 @@ Notes:
 * ``test_data.max_drop: 1``. Maximum one ping attempt is allowed to fail to still count as SUCCESS ping.
 
 
-We save this file as ``test-definition-ping.yaml`` into the ``tests`` folder.
-
-Run NUTS
---------
-
-If everything is set up as shown above, run the test from the root folder:
+We save this file as ``test-definition-ping.yaml`` into the ``tests`` folder. If everything is set up as shown above, run the test from the root folder:
 
 .. code:: shell
 
     $ pytest tests/test-definition-ping.yaml
 
 Pytest's output should then inform you if the test succeeded or not.
+
+
+Sample Test-Bundle Without a Network
+************************************
+
+The sample test bundle above requires a network inventory and a running network in the background. In case you want to learn how nuts works but do not have a network at hand, nuts comes with an offline showcase to display its functionality. Use it as follows:
+
+#. Clone the `nuts repository <https://github.com/INSRapperswil/nuts>`__ and change into the cloned folder.
+#. Create a `virtual environment (venv) <https://docs.python.org/3/library/venv.html>`__ in it and activate it.
+#. Install nuts in the venv.
+#. Run the showcase test bundle.
+
+.. code:: shell
+
+    $ git clone https://github.com/INSRapperswil/nuts && cd nuts
+    $ python -m venv .venv && source .venv/bin/activate
+    $ pip install .
+    $ pytest tests/showcase_test/test-expanse.yaml
+
+How it works: Each test module implements a context class to provide module-specific functionality to its tests. This context class is a  ``NutsContext`` or a subclass of it. This guarantees a consistent interface across all tests for test setup and execution. 
+
+The predefined test classes which depend on a network all use `nornir <https://nornir.readthedocs.io/en/latest/>`__ in order to communicate with the network devices. Those test classes all derive all from a more specific ``NornirNutsContext``, which provides a nornir instance and nornir-specific helpers. 
+
+In order for the offline showcase to work, the test class derives from ``NutsContext`` and implements its own context class. See the code in ``nuts/tests/showcase/showcase_expanse.py`` to see the structure of this offline context class.
+
+
 

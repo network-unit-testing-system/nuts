@@ -2,6 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
+
 from tests.helpers.selftest_helpers import create_multi_result, SelfTestData
 
 R1_IP = "172.16.255.1"

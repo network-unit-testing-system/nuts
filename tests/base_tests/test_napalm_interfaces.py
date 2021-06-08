@@ -167,3 +167,4 @@ def test_contains_information_about_interface(single_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
+

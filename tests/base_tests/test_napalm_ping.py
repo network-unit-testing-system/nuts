@@ -4,7 +4,7 @@ from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_ping import CONTEXT
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
-from tests.helpers.selftest_helpers import create_result, create_multi_result, SelfTestData
+from tests.utils import create_result, create_multi_result, SelfTestData
 
 IP_3 = "172.16.23.3"
 IP_4 = "172.16.23.4"

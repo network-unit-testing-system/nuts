@@ -1,9 +1,9 @@
 """Query CDP neighbors of a device."""
-from typing import Callable, Dict
+from typing import Callable, Dict, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult
+from nornir.core.task import MultiResult, AggregatedResult, Task, Result
 from nornir_netmiko import netmiko_send_command
 
 from nuts.helpers.filters import filter_hosts
@@ -12,16 +12,16 @@ from nuts.context import NornirNutsContext
 
 
 class CdpNeighborsContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return netmiko_send_command
 
-    def nuts_arguments(self) -> dict:
+    def nuts_arguments(self) -> Dict[str, Any]:
         return {"command_string": "show cdp neighbors detail", "use_textfsm": True}
 
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def _transform_host_results(self, host_results: MultiResult) -> dict:
+    def _transform_host_results(self, host_results: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert host_results[0].result is not None
         return {neighbor["destination_host"]: neighbor for neighbor in host_results[0].result}
 

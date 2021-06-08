@@ -1,10 +1,11 @@
 """Query LLDP neighbors of a device."""
-from typing import Dict, Callable, List
+from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult
+from nornir.core.task import MultiResult, AggregatedResult, Result, Task
 from nornir_napalm.plugins.tasks import napalm_get
+from nornir_napalm.plugins.tasks.napalm_get import GetterOptionsDict
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.converters import InterfaceNameConverter
@@ -13,10 +14,10 @@ from nuts.helpers.result import NutsResult, map_host_to_nutsresult
 
 
 class LldpNeighborsContext(NornirNutsContext):
-    def nuts_task(self) -> Callable:
+    def nuts_task(self) -> Callable[..., Result]:
         return napalm_get
 
-    def nuts_arguments(self) -> Dict[str, List]:
+    def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["lldp_neighbors_detail"]}
 
     def nornir_filter(self) -> F:
@@ -25,22 +26,22 @@ class LldpNeighborsContext(NornirNutsContext):
     def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
-    def _transform_host_results(self, single_result: MultiResult) -> dict:
+    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["lldp_neighbors_detail"]
         return {peer: self._add_custom_fields(details[0]) for peer, details in neighbors.items()}
 
-    def _add_custom_fields(self, element: dict) -> dict:
+    def _add_custom_fields(self, element: Dict[str, Any]) -> Dict[str, Any]:
         element = self._add_expanded_remote_port(element)
         element = self._add_remote_host(element)
         return element
 
-    def _add_remote_host(self, element: dict) -> dict:
+    def _add_remote_host(self, element: Dict[str, Any]) -> Dict[str, Any]:
         element["remote_host"] = element["remote_system_name"]
         return element
 
-    def _add_expanded_remote_port(self, element: dict) -> dict:
+    def _add_expanded_remote_port(self, element: Dict[str, Any]) -> Dict[str, Any]:
         element["remote_port_expanded"] = InterfaceNameConverter().expand_interface_name(element["remote_port"])
         return element
 

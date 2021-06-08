@@ -2,7 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_network_instances import CONTEXT
-from tests.helpers.selftest_helpers import create_multi_result, create_result, SelfTestData
+from tests.utils import create_multi_result, create_result, SelfTestData
 
 nornir_raw_result_r1 = {
     "network_instances": {

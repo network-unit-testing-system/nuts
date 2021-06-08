@@ -3,11 +3,16 @@ from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_ping import CONTEXT
-from tests.utils import tupelize
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
 from tests.utils import create_result, create_multi_result, SelfTestData
 
+IP_3 = "172.16.23.3"
+IP_4 = "172.16.23.4"
+IP_5 = "172.16.23.5"
+IP_6 = "172.16.23.6"
+
 ping_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -17,18 +22,19 @@ ping_r1_1 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
-                {"ip_address": "172.16.23.3", "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
+                {"ip_address": IP_3, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.3", "max_drop": 1},
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": IP_3, "max_drop": 1},
 )
 
 ping_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -38,18 +44,19 @@ ping_r1_2 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
-                {"ip_address": "172.16.23.5", "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "SUCCESS", "host": "R1", "destination": "172.16.23.6", "max_drop": 1},
+    test_data={"expected": "SUCCESS", "host": "R1", "destination": IP_5, "max_drop": 1},
 )
 
 ping_r2 = SelfTestData(
+    name="r2",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -59,18 +66,19 @@ ping_r2 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
-                {"ip_address": "172.16.23.4", "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
+                {"ip_address": IP_4, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "FAIL", "host": "R2", "destination": "172.16.23.4", "max_drop": 1},
+    test_data={"expected": "FAIL", "host": "R2", "destination": IP_4, "max_drop": 1},
 )
 
 ping_r3 = SelfTestData(
+    name="r3",
     nornir_raw_result={
         "success": {
             "probes_sent": 5,
@@ -80,15 +88,15 @@ ping_r3 = SelfTestData(
             "rtt_avg": 1.0,
             "rtt_stddev": 0.0,
             "results": [
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
-                {"ip_address": "172.16.23.6", "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
+                {"ip_address": IP_5, "rtt": 0.0},
             ],
         }
     },
-    test_data={"expected": "FLAPPING", "host": "R3", "destination": "172.16.23.5", "max_drop": 1},
+    test_data={"expected": "FLAPPING", "host": "R3", "destination": IP_5, "max_drop": 1},
 )
 
 
@@ -100,9 +108,9 @@ def general_result():
         TIMEOUT_MESSAGE,
         task_name=task_name,
         host="R3",
-        destination="172.16.23.6",
+        destination=IP_6,
         failed=True,
-        exception=ConnectionException("Cannot connect to 10.20.0.123"),
+        exception=ConnectionException(f"Cannot connect to {IP_6}"),
     )
     general_result = AggregatedResult(task_name)
     general_result["R1"] = create_multi_result(
@@ -122,44 +130,40 @@ def general_result():
     return general_result
 
 
-test_data = [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
-pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT(nuts_parameters={"test_data": test_data}))]
+@pytest.fixture(
+    params=[ping_r1_1, ping_r1_2, ping_r2, ping_r3],
+    ids=lambda data: data.name,
+)
+def testdata(request):
+    return request.param.test_data
 
 
-class TestTransformResult:
-    @pytest.mark.parametrize("host", ["R1"])
-    def test_contains_host_at_toplevel(self, transformed_result, host):
-        assert host in transformed_result
-
-    @pytest.mark.parametrize("host, destination", [tupelize(entry, ["host", "destination"]) for entry in test_data])
-    def test_contains_pinged_destination(self, transformed_result, host, destination):
-        assert destination in transformed_result[host].keys()
-
-    @pytest.mark.parametrize(
-        "host, destination, ping_result", [tupelize(ping_r1_1.test_data, ["host", "destination", "expected"])]
+pytestmark = [
+    pytest.mark.nuts_test_ctx(
+        CONTEXT(
+            nuts_parameters={
+                "test_data": [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
+            }
+        )
     )
-    def test_destination_maps_to_enum_success(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
+]
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result", [tupelize(ping_r2.test_data, ["host", "destination", "expected"])]
-    )
-    def test_destination_maps_to_enum_failure(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result", [tupelize(ping_r3.test_data, ["host", "destination", "expected"])]
-    )
-    def test_destination_maps_to_enum_flapping(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
+def test_contains_host_at_toplevel(transformed_result):
+    assert transformed_result.keys() == {"R1", "R2", "R3"}
 
-    @pytest.mark.parametrize(
-        "host, destination, ping_result",
-        [tupelize(e.test_data, ["host", "destination", "expected"]) for e in [ping_r1_1, ping_r1_2]],
-    )
-    def test_one_host_several_destinations(self, transformed_result, host, destination, ping_result):
-        assert transformed_result[host][destination].result.name == ping_result
 
-    def test_marks_as_failed_if_task_failed(self, transformed_result):
-        assert transformed_result["R3"]["172.16.23.6"].failed
-        assert transformed_result["R3"]["172.16.23.6"].exception is not None
+def test_contains_pinged_destination(transformed_result, testdata):
+    assert testdata["destination"] in transformed_result[testdata["host"]]
+
+
+def test_destination_maps_to_enum(transformed_result, testdata):
+    host = testdata["host"]
+    destination = testdata["destination"]
+    expected = testdata["expected"]
+    assert transformed_result[host][destination].result.name == expected
+
+
+def test_marks_as_failed_if_task_failed(transformed_result):
+    assert transformed_result["R3"][IP_6].failed
+    assert transformed_result["R3"][IP_6].exception is not None

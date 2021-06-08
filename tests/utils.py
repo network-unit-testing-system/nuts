@@ -13,11 +13,19 @@ YAML_EXTENSION = ".yaml"
 @dataclass
 class SelfTestData:
     """
-    Helper-Class that pairs the raw result that is sent over the wire with the test data (expected values).
+    Helper-Class that matches raw nornir results with a test data entry.
+    There are two possible structures:
+        1) 1 raw nornir results contains data that matches several test data entries
+        2) 1 raw nornir result contains data that matches exactly one test data entry
+
+        For 1), several instances of this class have to be created containing the same
+        raw nornir results but different test data entries.
     """
 
+    name: str
     nornir_raw_result: Any
     test_data: Dict[str, Any]
+    additional_data: Optional[Dict[str, Any]] = None
 
     def create_nornir_result(self, task_name: str) -> Result:
         return create_result(
@@ -48,8 +56,3 @@ def create_result(
     result.failed = failed
     result.exception = exception
     return result
-
-
-def tupelize(source: Dict[str, Any], fields: List[str]) -> Tuple[Optional[Any], ...]:
-    ordered_fields = [source.get(field) for field in fields]
-    return tuple(ordered_fields)

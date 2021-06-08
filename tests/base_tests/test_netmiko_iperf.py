@@ -1,34 +1,33 @@
-from typing import Dict, List, Any
-
 import pytest
 
 from nornir.core.task import AggregatedResult
 from nuts.base_tests.netmiko_iperf import CONTEXT
-from tests.utils import create_result, create_multi_result, SelfTestData, tupelize
+from tests.utils import create_result, create_multi_result, SelfTestData
+
 
 iperf_l1_1 = SelfTestData(
+    name="l1_1",
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.2"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',
     test_data={"host": "L1", "destination": "10.0.0.2", "min_expected": 10000000},
 )
 
 iperf_l1_2 = SelfTestData(
+    name="l1_2",
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.3"}]},"end":{"sum_received":{"bits_per_second":3.298164e09}}}',
     test_data={"host": "L1", "destination": "10.0.0.3", "min_expected": 10000000},
 )
 
 iperf_l2_1 = SelfTestData(
+    name="l2_1",
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.1"}]},"end":{"sum_received":{"bits_per_second": 5000}}}',
     test_data={"host": "L2", "destination": "10.0.0.1", "min_expected": 10000000},
 )
 
 iperf_l2_2 = SelfTestData(
-    nornir_raw_result='{	"start":{"connected":[],"version":"iperf 3.1.3","system_info":"Linux"},"intervals":[],"end":{},"error":"error - unable to connect to server: No route to host"}',
+    name="l2_2",
+    nornir_raw_result='{"start":{"connected":[],"version":"iperf 3.1.3","system_info":"Linux"},"intervals":[],"end":{},"error":"error - unable to connect to server: No route to host"}',
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
 )
-
-reachable_hosts = [
-    tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1]
-]
 
 
 @pytest.fixture
@@ -55,42 +54,40 @@ def general_result():
     return general_result
 
 
+@pytest.fixture(
+    params=[iperf_l1_1, iperf_l1_2, iperf_l2_2, iperf_l2_2],
+    ids=lambda data: data.name,
+)
+def testdata(request):
+    return request.param.test_data
+
+
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 
-class TestTransformResult:
-    @pytest.mark.parametrize(
-        "host", [tupelize(e.test_data, ["host"]) for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2]]
-    )
-    def test_contains_host_at_toplevel(self, transformed_result, host):
-        assert host[0] in transformed_result
+def test_contains_host_at_toplevel(transformed_result):
+    assert transformed_result.keys() == {"L1", "L2"}
 
-    @pytest.mark.parametrize(
-        "host, destination, min_expected",
-        [
-            tupelize(e.test_data, ["host", "destination", "min_expected"])
-            for e in [iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2]
-        ],
-    )
-    def test_contains_iperf_dest(self, transformed_result, host, destination, min_expected):
-        assert destination in transformed_result[host]
 
-    @pytest.mark.parametrize(
-        "host, destination, min_expected",
-        [tupelize(e.test_data, ["host", "destination", "min_expected"]) for e in [iperf_l1_1, iperf_l1_2]],
-    )
-    def test_one_host_several_destinations(self, transformed_result, host, destination, min_expected):
-        assert transformed_result[host][destination].result >= min_expected
+def test_contains_iperf_dest(transformed_result, testdata):
+    assert testdata["destination"] in transformed_result[testdata["host"]]
 
-    @pytest.mark.parametrize(
-        "host, destination, min_expected", [tupelize(iperf_l2_1.test_data, ["host", "destination", "min_expected"])]
-    )
-    def test_below_min_expected_fails(self, transformed_result, host, destination, min_expected):
-        assert not transformed_result[host][destination].result >= min_expected
 
-    @pytest.mark.parametrize(
-        "host, destination, min_expected", [tupelize(iperf_l2_2.test_data, ["host", "destination", "min_expected"])]
-    )
-    def test_dest_unreachable_failes(self, transformed_result, host, destination, min_expected):
-        assert transformed_result[host][destination].failed
-        assert transformed_result[host][destination].exception is not None
+@pytest.mark.parametrize(
+    "data, result",
+    [
+        pytest.param(iperf_l1_1.test_data, True, id="l1_1"),
+        pytest.param(iperf_l1_2.test_data, True, id="l1_2"),
+        pytest.param(iperf_l2_1.test_data, False, id="l2_1"),
+    ],
+)
+def test_min_expected(transformed_result, data, result):
+    host = data["host"]
+    destination = data["destination"]
+    min_expected = data["min_expected"]
+    assert (transformed_result[host][destination].result >= min_expected) == result
+
+
+def test_dest_unreachable_fails(transformed_result):
+    assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].failed
+    assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].exception is not None

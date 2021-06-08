@@ -177,7 +177,7 @@ def test_contains_hosts_at_toplevel(transformed_result):
     ("R2", {"default", "mgmt"}),
 ])
 def test_contains_network_instances_at_second_level(transformed_result, host, network_instances):
-    transformed_result[host].result.keys() == network_instances
+    assert transformed_result[host].result.keys() == network_instances
 
 
 def test_contains_interfaces_at_network_instance(transformed_result, testdata):

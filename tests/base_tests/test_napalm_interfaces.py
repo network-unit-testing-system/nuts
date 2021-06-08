@@ -144,6 +144,7 @@ def test_contains_interface_names_at_second_level(single_result, testdata):
 
 
 def test_contains_information_about_interface(single_result, testdata):
+    print(testdata)
     expected = {
         "is_enabled": testdata["is_enabled"],
         "is_up": testdata["is_up"],

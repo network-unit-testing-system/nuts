@@ -69,14 +69,17 @@ def test_contains_host_at_toplevel(transformed_result):
 
 
 def test_contains_iperf_dest(transformed_result, testdata):
-    assert testdata["destination"] in transformed_result[testdata["host"]] 
+    assert testdata["destination"] in transformed_result[testdata["host"]]
 
 
-@pytest.mark.parametrize("data, result", [
-    pytest.param(iperf_l1_1.test_data, True, id="l1_1"),
-    pytest.param(iperf_l1_2.test_data, True, id="l1_2"),
-    pytest.param(iperf_l2_1.test_data, False, id="l2_1"),
-])
+@pytest.mark.parametrize(
+    "data, result",
+    [
+        pytest.param(iperf_l1_1.test_data, True, id="l1_1"),
+        pytest.param(iperf_l1_2.test_data, True, id="l1_2"),
+        pytest.param(iperf_l2_1.test_data, False, id="l2_1"),
+    ],
+)
 def test_min_expected(transformed_result, data, result):
     host = data["host"]
     destination = data["destination"]

@@ -72,6 +72,7 @@ nornir_raw_r2 = {
 
 
 bgp_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result=nornir_raw_r1,
     test_data={
         "host": "R1",
@@ -86,6 +87,7 @@ bgp_r1_1 = SelfTestData(
 )
 
 bgp_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result=nornir_raw_r1,
     test_data={
         "host": "R1",
@@ -100,6 +102,7 @@ bgp_r1_2 = SelfTestData(
 )
 
 bgp_r2 = SelfTestData(
+    name="r2",
     nornir_raw_result=nornir_raw_r2,
     test_data={
         "host": "R2",
@@ -129,13 +132,14 @@ def general_result(timeouted_multiresult):
 
 @pytest.fixture(
     params=[
-        pytest.param(bgp_r1_1.test_data, id="bgp_r1_1"),
-        pytest.param(bgp_r1_2.test_data, id="bgp_r1_2"),
-        pytest.param(bgp_r2.test_data, id="bgp_r2"),
-    ]
+        bgp_r1_1,
+        bgp_r1_2,
+        bgp_r2,
+    ],
+    ids=lambda data: data.name,
 )
 def testdata(request):
-    return request.param
+    return request.param.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]

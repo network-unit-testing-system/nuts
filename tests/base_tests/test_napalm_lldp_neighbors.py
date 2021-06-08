@@ -72,24 +72,28 @@ nornir_raw_result_r2 = {
 }
 
 lldp_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={"host": "R1", "local_port": "GigabitEthernet4", "remote_host": "R3", "remote_port": "GigabitEthernet2"},
     additional_data={"remote_chassis_id": R3_CHASSIS_ID, "short_remote_port": "Gi2"},
 )
 
 lldp_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={"host": "R1", "local_port": "GigabitEthernet3", "remote_host": "R2", "remote_port": "GigabitEthernet2"},
     additional_data={"remote_chassis_id": R2_CHASSIS_ID, "short_remote_port": "Gi2"},
 )
 
 lldp_r2_1 = SelfTestData(
+    name="r2_1",
     nornir_raw_result=nornir_raw_result_r2,
     test_data={"host": "R2", "local_port": "GigabitEthernet4", "remote_host": "R3", "remote_port": "GigabitEthernet3"},
     additional_data={"remote_chassis_id": R3_CHASSIS_ID, "short_remote_port": "Gi3"},
 )
 
 lldp_r2_2 = SelfTestData(
+    name="r2_2",
     nornir_raw_result=nornir_raw_result_r2,
     test_data={"host": "R2", "local_port": "GigabitEthernet2", "remote_host": "R1", "remote_port": "GigabitEthernet3"},
     additional_data={"remote_chassis_id": R1_CHASSIS_ID, "short_remote_port": "Gi3"},
@@ -108,11 +112,12 @@ def general_result(timeouted_multiresult):
 
 @pytest.fixture(
     params=[
-        pytest.param(lldp_r1_1, id="r1_1"),
-        pytest.param(lldp_r1_2, id="r1_2"),
-        pytest.param(lldp_r2_1, id="r2_1"),
-        pytest.param(lldp_r2_2, id="r2_2"),
-    ]
+        lldp_r1_1,
+        lldp_r1_2,
+        lldp_r2_1,
+        lldp_r2_2,
+    ],
+    ids=lambda data: data.name,
 )
 def raw_testdata(request):
     return request.param

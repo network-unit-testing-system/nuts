@@ -12,16 +12,19 @@ nornir_raw_result_r1 = {
 }
 
 users_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={"host": "R1", "username": "arya", "password": "stark", "level": 11},
 )
 
 users_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={"host": "R1", "username": "bran", "password": "stark", "level": 15},
 )
 
 users_r2 = SelfTestData(
+    name="r2",
     nornir_raw_result={"users": {"jon": {"level": 5, "password": "snow", "sshkeys": []}}},
     test_data={"host": "R2", "username": "jon", "password": "snow", "level": 5},
 )
@@ -39,9 +42,12 @@ def general_result(timeouted_multiresult):
     return result
 
 
-@pytest.fixture(params=[users_r1_1.test_data, users_r1_2.test_data, users_r2.test_data])
+@pytest.fixture(
+    params=[users_r1_1, users_r1_2, users_r2],
+    ids=lambda data: data.name,
+)
 def testdata(request):
-    return request.param
+    return request.param.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]

@@ -67,6 +67,7 @@ nornir_raw_result_r2 = {
 
 
 r1_default = SelfTestData(
+    name="r1_default",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
         "host": "R1",
@@ -84,6 +85,7 @@ r1_default = SelfTestData(
 
 
 r1_mgmt = SelfTestData(
+    name="r1_mgmt",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
         "host": "R1",
@@ -95,6 +97,7 @@ r1_mgmt = SelfTestData(
 
 
 r1_space = SelfTestData(
+    name="r1_space",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
         "host": "R1",
@@ -106,6 +109,7 @@ r1_space = SelfTestData(
 
 
 r1_ship = SelfTestData(
+    name="r1_ship",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
         "host": "R1",
@@ -117,6 +121,7 @@ r1_ship = SelfTestData(
 
 
 r2_default = SelfTestData(
+    name="r2_default",
     nornir_raw_result=nornir_raw_result_r2,
     test_data={
         "host": "R2",
@@ -133,6 +138,7 @@ r2_default = SelfTestData(
 
 
 r2_mgmt = SelfTestData(
+    name="r2_mgmt",
     nornir_raw_result=nornir_raw_result_r2,
     test_data={
         "host": "R2",
@@ -155,16 +161,17 @@ def general_result(timeouted_multiresult):
 
 @pytest.fixture(
     params=[
-        pytest.param(r1_default.test_data, id="r1_default"),
-        pytest.param(r1_mgmt.test_data, id="r1_mgmt"),
-        pytest.param(r1_space.test_data, id="r1_space"),
-        pytest.param(r1_ship.test_data, id="r1_ship"),
-        pytest.param(r2_default.test_data, id="r2_default"),
-        pytest.param(r2_mgmt.test_data, id="r2_mgmt"),
-    ]
+        r1_default,
+        r1_mgmt,
+        r1_space,
+        r1_ship,
+        r2_default,
+        r2_mgmt,
+    ],
+    ids=lambda data: data.name,
 )
 def testdata(request):
-    return request.param
+    return request.param.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]

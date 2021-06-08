@@ -51,6 +51,7 @@ nornir_raw_result_r2 = {
 }
 
 interfaces_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
         "is_enabled": True,
@@ -64,6 +65,7 @@ interfaces_r1_1 = SelfTestData(
 )
 
 interfaces_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result=nornir_raw_result_r1,
     test_data={
         "is_enabled": False,
@@ -77,6 +79,7 @@ interfaces_r1_2 = SelfTestData(
 )
 
 interfaces_r2_1 = SelfTestData(
+    name="r2_1",
     nornir_raw_result=nornir_raw_result_r2,
     test_data={
         "is_enabled": True,
@@ -90,6 +93,7 @@ interfaces_r2_1 = SelfTestData(
 )
 
 interfaces_r2_2 = SelfTestData(
+    name="r2_2",
     nornir_raw_result=nornir_raw_result_r2,
     test_data={
         "is_enabled": False,
@@ -119,14 +123,15 @@ def general_result(timeouted_multiresult):
 
 @pytest.fixture(
     params=[
-        pytest.param(interfaces_r1_1.test_data, id="r1_1"),
-        pytest.param(interfaces_r1_2.test_data, id="r1_2"),
-        pytest.param(interfaces_r2_1.test_data, id="r2_1"),
-        pytest.param(interfaces_r2_2.test_data, id="r2_2"),
-    ]
+        interfaces_r1_1,
+        interfaces_r1_2,
+        interfaces_r2_1,
+        interfaces_r2_2,
+    ],
+    ids=lambda data: data.name,
 )
 def testdata(request):
-    return request.param
+    return request.param.test_data
 
 
 @pytest.fixture

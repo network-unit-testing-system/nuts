@@ -81,6 +81,7 @@ raw_nornir_result_r2 = [
 
 
 ospf_r1_1 = SelfTestData(
+    name="r1_1",
     nornir_raw_result=raw_nornir_result_r1,
     test_data={
         "host": "R1",
@@ -92,6 +93,7 @@ ospf_r1_1 = SelfTestData(
 )
 
 ospf_r1_2 = SelfTestData(
+    name="r1_2",
     nornir_raw_result=raw_nornir_result_r1,
     test_data={
         "host": "R1",
@@ -103,6 +105,7 @@ ospf_r1_2 = SelfTestData(
 )
 
 ospf_r1_3 = SelfTestData(
+    name="r1_3",
     nornir_raw_result=raw_nornir_result_r1,
     test_data={
         "host": "R1",
@@ -114,6 +117,7 @@ ospf_r1_3 = SelfTestData(
 )
 
 ospf_r2_1 = SelfTestData(
+    name="r2_1",
     nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
@@ -125,6 +129,7 @@ ospf_r2_1 = SelfTestData(
 )
 
 ospf_r2_2 = SelfTestData(
+    name="r2_2",
     nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
@@ -137,6 +142,7 @@ ospf_r2_2 = SelfTestData(
 
 
 ospf_r2_3 = SelfTestData(
+    name="r2_3",
     nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
@@ -160,16 +166,17 @@ def general_result(timeouted_multiresult):
 
 @pytest.fixture(
     params=[
-        pytest.param(ospf_r1_1.test_data, id="ospf_r1_1"),
-        pytest.param(ospf_r1_2.test_data, id="ospf_r1_2"),
-        pytest.param(ospf_r1_3.test_data, id="ospf_r1_3"),
-        pytest.param(ospf_r2_1.test_data, id="ospf_r2_1"),
-        pytest.param(ospf_r2_2.test_data, id="ospf_r2_2"),
-        pytest.param(ospf_r2_3.test_data, id="ospf_r2_3"),
-    ]
+        ospf_r1_1,
+        ospf_r1_2,
+        ospf_r1_3,
+        ospf_r2_1,
+        ospf_r2_2,
+        ospf_r2_3,
+    ],
+    ids=lambda data: data.name,
 )
 def testdata(request):
-    return request.param
+    return request.param.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]

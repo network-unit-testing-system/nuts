@@ -33,7 +33,7 @@ CONTEXT = InterfacesContext
 
 
 @pytest.mark.usefixtures("check_nuts_result")
-class TestInterfaces:  # always required fields: host, name
+class TestNapalmInterfaces:
     @pytest.mark.nuts("host,name,is_enabled")
     def test_is_enabled(self, single_result, name, is_enabled):
         assert single_result.result[name]["is_enabled"] == is_enabled

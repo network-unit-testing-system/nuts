@@ -134,7 +134,7 @@ def selftestdata(request):
     return request.param
 
 
-
+@pytest.fixture
 def testdata(selftestdata):
     return selftestdata.test_data
 
@@ -176,5 +176,5 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmInterfaces", task_module=tasks, task_name="napalm_get", passed_count=6
+        selftestdata, test_class="TestNapalmInterfaces", task_module=tasks, task_name="napalm_get", passed_count=5
     )

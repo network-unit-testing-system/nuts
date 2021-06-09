@@ -1,5 +1,6 @@
 import pytest
 from nornir.core.task import AggregatedResult
+from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_lldp_neighbors import CONTEXT
 from tests.utils import create_multi_result, create_result, SelfTestData
@@ -109,7 +110,6 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
-
 @pytest.fixture(
     params=[
         lldp_r1_1,
@@ -119,7 +119,7 @@ def general_result(timeouted_multiresult):
     ],
     ids=lambda data: data.name,
 )
-def raw_testdata(request):
+def selftestdata(request):
     return request.param
 
 
@@ -172,3 +172,9 @@ def test_contains_information_remote_host(interface_result, testdata):
 
 def test_contains_information_expanded_interface(interface_result, testdata):
     assert interface_result["remote_port_expanded"] == testdata["remote_port"]
+
+
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata, test_class="TestNapalmLldpNeighbors", task_module=tasks, task_name="napalm_get", passed_count=2
+    )

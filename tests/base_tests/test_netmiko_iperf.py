@@ -57,7 +57,7 @@ def general_result():
 
 
 @pytest.fixture(
-    params=[iperf_l1_1, iperf_l1_2, iperf_l2_2, iperf_l2_2],
+    params=[iperf_l1_1, iperf_l1_2, iperf_l2_1, iperf_l2_2],
     ids=lambda data: data.name,
 )
 def selftestdata(request):

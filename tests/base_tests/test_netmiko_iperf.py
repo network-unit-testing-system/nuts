@@ -23,12 +23,19 @@ iperf_l2_1 = SelfTestData(
     name="l2_1",
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.1"}]},"end":{"sum_received":{"bits_per_second": 5000}}}',
     test_data={"host": "L2", "destination": "10.0.0.1", "min_expected": 10000000},
+    expected_output=["E * assert 5000 > 10000000"],
+    expected_outcome="failed",
 )
 
 iperf_l2_2 = SelfTestData(
     name="l2_2",
     nornir_raw_result='{"start":{"connected":[],"version":"iperf 3.1.3","system_info":"Linux"},"intervals":[],"end":{},"error":"error - unable to connect to server: No route to host"}',
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
+    expected_output=[
+        "* An exception was thrown during information gathering: *",
+        "*.IperfResultError: error - unable to connect to server: No route to host",
+    ],
+    expected_outcome="errors",
 )
 
 
@@ -106,5 +113,5 @@ def test_integration(selftestdata, integration_tester):
         test_class="TestNetmikoIperf",
         task_module=nornir_netmiko,
         task_name="netmiko_send_command",
-        passed_count=1,
+        test_count=1,
     )

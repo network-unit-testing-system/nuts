@@ -26,6 +26,8 @@ class SelfTestData:
     nornir_raw_result: Any
     test_data: Dict[str, Any]
     additional_data: Optional[Dict[str, Any]] = None
+    expected_output: Optional[str] = None
+    expected_outcome: str = "passed"
 
     def create_nornir_result(self) -> Result:
         return create_result(

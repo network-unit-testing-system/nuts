@@ -177,5 +177,5 @@ def test_contains_information_expanded_interface(interface_result, testdata):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmLldpNeighbors", task_module=tasks, task_name="napalm_get", passed_count=2
+        selftestdata, test_class="TestNapalmLldpNeighbors", task_module=tasks, task_name="napalm_get", test_count=2
     )

@@ -211,7 +211,7 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmBgpNeighbors", task_module=tasks, task_name="napalm_get", passed_count=6
+        selftestdata, test_class="TestNapalmBgpNeighbors", task_module=tasks, task_name="napalm_get", test_count=6
     )
 
 
@@ -221,5 +221,5 @@ def test_integration_count(selftestdata_countneighbors, integration_tester):
         test_class="TestNapalmBgpNeighborsCount",
         task_module=tasks,
         task_name="napalm_get",
-        passed_count=1,
+        test_count=1,
     )

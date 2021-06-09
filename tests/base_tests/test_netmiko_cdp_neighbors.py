@@ -221,5 +221,5 @@ def test_integration(selftestdata, integration_tester):
         test_class="TestNetmikoCdpNeighbors",
         task_module=nornir_netmiko,
         task_name="netmiko_send_command",
-        passed_count=4,
+        test_count=4,
     )

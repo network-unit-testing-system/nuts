@@ -109,7 +109,7 @@ def transformed_result(test_ctx: NornirNutsContext, general_result: AggregatedRe
 
 @pytest.fixture
 def integration_tester(monkeypatch, pytester, default_nr_init):
-    def _run(raw_testdata, *, test_class, task_module, task_name, passed_count):
+    def _run(raw_testdata, *, test_class, task_module, task_name, test_count):
         yaml_data = [
             {
                 "test_class": test_class,
@@ -124,6 +124,10 @@ def integration_tester(monkeypatch, pytester, default_nr_init):
         monkeypatch.setattr(task_module, task_name, lambda *args, **kwargs: raw_testdata.nornir_raw_result)
 
         res = pytester.runpytest_inprocess()
-        res.assert_outcomes(passed=passed_count)
+
+        if raw_testdata.expected_output is not None:
+            res.stdout.fnmatch_lines(raw_testdata.expected_output)
+
+        res.assert_outcomes(**{raw_testdata.expected_outcome: test_count})
 
     return _run

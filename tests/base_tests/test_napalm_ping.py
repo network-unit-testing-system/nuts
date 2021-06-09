@@ -176,5 +176,5 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmPing", task_module=tasks, task_name="napalm_ping", passed_count=1
+        selftestdata, test_class="TestNapalmPing", task_module=tasks, task_name="napalm_ping", test_count=1
     )

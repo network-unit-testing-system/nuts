@@ -247,7 +247,7 @@ def test_integration(selftestdata, integration_tester):
         test_class="TestNetmikoOspfNeighbors",
         task_module=nornir_netmiko,
         task_name="netmiko_send_command",
-        passed_count=4,
+        test_count=4,
     )
 
 
@@ -257,5 +257,5 @@ def test_integration_count(selftestdata_countneighbors, integration_tester):
         test_class="TestNetmikoOspfNeighborsCount",
         task_module=nornir_netmiko,
         task_name="netmiko_send_command",
-        passed_count=1,
+        test_count=1,
     )

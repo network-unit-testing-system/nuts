@@ -118,6 +118,23 @@ bgp_r2 = SelfTestData(
     },
 )
 
+bgp_r1_count = SelfTestData(
+    name="r1_count",
+    nornir_raw_result=nornir_raw_r1,
+    test_data= {
+    "host": "R1",
+      "neighbor_count": 2,
+    }
+)
+
+bgp_r2_count = SelfTestData(
+    name="r2_count",
+    nornir_raw_result=nornir_raw_r2,
+    test_data= {
+    "host": "R2",
+      "neighbor_count": 1,
+    }
+)
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
@@ -148,6 +165,15 @@ def selftestdata(request):
 def testdata(selftestdata):
     return selftestdata.test_data
 
+@pytest.fixture(
+    params=[
+        bgp_r1_count,
+        bgp_r2_count
+    ],
+    ids=lambda data: data.name,
+)
+def selftestdata_countneighbors(request):
+    return request.param
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
@@ -186,4 +212,9 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 def test_integration(selftestdata, integration_tester):
     integration_tester(
         selftestdata, test_class="TestNapalmBgpNeighbors", task_module=tasks, task_name="napalm_get", passed_count=6
+    )
+
+def test_integration_count(selftestdata_countneighbors, integration_tester):
+    integration_tester(
+        selftestdata_countneighbors, test_class="TestNapalmBgpNeighborsCount", task_module=tasks, task_name="napalm_get", passed_count=1
     )

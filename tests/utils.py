@@ -14,19 +14,27 @@ YAML_EXTENSION = ".yaml"
 class SelfTestData:
     """
     Helper-Class that matches raw nornir results with a test data entry.
-    There are two possible structures:
-        1) 1 raw nornir results contains data that matches several test data entries
-        2) 1 raw nornir result contains data that matches exactly one test data entry
+    One instance of SelfTestData corresponds to one self-test case.
+
+    There are two possible ways to construct a SelfTestData object:
+        1) 1 raw nornir result contains data that is related to several test_data entries
+        2) 1 raw nornir result contains data that related to exactly one test_data entry
 
         For 1), several instances of this class have to be created containing the same
         raw nornir results but different test data entries.
+    :param name: identifier of the test case so that it can be easily identified in parametrized tests.
+    :param nornir_raw_result: mocked raw answer from nornir
+    :param test_data: expected results for the test case
+    :param additional_data: data that is provided by nornir but not used in a nuts base test
+    :param expected_output: list of strings that is matched against pytest's output
+    :param expected_outcome: values of possible pytest outcomes (e.g. 'failed', 'errors'), default is 'passed'
     """
 
     name: str
     nornir_raw_result: Any
     test_data: Dict[str, Any]
     additional_data: Optional[Dict[str, Any]] = None
-    expected_output: Optional[str] = None
+    expected_output: Optional[List[str]] = None
     expected_outcome: str = "passed"
 
     def create_nornir_result(self) -> Result:

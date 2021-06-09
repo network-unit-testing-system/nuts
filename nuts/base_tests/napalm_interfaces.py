@@ -3,9 +3,8 @@ from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult, Result, Task
+from nornir.core.task import MultiResult, AggregatedResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
-from nornir_napalm.plugins.tasks.napalm_get import GetterOptionsDict
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts

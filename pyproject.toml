@@ -73,7 +73,7 @@ commands = black --check {posargs} .
 description = Check typing with mypy
 deps = mypy
 passenv = TERM
-commands = mypy {posargs} nuts tests
+commands = mypy {posargs} nuts tests --install-types
 
 [testenv:docs]
 description = Build docs with sphinx

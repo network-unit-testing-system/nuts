@@ -22,9 +22,17 @@ def default_nr_init(testdir):
         "nr-config": config,
         "hosts": """
             R1:
-              hostname: 10.20.0.31
+              hostname: 1.1.1.1
             R2:
-              hostname: 10.20.0.32""",
+              hostname: 2.2.2.2
+            R3:
+              hostname: 3.3.3.3
+            L1:
+              hostname: 11.11.11.11     
+            L2:
+              hostname: 22.22.22.22     
+
+        """,
     }
     testdir.makefile(YAML_EXTENSION, **arguments)
 

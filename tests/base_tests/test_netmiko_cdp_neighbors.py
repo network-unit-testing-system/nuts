@@ -217,5 +217,9 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNetmikoCdpNeighbors", task_module=nornir_netmiko, task_name="netmiko_send_command", passed_count=4
+        selftestdata,
+        test_class="TestNetmikoCdpNeighbors",
+        task_module=nornir_netmiko,
+        task_name="netmiko_send_command",
+        passed_count=4,
     )

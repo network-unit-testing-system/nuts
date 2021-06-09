@@ -159,6 +159,7 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
+
 @pytest.fixture(
     params=[
         r1_default,
@@ -172,6 +173,7 @@ def general_result(timeouted_multiresult):
 )
 def selftestdata(request):
     return request.param
+
 
 @pytest.fixture
 def testdata(selftestdata):
@@ -213,6 +215,7 @@ def test_contains_route_distinguisher_at_network_instance(transformed_result, te
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
+
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(

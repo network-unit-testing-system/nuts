@@ -63,6 +63,7 @@ def general_result():
 def selftestdata(request):
     return request.param
 
+
 @pytest.fixture
 def testdata(selftestdata):
     return selftestdata.test_data
@@ -98,8 +99,12 @@ def test_dest_unreachable_fails(transformed_result):
     assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].failed
     assert transformed_result["L2"][iperf_l2_2.test_data["destination"]].exception is not None
 
+
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNetmikoIperf", task_module=nornir_netmiko, task_name="netmiko_send_command", passed_count=6
+        selftestdata,
+        test_class="TestNetmikoIperf",
+        task_module=nornir_netmiko,
+        task_name="netmiko_send_command",
+        passed_count=6,
     )
-

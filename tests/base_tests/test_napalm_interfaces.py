@@ -121,6 +121,7 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
+
 @pytest.fixture(
     params=[
         interfaces_r1_1,

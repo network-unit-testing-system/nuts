@@ -129,6 +129,7 @@ def general_result():
     )
     return general_result
 
+
 @pytest.fixture(
     params=[ping_r1_1, ping_r1_2, ping_r2, ping_r3],
     ids=lambda data: data.name,
@@ -171,6 +172,7 @@ def test_destination_maps_to_enum(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"][IP_6].failed
     assert transformed_result["R3"][IP_6].exception is not None
+
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(

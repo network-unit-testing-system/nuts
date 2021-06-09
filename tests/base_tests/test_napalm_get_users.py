@@ -43,13 +43,16 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
-
 @pytest.fixture(
     params=[users_r1_1, users_r1_2, users_r2],
     ids=lambda data: data.name,
 )
-def testdata(request):
-    return request.param.test_data
+def selftestdata(request):
+    return request.param
+
+
+def testdata(selftestdata):
+    return selftestdata.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]

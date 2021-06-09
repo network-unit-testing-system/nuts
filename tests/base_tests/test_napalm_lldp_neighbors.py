@@ -124,8 +124,8 @@ def raw_testdata(request):
 
 
 @pytest.fixture
-def testdata(raw_testdata):
-    return raw_testdata.test_data
+def testdata(selftestdata):
+    return selftestdata.test_data
 
 
 @pytest.fixture
@@ -149,16 +149,16 @@ def test_contains_failed_result_at_second_level_if_task_failed(transformed_resul
     assert transformed_result["R3"].exception
 
 
-def test_contains_information_about_neighbor(interface_result, testdata, raw_testdata):
+def test_contains_information_about_neighbor(interface_result, testdata, selftestdata):
     print(testdata)
     expected = {
         "remote_system_description": REMOTE_SYSTEM_DESCRIPTION,
         "remote_system_capab": REMOTE_SYSTEM_CAPAB,
         "remote_system_enable_capab": REMOTE_SYSTEM_ENABLE_CAPAB,
-        "remote_chassis_id": raw_testdata.additional_data["remote_chassis_id"],
+        "remote_chassis_id": selftestdata.additional_data["remote_chassis_id"],
         "parent_interface": "",
         "remote_host": testdata["remote_host"],
-        "remote_port": raw_testdata.additional_data["short_remote_port"],
+        "remote_port": selftestdata.additional_data["short_remote_port"],
         "remote_port_description": testdata["remote_port"],
         "remote_port_expanded": testdata["remote_port"],
         "remote_system_name": testdata["remote_host"],

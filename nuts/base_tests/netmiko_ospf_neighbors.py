@@ -3,7 +3,7 @@ from typing import Callable, Dict, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult, Result, Task
+from nornir.core.task import MultiResult, AggregatedResult, Result
 from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext

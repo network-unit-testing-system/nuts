@@ -26,7 +26,7 @@ class SelfTestData:
     :param nornir_raw_result: mocked raw answer from nornir
     :param test_data: expected results for the test case
     :param additional_data: data that is provided by nornir but not used in a nuts base test
-    :param expected_output: list of strings that is matched against pytest's output
+    :param expected_output: list of strings that is matched against pytest's output using fnmatch globs
     :param expected_outcome: values of possible pytest outcomes (e.g. 'failed', 'errors'), default is 'passed'
     """
 

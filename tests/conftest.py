@@ -28,10 +28,9 @@ def default_nr_init(testdir):
             R3:
               hostname: 3.3.3.3
             L1:
-              hostname: 11.11.11.11     
+              hostname: 11.11.11.11
             L2:
-              hostname: 22.22.22.22     
-
+              hostname: 22.22.22.22
         """,
     }
     testdir.makefile(YAML_EXTENSION, **arguments)

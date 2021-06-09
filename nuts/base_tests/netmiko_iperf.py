@@ -89,7 +89,7 @@ class TestNetmikoIperf:
 
     @pytest.mark.nuts("host,destination,min_expected")
     def test_iperf(self, single_result, min_expected):
-        assert single_result.result > min_expected
+        assert single_result.result >= min_expected
 
 
 def _extract_bps(iperf_task_result: str) -> int:

@@ -106,5 +106,5 @@ def test_integration(selftestdata, integration_tester):
         test_class="TestNetmikoIperf",
         task_module=nornir_netmiko,
         task_name="netmiko_send_command",
-        passed_count=6,
+        passed_count=1,
     )

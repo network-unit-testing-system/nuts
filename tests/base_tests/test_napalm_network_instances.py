@@ -1,5 +1,6 @@
 import pytest
 from nornir.core.task import AggregatedResult
+from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_network_instances import CONTEXT
 from tests.utils import create_multi_result, create_result, SelfTestData
@@ -158,7 +159,6 @@ def general_result(timeouted_multiresult):
     result["R3"] = timeouted_multiresult
     return result
 
-
 @pytest.fixture(
     params=[
         r1_default,
@@ -170,8 +170,12 @@ def general_result(timeouted_multiresult):
     ],
     ids=lambda data: data.name,
 )
-def testdata(request):
-    return request.param.test_data
+def selftestdata(request):
+    return request.param
+
+@pytest.fixture
+def testdata(selftestdata):
+    return selftestdata.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -209,3 +213,8 @@ def test_contains_route_distinguisher_at_network_instance(transformed_result, te
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
+
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata, test_class="TestNapalmNetworkInstances", task_module=tasks, task_name="napalm_get", passed_count=2
+    )

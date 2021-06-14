@@ -10,6 +10,7 @@ from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
+from nuts.helpers.errors import Error
 from nuts.helpers.result import NutsResult, map_host_to_dest_to_nutsresult
 
 
@@ -73,6 +74,11 @@ class IperfContext(NornirNutsContext):
 CONTEXT = IperfContext
 
 
+class IperfResultError(Error):
+
+    """Error in iperf result JSON."""
+
+
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoIperf:
     @pytest.fixture
@@ -83,13 +89,13 @@ class TestNetmikoIperf:
 
     @pytest.mark.nuts("host,destination,min_expected")
     def test_iperf(self, single_result, min_expected):
-        assert single_result.result > min_expected
+        assert single_result.result >= min_expected
 
 
 def _extract_bps(iperf_task_result: str) -> int:
     iperf_result = json.loads(iperf_task_result)
     if "error" in iperf_result:
-        raise Exception(iperf_result["error"])
+        raise IperfResultError(iperf_result["error"])
     return int(iperf_result["end"]["sum_received"]["bits_per_second"])
 
 

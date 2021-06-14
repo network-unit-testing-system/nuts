@@ -3,9 +3,8 @@ from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult, Result, Task
+from nornir.core.task import MultiResult, AggregatedResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
-from nornir_napalm.plugins.tasks.napalm_get import GetterOptionsDict
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
@@ -34,7 +33,7 @@ CONTEXT = InterfacesContext
 
 
 @pytest.mark.usefixtures("check_nuts_result")
-class TestInterfaces:  # always required fields: host, name
+class TestNapalmInterfaces:
     @pytest.mark.nuts("host,name,is_enabled")
     def test_is_enabled(self, single_result, name, is_enabled):
         assert single_result.result[name]["is_enabled"] == is_enabled

@@ -1,6 +1,7 @@
 import pytest
 from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
+from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_ping import CONTEXT
 from tests.base_tests.conftest import TIMEOUT_MESSAGE
@@ -103,10 +104,9 @@ ping_r3 = SelfTestData(
 @pytest.fixture
 def general_result():
     task_name = "napalm_ping"
-    confirmation_result = create_result(result_content="All pings executed", task_name="napalm_ping_multihost")
+    confirmation_result = create_result(result_content="All pings executed")
     timeouted = create_result(
         TIMEOUT_MESSAGE,
-        task_name=task_name,
         host="R3",
         destination=IP_6,
         failed=True,
@@ -116,16 +116,16 @@ def general_result():
     general_result["R1"] = create_multi_result(
         results=[
             confirmation_result,
-            ping_r1_1.create_nornir_result(task_name),
-            ping_r1_2.create_nornir_result(task_name),
+            ping_r1_1.create_nornir_result(),
+            ping_r1_2.create_nornir_result(),
         ],
         task_name=task_name,
     )
     general_result["R2"] = create_multi_result(
-        results=[confirmation_result, ping_r2.create_nornir_result(task_name)], task_name=task_name
+        results=[confirmation_result, ping_r2.create_nornir_result()], task_name=task_name
     )
     general_result["R3"] = create_multi_result(
-        results=[confirmation_result, ping_r3.create_nornir_result(task_name), timeouted], task_name=task_name
+        results=[confirmation_result, ping_r3.create_nornir_result(), timeouted], task_name=task_name
     )
     return general_result
 
@@ -134,8 +134,13 @@ def general_result():
     params=[ping_r1_1, ping_r1_2, ping_r2, ping_r3],
     ids=lambda data: data.name,
 )
-def testdata(request):
-    return request.param.test_data
+def selftestdata(request):
+    return request.param
+
+
+@pytest.fixture
+def testdata(selftestdata):
+    return selftestdata.test_data
 
 
 pytestmark = [
@@ -167,3 +172,9 @@ def test_destination_maps_to_enum(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"][IP_6].failed
     assert transformed_result["R3"][IP_6].exception is not None
+
+
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata, test_class="TestNapalmPing", task_module=tasks, task_name="napalm_ping", test_count=1
+    )

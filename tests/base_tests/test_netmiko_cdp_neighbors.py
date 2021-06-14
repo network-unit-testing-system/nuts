@@ -1,5 +1,6 @@
 import pytest
 from nornir.core.task import AggregatedResult
+import nornir_netmiko
 
 from nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
 from tests.utils import SelfTestData, create_multi_result, create_result
@@ -109,7 +110,7 @@ r1_r4 = SelfTestData(
 
 r2_r3 = SelfTestData(
     name="r2_r3",
-    nornir_raw_result=raw_nornir_result_r1,
+    nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
         "local_port": "GigabitEthernet4",
@@ -121,7 +122,7 @@ r2_r3 = SelfTestData(
 
 r2_r1 = SelfTestData(
     name="r2_r3",
-    nornir_raw_result=raw_nornir_result_r1,
+    nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
         "local_port": "GigabitEthernet2",
@@ -133,7 +134,7 @@ r2_r1 = SelfTestData(
 
 r2_r5 = SelfTestData(
     name="r2_r3",
-    nornir_raw_result=raw_nornir_result_r1,
+    nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
         "local_port": "GigabitEthernet3",
@@ -165,8 +166,13 @@ def general_result(timeouted_multiresult):
     ],
     ids=lambda data: data.name,
 )
-def testdata(request):
-    return request.param.test_data
+def selftestdata(request):
+    return request.param
+
+
+@pytest.fixture
+def testdata(selftestdata):
+    return selftestdata.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -207,3 +213,13 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
+
+
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata,
+        test_class="TestNetmikoCdpNeighbors",
+        task_module=nornir_netmiko,
+        task_name="netmiko_send_command",
+        test_count=4,
+    )

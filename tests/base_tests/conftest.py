@@ -1,5 +1,6 @@
 from typing import Dict, Any
 
+import yaml
 import pytest
 from _pytest.fixtures import FixtureRequest
 from napalm.base.exceptions import ConnectionException
@@ -7,7 +8,7 @@ from nornir.core.task import AggregatedResult
 
 from nuts.context import NornirNutsContext, NutsContext
 
-from tests.utils import create_multi_result, create_result
+from tests.utils import create_multi_result, create_result, YAML_EXTENSION
 
 TIMEOUT_MESSAGE = r"""Traceback (most recent call last):
   File "C:\somepath\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection
@@ -72,7 +73,6 @@ def timeouted_multiresult():
     task_name = "failed_task"
     r = create_result(
         TIMEOUT_MESSAGE,
-        task_name=task_name,
         failed=True,
         exception=ConnectionException("Cannot connect to 1.2.3.4"),
     )
@@ -105,3 +105,29 @@ def transformed_result(test_ctx: NornirNutsContext, general_result: AggregatedRe
     :return: Dict with host as keys, `NutsResult` as values
     """
     return test_ctx.transform_result(general_result)
+
+
+@pytest.fixture
+def integration_tester(monkeypatch, pytester, default_nr_init):
+    def _run(selftestdata, *, test_class, task_module, task_name, test_count):
+        yaml_data = [
+            {
+                "test_class": test_class,
+                "test_data": [selftestdata.test_data],
+            }
+        ]
+
+        yaml_file = pytester.path / f"test{YAML_EXTENSION}"
+        with yaml_file.open("w") as fo:
+            yaml.dump(yaml_data, fo)
+
+        monkeypatch.setattr(task_module, task_name, lambda *args, **kwargs: selftestdata.nornir_raw_result)
+
+        res = pytester.runpytest_inprocess()
+
+        if selftestdata.expected_output is not None:
+            res.stdout.fnmatch_lines(selftestdata.expected_output)
+
+        res.assert_outcomes(**{selftestdata.expected_outcome: test_count})
+
+    return _run

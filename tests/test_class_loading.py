@@ -127,7 +127,12 @@ def test_bundle_with_labels(testdir):
     testdir.makefile(YAML_EXTENSION, **arguments)
 
     result = testdir.runpytest("--collect-only")
-    result.stdout.fnmatch_lines(["*NutsTestClass TestClass - testrun23*", "*NutsTestClass TestClass - testrun42*"])
+    result.stdout.fnmatch_lines(
+        [
+            "*NutsTestClass TestClass - testrun23*",
+            "*NutsTestClass TestClass - testrun42*",
+        ]
+    )
 
 
 def test_find_test_module_of_class(mock_index):

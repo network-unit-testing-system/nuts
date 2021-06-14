@@ -30,7 +30,11 @@ nornir_raw_r1 = {
                     "description": "",
                     "uptime": -1,
                     "address_family": {
-                        "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        "ipv4 unicast": {
+                            "received_prefixes": -1,
+                            "accepted_prefixes": -1,
+                            "sent_prefixes": -1,
+                        }
                     },
                 },
                 R3_IP: {
@@ -42,7 +46,11 @@ nornir_raw_r1 = {
                     "description": "",
                     "uptime": -1,
                     "address_family": {
-                        "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        "ipv4 unicast": {
+                            "received_prefixes": -1,
+                            "accepted_prefixes": -1,
+                            "sent_prefixes": -1,
+                        }
                     },
                 },
             },
@@ -64,7 +72,11 @@ nornir_raw_r2 = {
                     "description": "",
                     "uptime": -1,
                     "address_family": {
-                        "ipv4 unicast": {"received_prefixes": -1, "accepted_prefixes": -1, "sent_prefixes": -1}
+                        "ipv4 unicast": {
+                            "received_prefixes": -1,
+                            "accepted_prefixes": -1,
+                            "sent_prefixes": -1,
+                        }
                     },
                 }
             },
@@ -145,7 +157,9 @@ def general_result(timeouted_multiresult):
         results=[bgp_r1_1.create_nornir_result(), bgp_r1_2.create_nornir_result()],
         task_name=task_name,
     )
-    result["R2"] = create_multi_result(results=[bgp_r2.create_nornir_result()], task_name=task_name)
+    result["R2"] = create_multi_result(
+        results=[bgp_r2.create_nornir_result()], task_name=task_name
+    )
     result["R3"] = timeouted_multiresult
     return result
 
@@ -197,7 +211,13 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
         "local_id": testdata["local_id"],
         "remote_as": testdata["remote_as"],
         "remote_id": testdata["remote_id"],
-        "address_family": {"ipv4 unicast": {"accepted_prefixes": -1, "received_prefixes": -1, "sent_prefixes": -1}},
+        "address_family": {
+            "ipv4 unicast": {
+                "accepted_prefixes": -1,
+                "received_prefixes": -1,
+                "sent_prefixes": -1,
+            }
+        },
         "description": "",
         "uptime": -1,
     }
@@ -211,7 +231,11 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmBgpNeighbors", task_module=tasks, task_name="napalm_get", test_count=6
+        selftestdata,
+        test_class="TestNapalmBgpNeighbors",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=6,
     )
 
 

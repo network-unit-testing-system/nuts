@@ -155,11 +155,15 @@ ospf_r2_3 = SelfTestData(
 )
 
 ospf_r1_count = SelfTestData(
-    name="r1_count", nornir_raw_result=raw_nornir_result_r1, test_data={"host": "R1", "neighbor_count": 3}
+    name="r1_count",
+    nornir_raw_result=raw_nornir_result_r1,
+    test_data={"host": "R1", "neighbor_count": 3},
 )
 
 ospf_r2_count = SelfTestData(
-    name="r2_count", nornir_raw_result=raw_nornir_result_r2, test_data={"host": "R2", "neighbor_count": 3}
+    name="r2_count",
+    nornir_raw_result=raw_nornir_result_r2,
+    test_data={"host": "R2", "neighbor_count": 3},
 )
 
 
@@ -167,8 +171,12 @@ ospf_r2_count = SelfTestData(
 def general_result(timeouted_multiresult):
     task_name = "netmiko_send_command"
     result = AggregatedResult(task_name)
-    result["R1"] = create_multi_result([create_result(raw_nornir_result_r1, task_name)], task_name)
-    result["R2"] = create_multi_result([create_result(raw_nornir_result_r2, task_name)], task_name)
+    result["R1"] = create_multi_result(
+        [create_result(raw_nornir_result_r1, task_name)], task_name
+    )
+    result["R2"] = create_multi_result(
+        [create_result(raw_nornir_result_r2, task_name)], task_name
+    )
     result["R3"] = timeouted_multiresult
     return result
 
@@ -224,7 +232,9 @@ def test_contains_neighbors_at_second_level(transformed_result, host, neighbors)
 
 def test_contains_information_about_neighbor(transformed_result, testdata):
     print(testdata)
-    neighbor_details = transformed_result[testdata["host"]].result[testdata["neighbor_id"]]
+    neighbor_details = transformed_result[testdata["host"]].result[
+        testdata["neighbor_id"]
+    ]
     expected = {
         "neighbor_id": testdata["neighbor_id"],
         "priority": PRIORITY,

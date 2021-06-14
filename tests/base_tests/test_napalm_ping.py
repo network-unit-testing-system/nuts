@@ -97,7 +97,12 @@ ping_r3 = SelfTestData(
             ],
         }
     },
-    test_data={"expected": "FLAPPING", "host": "R3", "destination": IP_5, "max_drop": 1},
+    test_data={
+        "expected": "FLAPPING",
+        "host": "R3",
+        "destination": IP_5,
+        "max_drop": 1,
+    },
 )
 
 
@@ -122,10 +127,12 @@ def general_result():
         task_name=task_name,
     )
     general_result["R2"] = create_multi_result(
-        results=[confirmation_result, ping_r2.create_nornir_result()], task_name=task_name
+        results=[confirmation_result, ping_r2.create_nornir_result()],
+        task_name=task_name,
     )
     general_result["R3"] = create_multi_result(
-        results=[confirmation_result, ping_r3.create_nornir_result(), timeouted], task_name=task_name
+        results=[confirmation_result, ping_r3.create_nornir_result(), timeouted],
+        task_name=task_name,
     )
     return general_result
 
@@ -147,7 +154,12 @@ pytestmark = [
     pytest.mark.nuts_test_ctx(
         CONTEXT(
             nuts_parameters={
-                "test_data": [ping_r1_1.test_data, ping_r1_2.test_data, ping_r2.test_data, ping_r3.test_data]
+                "test_data": [
+                    ping_r1_1.test_data,
+                    ping_r1_2.test_data,
+                    ping_r2.test_data,
+                    ping_r3.test_data,
+                ]
             }
         )
     )
@@ -176,5 +188,9 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmPing", task_module=tasks, task_name="napalm_ping", test_count=1
+        selftestdata,
+        test_class="TestNapalmPing",
+        task_module=tasks,
+        task_name="napalm_ping",
+        test_count=1,
     )

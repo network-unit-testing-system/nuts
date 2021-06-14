@@ -18,16 +18,44 @@ E = Dict[str, Dict[str, str]]
 class ExpanseContext(NutsContext):
     def general_result(self) -> List[Dict[str, str]]:
         return [
-            {"ship": "rocinante", "name": "naomi nagata", "role": "engineer", "origin": "belter"},
-            {"ship": "rocinante", "name": "james holden", "role": "captain", "origin": "earth"},
-            {"ship": "rocinante", "name": "amos burton", "role": "mechanic", "origin": "earth"},
-            {"ship": "rocinante", "name": "alex kamal", "role": "pilot", "origin": "mars"},
-            {"ship": "rocinante", "name": "bobbie draper", "role": "marine", "origin": "mars"},
+            {
+                "ship": "rocinante",
+                "name": "naomi nagata",
+                "role": "engineer",
+                "origin": "belter",
+            },
+            {
+                "ship": "rocinante",
+                "name": "james holden",
+                "role": "captain",
+                "origin": "earth",
+            },
+            {
+                "ship": "rocinante",
+                "name": "amos burton",
+                "role": "mechanic",
+                "origin": "earth",
+            },
+            {
+                "ship": "rocinante",
+                "name": "alex kamal",
+                "role": "pilot",
+                "origin": "mars",
+            },
+            {
+                "ship": "rocinante",
+                "name": "bobbie draper",
+                "role": "marine",
+                "origin": "mars",
+            },
         ]
 
     def transform_result(self, general_result: List[Dict[str, str]]) -> Dict[str, Any]:
         return {
-            "rocinante": {entry["name"]: {"role": entry["role"], "origin": entry["origin"]} for entry in general_result}
+            "rocinante": {
+                entry["name"]: {"role": entry["role"], "origin": entry["origin"]}
+                for entry in general_result
+            }
         }
 
 

@@ -21,11 +21,18 @@ class CdpNeighborsContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def _transform_host_results(self, host_results: MultiResult) -> Dict[str, Dict[str, Any]]:
+    def _transform_host_results(
+        self, host_results: MultiResult
+    ) -> Dict[str, Dict[str, Any]]:
         assert host_results[0].result is not None
-        return {neighbor["destination_host"]: neighbor for neighbor in host_results[0].result}
+        return {
+            neighbor["destination_host"]: neighbor
+            for neighbor in host_results[0].result
+        }
 
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
 

@@ -37,7 +37,9 @@ class NutsYamlFile(pytest.File):
             with self.path.open() as fo:  # type: ignore[attr-defined]
                 raw = yaml.safe_load(fo)
         except OSError as ex:
-            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{ex}")
+            raise NutsSetupError(
+                f"Could not open YAML file containing test bundle:\n{ex}"
+            )
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
@@ -48,11 +50,15 @@ class NutsYamlFile(pytest.File):
             with self.fspath.open() as f:
                 raw = yaml.safe_load(f)
         except OSError as e:
-            raise NutsSetupError(f"Could not open YAML file containing test bundle:\n{e}")
+            raise NutsSetupError(
+                f"Could not open YAML file containing test bundle:\n{e}"
+            )
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
-            yield NutsTestFile.from_parent(self, fspath=self.fspath, obj=module, test_entry=test_entry)
+            yield NutsTestFile.from_parent(
+                self, fspath=self.fspath, obj=module, test_entry=test_entry
+            )
 
 
 def find_and_load_module(test_entry: Dict[str, str]) -> types.ModuleType:
@@ -67,7 +73,9 @@ def find_module_path(module_path: Optional[str], class_name: str) -> str:
     if not module_path:
         module_path = index.find_test_module_of_class(class_name)
         if not module_path:
-            raise NutsUsageError(f"A module that corresponds to the test_class called {class_name} could not be found.")
+            raise NutsUsageError(
+                f"A module that corresponds to the test_class called {class_name} could not be found."
+            )
     return module_path
 
 
@@ -110,7 +118,11 @@ class NutsTestFile(pytest.Module):
         test_data = self.test_entry.get("test_data", [])
         test_execution = self.test_entry.get("test_execution")
         yield NutsTestClass.from_parent(
-            self, name=name, class_name=class_name, test_data=test_data, test_execution=test_execution
+            self,
+            name=name,
+            class_name=class_name,
+            test_data=test_data,
+            test_execution=test_execution,
         )
 
 
@@ -146,7 +158,9 @@ class NutsTestClass(pytest.Class):
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
 
-def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> List[ParameterSet]:
+def get_parametrize_data(
+    metafunc: Metafunc, nuts_params: Tuple[str, ...]
+) -> List[ParameterSet]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
     :param metafunc: The annotated test function that will use the parametrized data.
@@ -163,7 +177,9 @@ def get_parametrize_data(metafunc: Metafunc, nuts_params: Tuple[str, ...]) -> Li
     return dict_to_tuple_list(data["test_data"], fields, required_fields)
 
 
-def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -> Set[str]:
+def calculate_required_fields(
+    fields: List[str], nuts_params: Tuple[str, ...]
+) -> Set[str]:
     required_fields = set(fields)
     if len(nuts_params) >= 2:
         optional_fields = {field.strip() for field in nuts_params[1].split(",")}
@@ -174,20 +190,30 @@ def calculate_required_fields(fields: List[str], nuts_params: Tuple[str, ...]) -
 def dict_to_tuple_list(
     test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str]
 ) -> List[ParameterSet]:
-    return [wrap_if_needed(item, required_fields, dict_to_tuple(item, fields)) for item in test_data]
+    return [
+        wrap_if_needed(item, required_fields, dict_to_tuple(item, fields))
+        for item in test_data
+    ]
 
 
 def wrap_if_needed(
-    source: Dict[str, Any], required_fields: Set[str], present_fields: Tuple[Optional[Any], ...]
+    source: Dict[str, Any],
+    required_fields: Set[str],
+    present_fields: Tuple[Optional[Any], ...],
 ) -> ParameterSet:
     missing_fields = required_fields - set(source)
     if not missing_fields:
         return pytest.param(*present_fields)
     return pytest.param(
-        *present_fields, marks=pytest.mark.skip(f"required values {missing_fields} not present in test-bundle")
+        *present_fields,
+        marks=pytest.mark.skip(
+            f"required values {missing_fields} not present in test-bundle"
+        ),
     )
 
 
-def dict_to_tuple(source: Dict[str, Any], fields: List[str]) -> Tuple[Optional[Any], ...]:
+def dict_to_tuple(
+    source: Dict[str, Any], fields: List[str]
+) -> Tuple[Optional[Any], ...]:
     ordered_fields = [source.get(field) for field in fields]
     return tuple(ordered_fields)

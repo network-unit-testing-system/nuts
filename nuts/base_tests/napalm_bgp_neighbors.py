@@ -21,10 +21,14 @@ class BgpNeighborsContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
-    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
+    def _transform_host_results(
+        self, single_result: MultiResult
+    ) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["bgp_neighbors"]
@@ -32,7 +36,10 @@ class BgpNeighborsContext(NornirNutsContext):
             return {}
         global_scope = neighbors["global"]
         router_id = global_scope["router_id"]
-        return {peer: self._add_local_id(details, router_id) for peer, details in global_scope["peers"].items()}
+        return {
+            peer: self._add_local_id(details, router_id)
+            for peer, details in global_scope["peers"].items()
+        }
 
     def _add_local_id(self, element: Dict[str, Any], router_id: str) -> Dict[str, Any]:
         element["local_id"] = router_id
@@ -45,7 +52,9 @@ CONTEXT = BgpNeighborsContext
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighborsCount:
     @pytest.mark.nuts("host,neighbor_count")
-    def test_neighbor_count(self, single_result: NutsResult, neighbor_count: int) -> None:
+    def test_neighbor_count(
+        self, single_result: NutsResult, neighbor_count: int
+    ) -> None:
         assert single_result.result is not None
         assert len(single_result.result) == neighbor_count
 

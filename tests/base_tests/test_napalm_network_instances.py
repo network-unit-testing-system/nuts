@@ -154,8 +154,12 @@ r2_mgmt = SelfTestData(
 def general_result(timeouted_multiresult):
     task_name = "napalm_get"
     result = AggregatedResult(task_name)
-    result["R1"] = create_multi_result([create_result(nornir_raw_result_r1, task_name)], task_name)
-    result["R2"] = create_multi_result([create_result(nornir_raw_result_r2, task_name)], task_name)
+    result["R1"] = create_multi_result(
+        [create_result(nornir_raw_result_r1, task_name)], task_name
+    )
+    result["R2"] = create_multi_result(
+        [create_result(nornir_raw_result_r2, task_name)], task_name
+    )
     result["R3"] = timeouted_multiresult
     return result
 
@@ -194,7 +198,9 @@ def test_contains_hosts_at_toplevel(transformed_result):
         ("R2", {"default", "mgmt"}),
     ],
 )
-def test_contains_network_instances_at_second_level(transformed_result, host, network_instances):
+def test_contains_network_instances_at_second_level(
+    transformed_result, host, network_instances
+):
     assert transformed_result[host].result.keys() == network_instances
 
 
@@ -209,7 +215,10 @@ def test_contains_route_distinguisher_at_network_instance(transformed_result, te
     host = testdata["host"]
     network_instance = testdata["network_instance"]
     expected = testdata["route_distinguisher"]
-    assert transformed_result[host].result[network_instance]["route_distinguisher"] == expected
+    assert (
+        transformed_result[host].result[network_instance]["route_distinguisher"]
+        == expected
+    )
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):
@@ -219,5 +228,9 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmNetworkInstances", task_module=tasks, task_name="napalm_get", test_count=2
+        selftestdata,
+        test_class="TestNapalmNetworkInstances",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=2,
     )

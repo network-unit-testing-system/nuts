@@ -97,7 +97,9 @@ def test_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture
-def transformed_result(test_ctx: NornirNutsContext, general_result: AggregatedResult) -> Dict[str, Any]:
+def transformed_result(
+    test_ctx: NornirNutsContext, general_result: AggregatedResult
+) -> Dict[str, Any]:
     """
     Parse the raw result to be used in nuts tests.
     :param test_ctx: initialized NutsContext
@@ -121,7 +123,11 @@ def integration_tester(monkeypatch, pytester, default_nr_init):
         with yaml_file.open("w") as fo:
             yaml.dump(yaml_data, fo)
 
-        monkeypatch.setattr(task_module, task_name, lambda *args, **kwargs: selftestdata.nornir_raw_result)
+        monkeypatch.setattr(
+            task_module,
+            task_name,
+            lambda *args, **kwargs: selftestdata.nornir_raw_result,
+        )
 
         res = pytester.runpytest_inprocess()
 

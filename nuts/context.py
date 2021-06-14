@@ -130,7 +130,9 @@ class NornirNutsContext(NutsContext):
             selected_hosts = self.nornir.filter(nornir_filter)
         else:
             selected_hosts = self.nornir
-        overall_results = selected_hosts.run(task=self.nuts_task(), **self.nuts_arguments())
+        overall_results = selected_hosts.run(
+            task=self.nuts_task(), **self.nuts_arguments()
+        )
 
         self.teardown()
         return overall_results

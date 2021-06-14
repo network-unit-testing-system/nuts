@@ -47,6 +47,52 @@ markers = [
     "nuts_test_ctx: A NutsContext to be used in tests."
 ]
 
+[tool.mypy]
+python_version = 3.7
+
+### --strict
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+# disallow_untyped_calls = true
+# disallow_untyped_defs = true  
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+# no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+# warn_return_any = true
+# no_implicit_reexport = true
+# strict_equality = true
+
+### Other strictness flags
+warn_unreachable = true
+disallow_any_unimported = true
+
+### Output
+show_error_codes = true
+show_error_context = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = "ruamel.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+
+module = "nornir_napalm.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "nornir_netmiko.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "napalm.*"
+ignore_missing_imports = true
+
+
 [tool.tox]
 legacy_tox_ini = """
 [tox]

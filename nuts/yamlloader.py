@@ -43,7 +43,12 @@ class NutsYamlFile(pytest.File):
 
         for test_entry in raw:
             module = find_and_load_module(test_entry)
-            yield NutsTestFile.from_parent(self, path=self.path, obj=module, test_entry=test_entry)  # type: ignore[attr-defined, call-arg]
+            yield NutsTestFile.from_parent(
+                self,
+                path=self.path,  # type: ignore[attr-defined, call-arg]
+                obj=module,
+                test_entry=test_entry,
+            )
 
     def _collect_fspath(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
         try:

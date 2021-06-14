@@ -34,7 +34,9 @@ def single_result(nuts_ctx: NutsContext, host: str) -> NutsResult:
     :param destination: The corresponding destination to a host for tests that test a host-destination relationship
     :return: The `NutsResult` that belongs to a host
     """
-    assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
+    assert (
+        host in nuts_ctx.transformed_result
+    ), f"Host {host} not found in aggregated result."
     return nuts_ctx.transformed_result[host]
 
 
@@ -48,7 +50,9 @@ def check_nuts_result(single_result: NutsResult) -> None:
     :return: None
     :raise: AssertionError if single_result contains an exception or single_result is failed
     """
-    assert not single_result.exception, f"An exception was thrown during information gathering: {single_result.result}"
+    assert (
+        not single_result.exception
+    ), f"An exception was thrown during information gathering: {single_result.result}"
     assert not single_result.failed, "Information gathering failed"
 
 

@@ -28,7 +28,9 @@ users_r1_2 = SelfTestData(
 
 users_r2 = SelfTestData(
     name="r2",
-    nornir_raw_result={"users": {"jon": {"level": 5, "password": "snow", "sshkeys": []}}},
+    nornir_raw_result={
+        "users": {"jon": {"level": 5, "password": "snow", "sshkeys": []}}
+    },
     test_data={"host": "R2", "username": "jon", "password": "snow", "level": 5},
 )
 
@@ -38,7 +40,8 @@ def general_result(timeouted_multiresult):
     task_name = "napalm_get_facts"
     result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        [users_r1_1.create_nornir_result(), users_r1_2.create_nornir_result()], task_name
+        [users_r1_1.create_nornir_result(), users_r1_2.create_nornir_result()],
+        task_name,
     )
     result["R2"] = create_multi_result([users_r2.create_nornir_result()], task_name)
     result["R3"] = timeouted_multiresult
@@ -89,5 +92,9 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmUsers", task_module=tasks, task_name="napalm_get", test_count=3
+        selftestdata,
+        test_class="TestNapalmUsers",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=3,
     )

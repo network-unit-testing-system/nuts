@@ -56,7 +56,9 @@ class TestNornirNutsContextGeneralResult:
 
             ctx.general_result()
 
-    def test_filters_inventory_based_on_nornir_filter(self, nornir_nuts_ctx, nornir_instance):
+    def test_filters_inventory_based_on_nornir_filter(
+        self, nornir_nuts_ctx, nornir_instance
+    ):
         nornir_nuts_ctx.test_filter = Mock()
 
         nornir_nuts_ctx.general_result()
@@ -77,7 +79,9 @@ class TestNornirNutsContextGeneralResult:
 
         nornir_nuts_ctx.general_result()
 
-        nornir_instance.run.assert_called_with(task=ANY, test="test123", test2="test456")
+        nornir_instance.run.assert_called_with(
+            task=ANY, test="test123", test2="test456"
+        )
 
     def test_runs_nuts_task_on_inventory(self, nornir_nuts_ctx, nornir_instance):
         nornir_nuts_ctx.general_result()

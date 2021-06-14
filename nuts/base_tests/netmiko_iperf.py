@@ -21,8 +21,12 @@ class IperfContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, Dict[str, NutsResult]]:
-        return map_host_to_dest_to_nutsresult(general_result, self._transform_single_entry)
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, Dict[str, NutsResult]]:
+        return map_host_to_dest_to_nutsresult(
+            general_result, self._transform_single_entry
+        )
 
     def _transform_single_entry(self, single_result: Result) -> int:
         assert isinstance(single_result.result, str)
@@ -42,11 +46,16 @@ class IperfContext(NornirNutsContext):
         :return: All iperf results per host
         """
         destinations_per_host = [
-            entry["destination"] for entry in self.nuts_parameters["test_data"] if entry["host"] == task.host.name
+            entry["destination"]
+            for entry in self.nuts_parameters["test_data"]
+            if entry["host"] == task.host.name
         ]
         for destination in destinations_per_host:
             escaped_dest = shlex.quote(destination)
-            result = task.run(task=netmiko_send_command, command_string=f"iperf3 -c {escaped_dest} --json")
+            result = task.run(
+                task=netmiko_send_command,
+                command_string=f"iperf3 -c {escaped_dest} --json",
+            )
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result=f"iperf executed for {task.host}")
 
@@ -82,9 +91,15 @@ class IperfResultError(Error):
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoIperf:
     @pytest.fixture
-    def single_result(self, nuts_ctx: NornirNutsContext, host: str, destination: str) -> Dict[str, Any]:
-        assert host in nuts_ctx.transformed_result, f"Host {host} not found in aggregated result."
-        assert destination in nuts_ctx.transformed_result[host], f"Destination {destination} not found in result."
+    def single_result(
+        self, nuts_ctx: NornirNutsContext, host: str, destination: str
+    ) -> Dict[str, Any]:
+        assert (
+            host in nuts_ctx.transformed_result
+        ), f"Host {host} not found in aggregated result."
+        assert (
+            destination in nuts_ctx.transformed_result[host]
+        ), f"Destination {destination} not found in result."
         return nuts_ctx.transformed_result[host][destination]
 
     @pytest.mark.nuts("host,destination,min_expected")

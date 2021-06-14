@@ -21,10 +21,14 @@ class NetworkInstancesContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
-    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
+    def _transform_host_results(
+        self, single_result: MultiResult
+    ) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         network_instances = task_result["network_instances"]
@@ -33,7 +37,9 @@ class NetworkInstancesContext(NornirNutsContext):
             for instance, details in network_instances.items()
         }
 
-    def _transform_single_network_instance(self, network_instance: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_single_network_instance(
+        self, network_instance: Dict[str, Any]
+    ) -> Dict[str, Any]:
         return {
             "route_distinguisher": network_instance["state"]["route_distinguisher"],
             "interfaces": list(network_instance["interfaces"]["interface"]),
@@ -46,9 +52,16 @@ CONTEXT = NetworkInstancesContext
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmNetworkInstances:
     @pytest.mark.nuts("host,network_instance,interfaces")
-    def test_network_instance_contains_interfaces(self, single_result, network_instance, interfaces):
+    def test_network_instance_contains_interfaces(
+        self, single_result, network_instance, interfaces
+    ):
         assert single_result.result[network_instance]["interfaces"] == interfaces
 
     @pytest.mark.nuts("host,network_instance,route_distinguisher")
-    def test_route_distinguisher(self, single_result, network_instance, route_distinguisher):
-        assert single_result.result[network_instance]["route_distinguisher"] == route_distinguisher
+    def test_route_distinguisher(
+        self, single_result, network_instance, route_distinguisher
+    ):
+        assert (
+            single_result.result[network_instance]["route_distinguisher"]
+            == route_distinguisher
+        )

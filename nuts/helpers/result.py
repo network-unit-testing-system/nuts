@@ -12,7 +12,10 @@ class NutsResult:
     """
 
     def __init__(
-        self, result: Optional[Any] = None, failed: Optional[bool] = False, exception: Optional[BaseException] = None
+        self,
+        result: Optional[Any] = None,
+        failed: Optional[bool] = False,
+        exception: Optional[BaseException] = None,
     ):
         """
         Create a new NutsResult
@@ -42,7 +45,10 @@ def map_host_to_nutsresult(
     :param single_transform: function to be applied to a nornir MultiResult
     :return: Host mapped to a NutsResult
     """
-    return {host: nuts_result_wrapper(multiresult, single_transform) for host, multiresult in general_result.items()}
+    return {
+        host: nuts_result_wrapper(multiresult, single_transform)
+        for host, multiresult in general_result.items()
+    }
 
 
 def map_host_to_dest_to_nutsresult(
@@ -59,7 +65,8 @@ def map_host_to_dest_to_nutsresult(
     :return: The host mapped to its corresponding destination mapped to its NutsResult
     """
     return {
-        host: map_dest_to_nutsresult(task_results, single_transform) for host, task_results in general_result.items()
+        host: map_dest_to_nutsresult(task_results, single_transform)
+        for host, task_results in general_result.items()
     }
 
 
@@ -94,7 +101,9 @@ def map_dest_to_nutsresult(
     }
 
 
-def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) -> NutsResult:
+def nuts_result_wrapper(
+    nornir_result: T, single_transform: Callable[[T], Any]
+) -> NutsResult:
     """
     Wrap a nornir_result into a NutsResult
 

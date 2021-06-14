@@ -113,10 +113,18 @@ def general_result(timeouted_multiresult):
     task_name = "napalm_get"
     result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        [interfaces_r1_1.create_nornir_result(), interfaces_r1_2.create_nornir_result()], task_name
+        [
+            interfaces_r1_1.create_nornir_result(),
+            interfaces_r1_2.create_nornir_result(),
+        ],
+        task_name,
     )
     result["R2"] = create_multi_result(
-        [interfaces_r2_1.create_nornir_result(), interfaces_r2_2.create_nornir_result()], task_name
+        [
+            interfaces_r2_1.create_nornir_result(),
+            interfaces_r2_2.create_nornir_result(),
+        ],
+        task_name,
     )
     result["R3"] = timeouted_multiresult
     return result
@@ -177,5 +185,9 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 def test_integration(selftestdata, integration_tester):
     integration_tester(
-        selftestdata, test_class="TestNapalmInterfaces", task_module=tasks, task_name="napalm_get", test_count=5
+        selftestdata,
+        test_class="TestNapalmInterfaces",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=5,
     )

@@ -22,14 +22,21 @@ class LldpNeighborsContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
-    def _transform_host_results(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
+    def _transform_host_results(
+        self, single_result: MultiResult
+    ) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["lldp_neighbors_detail"]
-        return {peer: self._add_custom_fields(details[0]) for peer, details in neighbors.items()}
+        return {
+            peer: self._add_custom_fields(details[0])
+            for peer, details in neighbors.items()
+        }
 
     def _add_custom_fields(self, element: Dict[str, Any]) -> Dict[str, Any]:
         element = self._add_expanded_remote_port(element)
@@ -41,7 +48,9 @@ class LldpNeighborsContext(NornirNutsContext):
         return element
 
     def _add_expanded_remote_port(self, element: Dict[str, Any]) -> Dict[str, Any]:
-        element["remote_port_expanded"] = InterfaceNameConverter().expand_interface_name(element["remote_port"])
+        element[
+            "remote_port_expanded"
+        ] = InterfaceNameConverter().expand_interface_name(element["remote_port"])
         return element
 
 

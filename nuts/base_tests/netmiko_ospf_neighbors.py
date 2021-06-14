@@ -26,7 +26,9 @@ class OspfNeighborsContext(NornirNutsContext):
         neighbors = single_result[0].result
         return {details["neighbor_id"]: details for details in neighbors}
 
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
         return map_host_to_nutsresult(general_result, self._transform_host_results)
 
 

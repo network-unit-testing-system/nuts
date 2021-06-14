@@ -1,5 +1,6 @@
 """Results of a network query."""
 
+import traceback
 from typing import Any, Optional, Callable, TypeVar, Dict
 
 from nornir.core.task import Result, MultiResult, AggregatedResult
@@ -106,4 +107,5 @@ def nuts_result_wrapper(nornir_result: T, single_transform: Callable[[T], Any]) 
     try:
         return NutsResult(single_transform(nornir_result))
     except Exception as exception:
-        return NutsResult(failed=True, exception=exception)
+        tb = traceback.format_exc()
+        return NutsResult(failed=True, exception=exception, result=tb)

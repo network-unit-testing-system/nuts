@@ -1,5 +1,6 @@
 import pytest
 from nornir.core.task import AggregatedResult
+from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_lldp_neighbors import CONTEXT
 from tests.utils import create_multi_result, create_result, SelfTestData
@@ -119,13 +120,13 @@ def general_result(timeouted_multiresult):
     ],
     ids=lambda data: data.name,
 )
-def raw_testdata(request):
+def selftestdata(request):
     return request.param
 
 
 @pytest.fixture
-def testdata(raw_testdata):
-    return raw_testdata.test_data
+def testdata(selftestdata):
+    return selftestdata.test_data
 
 
 @pytest.fixture
@@ -149,16 +150,16 @@ def test_contains_failed_result_at_second_level_if_task_failed(transformed_resul
     assert transformed_result["R3"].exception
 
 
-def test_contains_information_about_neighbor(interface_result, testdata, raw_testdata):
+def test_contains_information_about_neighbor(interface_result, testdata, selftestdata):
     print(testdata)
     expected = {
         "remote_system_description": REMOTE_SYSTEM_DESCRIPTION,
         "remote_system_capab": REMOTE_SYSTEM_CAPAB,
         "remote_system_enable_capab": REMOTE_SYSTEM_ENABLE_CAPAB,
-        "remote_chassis_id": raw_testdata.additional_data["remote_chassis_id"],
+        "remote_chassis_id": selftestdata.additional_data["remote_chassis_id"],
         "parent_interface": "",
         "remote_host": testdata["remote_host"],
-        "remote_port": raw_testdata.additional_data["short_remote_port"],
+        "remote_port": selftestdata.additional_data["short_remote_port"],
         "remote_port_description": testdata["remote_port"],
         "remote_port_expanded": testdata["remote_port"],
         "remote_system_name": testdata["remote_host"],
@@ -172,3 +173,9 @@ def test_contains_information_remote_host(interface_result, testdata):
 
 def test_contains_information_expanded_interface(interface_result, testdata):
     assert interface_result["remote_port_expanded"] == testdata["remote_port"]
+
+
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata, test_class="TestNapalmLldpNeighbors", task_module=tasks, task_name="napalm_get", test_count=2
+    )

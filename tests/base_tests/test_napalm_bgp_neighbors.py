@@ -2,6 +2,7 @@ import pytest
 from nornir.core.task import AggregatedResult
 
 from nuts.base_tests.napalm_bgp_neighbors import CONTEXT
+from nornir_napalm.plugins import tasks
 
 from tests.utils import create_multi_result, SelfTestData
 
@@ -117,16 +118,34 @@ bgp_r2 = SelfTestData(
     },
 )
 
+bgp_r1_count = SelfTestData(
+    name="r1_count",
+    nornir_raw_result=nornir_raw_r1,
+    test_data={
+        "host": "R1",
+        "neighbor_count": 2,
+    },
+)
+
+bgp_r2_count = SelfTestData(
+    name="r2_count",
+    nornir_raw_result=nornir_raw_r2,
+    test_data={
+        "host": "R2",
+        "neighbor_count": 1,
+    },
+)
+
 
 @pytest.fixture
 def general_result(timeouted_multiresult):
     task_name = "napalm_get"
     result = AggregatedResult(task_name)
     result["R1"] = create_multi_result(
-        results=[bgp_r1_1.create_nornir_result(task_name), bgp_r1_2.create_nornir_result(task_name)],
+        results=[bgp_r1_1.create_nornir_result(), bgp_r1_2.create_nornir_result()],
         task_name=task_name,
     )
-    result["R2"] = create_multi_result(results=[bgp_r2.create_nornir_result(task_name)], task_name=task_name)
+    result["R2"] = create_multi_result(results=[bgp_r2.create_nornir_result()], task_name=task_name)
     result["R3"] = timeouted_multiresult
     return result
 
@@ -139,8 +158,21 @@ def general_result(timeouted_multiresult):
     ],
     ids=lambda data: data.name,
 )
-def testdata(request):
-    return request.param.test_data
+def selftestdata(request):
+    return request.param
+
+
+@pytest.fixture
+def testdata(selftestdata):
+    return selftestdata.test_data
+
+
+@pytest.fixture(
+    params=[bgp_r1_count, bgp_r2_count],
+    ids=lambda data: data.name,
+)
+def selftestdata_countneighbors(request):
+    return request.param
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -175,3 +207,19 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None
+
+
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata, test_class="TestNapalmBgpNeighbors", task_module=tasks, task_name="napalm_get", test_count=6
+    )
+
+
+def test_integration_count(selftestdata_countneighbors, integration_tester):
+    integration_tester(
+        selftestdata_countneighbors,
+        test_class="TestNapalmBgpNeighborsCount",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=1,
+    )

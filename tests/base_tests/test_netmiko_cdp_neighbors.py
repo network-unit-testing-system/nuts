@@ -194,6 +194,7 @@ def test_contains_hosts_at_toplevel(transformed_result):
     ],
 )
 def test_contains_neighbors_at_second_level(transformed_result, host, neighbors):
+    transformed_result[host].validate()
     assert transformed_result[host].result.keys() == neighbors
 
 
@@ -201,7 +202,10 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
     print(testdata)
     host = testdata["host"]
     remote_host = testdata["remote_host"]
-    details = transformed_result[host].result[remote_host]
+
+    host_result = transformed_result[host]
+    host_result.validate()
+    details = host_result.result[remote_host]
     expected = {
         "destination_host": remote_host,
         "management_ip": testdata["management_ip"],

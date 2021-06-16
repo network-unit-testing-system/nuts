@@ -1,3 +1,6 @@
+import pytest
+
+from nuts.helpers.errors import NutsUnvalidatedResultError
 from unittest.mock import Mock
 
 from nornir.core.task import Result
@@ -39,7 +42,13 @@ class TestNutsResultWrapper:
     def test_returns_transformed_result(self):
         wrapped = nuts_result_wrapper(Result(host=None, failed=False), lambda x: "Test")
         assert not wrapped.failed
+        wrapped.validate()
         assert wrapped.result == "Test"
+
+    def test_accessing_unvalidated_result(self):
+        res = nuts_result_wrapper(Result(host=None, failed=True), lambda x: "Test")
+        with pytest.raises(NutsUnvalidatedResultError):
+            res.result
 
     def test_returns_failed_result_on_transform_error(self):
         transform = Mock()

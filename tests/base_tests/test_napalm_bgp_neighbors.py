@@ -198,12 +198,16 @@ def test_contains_hosts_at_toplevel(transformed_result):
 
 @pytest.mark.parametrize("host, neighbors", [("R1", {R2_IP, R3_IP}), ("R2", {R1_IP})])
 def test_contains_peers_at_second_level(transformed_result, host, neighbors):
-    assert transformed_result[host].result.keys() == neighbors
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert host_result.result.keys() == neighbors
 
 
 def test_contains_information_about_neighbor(transformed_result, testdata):
     print(testdata)
-    neighbor_details = transformed_result[testdata["host"]].result[testdata["peer"]]
+    host_result = transformed_result[testdata["host"]]
+    host_result.validate()
+    neighbor_details = host_result.result[testdata["peer"]]
     expected = {
         "is_enabled": testdata["is_enabled"],
         "is_up": testdata["is_up"],

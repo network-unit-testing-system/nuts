@@ -51,6 +51,7 @@ class TestNapalmUsers:
         assert single_result.result[username]["level"] == level
 
 
+@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmOnlyDefinedUsersExist:
     @pytest.mark.nuts("host,usernames")
     def test_no_rogue_users(self, single_result, usernames):

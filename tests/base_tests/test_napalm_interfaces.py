@@ -150,7 +150,9 @@ def testdata(selftestdata):
 
 @pytest.fixture
 def single_result(transformed_result, testdata):
-    return transformed_result[testdata["host"]].result
+    res = transformed_result[testdata["host"]]
+    res.validate()
+    return res.result
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]

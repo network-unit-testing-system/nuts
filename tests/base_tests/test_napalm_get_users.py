@@ -70,7 +70,9 @@ def test_contains_host_at_toplevel(transformed_result):
 
 @pytest.fixture
 def single_result(transformed_result, testdata):
-    return transformed_result[testdata["host"]].result
+    host_result = transformed_result[testdata["host"]]
+    host_result.validate()
+    return host_result.result
 
 
 def test_contains_multiple_usernames_per_host(single_result, testdata):

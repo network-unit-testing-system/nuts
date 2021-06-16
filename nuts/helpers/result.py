@@ -33,20 +33,25 @@ class NutsResult:
     def validate(self) -> None:
         """Make sure the underlying result is a valid (i.e. non-failed) one."""
         if self.exception:
-            header = "".join(traceback.format_exception_only(type(self.exception), self.exception))
-            raise NutsNornirError(f"An exception has occurred while executing nornir:\n"
-                                  f"{header}\n"
-                                  f"{self._result}")
+            header = "".join(
+                traceback.format_exception_only(type(self.exception), self.exception)
+            )
+            raise NutsNornirError(
+                f"An exception has occurred while executing nornir:\n"
+                f"{header}\n"
+                f"{self._result}"
+            )
         if self.failed:
-            raise NutsNornirError(f"Nornir execution has failed:\n"
-                                  f"{self._result}")
+            raise NutsNornirError(f"Nornir execution has failed:\n" f"{self._result}")
 
         self._validated = True
 
     @property
     def result(self) -> Any:
         if not self._validated:
-            raise NutsUnvalidatedResultError(f"Trying to access unvalidated result {self}")
+            raise NutsUnvalidatedResultError(
+                f"Trying to access unvalidated result {self}"
+            )
         return self._result
 
 

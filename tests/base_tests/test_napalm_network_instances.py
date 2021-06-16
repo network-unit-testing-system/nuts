@@ -223,10 +223,7 @@ def test_contains_route_distinguisher_at_network_instance(transformed_result, te
 
     host_result = transformed_result[host]
     host_result.validate()
-    assert (
-        host_result.result[network_instance]["route_distinguisher"]
-        == expected
-    )
+    assert host_result.result[network_instance]["route_distinguisher"] == expected
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

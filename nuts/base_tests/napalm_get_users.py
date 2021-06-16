@@ -50,6 +50,7 @@ class TestNapalmUsers:
     def test_privilege_level(self, single_result, username, level):
         assert single_result.result[username]["level"] == level
 
+
 @pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmOnlyDefinedUsersExist:
     @pytest.mark.nuts("host,usernames")

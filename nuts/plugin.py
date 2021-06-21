@@ -26,12 +26,16 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 @pytest.fixture
 def single_result(nuts_ctx: NutsContext, host: str) -> NutsResult:
     """
-    Returns the result which belongs to a specific host out of the overall set of results
-    that has been returned by nornir's task.
+    Returns the result which belongs to a specific host
+    out of the overall set of results that has been returned
+    by nornir's task.
 
-    :param nornir_nuts_ctx: The context for a test with an initialized nornir instance
-    :param host: The host from the test bundle (yaml-file) for which the corresponding result should be returned
-    :param destination: The corresponding destination to a host for tests that test a host-destination relationship
+    :param nornir_nuts_ctx: The context for a test
+        with an initialized nornir instance
+    :param host: The host from the test bundle (yaml-file)
+        for which the corresponding result should be returned
+    :param destination: The corresponding destination to a host
+        for tests that test a host-destination relationship
     :return: The `NutsResult` that belongs to a host
     """
     assert (
@@ -48,7 +52,8 @@ def check_nuts_result(single_result: NutsResult) -> None:
 
     :param single_result: The result to be checked
     :return: None
-    :raise: AssertionError if single_result contains an exception or single_result is failed
+    :raise: AssertionError if single_result contains an exception
+        or single_result is failed
     """
     assert (
         not single_result.exception
@@ -74,8 +79,9 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]:
     """
-    Performs the collection phase for the given pytest session. Collects all test bundles if available,
-    i.e. files starting with 'test' and ending in .yaml.
+    Performs the collection phase for the given pytest session.
+    Collects all test bundles if available, i.e. files starting
+    with 'test' and ending in .yaml.
     :param parent: pytest session object
     :param path: path to test file(s)
     :return: The pytest collector if found

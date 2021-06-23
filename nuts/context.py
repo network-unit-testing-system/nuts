@@ -68,9 +68,10 @@ class NutsContext:
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
         host = nuts_test_entry["host"]
         assert (
-                host in self.transformed_result
+            host in self.transformed_result
         ), f"Host {host} not found in aggregated result."
         return self.transformed_result[host]
+
 
 class NornirNutsContext(NutsContext):
     """

@@ -51,12 +51,16 @@ class ExpanseContext(NutsContext):
             },
         ]
 
-    def transform_result(self, general_result: List[Dict[str, str]]) -> Dict[str, NutsResult]: 
+    def transform_result(
+        self, general_result: List[Dict[str, str]]
+    ) -> Dict[str, NutsResult]:
         return {
-            "rocinante": NutsResult({
-                entry["name"]: {"role": entry["role"], "origin": entry["origin"]}
-                for entry in general_result
-            }),
+            "rocinante": NutsResult(
+                {
+                    entry["name"]: {"role": entry["role"], "origin": entry["origin"]}
+                    for entry in general_result
+                }
+            ),
         }
 
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:

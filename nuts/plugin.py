@@ -52,7 +52,8 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     nuts = metafunc.definition.get_closest_marker("nuts")
     if nuts:
         parametrize_args, parametrize_data = get_parametrize_data(
-            metafunc, *nuts.args, **nuts.kwargs)
+            metafunc, *nuts.args, **nuts.kwargs
+        )
         metafunc.parametrize(parametrize_args, parametrize_data)
 
 

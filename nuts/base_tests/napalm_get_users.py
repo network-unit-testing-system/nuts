@@ -36,7 +36,6 @@ class UsersContext(NornirNutsContext):
 CONTEXT = UsersContext
 
 
-
 class TestNapalmUsers:
     @pytest.mark.nuts("username")
     def test_username(self, single_result, username):

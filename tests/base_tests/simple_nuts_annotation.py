@@ -8,7 +8,6 @@ import pytest
 
 
 class FakeContext(NutsContext):
-    
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
         return NutsResult({})
 

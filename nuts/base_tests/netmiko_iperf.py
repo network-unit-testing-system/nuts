@@ -98,8 +98,8 @@ class IperfResultError(Error):
 
     """Error in iperf result JSON."""
 
-class TestNetmikoIperf:
 
+class TestNetmikoIperf:
     @pytest.mark.nuts("min_expected")
     def test_iperf(self, single_result, min_expected):
         assert single_result.result >= min_expected

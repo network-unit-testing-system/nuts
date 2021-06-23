@@ -65,6 +65,11 @@ class NutsContext:
             self._cached_result = self.transform_result(self.general_result())
         return self._cached_result
 
+    def single_result(self, host: str) -> NutsResult:
+        assert (
+                host in self.transformed_result
+        ), f"Host {host} not found in aggregated result."
+        return self.transformed_result[host]
 
 class NornirNutsContext(NutsContext):
     """

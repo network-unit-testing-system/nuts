@@ -49,7 +49,6 @@ class BgpNeighborsContext(NornirNutsContext):
 CONTEXT = BgpNeighborsContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighborsCount:
     @pytest.mark.nuts("host,neighbor_count")
     def test_neighbor_count(
@@ -59,7 +58,6 @@ class TestNapalmBgpNeighborsCount:
         assert len(single_result.result) == neighbor_count
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmBgpNeighbors:
     @pytest.fixture
     def peer_result(self, single_result: NutsResult, peer: str) -> Dict[str, Any]:

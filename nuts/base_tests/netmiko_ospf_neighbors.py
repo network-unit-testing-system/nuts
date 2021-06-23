@@ -35,14 +35,12 @@ class OspfNeighborsContext(NornirNutsContext):
 CONTEXT = OspfNeighborsContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoOspfNeighborsCount:
     @pytest.mark.nuts("host,neighbor_count")
     def test_neighbor_count(self, single_result, neighbor_count):
         assert len(single_result.result) == neighbor_count
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoOspfNeighbors:
     @pytest.mark.nuts("host,neighbor_id")
     def test_neighbor_id(self, single_result, neighbor_id):

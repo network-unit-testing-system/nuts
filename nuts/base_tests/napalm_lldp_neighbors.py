@@ -57,7 +57,6 @@ class LldpNeighborsContext(NornirNutsContext):
 CONTEXT = LldpNeighborsContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmLldpNeighbors:
     @pytest.mark.nuts("host,local_port,remote_host")
     def test_remote_host(self, single_result, local_port, remote_host):

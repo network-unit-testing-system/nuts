@@ -82,11 +82,12 @@ class PingContext(NornirNutsContext):
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result="All pings executed")
 
+    def single_result(self, host: str, destination: Optional[str]) -> NutsResult:
+
 
 CONTEXT = PingContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmPing:
     @pytest.fixture
     def single_result(

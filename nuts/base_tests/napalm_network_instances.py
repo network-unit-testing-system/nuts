@@ -49,7 +49,6 @@ class NetworkInstancesContext(NornirNutsContext):
 CONTEXT = NetworkInstancesContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmNetworkInstances:
     @pytest.mark.nuts("host,network_instance,interfaces")
     def test_network_instance_contains_interfaces(

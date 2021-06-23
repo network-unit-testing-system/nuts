@@ -58,6 +58,7 @@ class NutsResult:
 T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
 
+
 def map_host_to_nutsresult(
     general_result: AggregatedResult, single_transform: Callable[[MultiResult], Any]
 ) -> Dict[str, NutsResult]:

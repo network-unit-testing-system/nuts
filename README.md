@@ -114,14 +114,12 @@ A second argument determines optional fields that can also be used in a test cas
 The following test-run of CDP neighbors for example checks the local port:
 
 ```python
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoCdpNeighbors:       
     @pytest.mark.nuts("host,remote_host,local_port")
     def test_local_port(self, single_result, remote_host, local_port):
         assert single_result.result[remote_host]["local_port"] == local_port        
 ```
 
-Before each test evaluation, the fixture  `@pytest.mark.usefixtures("check_nuts_result")` checks the result of the network information that has been gathered by nornir in the background: It asserts that that no exception was thrown while doing so.
 
 The required fields are `host`, `remote_host` and `local_port` - they must be present in the custom marker, 
 but also be provided as argument to the test method itself.

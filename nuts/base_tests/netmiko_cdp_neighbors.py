@@ -39,7 +39,6 @@ class CdpNeighborsContext(NornirNutsContext):
 CONTEXT = CdpNeighborsContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoCdpNeighbors:
     @pytest.mark.nuts("host,remote_host")
     def test_remote_host(self, single_result, remote_host):

@@ -36,7 +36,6 @@ class InterfacesContext(NornirNutsContext):
 CONTEXT = InterfacesContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmInterfaces:
     @pytest.mark.nuts("host,name,is_enabled")
     def test_is_enabled(self, single_result, name, is_enabled):

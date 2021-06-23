@@ -88,7 +88,6 @@ class IperfResultError(Error):
     """Error in iperf result JSON."""
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoIperf:
     @pytest.fixture
     def single_result(

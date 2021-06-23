@@ -1,16 +1,13 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
-from typing import Any, Callable, Optional, Dict, Union
+from typing import Any, Callable, Optional, Dict, Type, Union
 
 from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
 
 from nuts.helpers.errors import NutsSetupError
-from nuts.helpers.result import NutsResult
-
-
-_TransformedResult = Dict[str, Any]
+from nuts.helpers.result import AbtractResultExtractor, NutsResult
 
 
 class NutsContext:
@@ -22,11 +19,15 @@ class NutsContext:
 
     def __init__(self, nuts_parameters: Any = None):
         self.nuts_parameters = nuts_parameters or {}
-        self._cached_result: Optional[_TransformedResult] = None
+        self.extractor = self.nuts_extractor()
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
         pass
+
+    def nuts_extractor(self) -> AbtractResultExtractor:
+        """Get a result extractor for this context."""
+        return AbtractResultExtractor(self)
 
     def nuts_arguments(self) -> Dict[str, Any]:
         """
@@ -46,31 +47,6 @@ class NutsContext:
         :return: raw, unprocessed result
         """
         raise NotImplementedError
-
-    def transform_result(self, general_result: Any) -> _TransformedResult:
-        """
-        :param general_result: raw result
-        :return: processed result ready to be passed to a test
-        """
-        raise NotImplementedError
-
-    @property
-    def transformed_result(self) -> _TransformedResult:
-        """
-        The (processed) results of the network task, ready to be passed on to a test's fixture.
-        The results are cached, so that general_result does not need to be called multiple times as it might
-        access the network.
-        """
-        if self._cached_result is None:
-            self._cached_result = self.transform_result(self.general_result())
-        return self._cached_result
-
-    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
-        host = nuts_test_entry["host"]
-        assert (
-            host in self.transformed_result
-        ), f"Host {host} not found in aggregated result."
-        return self.transformed_result[host]
 
 
 class NornirNutsContext(NutsContext):
@@ -110,16 +86,6 @@ class NornirNutsContext(NutsContext):
         :return: A nornir filter that is applied to the nornir instance
         """
         return None
-
-    def transform_result(self, general_result: AggregatedResult) -> Dict[str, Any]:
-        """
-        Transforms the raw nornir result and wraps it into a `NutsResult`.
-
-        :param general_result: The raw answer as provided by nornir's executed task
-        :return: A dict where keys are the hosts, values are a `NutsResult` or a
-            dict mapping strings (e.g. destinations) to NutsResults.
-        """
-        raise NotImplementedError
 
     def general_result(self) -> AggregatedResult:
         """

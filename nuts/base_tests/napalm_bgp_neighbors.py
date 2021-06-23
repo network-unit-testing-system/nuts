@@ -8,25 +8,17 @@ from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import map_host_to_nutsresult, NutsResult
+from nuts.helpers.result import AbtractResultExtractor, NutsResult
 
 
-class BgpNeighborsContext(NornirNutsContext):
-    def nuts_task(self) -> Callable[..., Result]:
-        return napalm_get
-
-    def nuts_arguments(self) -> Dict[str, List[str]]:
-        return {"getters": ["bgp_neighbors"]}
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
-
+class BgpNeighborsExtractor(AbtractResultExtractor):
+    
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresult(general_result, self._transform_host_results)
+        return self.map_host_to_nutsresult(general_result)
 
-    def _transform_host_results(
+    def single_transform(
         self, single_result: MultiResult
     ) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
@@ -44,6 +36,22 @@ class BgpNeighborsContext(NornirNutsContext):
     def _add_local_id(self, element: Dict[str, Any], router_id: str) -> Dict[str, Any]:
         element["local_id"] = router_id
         return element
+
+
+
+class BgpNeighborsContext(NornirNutsContext):
+
+    def nuts_task(self) -> Callable[..., Result]:
+        return napalm_get
+
+    def nuts_arguments(self) -> Dict[str, List[str]]:
+        return {"getters": ["bgp_neighbors"]}
+
+    def nuts_extractor(self) -> AbtractResultExtractor:
+        return BgpNeighborsExtractor(self)
+
+    def nornir_filter(self) -> F:
+        return filter_hosts(self.nuts_parameters["test_data"])
 
 
 CONTEXT = BgpNeighborsContext

@@ -35,7 +35,7 @@ def single_result(nuts_ctx: NutsContext, nuts_test_entry: Dict[str, Any]) -> Nut
         the corresponding result should be returned
     :return: The `NutsResult` that belongs to a host or host/destination pair
     """
-    res = nuts_ctx.single_result(nuts_test_entry)
+    res = nuts_ctx.extractor.single_result(nuts_test_entry)
     res.validate()
     return res
 

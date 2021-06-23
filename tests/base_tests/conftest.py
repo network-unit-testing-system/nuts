@@ -106,7 +106,7 @@ def transformed_result(
     :param general_result: mock raw answer that is normally provided by nornir
     :return: Dict with host as keys, `NutsResult` as values
     """
-    return test_ctx.transform_result(general_result)
+    return test_ctx.extractor.transform_result(general_result)
 
 
 @pytest.fixture

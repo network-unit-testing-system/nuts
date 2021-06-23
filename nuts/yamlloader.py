@@ -159,7 +159,7 @@ class NutsTestClass(pytest.Class):
 
 
 def get_parametrize_data(
-    metafunc: Metafunc, fields_str: str, optional_fields_str: Optional[str] = None,
+    metafunc: Metafunc, fields_str: Optional[str] = None, optional_fields_str: Optional[str] = None,
 ) -> Tuple[List[str], List[ParameterSet]]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
@@ -171,7 +171,10 @@ def get_parametrize_data(
        - List of field names.
        - List of tuples that contain each the parameters for a test.
     """
-    fields = [field.strip() for field in fields_str.split(",")]
+    if fields_str is None:
+        fields = []
+    else:
+        fields = [field.strip() for field in fields_str.split(",")]
 
     if optional_fields_str is None:
         optional_fields = set()

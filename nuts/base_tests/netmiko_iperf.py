@@ -79,6 +79,17 @@ class IperfContext(NornirNutsContext):
         selected_destinations = self.nornir.filter(destinations)
         selected_destinations.run(task=server_teardown)
 
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        host = nuts_test_entry["host"]
+        destination = nuts_test_entry["destination"]
+        assert (
+            host in self.transformed_result
+        ), f"Host {host} not found in aggregated result."
+        assert (
+            destination in self.transformed_result[host]
+        ), f"Destination {destination} not found in result."
+        return self.transformed_result[host][destination]
+
 
 CONTEXT = IperfContext
 
@@ -87,21 +98,9 @@ class IperfResultError(Error):
 
     """Error in iperf result JSON."""
 
-
 class TestNetmikoIperf:
-    @pytest.fixture
-    def single_result(
-        self, nuts_ctx: NornirNutsContext, host: str, destination: str
-    ) -> Dict[str, Any]:
-        assert (
-            host in nuts_ctx.transformed_result
-        ), f"Host {host} not found in aggregated result."
-        assert (
-            destination in nuts_ctx.transformed_result[host]
-        ), f"Destination {destination} not found in result."
-        return nuts_ctx.transformed_result[host][destination]
 
-    @pytest.mark.nuts("host,destination,min_expected")
+    @pytest.mark.nuts("min_expected")
     def test_iperf(self, single_result, min_expected):
         assert single_result.result >= min_expected
 

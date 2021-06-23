@@ -7,6 +7,7 @@ functionality of nuts.
 Subclasses NutsContext and therefore does not need network access.
 """
 
+from nuts.helpers.result import NutsResult
 from typing import List, Dict, Any, TypeVar
 
 import pytest
@@ -50,40 +51,31 @@ class ExpanseContext(NutsContext):
             },
         ]
 
-    def transform_result(self, general_result: List[Dict[str, str]]) -> Dict[str, Any]:
+    def transform_result(self, general_result: List[Dict[str, str]]) -> Dict[str, NutsResult]: 
         return {
-            "rocinante": {
+            "rocinante": NutsResult({
                 entry["name"]: {"role": entry["role"], "origin": entry["origin"]}
                 for entry in general_result
-            }
+            }),
         }
+
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        ship = nuts_test_entry["ship"]
+        return self.transformed_result[ship]
 
 
 CONTEXT = ExpanseContext
 
 
-@pytest.fixture
-def expanse(nuts_ctx: NutsContext, ship: str) -> Dict[str, Any]:
-    """
-    Helps to prepare the results for TestExpanseCrew and generates a fixture that
-    provides the initialized context and the keyword with which the results should be filtered
-    for a test.
-    :param nuts_ctx: The context for a test with an initialized NutsContext subclass
-    :param ship: the parameter from the yaml file
-    :return: processed results ready to be passed on to a test
-    """
-    return nuts_ctx.transformed_result[ship]
-
-
 class TestExpanseCrew:
-    @pytest.mark.nuts("ship, name")
-    def test_name(self, expanse: E, name: str) -> None:
-        assert name in expanse
+    @pytest.mark.nuts("name")
+    def test_name(self, single_result: NutsResult, name: str) -> None:
+        assert name in single_result.result
 
-    @pytest.mark.nuts("ship, name, role")
-    def test_role(self, expanse: E, name: str, role: str) -> None:
-        assert expanse[name]["role"] == role
+    @pytest.mark.nuts("name, role")
+    def test_role(self, single_result: NutsResult, name: str, role: str) -> None:
+        assert single_result.result[name]["role"] == role
 
-    @pytest.mark.nuts("ship, name, origin")
-    def test_origin(self, expanse: E, name: str, origin: str) -> None:
-        assert expanse[name]["origin"] == origin
+    @pytest.mark.nuts("name, origin")
+    def test_origin(self, single_result: NutsResult, name: str, origin: str) -> None:
+        assert single_result.result[name]["origin"] == origin

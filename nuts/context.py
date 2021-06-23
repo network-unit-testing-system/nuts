@@ -65,7 +65,8 @@ class NutsContext:
             self._cached_result = self.transform_result(self.general_result())
         return self._cached_result
 
-    def single_result(self, host: str) -> NutsResult:
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        host = nuts_test_entry["host"]
         assert (
                 host in self.transformed_result
         ), f"Host {host} not found in aggregated result."
@@ -114,7 +115,8 @@ class NornirNutsContext(NutsContext):
         Transforms the raw nornir result and wraps it into a `NutsResult`.
 
         :param general_result: The raw answer as provided by nornir's executed task
-        :return: A dict where keys are the hosts, values are a `NutsResult`
+        :return: A dict where keys are the hosts, values are a `NutsResult` or a
+            dict mapping strings (e.g. destinations) to NutsResults.
         """
         raise NotImplementedError
 

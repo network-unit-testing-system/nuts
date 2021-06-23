@@ -115,7 +115,7 @@ The following test-run of CDP neighbors for example checks the local port:
 
 ```python
 class TestNetmikoCdpNeighbors:       
-    @pytest.mark.nuts("host,remote_host,local_port")
+    @pytest.mark.nuts("remote_host,local_port")
     def test_local_port(self, single_result, remote_host, local_port):
         assert single_result.result[remote_host]["local_port"] == local_port        
 ```

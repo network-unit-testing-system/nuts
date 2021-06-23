@@ -50,13 +50,13 @@ CONTEXT = NetworkInstancesContext
 
 
 class TestNapalmNetworkInstances:
-    @pytest.mark.nuts("host,network_instance,interfaces")
+    @pytest.mark.nuts("network_instance,interfaces")
     def test_network_instance_contains_interfaces(
         self, single_result, network_instance, interfaces
     ):
         assert single_result.result[network_instance]["interfaces"] == interfaces
 
-    @pytest.mark.nuts("host,network_instance,route_distinguisher")
+    @pytest.mark.nuts("network_instance,route_distinguisher")
     def test_route_distinguisher(
         self, single_result, network_instance, route_distinguisher
     ):

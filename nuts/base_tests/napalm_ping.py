@@ -82,26 +82,24 @@ class PingContext(NornirNutsContext):
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result="All pings executed")
 
-    def single_result(self, host: str, destination: Optional[str]) -> NutsResult:
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        host = nuts_test_entry["host"]
+        destination = nuts_test_entry["destination"]
+        assert (
+            host in self.transformed_result
+        ), f"Host {host} not found in aggregated result."
+        assert (
+            destination in self.transformed_result[host]
+        ), f"Destination {destination} not found in result."
+        return self.transformed_result[host][destination]
 
 
 CONTEXT = PingContext
 
 
 class TestNapalmPing:
-    @pytest.fixture
-    def single_result(
-        self, nuts_ctx: NornirNutsContext, host: str, destination: str
-    ) -> NutsResult:
-        assert (
-            host in nuts_ctx.transformed_result
-        ), f"Host {host} not found in aggregated result."
-        assert (
-            destination in nuts_ctx.transformed_result[host]
-        ), f"Destination {destination} not found in result."
-        return nuts_ctx.transformed_result[host][destination]
 
-    @pytest.mark.nuts("host,destination,expected")
+    @pytest.mark.nuts("expected")
     def test_ping(self, single_result, expected):
         assert single_result.result.name == expected
 

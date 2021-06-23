@@ -159,52 +159,54 @@ class NutsTestClass(pytest.Class):
 
 
 def get_parametrize_data(
-    metafunc: Metafunc, nuts_params: Tuple[str, ...]
-) -> List[ParameterSet]:
+    metafunc: Metafunc, fields_str: str, optional_fields_str: Optional[str] = None,
+) -> Tuple[List[str], List[ParameterSet]]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
+
     :param metafunc: The annotated test function that will use the parametrized data.
-    :param nuts_params: The fields used in a test and indicated via a custom pytest marker.
-    :return: List of tuples that contain each the parameters for a test.
+    :param fields_str: The fields used in a test, coming from pytest.mark.nuts.
+    :param optional_fields_str: Fields which are optional, coming from pytest.mark.nuts.
+    :return: A tuple with 2 entries:
+       - List of field names.
+       - List of tuples that contain each the parameters for a test.
     """
-    fields = [field.strip() for field in nuts_params[0].split(",")]
-    required_fields = calculate_required_fields(fields, nuts_params)
+    fields = [field.strip() for field in fields_str.split(",")]
+
+    if optional_fields_str is None:
+        optional_fields = set()
+    else:
+        optional_fields = {field.strip() for field in optional_fields_str.split(",")}
+    required_fields = set(fields) - optional_fields
+
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "params", None)
-    if not data:
-        return []
-    return dict_to_tuple_list(data["test_data"], fields, required_fields)
-
-
-def calculate_required_fields(
-    fields: List[str], nuts_params: Tuple[str, ...]
-) -> Set[str]:
-    required_fields = set(fields)
-    if len(nuts_params) >= 2:
-        optional_fields = {field.strip() for field in nuts_params[1].split(",")}
-        required_fields -= optional_fields
-    return required_fields
+    data = getattr(nuts_test_instance, "params")
+    return (
+        ["nuts_test_entry", *fields],
+        dict_to_tuple_list(data["test_data"], fields, required_fields),
+    )
 
 
 def dict_to_tuple_list(
     test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str]
 ) -> List[ParameterSet]:
     return [
-        wrap_if_needed(item, required_fields, dict_to_tuple(item, fields))
-        for item in test_data
+        wrap_if_needed(entry, required_fields, dict_to_tuple(entry, fields))
+        for entry in test_data
     ]
 
 
 def wrap_if_needed(
-    source: Dict[str, Any],
+    entry: Dict[str, Any],
     required_fields: Set[str],
     present_fields: Tuple[Optional[Any], ...],
 ) -> ParameterSet:
-    missing_fields = required_fields - set(source)
+    missing_fields = required_fields - set(entry)
     if not missing_fields:
-        return pytest.param(*present_fields)
+        return pytest.param(entry, *present_fields)
     return pytest.param(
+        entry,
         *present_fields,
         marks=pytest.mark.skip(
             f"required values {missing_fields} not present in test-bundle"

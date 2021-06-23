@@ -37,22 +37,22 @@ CONTEXT = InterfacesContext
 
 
 class TestNapalmInterfaces:
-    @pytest.mark.nuts("host,name,is_enabled")
+    @pytest.mark.nuts("name,is_enabled")
     def test_is_enabled(self, single_result, name, is_enabled):
         assert single_result.result[name]["is_enabled"] == is_enabled
 
-    @pytest.mark.nuts("host,name,is_up")
+    @pytest.mark.nuts("name,is_up")
     def test_is_up(self, single_result, name, is_up):
         assert single_result.result[name]["is_up"] == is_up
 
-    @pytest.mark.nuts("host,name,mac_address")
+    @pytest.mark.nuts("name,mac_address")
     def test_mac_address(self, single_result, name, mac_address):
         assert single_result.result[name]["mac_address"] == mac_address
 
-    @pytest.mark.nuts("host,name,mtu")
+    @pytest.mark.nuts("name,mtu")
     def test_mtu(self, single_result, name, mtu):
         assert single_result.result[name]["mtu"] == mtu
 
-    @pytest.mark.nuts("host,name,speed")
+    @pytest.mark.nuts("name,speed")
     def test_speed(self, single_result, name, speed):
         assert single_result.result[name]["speed"] == speed

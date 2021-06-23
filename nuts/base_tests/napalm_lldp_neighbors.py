@@ -58,12 +58,12 @@ CONTEXT = LldpNeighborsContext
 
 
 class TestNapalmLldpNeighbors:
-    @pytest.mark.nuts("host,local_port,remote_host")
+    @pytest.mark.nuts("local_port,remote_host")
     def test_remote_host(self, single_result, local_port, remote_host):
         lldp_neighbor_entry = single_result.result[local_port]
         assert lldp_neighbor_entry["remote_host"] == remote_host
 
-    @pytest.mark.nuts("host,local_port,remote_port")
+    @pytest.mark.nuts("local_port,remote_port")
     def test_remote_port(self, single_result, local_port, remote_port):
         lldp_neighbor_entry = single_result.result[local_port]
         assert (

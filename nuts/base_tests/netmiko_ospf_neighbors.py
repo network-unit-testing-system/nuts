@@ -36,27 +36,27 @@ CONTEXT = OspfNeighborsContext
 
 
 class TestNetmikoOspfNeighborsCount:
-    @pytest.mark.nuts("host,neighbor_count")
+    @pytest.mark.nuts("neighbor_count")
     def test_neighbor_count(self, single_result, neighbor_count):
         assert len(single_result.result) == neighbor_count
 
 
 class TestNetmikoOspfNeighbors:
-    @pytest.mark.nuts("host,neighbor_id")
+    @pytest.mark.nuts("neighbor_id")
     def test_neighbor_id(self, single_result, neighbor_id):
         assert neighbor_id in single_result.result
 
-    @pytest.mark.nuts("host,neighbor_id,neighbor_address")
+    @pytest.mark.nuts("neighbor_id,neighbor_address")
     def test_neighbor_address(self, single_result, neighbor_id, neighbor_address):
         neighbor = single_result.result[neighbor_id]
         assert neighbor["address"] == neighbor_address
 
-    @pytest.mark.nuts("host,local_port,neighbor_id")
+    @pytest.mark.nuts("local_port,neighbor_id")
     def test_local_port(self, single_result, local_port, neighbor_id):
         neighbor = single_result.result[neighbor_id]
         assert neighbor["interface"] == local_port
 
-    @pytest.mark.nuts("host,neighbor_id,state")
+    @pytest.mark.nuts("neighbor_id,state")
     def test_state(self, single_result, neighbor_id, state):
         neighbor = single_result.result[neighbor_id]
         assert neighbor["state"] == state

@@ -61,7 +61,7 @@ class NutsResult:
         return self._result
 
 
-T = TypeVar("T", Result, MultiResult, AggregatedResult)
+T = TypeVar("T", Result, MultiResult, contravariant=True)
 
 
 class AbstractResultExtractor:

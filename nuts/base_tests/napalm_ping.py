@@ -12,7 +12,7 @@ from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import (
     NutsResult,
-    map_host_to_dest_to_nutsresult,
+    AbstractResultExtractor,
 )
 
 
@@ -22,25 +22,19 @@ class Ping(Enum):
     FLAPPING = 2
 
 
-class PingContext(NornirNutsContext):
-    def nuts_task(self) -> Callable[..., Result]:
-        return self.napalm_ping_multi_dests
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
-
+class PingExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, Dict[str, NutsResult]]:
-        return map_host_to_dest_to_nutsresult(
-            general_result, self._transform_single_entry
+        return self.map_host_to_dest_to_nutsresult(
+            general_result
         )
 
-    def _transform_single_entry(self, single_result: Result) -> Ping:
+    def single_transform(self, single_result: Result) -> Ping:
         assert single_result.host is not None
         assert single_result.result is not None
         max_drop = self._allowed_max_drop_for_destination(single_result.host.name, single_result.destination)  # type: ignore[attr-defined] # see below
-        return _map_result_to_enum(single_result.result, max_drop)
+        return self._map_result_to_enum(single_result.result, max_drop)
 
     def _allowed_max_drop_for_destination(self, host: str, dest: str) -> int:
         """
@@ -52,11 +46,46 @@ class PingContext(NornirNutsContext):
         :param dest: destination that was pinged by a host from the nornir task
         :return: max_drop value from test_data
         """
-        test_data: List[Dict[str, Any]] = self.nuts_parameters["test_data"]
+        test_data: List[Dict[str, Any]] = self._nuts_ctx.nuts_parameters["test_data"]
         for entry in test_data:
             if entry["host"] == host and entry["destination"] == dest:
                 return entry["max_drop"]
         return 0
+
+    def _map_result_to_enum(self, result: Dict[str, Dict[Any, Any]], max_drop: int) -> Ping:
+        """
+        Evaluates the ping that has been conducted with nornir and matches it
+        to a Ping-Enum which can be either FAIL, SUCCESS or FLAPPING.
+
+        FAIL: Packet loss equals probes sent.
+        SUCCESS: Packet loss is below or equal max_drop.
+        FLAPPING: Everything else.
+
+        :param result: a single nornir Result
+        :param max_drop: max_drop threshold
+        :return: evaluated ping result
+        """
+        if result["success"]["packet_loss"] == result["success"]["probes_sent"]:
+            return Ping.FAIL
+        if result["success"]["packet_loss"] <= max_drop:
+            return Ping.SUCCESS
+        else:
+            return Ping.FLAPPING
+
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        host = nuts_test_entry["host"]
+        destination = nuts_test_entry["destination"]
+        assert (
+            host in self.transformed_result
+        ), f"Host {host} not found in aggregated result."
+        assert (
+            destination in self.transformed_result[host]
+        ), f"Destination {destination} not found in result."
+        return self.transformed_result[host][destination]
+
+class PingContext(NornirNutsContext):
+    def nuts_task(self) -> Callable[..., Result]:
+        return self.napalm_ping_multi_dests
 
     def napalm_ping_multi_dests(self, task: Task, **kwargs: Any) -> Result:
         """
@@ -82,16 +111,11 @@ class PingContext(NornirNutsContext):
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result="All pings executed")
 
-    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
-        host = nuts_test_entry["host"]
-        destination = nuts_test_entry["destination"]
-        assert (
-            host in self.transformed_result
-        ), f"Host {host} not found in aggregated result."
-        assert (
-            destination in self.transformed_result[host]
-        ), f"Destination {destination} not found in result."
-        return self.transformed_result[host][destination]
+    def nornir_filter(self) -> F:
+        return filter_hosts(self.nuts_parameters["test_data"])
+
+    def nuts_extractor(self) -> PingExtractor:
+        return PingExtractor(self)
 
 
 CONTEXT = PingContext
@@ -103,22 +127,4 @@ class TestNapalmPing:
         assert single_result.result.name == expected
 
 
-def _map_result_to_enum(result: Dict[str, Dict[Any, Any]], max_drop: int) -> Ping:
-    """
-    Evaluates the ping that has been conducted with nornir and matches it
-    to a Ping-Enum which can be either FAIL, SUCCESS or FLAPPING.
 
-    FAIL: Packet loss equals probes sent.
-    SUCCESS: Packet loss is below or equal max_drop.
-    FLAPPING: Everything else.
-
-    :param result: a single nornir Result
-    :param max_drop: max_drop threshold
-    :return: evaluated ping result
-    """
-    if result["success"]["packet_loss"] == result["success"]["probes_sent"]:
-        return Ping.FAIL
-    if result["success"]["packet_loss"] <= max_drop:
-        return Ping.SUCCESS
-    else:
-        return Ping.FLAPPING

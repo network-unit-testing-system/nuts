@@ -165,7 +165,7 @@ class AbstractResultExtractor:
         :return: NutsResult either containing the transformed result or context information
         """
         if nornir_result.failed:
-            return NutsResult(failed=True, exception=nornir_result.exception)  # type: ignore[attr-defined]
+            return NutsResult(failed=True, exception=nornir_result.exception)
         try:
 
             return NutsResult(self.single_transform(nornir_result))

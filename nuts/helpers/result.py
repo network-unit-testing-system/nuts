@@ -175,13 +175,3 @@ class AbstractResultExtractor:
         ), f"Host {host} not found in aggregated result."
         return self.transformed_result[host]
 
-
-
-def map_host_to_nutsresult():
-    # FIXME
-    raise Exception("remove me")
-
-
-def map_host_to_dest_to_nutsresult():
-    # FIXME
-    raise Exception("remove me")

@@ -7,8 +7,33 @@ from nornir.core.task import MultiResult, AggregatedResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import NutsResult, map_host_to_nutsresult
+from nuts.helpers.result import NutsResult, AbstractResultExtractor
 from nuts.context import NornirNutsContext
+
+class NetworkInstancesExtractor(AbstractResultExtractor):
+    def transform_result(
+            self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
+        return self.map_host_to_nutsresult(general_result)
+
+    def single_transform(
+            self, single_result: MultiResult
+    ) -> Dict[str, Dict[str, Any]]:
+        assert single_result[0].result is not None
+        task_result = single_result[0].result
+        network_instances = task_result["network_instances"]
+        return {
+            instance: self._transform_single_network_instance(details)
+            for instance, details in network_instances.items()
+        }
+
+    def _transform_single_network_instance(
+            self, network_instance: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        return {
+            "route_distinguisher": network_instance["state"]["route_distinguisher"],
+            "interfaces": list(network_instance["interfaces"]["interface"]),
+        }
 
 
 class NetworkInstancesContext(NornirNutsContext):
@@ -21,29 +46,10 @@ class NetworkInstancesContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresult(general_result, self._transform_host_results)
+    def nuts_extractor(self) -> NetworkInstancesExtractor:
+        return NetworkInstancesExtractor(self)
 
-    def _transform_host_results(
-        self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        task_result = single_result[0].result
-        network_instances = task_result["network_instances"]
-        return {
-            instance: self._transform_single_network_instance(details)
-            for instance, details in network_instances.items()
-        }
 
-    def _transform_single_network_instance(
-        self, network_instance: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        return {
-            "route_distinguisher": network_instance["state"]["route_distinguisher"],
-            "interfaces": list(network_instance["interfaces"]["interface"]),
-        }
 
 
 CONTEXT = NetworkInstancesContext

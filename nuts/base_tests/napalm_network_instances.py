@@ -10,15 +10,14 @@ from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import NutsResult, AbstractResultExtractor
 from nuts.context import NornirNutsContext
 
+
 class NetworkInstancesExtractor(AbstractResultExtractor):
     def transform_result(
-            self, general_result: AggregatedResult
+        self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
         return self.map_host_to_nutsresult(general_result)
 
-    def single_transform(
-            self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
+    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         network_instances = task_result["network_instances"]
@@ -28,7 +27,7 @@ class NetworkInstancesExtractor(AbstractResultExtractor):
         }
 
     def _transform_single_network_instance(
-            self, network_instance: Dict[str, Any]
+        self, network_instance: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "route_distinguisher": network_instance["state"]["route_distinguisher"],
@@ -48,8 +47,6 @@ class NetworkInstancesContext(NornirNutsContext):
 
     def nuts_extractor(self) -> NetworkInstancesExtractor:
         return NetworkInstancesExtractor(self)
-
-
 
 
 CONTEXT = NetworkInstancesContext

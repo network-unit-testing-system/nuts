@@ -12,15 +12,12 @@ from nuts.helpers.result import AbstractResultExtractor, NutsResult
 
 
 class BgpNeighborsExtractor(AbstractResultExtractor):
-    
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
         return self.map_host_to_nutsresult(general_result)
 
-    def single_transform(
-        self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
+    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["bgp_neighbors"]
@@ -38,9 +35,7 @@ class BgpNeighborsExtractor(AbstractResultExtractor):
         return element
 
 
-
 class BgpNeighborsContext(NornirNutsContext):
-
     def nuts_task(self) -> Callable[..., Result]:
         return napalm_get
 

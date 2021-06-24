@@ -18,9 +18,7 @@ class LldpNeighborsExtractor(AbstractResultExtractor):
     ) -> Dict[str, NutsResult]:
         return self.map_host_to_nutsresult(general_result)
 
-    def single_transform(
-        self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
+    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result
         neighbors = task_result["lldp_neighbors_detail"]
@@ -57,7 +55,6 @@ class LldpNeighborsContext(NornirNutsContext):
 
     def nuts_extractor(self) -> LldpNeighborsExtractor:
         return LldpNeighborsExtractor(self)
-
 
 
 CONTEXT = LldpNeighborsContext

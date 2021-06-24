@@ -5,11 +5,13 @@ from typing import Any, Optional, Callable, TYPE_CHECKING, TypeVar, Dict
 
 from nornir.core.task import Result, MultiResult, AggregatedResult
 from nuts.helpers.errors import NutsNornirError, NutsUnvalidatedResultError
+
 if TYPE_CHECKING:
     from nuts.context import NutsContext
 
 
 _TransformedResult = Dict[str, Any]
+
 
 class NutsResult:
     """
@@ -64,17 +66,17 @@ T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
 class AbstractResultExtractor:
     """Processes the general result that contains the raw overall results
-     from the network query (mostly a nornir task)
-     so that it can be passed on to the test class.
+    from the network query (mostly a nornir task)
+    so that it can be passed on to the test class.
 
-     Additionally wraps all the results that belong to one host into a
-     NutsResult. There are two ways how this wrapping happens:
+    Additionally wraps all the results that belong to one host into a
+    NutsResult. There are two ways how this wrapping happens:
 
-     1. Properties of a host are tested: One host maps to a NutsResult that contains
-        all the queried properties.
-     2. Properties of a connection between two hosts are tested: One host maps to a
-        destination which maps to a NutsResult that contains all queried properties.
-     """
+    1. Properties of a host are tested: One host maps to a NutsResult that contains
+       all the queried properties.
+    2. Properties of a connection between two hosts are tested: One host maps to a
+       destination which maps to a NutsResult that contains all queried properties.
+    """
 
     def __init__(self, context: "NutsContext") -> None:
         self._cached_result: Optional[_TransformedResult] = None
@@ -90,7 +92,9 @@ class AbstractResultExtractor:
         """
         raise NotImplementedError
 
-    def map_host_to_nutsresult(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
+    def map_host_to_nutsresult(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
         """
         Maps a host's name to its corresponding result, which in turn is
         wrapped into a NutsResult.
@@ -200,4 +204,3 @@ class AbstractResultExtractor:
             host in self.transformed_result
         ), f"Host {host} not found in aggregated result."
         return self.transformed_result[host]
-

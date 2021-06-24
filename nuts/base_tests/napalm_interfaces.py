@@ -17,9 +17,7 @@ class InterfacesExtractor(AbstractResultExtractor):
     ) -> Dict[str, NutsResult]:
         return self.map_host_to_nutsresult(general_result)
 
-    def single_transform(
-        self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
+    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         return single_result[0].result["interfaces"]
 

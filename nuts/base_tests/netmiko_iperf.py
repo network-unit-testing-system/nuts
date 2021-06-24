@@ -13,12 +13,12 @@ from nuts.helpers.filters import filter_hosts
 from nuts.helpers.errors import Error
 from nuts.helpers.result import NutsResult, AbstractResultExtractor
 
+
 class IperfExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, Dict[str, NutsResult]]:
-        return self.map_host_to_dest_to_nutsresult(
-            general_result)
+        return self.map_host_to_dest_to_nutsresult(general_result)
 
     def single_transform(self, single_result: Result) -> int:
         assert isinstance(single_result.result, str)
@@ -40,6 +40,7 @@ class IperfExtractor(AbstractResultExtractor):
             destination in self.transformed_result[host]
         ), f"Destination {destination} not found in result."
         return self.transformed_result[host][destination]
+
 
 class IperfContext(NornirNutsContext):
     def nuts_task(self) -> Callable[..., Result]:
@@ -108,7 +109,6 @@ class IperfContext(NornirNutsContext):
         return IperfExtractor(self)
 
 
-
 CONTEXT = IperfContext
 
 
@@ -121,9 +121,3 @@ class TestNetmikoIperf:
     @pytest.mark.nuts("min_expected")
     def test_iperf(self, single_result, min_expected):
         assert single_result.result >= min_expected
-
-
-
-
-
-

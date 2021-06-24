@@ -12,7 +12,6 @@ from nuts.helpers.result import NutsResult, AbstractResultExtractor
 
 
 class OspfNeighborsExtractor(AbstractResultExtractor):
-
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
@@ -36,6 +35,7 @@ class OspfNeighborsContext(NornirNutsContext):
 
     def nuts_extractor(self) -> OspfNeighborsExtractor:
         return OspfNeighborsExtractor(self)
+
 
 CONTEXT = OspfNeighborsContext
 

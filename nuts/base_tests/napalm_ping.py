@@ -26,9 +26,7 @@ class PingExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, Dict[str, NutsResult]]:
-        return self.map_host_to_dest_to_nutsresult(
-            general_result
-        )
+        return self.map_host_to_dest_to_nutsresult(general_result)
 
     def single_transform(self, single_result: Result) -> Ping:
         assert single_result.host is not None
@@ -52,7 +50,9 @@ class PingExtractor(AbstractResultExtractor):
                 return entry["max_drop"]
         return 0
 
-    def _map_result_to_enum(self, result: Dict[str, Dict[Any, Any]], max_drop: int) -> Ping:
+    def _map_result_to_enum(
+        self, result: Dict[str, Dict[Any, Any]], max_drop: int
+    ) -> Ping:
         """
         Evaluates the ping that has been conducted with nornir and matches it
         to a Ping-Enum which can be either FAIL, SUCCESS or FLAPPING.
@@ -82,6 +82,7 @@ class PingExtractor(AbstractResultExtractor):
             destination in self.transformed_result[host]
         ), f"Destination {destination} not found in result."
         return self.transformed_result[host][destination]
+
 
 class PingContext(NornirNutsContext):
     def nuts_task(self) -> Callable[..., Result]:
@@ -125,6 +126,3 @@ class TestNapalmPing:
     @pytest.mark.nuts("expected")
     def test_ping(self, single_result, expected):
         assert single_result.result.name == expected
-
-
-

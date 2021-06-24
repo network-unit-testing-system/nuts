@@ -15,6 +15,7 @@ from nuts.context import NutsContext
 
 E = Dict[str, Dict[str, str]]
 
+
 class ExpanseExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: List[Dict[str, str]]
@@ -31,6 +32,7 @@ class ExpanseExtractor(AbstractResultExtractor):
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
         ship = nuts_test_entry["ship"]
         return self.transformed_result[ship]
+
 
 class ExpanseContext(NutsContext):
     def general_result(self) -> List[Dict[str, str]]:
@@ -69,6 +71,7 @@ class ExpanseContext(NutsContext):
 
     def nuts_extractor(self) -> ExpanseExtractor:
         return ExpanseExtractor(self)
+
 
 CONTEXT = ExpanseContext
 

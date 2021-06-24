@@ -2,6 +2,7 @@ import pytest
 from nuts.helpers.result import NutsResult, AbstractResultExtractor
 from nuts.context import NutsContext
 
+
 class FakeExtractor(AbstractResultExtractor):
     _RESULTS = {
         "failed": NutsResult(failed=True),
@@ -19,9 +20,6 @@ class FakeExtractor(AbstractResultExtractor):
 class FakeContext(NutsContext):
     def nuts_extractor(self) -> AbstractResultExtractor:
         return FakeExtractor(self)
-
-
-
 
 
 CONTEXT = FakeContext

@@ -162,7 +162,8 @@ class AbstractResultExtractor:
         Wrap a nornir_result into a NutsResult
 
         :param nornir_result: The nornir_result which should be wrapped
-        :return: NutsResult either containing the transformed result or context information
+        :return: NutsResult either containing the transformed result or
+                 information if the network query has failed or thrown an exception.
         """
         if nornir_result.failed:
             return NutsResult(failed=True, exception=nornir_result.exception)
@@ -198,7 +199,12 @@ class AbstractResultExtractor:
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
         """The single result that belongs to one host.
         Must be overwritten in the case a host-destination pair is tested
-        or the keyword that accesses transformed_result differs."""
+        or the keyword that accesses nuts_test_entry differs.
+
+        :param nuts_test_entry: a single entry in test_data
+               of the test-bundle (the yaml-file)
+        :return NutsResult of a host
+        """
         host = nuts_test_entry["host"]
         assert (
             host in self.transformed_result

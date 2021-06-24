@@ -63,12 +63,31 @@ T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
 
 class AbstractResultExtractor:
+    """Processes the general result that contains the raw overall results
+     from the network query (mostly a nornir task)
+     so that it can be passed on to the test class.
+
+     Additionally wraps all the results that belong to one host into a
+     NutsResult. There are two ways how this wrapping happens:
+
+     1. Properties of a host are tested: One host maps to a NutsResult that contains
+        all the queried properties.
+     2. Properties of a connection between two hosts are tested: One host maps to a
+        destination which maps to a NutsResult that contains all queried properties.
+     """
 
     def __init__(self, context: "NutsContext") -> None:
         self._cached_result: Optional[_TransformedResult] = None
         self._nuts_ctx = context
 
     def single_transform(self, result: T) -> Any:
+        """
+        Transforms a single (raw) result that belongs to a host
+        from the overall general result set
+        into the form that is required for the test class.
+        :param result: data needed for
+        :return:
+        """
         raise NotImplementedError
 
     def map_host_to_nutsresult(self, general_result: AggregatedResult) -> Dict[str, NutsResult]:
@@ -91,10 +110,10 @@ class AbstractResultExtractor:
         general_result: AggregatedResult,
     ) -> Dict[str, Dict[str, NutsResult]]:
         """
-        Maps a host's name to its corresponding destination and calls a helper function to further map
-        that destination to a NutsResult.
+        Maps a host's name to its corresponding destination and calls a helper function
+        to further map that destination to a NutsResult.
 
-        Used when a nornir task queries a host-destination pair.
+        Used when a host-destination pair is tested.
 
         :param general_result: The raw result as provided by nornir's executed task
         :return: The host mapped to its corresponding destination mapped to its NutsResult
@@ -152,6 +171,10 @@ class AbstractResultExtractor:
 
     def transform_result(self, general_result: Any) -> _TransformedResult:
         """
+        In most cases:
+        1. calls map_host_to_nutsresult in case a host's properties are tested
+        2. calls map_host_to_dest_to_nutsresult in case a host-destination pair's
+           properties are tested.
         :param general_result: raw result
         :return: processed result ready to be passed to a test
         """
@@ -160,15 +183,18 @@ class AbstractResultExtractor:
     @property
     def transformed_result(self) -> _TransformedResult:
         """
-        The (processed) results of the network task, ready to be passed on to a test's fixture.
-        The results are cached, so that general_result does not need to be called multiple times as it might
-        access the network.
+        The (processed) results of the network task, ready to be passed on to a test's
+        fixture. The results are cached, so that general_result does not need
+        to be called multiple times as it might access the network.
         """
         if self._cached_result is None:
             self._cached_result = self.transform_result(self._nuts_ctx.general_result())
         return self._cached_result
 
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        """The single result that belongs to one host.
+        Must be overwritten in the case a host-destination pair is tested
+        or the keyword that accesses transformed_result differs."""
         host = nuts_test_entry["host"]
         assert (
             host in self.transformed_result

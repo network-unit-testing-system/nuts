@@ -50,7 +50,7 @@ class BgpNeighborsContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def nuts_extractor(self) -> AbstractResultExtractor:
+    def nuts_extractor(self) -> BgpNeighborsExtractor:
         return BgpNeighborsExtractor(self)
 
 

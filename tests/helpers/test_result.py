@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 from nornir.core.task import Result
 
-from nuts.helpers.result import AbtractResultExtractor
+from nuts.helpers.result import AbstractResultExtractor
 
 
 def test_check_result(testdir):
@@ -28,7 +28,7 @@ def test_check_result(testdir):
     result.assert_outcomes(errors=3, passed=1)
 
 
-class MockResultExtractor(AbtractResultExtractor):
+class MockResultExtractor(AbstractResultExtractor):
 
     single_transform = Mock()
 

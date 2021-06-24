@@ -8,10 +8,10 @@ from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import AbtractResultExtractor, NutsResult
+from nuts.helpers.result import AbstractResultExtractor, NutsResult
 
 
-class BgpNeighborsExtractor(AbtractResultExtractor):
+class BgpNeighborsExtractor(AbstractResultExtractor):
     
     def transform_result(
         self, general_result: AggregatedResult
@@ -47,11 +47,11 @@ class BgpNeighborsContext(NornirNutsContext):
     def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["bgp_neighbors"]}
 
-    def nuts_extractor(self) -> AbtractResultExtractor:
-        return BgpNeighborsExtractor(self)
-
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
+
+    def nuts_extractor(self) -> AbstractResultExtractor:
+        return BgpNeighborsExtractor(self)
 
 
 CONTEXT = BgpNeighborsContext

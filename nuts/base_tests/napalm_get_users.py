@@ -8,7 +8,11 @@ from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import map_host_to_nutsresult, NutsResult
+from nuts.helpers.result import AbstractResultExtractor, NutsResult
+
+
+
+class UsersExtractor(AbstractResultExtractor):
 
 
 class UsersContext(NornirNutsContext):

@@ -7,7 +7,7 @@ from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
 
 from nuts.helpers.errors import NutsSetupError
-from nuts.helpers.result import AbtractResultExtractor, NutsResult
+from nuts.helpers.result import AbstractResultExtractor, NutsResult
 
 
 class NutsContext:
@@ -25,9 +25,9 @@ class NutsContext:
         """Initialize dependencies for this context after it has been created."""
         pass
 
-    def nuts_extractor(self) -> AbtractResultExtractor:
+    def nuts_extractor(self) -> AbstractResultExtractor:
         """Get a result extractor for this context."""
-        return AbtractResultExtractor(self)
+        return AbstractResultExtractor(self)
 
     def nuts_arguments(self) -> Dict[str, Any]:
         """

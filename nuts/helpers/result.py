@@ -62,7 +62,7 @@ class NutsResult:
 T = TypeVar("T", Result, MultiResult, AggregatedResult)
 
 
-class AbtractResultExtractor:
+class AbstractResultExtractor:
 
     def __init__(self, context: "NutsContext") -> None:
         self._cached_result: Optional[_TransformedResult] = None

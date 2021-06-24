@@ -7,7 +7,7 @@ functionality of nuts.
 Subclasses NutsContext and therefore does not need network access.
 """
 
-from nuts.helpers.result import NutsResult
+from nuts.helpers.result import NutsResult, AbstractResultExtractor
 from typing import List, Dict, Any, TypeVar
 
 import pytest
@@ -15,6 +15,22 @@ from nuts.context import NutsContext
 
 E = Dict[str, Dict[str, str]]
 
+class ExpanseExtractor(AbstractResultExtractor):
+    def transform_result(
+        self, general_result: List[Dict[str, str]]
+    ) -> Dict[str, NutsResult]:
+        return {
+            "rocinante": NutsResult(
+                {
+                    entry["name"]: {"role": entry["role"], "origin": entry["origin"]}
+                    for entry in general_result
+                }
+            ),
+        }
+
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        ship = nuts_test_entry["ship"]
+        return self.transformed_result[ship]
 
 class ExpanseContext(NutsContext):
     def general_result(self) -> List[Dict[str, str]]:
@@ -51,22 +67,8 @@ class ExpanseContext(NutsContext):
             },
         ]
 
-    def transform_result(
-        self, general_result: List[Dict[str, str]]
-    ) -> Dict[str, NutsResult]:
-        return {
-            "rocinante": NutsResult(
-                {
-                    entry["name"]: {"role": entry["role"], "origin": entry["origin"]}
-                    for entry in general_result
-                }
-            ),
-        }
-
-    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
-        ship = nuts_test_entry["ship"]
-        return self.transformed_result[ship]
-
+    def nuts_extractor(self) -> ExpanseExtractor:
+        return ExpanseExtractor(self)
 
 CONTEXT = ExpanseContext
 

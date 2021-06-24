@@ -1,15 +1,21 @@
 """
 Classes in this file are needed in integration test in test_nuts_annotation.py
 """
-from nuts.helpers.result import NutsResult
+from nuts.helpers.result import NutsResult, AbstractResultExtractor
 from typing import Any, Dict
 from nuts.context import NutsContext
 import pytest
 
 
-class FakeContext(NutsContext):
+class FakeExtractor(AbstractResultExtractor):
+
     def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
         return NutsResult({})
+
+
+class FakeContext(NutsContext):
+    def nuts_extractor(self) -> AbstractResultExtractor:
+        return FakeExtractor(self)
 
 
 CONTEXT = FakeContext

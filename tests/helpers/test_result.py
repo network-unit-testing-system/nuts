@@ -1,4 +1,6 @@
 import pytest
+
+from nuts.context import NutsContext
 from tests.utils import YAML_EXTENSION
 
 from nuts.helpers.errors import NutsUnvalidatedResultError
@@ -35,7 +37,7 @@ class MockResultExtractor(AbstractResultExtractor):
 
 @pytest.fixture
 def extractor():
-    return MockResultExtractor(None)
+    return MockResultExtractor(NutsContext)
 
 
 class TestNutsResultWrapper:

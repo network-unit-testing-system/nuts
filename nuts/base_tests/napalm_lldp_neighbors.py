@@ -9,25 +9,16 @@ from nornir_napalm.plugins.tasks import napalm_get
 from nuts.context import NornirNutsContext
 from nuts.helpers.converters import InterfaceNameConverter
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import NutsResult, map_host_to_nutsresult
+from nuts.helpers.result import NutsResult, AbstractResultExtractor
 
 
-class LldpNeighborsContext(NornirNutsContext):
-    def nuts_task(self) -> Callable[..., Result]:
-        return napalm_get
-
-    def nuts_arguments(self) -> Dict[str, List[str]]:
-        return {"getters": ["lldp_neighbors_detail"]}
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
-
+class LldpNeighborsExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresult(general_result, self._transform_host_results)
+        return self.map_host_to_nutsresult(general_result)
 
-    def _transform_host_results(
+    def single_transform(
         self, single_result: MultiResult
     ) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
@@ -52,6 +43,21 @@ class LldpNeighborsContext(NornirNutsContext):
             "remote_port_expanded"
         ] = InterfaceNameConverter().expand_interface_name(element["remote_port"])
         return element
+
+
+class LldpNeighborsContext(NornirNutsContext):
+    def nuts_task(self) -> Callable[..., Result]:
+        return napalm_get
+
+    def nuts_arguments(self) -> Dict[str, List[str]]:
+        return {"getters": ["lldp_neighbors_detail"]}
+
+    def nornir_filter(self) -> F:
+        return filter_hosts(self.nuts_parameters["test_data"])
+
+    def nuts_extractor(self) -> AbstractResultExtractor:
+        return LldpNeighborsExtractor(self)
+
 
 
 CONTEXT = LldpNeighborsContext

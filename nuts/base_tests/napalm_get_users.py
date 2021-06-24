@@ -13,7 +13,16 @@ from nuts.helpers.result import AbstractResultExtractor, NutsResult
 
 
 class UsersExtractor(AbstractResultExtractor):
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
+        return self.map_host_to_nutsresult(general_result)
 
+    def single_transform(
+        self, single_result: MultiResult
+    ) -> Dict[str, Dict[str, Any]]:
+        assert single_result[0].result is not None
+        return single_result[0].result["users"]
 
 class UsersContext(NornirNutsContext):
     def nuts_task(self) -> Callable[..., Result]:
@@ -25,16 +34,8 @@ class UsersContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresult(general_result, self._transform_host_results)
-
-    def _transform_host_results(
-        self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        return single_result[0].result["users"]
+    def nuts_extractor(self) -> AbstractResultExtractor:
+        return UsersExtractor(self)
 
 
 CONTEXT = UsersContext

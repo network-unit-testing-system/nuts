@@ -84,11 +84,10 @@ class AbstractResultExtractor:
 
     def single_transform(self, result: T) -> Any:
         """
-        Transforms a single (raw) result that belongs to a host
-        from the overall general result set
-        into the form that is required for the test class.
-        :param result: data needed for
-        :return:
+        Transforms a single (raw) result that belongs to a host from the overall
+        general result set into the form that is required for the test class.
+        :param result: raw data to be transformed
+        :return: newly structured data
         """
         raise NotImplementedError
 

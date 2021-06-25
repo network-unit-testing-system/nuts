@@ -37,7 +37,7 @@ class MockResultExtractor(AbstractResultExtractor):
 
 @pytest.fixture
 def extractor():
-    return MockResultExtractor(NutsContext)
+    return MockResultExtractor(NutsContext())
 
 
 class TestNutsResultWrapper:

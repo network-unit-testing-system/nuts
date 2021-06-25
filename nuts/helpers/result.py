@@ -61,9 +61,6 @@ class NutsResult:
         return self._result
 
 
-T = TypeVar("T", Result, MultiResult, contravariant=True)
-
-
 class AbstractResultExtractor:
     """Processes the general result that contains the raw overall results
     from the network query (mostly a nornir task)
@@ -82,7 +79,7 @@ class AbstractResultExtractor:
         self._cached_result: Optional[_TransformedResult] = None
         self._nuts_ctx = context
 
-    def single_transform(self, result: T) -> Any:
+    def single_transform(self, result: Any) -> Any:
         """
         Transforms a single (raw) result that belongs to a host from the overall
         general result set into the form that is required for the test class.
@@ -156,7 +153,7 @@ class AbstractResultExtractor:
             for single_result in task_results[1:]
         }
 
-    def nuts_result_wrapper(self, nornir_result: T) -> NutsResult:
+    def nuts_result_wrapper(self, nornir_result: Any) -> NutsResult:
         """
         Wrap a nornir_result into a NutsResult
 

@@ -166,6 +166,13 @@ def get_parametrize_data(
     """
     Transforms externally provided parameters to be used in parametrized tests.
 
+    For every single test run one entry from the test_data section in the yaml file is
+    injected as a first entry to be parametrized (`nuts_test_entry`).
+    In doing so, the `single_result` fixture in `plugin.py` can pass on
+    the full entry to the extractor. The extractor can then decide in its
+    own `single_result` method which property of the entry should be picked as key
+    (e.g. `[host]` or `[host][destination]`).
+
     :param metafunc: The annotated test function that will use the parametrized data.
     :param fields_str: The fields used in a test, coming from pytest.mark.nuts.
     :param optional_fields_str: Fields which are optional, coming from pytest.mark.nuts.

@@ -40,7 +40,8 @@ class PingContext(NornirNutsContext):
         assert single_result.host is not None
         assert single_result.result is not None
         max_drop = self._allowed_max_drop_for_destination(
-            single_result.host.name, single_result.destination  # type: ignore[attr-defined] # see below
+            single_result.host.name,
+            single_result.destination,  # type: ignore[attr-defined] # see below
         )
         return _map_result_to_enum(single_result.result, max_drop)
 

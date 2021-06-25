@@ -7,7 +7,7 @@ functionality of nuts.
 Subclasses NutsContext and therefore does not need network access.
 """
 
-from typing import List, Dict, Any, TypeVar
+from typing import List, Dict, Any
 
 import pytest
 from nuts.context import NutsContext
@@ -66,8 +66,8 @@ CONTEXT = ExpanseContext
 def expanse(nuts_ctx: NutsContext, ship: str) -> Dict[str, Any]:
     """
     Helps to prepare the results for TestExpanseCrew and generates a fixture that
-    provides the initialized context and the keyword with which the results should be filtered
-    for a test.
+    provides the initialized context and the keyword with which the results should
+    be filtered for a test.
     :param nuts_ctx: The context for a test with an initialized NutsContext subclass
     :param ship: the parameter from the yaml file
     :return: processed results ready to be passed on to a test

@@ -18,7 +18,8 @@ ok_result = NutsResult("TestData")
 
 class TestCheckResult:
     @pytest.mark.usefixtures("check_nuts_result")
-    @pytest.mark.parametrize("single_result", [failed_result, exception_result, failed_exception_result, ok_result])
+    @pytest.mark.parametrize("single_result",
+    [failed_result, exception_result, failed_exception_result, ok_result])
     def test_raises_error_if_exception(self):
         pass
             """

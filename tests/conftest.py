@@ -12,7 +12,8 @@ pytest_plugins = ["pytester", "nuts"]
 
 @pytest.fixture
 def default_nr_init(testdir):
-    """Create initial Nornir files and expose the location as nornir_config_file fixture."""
+    """Create initial Nornir files and expose the location
+    as nornir_config_file fixture."""
     hosts_path = testdir.tmpdir.join(f"hosts{YAML_EXTENSION}")
     config = f"""inventory:
                           plugin: SimpleInventory

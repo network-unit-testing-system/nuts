@@ -15,7 +15,7 @@ class NetworkInstancesExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
-        return self.map_host_to_nutsresult(general_result)
+        return self._map_host_to_nutsresult(general_result)
 
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None

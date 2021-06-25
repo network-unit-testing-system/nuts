@@ -15,7 +15,7 @@ class CdpNeighborsExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
-        return self.map_host_to_nutsresult(general_result)
+        return self._map_host_to_nutsresult(general_result)
 
     def single_transform(self, host_results: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert host_results[0].result is not None

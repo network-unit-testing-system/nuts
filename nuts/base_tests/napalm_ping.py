@@ -26,7 +26,7 @@ class PingExtractor(AbstractResultExtractor):
     def transform_result(
         self, general_result: AggregatedResult
     ) -> Dict[str, Dict[str, NutsResult]]:
-        return self.map_host_to_dest_to_nutsresult(general_result)
+        return self._map_host_to_dest_to_nutsresult(general_result)
 
     def single_transform(self, single_result: Result) -> Ping:
         assert single_result.host is not None

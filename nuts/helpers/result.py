@@ -91,7 +91,7 @@ class AbstractResultExtractor:
         """
         raise NotImplementedError
 
-    def map_host_to_nutsresult(
+    def _map_host_to_nutsresult(
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
         """
@@ -108,7 +108,7 @@ class AbstractResultExtractor:
             for host, multiresult in general_result.items()
         }
 
-    def map_host_to_dest_to_nutsresult(
+    def _map_host_to_dest_to_nutsresult(
         self,
         general_result: AggregatedResult,
     ) -> Dict[str, Dict[str, NutsResult]]:
@@ -122,11 +122,11 @@ class AbstractResultExtractor:
         :return: The host mapped to its corresponding destination mapped to its NutsResult
         """
         return {
-            host: self.map_dest_to_nutsresult(task_results)
+            host: self._map_dest_to_nutsresult(task_results)
             for host, task_results in general_result.items()
         }
 
-    def map_dest_to_nutsresult(
+    def _map_dest_to_nutsresult(
         self,
         task_results: MultiResult,
     ) -> Dict[str, NutsResult]:

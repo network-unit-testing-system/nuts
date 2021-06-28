@@ -3,20 +3,15 @@ from typing import Dict, Callable, List, Any, Sized
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult, Result
+from nornir.core.task import MultiResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import AbstractResultExtractor, NutsResult
+from nuts.helpers.result import AbstractHostResultExtractor, NutsResult
 
 
-class BgpNeighborsExtractor(AbstractResultExtractor):
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, NutsResult]:
-        return self._map_host_to_nutsresult(general_result)
-
+class BgpNeighborsExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         assert single_result[0].result is not None
         task_result = single_result[0].result

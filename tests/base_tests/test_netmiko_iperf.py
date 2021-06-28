@@ -37,7 +37,7 @@ iperf_l2_2 = SelfTestData(
         "error":"error - unable to connect to server: No route to host"}',
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
     expected_output=[
-        "* An exception was thrown during information gathering: *",
+        "E * nuts.helpers.errors.NutsNornirError: An exception has occurred while executing nornir:",
         "*.IperfResultError: error - unable to connect to server: No route to host",
     ],
     expected_outcome="errors",
@@ -104,7 +104,10 @@ def test_min_expected(transformed_result, data, result):
     host = data["host"]
     destination = data["destination"]
     min_expected = data["min_expected"]
-    assert (transformed_result[host][destination].result >= min_expected) == result
+
+    dest_result = transformed_result[host][destination]
+    dest_result.validate()
+    assert (dest_result.result >= min_expected) == result
 
 
 def test_dest_unreachable_fails(transformed_result):

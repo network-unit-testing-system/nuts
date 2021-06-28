@@ -156,7 +156,9 @@ def testdata(selftestdata):
 
 @pytest.fixture
 def interface_result(testdata, transformed_result):
-    return transformed_result[testdata["host"]].result[testdata["local_port"]]
+    host_result = transformed_result[testdata["host"]]
+    host_result.validate()
+    return host_result.result[testdata["local_port"]]
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -167,7 +169,9 @@ def test_contains_hosts_at_toplevel(transformed_result):
 
 
 def test_contains_results_with_ports_at_second_level(transformed_result, testdata):
-    assert testdata["local_port"] in transformed_result[testdata["host"]].result
+    host_result = transformed_result[testdata["host"]]
+    host_result.validate()
+    assert testdata["local_port"] in host_result.result
 
 
 def test_contains_failed_result_at_second_level_if_task_failed(transformed_result):

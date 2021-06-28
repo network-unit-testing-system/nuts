@@ -11,3 +11,11 @@ class NutsSetupError(Error):
 
 class NutsUsageError(Error):
     """Errors caused by the user."""
+
+
+class NutsNornirError(Error):
+    """Errors caused by nornir."""
+
+
+class NutsUnvalidatedResultError(Error):
+    """Internal error: An unvalidated NutsResult was accessed."""

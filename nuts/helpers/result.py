@@ -4,6 +4,7 @@ import traceback
 from typing import Any, Optional, Callable, TypeVar, Dict
 
 from nornir.core.task import Result, MultiResult, AggregatedResult
+from nuts.helpers.errors import NutsNornirError, NutsUnvalidatedResultError
 
 
 class NutsResult:
@@ -16,7 +17,7 @@ class NutsResult:
         result: Optional[Any] = None,
         failed: Optional[bool] = False,
         exception: Optional[BaseException] = None,
-    ):
+    ) -> None:
         """
         Create a new NutsResult
 
@@ -24,9 +25,34 @@ class NutsResult:
         :param failed: Whether the information gathering failed or not
         :param exception: Exception which was thrown during the information gathering
         """
-        self.result = result
+        self._result = result
         self.failed = failed
         self.exception = exception
+        self._validated = False
+
+    def validate(self) -> None:
+        """Make sure the underlying result is a valid (i.e. non-failed) one."""
+        if self.exception:
+            header = "".join(
+                traceback.format_exception_only(type(self.exception), self.exception)
+            )
+            raise NutsNornirError(
+                f"An exception has occurred while executing nornir:\n"
+                f"{header}\n"
+                f"{self._result}"
+            )
+        if self.failed:
+            raise NutsNornirError(f"Nornir execution has failed:\n" f"{self._result}")
+
+        self._validated = True
+
+    @property
+    def result(self) -> Any:
+        if not self._validated:
+            raise NutsUnvalidatedResultError(
+                f"Trying to access unvalidated result {self}"
+            )
+        return self._result
 
 
 T = TypeVar("T", Result, MultiResult, AggregatedResult)

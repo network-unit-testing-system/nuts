@@ -227,14 +227,16 @@ def test_contains_hosts_at_toplevel(transformed_result):
     ],
 )
 def test_contains_neighbors_at_second_level(transformed_result, host, neighbors):
-    assert transformed_result[host].result.keys() == neighbors
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert host_result.result.keys() == neighbors
 
 
 def test_contains_information_about_neighbor(transformed_result, testdata):
+    host_result = transformed_result[testdata["host"]]
+    host_result.validate()
     print(testdata)
-    neighbor_details = transformed_result[testdata["host"]].result[
-        testdata["neighbor_id"]
-    ]
+    neighbor_details = host_result.result[testdata["neighbor_id"]]
     expected = {
         "neighbor_id": testdata["neighbor_id"],
         "priority": PRIORITY,

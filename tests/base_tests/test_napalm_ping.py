@@ -178,7 +178,10 @@ def test_destination_maps_to_enum(transformed_result, testdata):
     host = testdata["host"]
     destination = testdata["destination"]
     expected = testdata["expected"]
-    assert transformed_result[host][destination].result.name == expected
+
+    dest_result = transformed_result[host][destination]
+    dest_result.validate()
+    assert dest_result.result.name == expected
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

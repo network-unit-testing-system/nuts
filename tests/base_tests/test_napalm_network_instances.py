@@ -201,24 +201,29 @@ def test_contains_hosts_at_toplevel(transformed_result):
 def test_contains_network_instances_at_second_level(
     transformed_result, host, network_instances
 ):
-    assert transformed_result[host].result.keys() == network_instances
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert host_result.result.keys() == network_instances
 
 
 def test_contains_interfaces_at_network_instance(transformed_result, testdata):
     host = testdata["host"]
     network_instance = testdata["network_instance"]
     expected = testdata["interfaces"]
-    assert transformed_result[host].result[network_instance]["interfaces"] == expected
+
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert host_result.result[network_instance]["interfaces"] == expected
 
 
 def test_contains_route_distinguisher_at_network_instance(transformed_result, testdata):
     host = testdata["host"]
     network_instance = testdata["network_instance"]
     expected = testdata["route_distinguisher"]
-    assert (
-        transformed_result[host].result[network_instance]["route_distinguisher"]
-        == expected
-    )
+
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert host_result.result[network_instance]["route_distinguisher"] == expected
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

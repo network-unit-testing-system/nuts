@@ -48,17 +48,8 @@ def single_result(nuts_ctx: NutsContext, host: str) -> NutsResult:
 def check_nuts_result(single_result: NutsResult) -> None:
     """
     Ensure that the result has no exception and has not failed.
-    Raises corresponding AssertionError based on the condition.
-
-    :param single_result: The result to be checked
-    :return: None
-    :raise: AssertionError if single_result contains an exception
-        or single_result is failed
     """
-    assert (
-        not single_result.exception
-    ), f"An exception was thrown during information gathering: {single_result.result}"
-    assert not single_result.failed, "Information gathering failed"
+    single_result.validate()
 
 
 def pytest_configure(config: Config) -> None:

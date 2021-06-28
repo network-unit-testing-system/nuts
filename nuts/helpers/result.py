@@ -206,3 +206,17 @@ class AbstractResultExtractor:
             host in self.transformed_result
         ), f"Host {host} not found in aggregated result."
         return self.transformed_result[host]
+
+
+class AbstractHostResultExtractor(AbstractResultExtractor):
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, NutsResult]:
+        return self._map_host_to_nutsresult(general_result)
+
+
+class AbstractHostDestResultExtractor(AbstractResultExtractor):
+    def transform_result(
+        self, general_result: AggregatedResult
+    ) -> Dict[str, Dict[str, NutsResult]]:
+        return self._map_host_to_dest_to_nutsresult(general_result)

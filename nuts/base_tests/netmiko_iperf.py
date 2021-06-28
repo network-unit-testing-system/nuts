@@ -5,7 +5,7 @@ from typing import Dict, Callable, Any
 import shlex
 
 from nornir.core.filter import F
-from nornir.core.task import Task, Result, AggregatedResult
+from nornir.core.task import Task, Result
 from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext

@@ -8,7 +8,7 @@ Subclasses NutsContext and therefore does not need network access.
 """
 
 from nuts.helpers.result import NutsResult, AbstractResultExtractor
-from typing import List, Dict, Any, TypeVar
+from typing import List, Dict, Any
 
 import pytest
 from nuts.context import NutsContext

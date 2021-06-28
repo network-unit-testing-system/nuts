@@ -26,8 +26,8 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 @pytest.fixture
 def single_result(nuts_ctx: NutsContext, nuts_test_entry: Dict[str, Any]) -> NutsResult:
     """
-    Returns the result which belongs to a specific host out of the overall set of results
-    that has been returned by nornir's task.
+    Returns the result which belongs to a specific host
+    out of the overall set of results that has been returned by nornir's task.
     In addition, ensures that the result has no exception and has not failed.
 
     :param nuts_ctx: The context for a test

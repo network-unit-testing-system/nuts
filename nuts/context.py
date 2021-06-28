@@ -1,13 +1,13 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
-from typing import Any, Callable, Optional, Dict, Type, Union
+from typing import Any, Callable, Optional, Dict
 
 from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
 
 from nuts.helpers.errors import NutsSetupError
-from nuts.helpers.result import AbstractResultExtractor, NutsResult
+from nuts.helpers.result import AbstractResultExtractor
 
 
 class NutsContext:

@@ -22,7 +22,7 @@ class TestExecuteTests:
     ---
     - test_module: tests.base_tests.simple_nuts_annotation
       test_class: TestKeyValue
-      test_data: [{"key": "abc", "value":"abc"}, 
+      test_data: [{"key": "abc","value":"abc"},
       {"key": "cde", "value":"cde"}]
                 """
         }

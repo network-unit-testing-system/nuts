@@ -1,5 +1,5 @@
 """Allows to indicate only the test class name in a test bundle."""
-from typing import Dict, Optional
+from typing import Optional
 
 default_index = {
     "TestNapalmBgpNeighbors": "nuts.base_tests.napalm_bgp_neighbors",

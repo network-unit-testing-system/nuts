@@ -22,7 +22,7 @@ def test_check_result(testdir):
     - kind: exception
     - kind: failed_exception
     - kind: ok
-            """
+"""
     }
     testdir.makefile(YAML_EXTENSION, **arguments)
 

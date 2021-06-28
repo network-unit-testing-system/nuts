@@ -95,6 +95,7 @@ class AbstractResultExtractor:
         Maps a host's name to its corresponding result, which in turn is
         wrapped into a NutsResult.
 
+<<<<<<< HEAD
         Used when a nornir tasks queries properties of a host.
 
         :param general_result: The raw result as provided by nornir's executed task

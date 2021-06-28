@@ -60,8 +60,9 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
 def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]:
     """
-    Performs the collection phase for the given pytest session. Collects all test bundles if available,
-    i.e. files starting with 'test' and ending in .yaml.
+    Performs the collection phase for the given pytest session.
+    Collects all test bundles if available, i.e. files starting
+    with 'test' and ending in .yaml.
     :param parent: pytest session object
     :param path: path to test file(s)
     :return: The pytest collector if found

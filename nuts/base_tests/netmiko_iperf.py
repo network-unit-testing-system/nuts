@@ -43,13 +43,15 @@ class IperfContext(NornirNutsContext):
 
     def netmiko_run_iperf(self, task: Task) -> Result:
         """
-        Runs iperf between a host and several destinations. During setup, the destinations have been set up
+        Runs iperf between a host and several destinations.
+        During setup, the destinations have been set up
         to act as servers.
 
-        Note: The destination is not included in the nornir result if the iperf test fails.
-        Therefore we cannot know which destination was not reachable,
-        so we must patch the destination onto the result object to know later which
-        host-destination pair actually failed.
+        Note: The destination is not included in the nornir result
+        if the iperf test fails. Therefore we cannot know which destination
+        was not reachable, so we must patch the destination
+        onto the result object to know later
+        which host-destination pair actually failed.
 
         :param task: nornir task for iperf
         :return: All iperf results per host

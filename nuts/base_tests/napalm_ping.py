@@ -5,14 +5,14 @@ from typing import Dict, Callable, Any, List
 import pytest
 from nornir.core import Task
 from nornir.core.filter import F
-from nornir.core.task import Result, AggregatedResult
+from nornir.core.task import Result
 from nornir_napalm.plugins.tasks import napalm_ping
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import (
     NutsResult,
-    AbstractResultExtractor,
+    AbstractHostDestResultExtractor,
 )
 
 
@@ -22,12 +22,7 @@ class Ping(Enum):
     FLAPPING = 2
 
 
-class PingExtractor(AbstractResultExtractor):
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, Dict[str, NutsResult]]:
-        return self._map_host_to_dest_to_nutsresult(general_result)
-
+class PingExtractor(AbstractHostDestResultExtractor):
     def single_transform(self, single_result: Result) -> Ping:
         assert single_result.host is not None
         assert single_result.result is not None

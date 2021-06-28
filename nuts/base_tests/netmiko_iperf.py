@@ -11,15 +11,10 @@ from nornir_netmiko import netmiko_send_command
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
 from nuts.helpers.errors import Error
-from nuts.helpers.result import NutsResult, AbstractResultExtractor
+from nuts.helpers.result import NutsResult, AbstractHostDestResultExtractor
 
 
-class IperfExtractor(AbstractResultExtractor):
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, Dict[str, NutsResult]]:
-        return self._map_host_to_dest_to_nutsresult(general_result)
-
+class IperfExtractor(AbstractHostDestResultExtractor):
     def single_transform(self, single_result: Result) -> int:
         assert isinstance(single_result.result, str)
         return self._extract_bps(single_result.result)

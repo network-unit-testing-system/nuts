@@ -6,7 +6,8 @@ from nuts.base_tests.netmiko_cdp_neighbors import CONTEXT
 from tests.utils import SelfTestData, create_multi_result, create_result
 
 SOFTWARE_VERSION = (
-    "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)",
+    "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M),\
+        Version 16.11.1a, RELEASE SOFTWARE (fc1)",
 )
 CAPABILITIES = ("Router IGMP",)
 PLATFORM = ("cisco CSR1000V",)

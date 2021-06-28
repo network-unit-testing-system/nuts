@@ -1,23 +1,23 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
-from typing import Any, Callable, Optional, Dict, Union
+from typing import Any, Callable, Optional, Dict
 
 from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
 
 from nuts.helpers.errors import NutsSetupError
-from nuts.helpers.result import NutsResult
-
 
 _TransformedResult = Dict[str, Any]
 
 
 class NutsContext:
     """
-    Base context class. Holds all necessary information that is needed for a specific test.
+    Base context class. Holds all necessary information that is needed
+    for a specific test.
 
-    :param nuts_parameters: test-specific data that is defined in the test bundle, i.e. the yaml file that is converted to nuts tests
+    :param nuts_parameters: test-specific data that is defined in the test bundle,
+        i.e. the yaml file that is converted to nuts tests
     """
 
     def __init__(self, nuts_parameters: Any = None):
@@ -30,10 +30,12 @@ class NutsContext:
 
     def nuts_arguments(self) -> Dict[str, Any]:
         """
-        Additional arguments for the (network) task to be executed. These can also be parameters
-        that are defined in the `test_execution` part of the test bundle.
+        Additional arguments for the (network) task to be executed.
+        These can also be parameters that are defined in the `test_execution`
+        part of the test bundle.
 
-        If the subclass is a NornirNutsContext, the arguments are passed on to the nornir task:
+        If the subclass is a NornirNutsContext, the arguments are passed on
+        to the nornir task:
         Note that the arguments then must match those that the nornir task offers.
 
         :return: A dict containing the additional arguments
@@ -57,9 +59,10 @@ class NutsContext:
     @property
     def transformed_result(self) -> _TransformedResult:
         """
-        The (processed) results of the network task, ready to be passed on to a test's fixture.
-        The results are cached, so that general_result does not need to be called multiple times as it might
-        access the network.
+        The (processed) results of the network task, ready to be passed on to
+            a test's fixture.
+        The results are cached, so that general_result does
+            not need to be called multiple times as it might access the network.
         """
         if self._cached_result is None:
             self._cached_result = self.transform_result(self.general_result())
@@ -94,7 +97,8 @@ class NornirNutsContext(NutsContext):
         """
         Returns the task that nornir should execute for the test module.
 
-        :return: A task as defined by one of nornir's plugins or a function that calls a nornir task
+        :return: A task as defined by one of nornir's plugins
+            or a function that calls a nornir task
         """
         raise NotImplementedError
 
@@ -115,8 +119,8 @@ class NornirNutsContext(NutsContext):
 
     def general_result(self) -> AggregatedResult:
         """
-        Nornir is run with the defined task, additional arguments, a nornir filter and returns the
-        raw result from nornir.
+        Nornir is run with the defined task, additional arguments,
+            a nornir filter and returns the raw result from nornir.
         If the setup/teardown methods are overwritten, these are executed as well.
 
         :return: The raw result as provided by nornir's executed task

@@ -1,5 +1,5 @@
 """Query BGP neighbors of a device or count them."""
-from typing import Dict, Callable, List, Any, Sized
+from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F

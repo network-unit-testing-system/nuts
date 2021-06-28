@@ -24,8 +24,9 @@ nornir-netmiko = "^0.1.1"
 nornir-utils = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
-black = "^20.8b1"
 pytest-cov = "^2.10.1"
+black = "^20.8b1"
+flake8 = "^3.9.2"
 
 [tool.poetry.plugins."pytest11"]
 "nuts"="nuts.plugin"
@@ -55,7 +56,7 @@ warn_unused_configs = true
 disallow_any_generics = true
 disallow_subclassing_any = true
 # disallow_untyped_calls = true
-# disallow_untyped_defs = true  
+# disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 disallow_untyped_decorators = true
@@ -97,12 +98,12 @@ ignore_missing_imports = true
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py,black,mypy,docs
+envlist = py,black,mypy,docs,flake8
 testpaths = "tests"
 
 [testenv]
 description = Run pytest and generate report
-deps = 
+deps =
     pytest
     pytest-cov
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
@@ -128,9 +129,14 @@ deps = sphinx
 changedir = docs/
 commands = sphinx-build {posargs} source build
 
+[testenv:flake8]
+description = Enforce style with Flake8
+deps = flake8
+commands = flake8 --max-line-length 88 nuts/ tests/
+
 [testenv:pytest-main]
 description = Run project tests against pytest-main branch
-deps = 
+deps =
     git+https://github.com/pytest-dev/pytest.git#main
     pytest-cov
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml

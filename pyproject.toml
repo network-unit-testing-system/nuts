@@ -56,7 +56,7 @@ warn_unused_configs = true
 disallow_any_generics = true
 disallow_subclassing_any = true
 # disallow_untyped_calls = true
-# disallow_untyped_defs = true  
+# disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 disallow_untyped_decorators = true
@@ -103,7 +103,7 @@ testpaths = "tests"
 
 [testenv]
 description = Run pytest and generate report
-deps = 
+deps =
     pytest
     pytest-cov
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
@@ -136,7 +136,7 @@ commands = flake8 --max-line-length 88 nuts/ tests/
 
 [testenv:pytest-main]
 description = Run project tests against pytest-main branch
-deps = 
+deps =
     git+https://github.com/pytest-dev/pytest.git#main
     pytest-cov
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml

@@ -11,11 +11,11 @@ class InterfaceNameConverter:
     def shorten_interface_name(self, name: str) -> str:
         for key, value in self.interface_conversion_rules.items():
             if name.lower().startswith(key.lower()):
-                return value + name[len(key) :]
+                return value + name[len(key) :]  # noqa: E203
         return name
 
     def expand_interface_name(self, name: str) -> str:
         for key, value in self.interface_conversion_rules.items():
             if name.lower().startswith(value.lower()):
-                return key + name[len(value) :]
+                return key + name[len(value) :]  # noqa: E203
         return name

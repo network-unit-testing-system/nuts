@@ -92,13 +92,13 @@ class AbstractResultExtractor:
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
         """
-                Maps a host's name to its corresponding result, which in turn is
-                wrapped into a NutsResult.
-                Used when a nornir tasks queries properties of a host.
+        Maps a host's name to its corresponding result, which in turn is
+        wrapped into a NutsResult.
+        Used when a nornir tasks queries properties of a host.
 
-                :param general_result: The raw result
-                        as provided by nornir's executed task
-                :return: Host mapped to a NutsResult
+        :param general_result: The raw result
+                as provided by nornir's executed task
+        :return: Host mapped to a NutsResult
         """
         return {
             host: self.nuts_result_wrapper(multiresult)
@@ -218,6 +218,10 @@ class AbstractHostResultExtractor(AbstractResultExtractor):
         self, general_result: AggregatedResult
     ) -> Dict[str, NutsResult]:
         return self._map_host_to_nutsresult(general_result)
+
+    def _simple_extract(self, single_result: MultiResult) -> Dict[Any, Any]:
+        assert single_result[0].result is not None
+        return single_result[0].result
 
 
 class AbstractHostDestResultExtractor(AbstractResultExtractor):

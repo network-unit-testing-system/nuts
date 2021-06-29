@@ -23,12 +23,10 @@ class NutsYamlFile(pytest.File):
     """
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
-        # path uses pathlib.Path and is meant to
-        #   replace fspath, which uses py.path.local
-        # both variants will be used for some time in parallel within pytest.
-        # If fspath is used in a newer pytest version,
-        #   it triggers a deprecation warning.
-        # We therefore use a wrapper that can use both path types
+        # path uses pathlib.Path and is meant to replace fspath, which uses
+        # py.path.local. Both variants will be used for some time in parallel within
+        # pytest. If fspath is used in a newer pytest version, it triggers a deprecation
+        # warning. We therefore use a wrapper that can use both path types
         if hasattr(self, "path"):
             yield from self._collect_path()
         else:
@@ -81,7 +79,7 @@ def find_module_path(module_path: Optional[str], class_name: str) -> str:
         module_path = index.find_test_module_of_class(class_name)
         if not module_path:
             raise NutsUsageError(
-                f"A module that corresponds to the test_class "
+                "A module that corresponds to the test_class "
                 f"called {class_name} could not be found."
             )
     return module_path
@@ -163,11 +161,11 @@ class NutsTestClass(pytest.Class):
         cls, parent: Node, *, name: str, obj: Any = None, **kw: Any
     ) -> Any:
         """The public constructor."""
-        # mypy throws an error because the parent
-        #   class (pytest.Class) does not accept additional **kw
-        # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
-        # and will be part of a future pytest release. Until then,
-        #   mypy is instructed to ignore this error
+        # mypy throws an error because the parent class (pytest.Class) does not accept
+        # additional **kw.
+        # This has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
+        # and will be part of a future pytest release. Until then, mypy is instructed
+        # to ignore this error
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
 

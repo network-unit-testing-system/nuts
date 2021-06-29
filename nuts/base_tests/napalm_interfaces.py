@@ -13,8 +13,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 class InterfacesExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        return single_result[0].result["interfaces"]
+        return self._simple_extract(single_result)["interfaces"]
 
 
 class InterfacesContext(NornirNutsContext):

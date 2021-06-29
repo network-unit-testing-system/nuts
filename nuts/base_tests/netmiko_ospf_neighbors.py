@@ -13,8 +13,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 class OspfNeighborsExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Any]:
-        assert single_result[0].result is not None
-        neighbors = single_result[0].result
+        neighbors = self._simple_extract(single_result)
         return {details["neighbor_id"]: details for details in neighbors}
 
 

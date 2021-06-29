@@ -13,8 +13,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 class UsersExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        return single_result[0].result["users"]
+        return self._simple_extract(single_result)["users"]
 
 
 class UsersContext(NornirNutsContext):

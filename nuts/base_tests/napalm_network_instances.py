@@ -13,9 +13,7 @@ from nuts.context import NornirNutsContext
 
 class NetworkInstancesExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        task_result = single_result[0].result
-        network_instances = task_result["network_instances"]
+        network_instances = self._simple_extract(single_result)["network_instances"]
         return {
             instance: self._transform_single_network_instance(details)
             for instance, details in network_instances.items()

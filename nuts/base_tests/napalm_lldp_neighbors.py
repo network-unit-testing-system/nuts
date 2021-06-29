@@ -14,9 +14,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 class LldpNeighborsExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        task_result = single_result[0].result
-        neighbors = task_result["lldp_neighbors_detail"]
+        neighbors = self._simple_extract(single_result)["lldp_neighbors_detail"]
         return {
             peer: self._add_custom_fields(details[0])
             for peer, details in neighbors.items()

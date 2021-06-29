@@ -12,12 +12,9 @@ from nuts.context import NornirNutsContext
 
 
 class CdpNeighborsExtractor(AbstractHostResultExtractor):
-    def single_transform(self, host_results: MultiResult) -> Dict[str, Dict[str, Any]]:
-        assert host_results[0].result is not None
-        return {
-            neighbor["destination_host"]: neighbor
-            for neighbor in host_results[0].result
-        }
+    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
+        neighbors = self._simple_extract(single_result)
+        return {neighbor["destination_host"]: neighbor for neighbor in neighbors}
 
 
 class CdpNeighborsContext(NornirNutsContext):

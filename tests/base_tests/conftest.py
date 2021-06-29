@@ -51,7 +51,7 @@ Traceback (most recent call last):
     r = self.task(self, **self.params)
   File "C:\somepath\lib\site-packages\nornir_napalm\plugins\tasks\napalm_get.py", line 32, in napalm_get
     device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
-  File "C:\somepath\lib\site-packages\nornir\core\inventory.py", line 448, in get_connection 
+  File "C:\somepath\lib\site-packages\nornir\core\inventory.py", line 448, in get_connection
     extras=conn.extras,
   File "C:\somepath\lib\site-packages\nornir\core\inventory.py", line 499, in open_connection
     configuration=configuration,

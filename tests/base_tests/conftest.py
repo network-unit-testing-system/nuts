@@ -62,7 +62,7 @@ Traceback (most recent call last):
   File "C:\somepath\lib\site-packages\napalm\base\base.py", line 95, in _netmiko_open
     raise ConnectionException("Cannot connect to {}".format(self.hostname))
 napalm.base.exceptions.ConnectionException: Cannot connect to 10.20.0.123
-"""
+"""  # noqa: E501
 
 
 @pytest.fixture

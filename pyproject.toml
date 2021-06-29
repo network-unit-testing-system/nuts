@@ -98,7 +98,7 @@ ignore_missing_imports = true
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py,black,mypy,docs,flake8
+envlist = py,black,mypy,flake8,docs
 testpaths = "tests"
 
 [testenv]

@@ -1,7 +1,7 @@
 from tests.utils import YAML_EXTENSION
 
 
-def test_load_module_fixture(testdir):
+def test_load_module_fixture(pytester):
     arguments = {
         "test_module_level_fixtures": """
             ---
@@ -10,13 +10,13 @@ def test_load_module_fixture(testdir):
               test_data: []
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=1)
 
 
-def test_load_module_fixture_multiple_test_definitions(testdir):
+def test_load_module_fixture_multiple_test_definitions(pytester):
     arguments = {
         "test_module_level_fixtures": """
             ---
@@ -31,7 +31,7 @@ def test_load_module_fixture_multiple_test_definitions(testdir):
               test_data: []
             """,
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=2)

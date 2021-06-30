@@ -99,8 +99,8 @@ class TestNornirNutsContextGeneralResult:
 
 @pytest.mark.usefixtures("default_nr_init")
 class TestNornirNutsContextIntegration:
-    def test_fails_if_no_task_is_defined(self, testdir):
-        testdir.makepyfile(
+    def test_fails_if_no_task_is_defined(self, pytester):
+        pytester.makepyfile(
             basic_task="""
             from nuts.context import NornirNutsContext
 
@@ -123,12 +123,12 @@ class TestNornirNutsContextIntegration:
                           test_data: ['test1', 'test2']
                         """,
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
-        result = testdir.runpytest("test_class_loading.yaml")
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(failed=1)
 
-    def test_executes_specified_task(self, testdir):
-        testdir.makepyfile(
+    def test_executes_specified_task(self, pytester):
+        pytester.makepyfile(
             basic_task="""
     from nuts.context import NornirNutsContext
 
@@ -154,6 +154,6 @@ class TestNornirNutsContextIntegration:
                   test_data: ['test1', 'test2']
                 """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
-        result = testdir.runpytest("test_class_loading.yaml")
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=1)

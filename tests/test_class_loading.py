@@ -12,7 +12,7 @@ def mock_index(monkeypatch):
     monkeypatch.setattr(index, "default_index", test_index)
 
 
-def test_load_class_and_execute_tests(testdir):
+def test_load_class_and_execute_tests(pytester):
     arguments = {
         "test_class_loading": """
             ---
@@ -21,13 +21,13 @@ def test_load_class_and_execute_tests(testdir):
               test_data: []
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=2)
 
 
-def test_load_class_multiple_times(testdir):
+def test_load_class_multiple_times(pytester):
     arguments = {
         "test_load_class_repeatedly": """
             ---
@@ -39,13 +39,13 @@ def test_load_class_multiple_times(testdir):
               test_data: []
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=4)
 
 
-def test_injects_arguments_as_fixture(testdir):
+def test_injects_arguments_as_fixture(pytester):
     arguments = {
         "test_args_as_fixture": """
             ---
@@ -54,13 +54,13 @@ def test_injects_arguments_as_fixture(testdir):
               test_data: ['test1', 'test2']
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=1)
 
 
-def test_load_class_from_index(testdir, mock_index):
+def test_load_class_from_index(pytester, mock_index):
     arguments = {
         "test_index_loading": """
             ---
@@ -68,13 +68,13 @@ def test_load_class_from_index(testdir, mock_index):
               test_data: ['test1', 'test2']
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=1)
 
 
-def test_class_with_empty_test_execution_field(testdir):
+def test_class_with_empty_test_execution_field(pytester):
     arguments = {
         "test_empty_execution_field": """
             ---
@@ -84,13 +84,13 @@ def test_class_with_empty_test_execution_field(testdir):
               test_data: ['test3', 'test4']
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=1)
 
 
-def test_class_with_test_execution_field(testdir):
+def test_class_with_test_execution_field(pytester):
     arguments = {
         "test_execution_field": """
             ---
@@ -102,13 +102,13 @@ def test_class_with_test_execution_field(testdir):
               test_data: ['test3', 'test4']
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(passed=1)
 
 
-def test_bundle_with_labels(testdir):
+def test_bundle_with_labels(pytester):
     arguments = {
         "test_label_loading": """
         ---
@@ -122,9 +122,9 @@ def test_bundle_with_labels(testdir):
           test_data: ["eliza"]
         """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest("--collect-only")
+    result = pytester.runpytest("--collect-only")
     result.stdout.fnmatch_lines(
         [
             "*NutsTestClass TestClass - testrun23*",

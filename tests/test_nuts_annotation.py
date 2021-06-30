@@ -1,7 +1,7 @@
 from tests.utils import YAML_EXTENSION
 
 
-def test_skips_execution_without_arguments(testdir):
+def test_skips_execution_without_arguments(pytester):
     arguments = {
         "test_class_loading": """
 ---
@@ -9,14 +9,14 @@ def test_skips_execution_without_arguments(testdir):
   test_class: TestKeyValue
             """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(skipped=1)
 
 
 class TestExecuteTests:
-    def test_based_on_arguments(self, testdir):
+    def test_based_on_arguments(self, pytester):
         arguments = {
             "test_class_loading": """
     ---
@@ -26,12 +26,12 @@ class TestExecuteTests:
       {"key": "cde", "value":"cde"}]
                 """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=2)
 
-    def test_multiple_times_separates_arguments(self, testdir):
+    def test_multiple_times_separates_arguments(self, pytester):
         arguments = {
             "test_class_loading": """
     ---
@@ -43,14 +43,14 @@ class TestExecuteTests:
       test_data: [{"key": "abc", "value":"bcd"}]
                 """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1, failed=1)
 
 
 class TestOptionalAttributes:
-    def test_skips_test_if_attribute_is_missing(self, testdir):
+    def test_skips_test_if_attribute_is_missing(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -59,12 +59,12 @@ class TestOptionalAttributes:
           test_data: [{"key": "abc"}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(skipped=1)
 
-    def test_skips_test_if_non_optional_attribute_is_missing(self, testdir):
+    def test_skips_test_if_non_optional_attribute_is_missing(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -73,12 +73,12 @@ class TestOptionalAttributes:
           test_data: [{"key": "abc"}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(skipped=1)
 
-    def test_executes_test_if_optional_attribute_is_missing(self, testdir):
+    def test_executes_test_if_optional_attribute_is_missing(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -87,12 +87,12 @@ class TestOptionalAttributes:
           test_data: [{"value": null}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1)
 
-    def test_executes_test_if_any_optional_attribute_is_missing(self, testdir):
+    def test_executes_test_if_any_optional_attribute_is_missing(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -101,12 +101,12 @@ class TestOptionalAttributes:
           test_data: [{"value": null}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1)
 
-    def test_executes_test_if_all_optional_attribute_are_missing(self, testdir):
+    def test_executes_test_if_all_optional_attribute_are_missing(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -115,12 +115,12 @@ class TestOptionalAttributes:
           test_data: [{}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1)
 
-    def test_executes_test_if_required_attribute_is_none(self, testdir):
+    def test_executes_test_if_required_attribute_is_none(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -129,12 +129,12 @@ class TestOptionalAttributes:
           test_data: [{"key": null, "value": null}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1)
 
-    def test_strips_spaced_attribute_names(self, testdir):
+    def test_strips_spaced_attribute_names(self, pytester):
         arguments = {
             "test_class_loading": """
         ---
@@ -143,12 +143,12 @@ class TestOptionalAttributes:
           test_data: [{"key": null, "value": null}]
                     """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1)
 
-    def test_single_arguments(self, testdir):
+    def test_single_arguments(self, pytester):
         arguments = {
             "test_single_argument": """
             ---
@@ -157,7 +157,7 @@ class TestOptionalAttributes:
               test_data: [{"value": "test"}]
                 """
         }
-        testdir.makefile(YAML_EXTENSION, **arguments)
+        pytester.makefile(YAML_EXTENSION, **arguments)
 
-        result = testdir.runpytest()
+        result = pytester.runpytest()
         result.assert_outcomes(passed=1)

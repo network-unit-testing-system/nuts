@@ -1,5 +1,7 @@
 name: Run tests against pytest-master
-on: [push]
+on:
+  schedule:
+    - cron:  '* 22 * * 0'
 jobs:
   self-tests:
     name: test against pytest-main

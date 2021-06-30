@@ -7,30 +7,66 @@ jobs:
     strategy:
       matrix:
         python: [3.7, 3.8, 3.9]
-        testenv: py            
+        include:
+          - python: 3.7
+            testenv: py
+          - python: 3.8
+            testenv: py  
+          - python: 3.9
+            testenv: py
     steps:
       - uses: actions/checkout@v2
-      - name: set up Python
+      - uses: actions/cache@v2
+        with:
+          path: |
+            .mypy_cache
+            .tox
+            ~/.cache/pip      
+      - name: "set up Python ${{ matrix.python }}"
         uses: actions/setup-python@v2
         with:
           python-version: "${{ matrix.python }}"
       - name: install tox
         run: pip install tox
       - name: run tox
-        run: "tox -e ${{ matrix.testenv}}"
+        run: "tox -e ${{ matrix.testenv }}"
+  
   quality:
     name: quality tests with tox
     runs-on: ubuntu-latest
     strategy:
-      python: 3.7
-      testenv: [mypy, flake8]
+      matrix:
+        testenv: [mypy, black, flake8, docs]
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            .mypy_cache
+            .tox
+            ~/.cache/pip      
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "${{ matrix.python }}"
       - name: install tox
         run: pip install tox
-      - name: run tox
+      - name: "Run tox with ${{ matrix.testenv }}"
         run: "tox -e ${{ matrix.testenv}}"
+
+name: Run tests against pytest-master
+on: [push]
+jobs:
+  self-tests:
+    name: test against pytest-main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: install tox
+        run: pip install tox
+      - name: run tox against pytest-main
+        run: tox -e pytest-main

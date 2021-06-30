@@ -5,32 +5,41 @@ from typing import Dict, Callable, Any
 import shlex
 
 from nornir.core.filter import F
-from nornir.core.task import Task, Result, AggregatedResult
+from nornir.core.task import Task, Result
 from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
 from nuts.helpers.errors import Error
-from nuts.helpers.result import NutsResult, map_host_to_dest_to_nutsresult
+from nuts.helpers.result import NutsResult, AbstractHostDestResultExtractor
+
+
+class IperfExtractor(AbstractHostDestResultExtractor):
+    def single_transform(self, single_result: Result) -> int:
+        assert isinstance(single_result.result, str)
+        return self._extract_bps(single_result.result)
+
+    def _extract_bps(self, iperf_task_result: str) -> int:
+        iperf_result = json.loads(iperf_task_result)
+        if "error" in iperf_result:
+            raise IperfResultError(iperf_result["error"])
+        return int(iperf_result["end"]["sum_received"]["bits_per_second"])
+
+    def single_result(self, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+        host = nuts_test_entry["host"]
+        destination = nuts_test_entry["destination"]
+        assert (
+            host in self.transformed_result
+        ), f"Host {host} not found in aggregated result."
+        assert (
+            destination in self.transformed_result[host]
+        ), f"Destination {destination} not found in result."
+        return self.transformed_result[host][destination]
 
 
 class IperfContext(NornirNutsContext):
     def nuts_task(self) -> Callable[..., Result]:
         return self.netmiko_run_iperf
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
-
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, Dict[str, NutsResult]]:
-        return map_host_to_dest_to_nutsresult(
-            general_result, self._transform_single_entry
-        )
-
-    def _transform_single_entry(self, single_result: Result) -> int:
-        assert isinstance(single_result.result, str)
-        return _extract_bps(single_result.result)
 
     def netmiko_run_iperf(self, task: Task) -> Result:
         """
@@ -61,6 +70,9 @@ class IperfContext(NornirNutsContext):
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result=f"iperf executed for {task.host}")
 
+    def nornir_filter(self) -> F:
+        return filter_hosts(self.nuts_parameters["test_data"])
+
     def setup(self) -> None:
         """
         Sets up the all destinations to act as iperf servers.
@@ -69,7 +81,10 @@ class IperfContext(NornirNutsContext):
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         assert self.nornir is not None
         selected_destinations = self.nornir.filter(destinations)
-        selected_destinations.run(task=server_setup)
+        selected_destinations.run(task=self.server_setup)
+
+    def server_setup(self, task: Task) -> None:
+        task.run(task=netmiko_send_command, command_string="iperf3 --server --daemon")
 
     def teardown(self) -> None:
         """
@@ -79,7 +94,16 @@ class IperfContext(NornirNutsContext):
         destinations = F(hostname__any={entry["destination"] for entry in test_data})
         assert self.nornir is not None
         selected_destinations = self.nornir.filter(destinations)
-        selected_destinations.run(task=server_teardown)
+        selected_destinations.run(task=self.server_teardown)
+
+    def server_teardown(self, task: Task) -> None:
+        task.run(
+            task=netmiko_send_command,
+            command_string="pkill iperf3",
+        )
+
+    def nuts_extractor(self) -> IperfExtractor:
+        return IperfExtractor(self)
 
 
 CONTEXT = IperfContext
@@ -90,38 +114,7 @@ class IperfResultError(Error):
     """Error in iperf result JSON."""
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNetmikoIperf:
-    @pytest.fixture
-    def single_result(
-        self, nuts_ctx: NornirNutsContext, host: str, destination: str
-    ) -> Dict[str, Any]:
-        assert (
-            host in nuts_ctx.transformed_result
-        ), f"Host {host} not found in aggregated result."
-        assert (
-            destination in nuts_ctx.transformed_result[host]
-        ), f"Destination {destination} not found in result."
-        return nuts_ctx.transformed_result[host][destination]
-
-    @pytest.mark.nuts("host,destination,min_expected")
+    @pytest.mark.nuts("min_expected")
     def test_iperf(self, single_result, min_expected):
         assert single_result.result >= min_expected
-
-
-def _extract_bps(iperf_task_result: str) -> int:
-    iperf_result = json.loads(iperf_task_result)
-    if "error" in iperf_result:
-        raise IperfResultError(iperf_result["error"])
-    return int(iperf_result["end"]["sum_received"]["bits_per_second"])
-
-
-def server_setup(task: Task) -> None:
-    task.run(task=netmiko_send_command, command_string="iperf3 --server --daemon")
-
-
-def server_teardown(task: Task) -> None:
-    task.run(
-        task=netmiko_send_command,
-        command_string="pkill iperf3",
-    )

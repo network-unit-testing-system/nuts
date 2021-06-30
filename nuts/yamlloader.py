@@ -23,12 +23,10 @@ class NutsYamlFile(pytest.File):
     """
 
     def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
-        # path uses pathlib.Path and is meant to
-        #   replace fspath, which uses py.path.local
-        # both variants will be used for some time in parallel within pytest.
-        # If fspath is used in a newer pytest version,
-        #   it triggers a deprecation warning.
-        # We therefore use a wrapper that can use both path types
+        # path uses pathlib.Path and is meant to replace fspath, which uses
+        # py.path.local. Both variants will be used for some time in parallel within
+        # pytest. If fspath is used in a newer pytest version, it triggers a deprecation
+        # warning. We therefore use a wrapper that can use both path types
         if hasattr(self, "path"):
             yield from self._collect_path()
         else:
@@ -81,7 +79,7 @@ def find_module_path(module_path: Optional[str], class_name: str) -> str:
         module_path = index.find_test_module_of_class(class_name)
         if not module_path:
             raise NutsUsageError(
-                f"A module that corresponds to the test_class "
+                "A module that corresponds to the test_class "
                 f"called {class_name} could not be found."
             )
     return module_path
@@ -163,62 +161,75 @@ class NutsTestClass(pytest.Class):
         cls, parent: Node, *, name: str, obj: Any = None, **kw: Any
     ) -> Any:
         """The public constructor."""
-        # mypy throws an error because the parent
-        #   class (pytest.Class) does not accept additional **kw
-        # has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
-        # and will be part of a future pytest release. Until then,
-        #   mypy is instructed to ignore this error
+        # mypy throws an error because the parent class (pytest.Class) does not accept
+        # additional **kw.
+        # This has been fixed in: https://github.com/pytest-dev/pytest/pull/8367
+        # and will be part of a future pytest release. Until then, mypy is instructed
+        # to ignore this error
         return cls._create(parent=parent, name=name, obj=obj, **kw)
 
 
 def get_parametrize_data(
-    metafunc: Metafunc, nuts_params: Tuple[str, ...]
-) -> List[ParameterSet]:
+    metafunc: Metafunc,
+    fields_str: Optional[str] = None,
+    optional_fields_str: Optional[str] = None,
+) -> Tuple[List[str], List[ParameterSet]]:
     """
     Transforms externally provided parameters to be used in parametrized tests.
+
+    For every single test run one entry from the test_data section in the yaml file is
+    injected as a first entry to be parametrized (`nuts_test_entry`).
+    In doing so, the `single_result` fixture in `plugin.py` can pass on
+    the full entry to the extractor. The extractor can then decide in its
+    own `single_result` method which property of the entry should be picked as key
+    (e.g. `[host]` or `[host][destination]`).
+
     :param metafunc: The annotated test function that will use the parametrized data.
-    :param nuts_params: The fields used in a test and indicated
-        via a custom pytest marker.
-    :return: List of tuples that contain each the parameters for a test.
+    :param fields_str: The fields used in a test, coming from pytest.mark.nuts.
+    :param optional_fields_str: Fields which are optional, coming from pytest.mark.nuts.
+    :return: A tuple with 2 entries:
+       - List of field names.
+       - List of tuples that contain each the parameters for a test.
     """
-    fields = [field.strip() for field in nuts_params[0].split(",")]
-    required_fields = calculate_required_fields(fields, nuts_params)
+    if fields_str is None:
+        fields = []
+    else:
+        fields = [field.strip() for field in fields_str.split(",")]
+
+    if optional_fields_str is None:
+        optional_fields = set()
+    else:
+        optional_fields = {field.strip() for field in optional_fields_str.split(",")}
+    required_fields = set(fields) - optional_fields
+
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "params", None)
-    if not data:
-        return []
-    return dict_to_tuple_list(data["test_data"], fields, required_fields)
-
-
-def calculate_required_fields(
-    fields: List[str], nuts_params: Tuple[str, ...]
-) -> Set[str]:
-    required_fields = set(fields)
-    if len(nuts_params) >= 2:
-        optional_fields = {field.strip() for field in nuts_params[1].split(",")}
-        required_fields -= optional_fields
-    return required_fields
+    data = getattr(nuts_test_instance, "params")
+    return (
+        ["nuts_test_entry", *fields],
+        dict_to_tuple_list(data["test_data"], fields, required_fields),
+    )
 
 
 def dict_to_tuple_list(
     test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str]
 ) -> List[ParameterSet]:
     return [
-        wrap_if_needed(item, required_fields, dict_to_tuple(item, fields))
-        for item in test_data
+        wrap_if_needed(entry, required_fields, dict_to_tuple(entry, fields))
+        for entry in test_data
     ]
 
 
 def wrap_if_needed(
-    source: Dict[str, Any],
+    entry: Dict[str, Any],
     required_fields: Set[str],
     present_fields: Tuple[Optional[Any], ...],
 ) -> ParameterSet:
-    missing_fields = required_fields - set(source)
+    missing_fields = required_fields - set(entry)
     if not missing_fields:
-        return pytest.param(*present_fields)
+        return pytest.param(entry, *present_fields)
     return pytest.param(
+        entry,
         *present_fields,
         marks=pytest.mark.skip(
             f"required values {missing_fields} not present in test-bundle"

@@ -37,7 +37,8 @@ iperf_l2_2 = SelfTestData(
         "error":"error - unable to connect to server: No route to host"}',
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},
     expected_output=[
-        "E * nuts.helpers.errors.NutsNornirError: An exception has occurred while executing nornir:",
+        "E * nuts.helpers.errors.NutsNornirError: "
+        "An exception has occurred while executing nornir:",
         "*.IperfResultError: error - unable to connect to server: No route to host",
     ],
     expected_outcome="errors",

@@ -3,12 +3,17 @@ from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F
-from nornir.core.task import MultiResult, AggregatedResult, Result
+from nornir.core.task import MultiResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import map_host_to_nutsresult, NutsResult
+from nuts.helpers.result import AbstractHostResultExtractor
+
+
+class UsersExtractor(AbstractHostResultExtractor):
+    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
+        return self._simple_extract(single_result)["users"]
 
 
 class UsersContext(NornirNutsContext):
@@ -21,38 +26,28 @@ class UsersContext(NornirNutsContext):
     def nornir_filter(self) -> F:
         return filter_hosts(self.nuts_parameters["test_data"])
 
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, NutsResult]:
-        return map_host_to_nutsresult(general_result, self._transform_host_results)
-
-    def _transform_host_results(
-        self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, Any]]:
-        assert single_result[0].result is not None
-        return single_result[0].result["users"]
+    def nuts_extractor(self) -> UsersExtractor:
+        return UsersExtractor(self)
 
 
 CONTEXT = UsersContext
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmUsers:
-    @pytest.mark.nuts("host,username")
+    @pytest.mark.nuts("username")
     def test_username(self, single_result, username):
         assert username in single_result.result
 
-    @pytest.mark.nuts("host,username,password")
+    @pytest.mark.nuts("username,password")
     def test_password(self, single_result, username, password):
         assert single_result.result[username]["password"] == password
 
-    @pytest.mark.nuts("host,username,level")
+    @pytest.mark.nuts("username,level")
     def test_privilege_level(self, single_result, username, level):
         assert single_result.result[username]["level"] == level
 
 
-@pytest.mark.usefixtures("check_nuts_result")
 class TestNapalmOnlyDefinedUsersExist:
-    @pytest.mark.nuts("host,usernames")
+    @pytest.mark.nuts("usernames")
     def test_no_rogue_users(self, single_result, usernames):
         assert list(single_result.result) == usernames

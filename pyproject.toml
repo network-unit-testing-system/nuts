@@ -6,8 +6,8 @@ build-backend = "poetry.core.masonry.api"
 name = "nuts"
 version = "3.0.0"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Méline Sieber, Urs Baumann, Matthias Gabriel"]
-maintainers = ["Méline Sieber <meline.sieber@ost.ch>"]
+authors = ["Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin"]
+maintainers = ["Méline Sieber <meline.sieber@ost.ch>", "Florian Bruhin <florian.bruhin@ost.ch>"]
 classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
 homepage = "https://github.com/INSRapperswil/Nuts"
 repository = "https://github.com/INSRapperswil/Nuts"
@@ -98,7 +98,7 @@ ignore_missing_imports = true
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py,black,mypy,docs,flake8
+envlist = py,black,mypy,flake8,docs
 testpaths = "tests"
 
 [testenv]

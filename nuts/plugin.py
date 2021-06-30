@@ -1,5 +1,5 @@
 """Fixtures"""
-from typing import Optional
+from typing import Optional, Dict, Any
 
 import pytest
 from _pytest.main import Session
@@ -24,32 +24,20 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture
-def single_result(nuts_ctx: NutsContext, host: str) -> NutsResult:
+def single_result(nuts_ctx: NutsContext, nuts_test_entry: Dict[str, Any]) -> NutsResult:
     """
     Returns the result which belongs to a specific host
-    out of the overall set of results that has been returned
-    by nornir's task.
+    out of the overall set of results that has been returned by nornir's task.
+    In addition, ensures that the result has no exception and has not failed.
 
-    :param nornir_nuts_ctx: The context for a test
-        with an initialized nornir instance
-    :param host: The host from the test bundle (yaml-file)
-        for which the corresponding result should be returned
-    :param destination: The corresponding destination to a host
-        for tests that test a host-destination relationship
-    :return: The `NutsResult` that belongs to a host
+    :param nuts_ctx: The context for a test
+    :param nuts_test_entry: The entry from the test bundle (yaml-file) for which
+        the corresponding result should be returned
+    :return: The `NutsResult` that belongs to a host or host/destination pair
     """
-    assert (
-        host in nuts_ctx.transformed_result
-    ), f"Host {host} not found in aggregated result."
-    return nuts_ctx.transformed_result[host]
-
-
-@pytest.fixture
-def check_nuts_result(single_result: NutsResult) -> None:
-    """
-    Ensure that the result has no exception and has not failed.
-    """
-    single_result.validate()
+    res = nuts_ctx.extractor.single_result(nuts_test_entry)
+    res.validate()
+    return res
 
 
 def pytest_configure(config: Config) -> None:
@@ -63,8 +51,10 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     """
     nuts = metafunc.definition.get_closest_marker("nuts")
     if nuts:
-        parametrize_data = get_parametrize_data(metafunc, nuts.args)
-        metafunc.parametrize(nuts.args[0], parametrize_data)
+        parametrize_args, parametrize_data = get_parametrize_data(
+            metafunc, *nuts.args, **nuts.kwargs
+        )
+        metafunc.parametrize(parametrize_args, parametrize_data)
 
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin

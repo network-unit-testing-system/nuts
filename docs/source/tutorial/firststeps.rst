@@ -49,7 +49,7 @@ A sample ``hosts.yaml`` might look like this:
       - name: Loopback0
         ipv4_address: 172.16.255.2
 
-We provide the most basic example here. Please see `nornir's documentation <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ on how to structure the inventory according to your needs. 
+We provide the most basic example here with sample IP addresses and credentials. Please see `nornir's documentation <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ on how to structure the inventory according to your needs. 
 
 A sample ``nr-config.yaml`` might look like this:
 
@@ -64,7 +64,7 @@ A sample ``nr-config.yaml`` might look like this:
   options:
       num_workers: 100
 
-If you set up the above folders and files, you're ready to write test bundles.
+If you set up the above folders and files, you are ready to write test bundles.
 
 2. Test Bundle
 --------------
@@ -90,8 +90,7 @@ Each test bundle contains the following structure:
 
 ``test_class``: Required. The name of the python class which contains the tests that should be executed. Note that currently every test in this class is executed.
 
-``label``: Optional. Additional identifier that can be used to distinguish between multiple occurrences of the same 
-test class in a test bundle.
+``label``: Optional. Additional identifier that can be used to distinguish between multiple occurrences of the same test class in a test bundle.
 
 ``test_execution``: Optional. Nuts uses nornir tasks to automatically interact with the network. This field contains additional information that is directly passed to the nornir task in the background. Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
 As an example, the test definition ``TestNapalmPing`` calls a nornir task to execute napalm's ping-command. 

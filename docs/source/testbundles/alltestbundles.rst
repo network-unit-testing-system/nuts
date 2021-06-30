@@ -3,7 +3,7 @@ Test Bundles
 
 A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc. These tests are defined by the individual fields for each entry in ``test_data``. If all fields are present, all tests are executed. If the field is missing, the test will be shown as "skipped" in the results. In the example on BGP neighbors below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). 
 
-This section contains all test bundles which have been implemented in NUTS, you can incorporate them in your own bundles. They can be executed with the command ``$ pytest <test>.yaml`` from your project root. 
+This section contains all test bundles which have been implemented in NUTS, you can incorporate them in your own bundles. They can be executed with the command ``$ pytest <test bundle name>.yaml`` from your project root. 
 
 Note that you need an inventory of network devices for the tests to work. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
 
@@ -108,7 +108,7 @@ Required fields for specific tests in this bundle:
 
     * Test remote_host host: ``host, remote_host`` 
     * Test local port: ``host, remote_host, local_port``
-    * Test remote port: ``remote_host, remote_port``
+    * Test remote port: ``host, remote_host, remote_port``
     * Test management IP: ``host, remote_host, management_ip``
 
 **Test Bundle Example:**
@@ -133,7 +133,7 @@ Interfaces
 
 .. code:: yaml
 
-    - test_class: TestInterfaces
+    - test_class: TestNapalmInterfaces
       test_data:
         - host: <host name, required>
           name: <name of the interface, required>
@@ -145,17 +145,17 @@ Interfaces
 
 Required fields for specific tests in this bundle:
 
-    * Test if interface is enabled: ``host_name, name, is_enabled``
-    * Test if interface is up: ``host_name, name, is_up`` 
-    * Test MAC address of interface: ``host_name, name, mac_address``
-    * Test MTU: ``host_name, name, mtu``
-    * Test speed: ``host_name, name, speed`` 
+    * Test if interface is enabled: ``host, name, is_enabled``
+    * Test if interface is up: ``host, name, is_up`` 
+    * Test MAC address of interface: ``host, name, mac_address``
+    * Test MTU: ``host, name, mtu``
+    * Test speed: ``host, name, speed`` 
 
 **Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_class: TestInterfaces
+    - test_class: TestNapalmInterfaces
         test_data:
         - host: R1
           name: GigabitEthernet1
@@ -170,15 +170,13 @@ iperf - Bandwidth Test
 
 .. attention::
 
-  Nornir parallelizes tasks, and this test bundle uses iperf3 to determine the bandwidth. This generates a conflict: A destination may be blocked for Host A because a parallel task for Host B is already connected to the same destination. In this case, task execution fails. As of Dec 2020, the `pull request for iperf3 <https://github.com/esnet/iperf/pull/1074>`__ is still open which allows parallel connections from one server to several clients. Until this is merged and released, please see the requirements below for solutions.
+  Nornir parallelizes tasks, and this test bundle uses iperf3 to determine the bandwidth. This generates a conflict: A destination may be blocked for Host A because a parallel task for Host B is already connected to the same destination. In this case, task execution fails. The `pull request for iperf3 <https://github.com/esnet/iperf/pull/1074>`__ is still open which should allow parallel connections from one server to several clients. Until this is merged and released, please see the requirements below for solutions.
 
 **Requirements**: 
-
-  * ``iperf3`` must be installed on all Linux hosts and destinations.
+ 
+  * Linux hosts required with ``iperf3`` installed.
   * Run nornir with one thread only:
-
-    * Adjust your nornir configuration for this test bundle only: in ``nr-config.yaml`` set ``num_workers: 1``.
-    * Alternative: Define a second nornir configuration ``nr-config-one-worker.yaml``, in which you set ``num_workers: 1``. Then create a file called ``conftest.py`` and place it in the same directory as this test bundle. In the file you overwrite the ``nornir_config_file()`` fixture to return your newly-created nornir configuration.
+  * Adjust your nornir configuration for this test bundle only: in ``nr-config.yaml`` set ``num_workers: 1``.
 
 **Test Bundle:** Tests if a connection between two hosts achieves a certain minimum bandwidth.
 
@@ -220,8 +218,8 @@ LLDP Neighbors
 
 Required fields for specific tests in this bundle:
 
-    * Test remote host: ``local_port, remote_host``
-    * Test remote port: ``local_port, remote_port`` 
+    * Test remote host: ``host, local_port, remote_host``
+    * Test remote port: ``host, local_port, remote_port`` 
 
 **Test Bundle Example:**
 
@@ -343,6 +341,8 @@ Ping Hosts
 
 **Test Bundle:** Tests if a host can ping another.
 
+**Note**: Linux host required with Ping installed.
+
 **Test Bundle Structure:**
 
 .. code:: yaml
@@ -392,7 +392,7 @@ Users - Information
 -------------------
 
 
-**Test Bundle:** Tests the if pre-defined users exist on a device.
+**Test Bundle:** Tests pre-defined users of a device.
 
 **Test Bundle Structure:**
 

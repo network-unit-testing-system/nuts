@@ -20,9 +20,10 @@ Installation via poetry
 
 Nuts uses `poetry <https://python-poetry.org/>`__ as a dependency manager.
 
-1. `Install poetry <https://python-poetry.org/docs/#installation>`__.
-2. Clone the `nuts repository <https://github.com/INSRapperswil/Nuts.git>`__
-3. Run ``$ poetry install``
+#. `Install poetry <https://python-poetry.org/docs/#installation>`__.
+#. Clone the `nuts repository <https://github.com/INSRapperswil/Nuts.git>`__
+#. Change into the cloned folder, then install all necessary dependencies: ``$ poetry install``
+#. Install nuts: ``$ pip install .``
 
 Parsing with ntc-templates
 --------------------------

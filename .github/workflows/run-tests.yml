@@ -46,7 +46,7 @@ jobs:
             .mypy_cache
             .tox
             ~/.cache/pip
-          key: "${{ matrix.testenv }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}
+          key: "${{ matrix.testenv }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}"
       - name: Set up Python
         uses: actions/setup-python@v2
         with:

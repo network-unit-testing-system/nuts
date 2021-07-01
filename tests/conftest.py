@@ -11,10 +11,10 @@ pytest_plugins = ["pytester", "nuts"]
 
 
 @pytest.fixture
-def default_nr_init(testdir):
+def default_nr_init(pytester):
     """Create initial Nornir files and expose the location
     as nornir_config_file fixture."""
-    hosts_path = testdir.tmpdir.join(f"hosts{YAML_EXTENSION}")
+    hosts_path = pytester.path / f"hosts{YAML_EXTENSION}"
     config = f"""inventory:
                           plugin: SimpleInventory
                           options:
@@ -34,11 +34,11 @@ def default_nr_init(testdir):
               hostname: 22.22.22.22
         """,
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
     # We need to have the test tmpdir in sys.path, so NUTS can import the test
     # modules (e.g. basic_task.py).
-    testdir.syspathinsert()
+    pytester.syspathinsert()
 
     yield
 

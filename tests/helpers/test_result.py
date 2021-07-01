@@ -11,7 +11,7 @@ from nornir.core.task import Result
 from nuts.helpers.result import AbstractResultExtractor
 
 
-def test_check_result(testdir):
+def test_check_result(pytester):
     arguments = {
         "test_check_result": """
 ---
@@ -24,9 +24,9 @@ def test_check_result(testdir):
     - kind: ok
 """
     }
-    testdir.makefile(YAML_EXTENSION, **arguments)
+    pytester.makefile(YAML_EXTENSION, **arguments)
 
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     result.assert_outcomes(errors=3, passed=1)
 
 

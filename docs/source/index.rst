@@ -51,7 +51,7 @@ Contents
    Installation <installation/install>
    Tutorial <tutorial/firststeps>
    Test Bundles <testbundles/alltestbundles>
-   Development <dev/writetests>
+   Writing Custom Tests <dev/writetests>
 
 
 Indices and tables

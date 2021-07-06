@@ -61,4 +61,8 @@ html_theme = "alabaster"
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
 
-html_theme_options = {"description": "NetTowel Network Unit Testing System"}
+html_theme_options = {
+	"description": "NetTowel Network Unit Testing System",
+	"body_max_width": "auto",
+	"page_width": "90%",
+}

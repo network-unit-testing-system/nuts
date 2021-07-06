@@ -24,7 +24,7 @@ copyright = f"{datetime.date.today().year}, Méline Sieber, Urs Baumann"
 author = "Méline Sieber"
 
 # The full version, including alpha/beta/rc tags
-release = "1.0.0"
+release = "1.1.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -32,8 +32,9 @@ release = "1.0.0"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.todo"]
+extensions = ["sphinx.ext.todo", "sphinx.ext.autodoc"]
 # generate API documentation from the docs-folder with: $ sphinx-apidoc -o source/api ../
+# https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html
 todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,4 +62,8 @@ html_theme = "alabaster"
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
 
-html_theme_options = {"description": "NetTowel Network Unit Testing System"}
+html_theme_options = {
+    "description": "NetTowel Network Unit Testing System",
+    "body_max_width": "auto",
+    "page_width": "90%",
+}

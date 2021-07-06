@@ -39,7 +39,7 @@ Enhance nuts
 Nuts is written in python and designed as a pytest plugin. It provides some base tests described in :doc:`the section about all test bundles <testbundles/alltestbundles>`, but since it's a plugin, you can write your own, self-written test classes for your custom tests. 
 A dev documentation on how to write your own test classes is planned for a future release. 
 
-We do not support self-written tests at the moment, since planned refactorings might introduce breaking changes. Still, you can already write your own test classes - see the ``nuts/base_tests`` folder in the code repository to learn how test classes are written.
+We do not support self-written tests at the moment, since planned refactorings might introduce breaking changes. Still, you can already write your own test classes! The ``nuts/base_tests`` folder in the code repository conatins sample implementations and :doc:`the development section <dev/writetests>` has a short introduction.
 
 Contents
 ========
@@ -51,6 +51,7 @@ Contents
    Installation <installation/install>
    Tutorial <tutorial/firststeps>
    Test Bundles <testbundles/alltestbundles>
+   Writing Custom Tests <dev/writetests>
 
 
 Indices and tables

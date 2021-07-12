@@ -1,4 +1,8 @@
-# NetTowel Network Unit Testing System
+**PLEASE NOTE: THIS PROJECT IS ARCHIVED AND NO LONGER IN USE**
+
+The maintained version is here: [Nuts on Github](https://github.com/INSRapperswil/Nuts)
+
+# [ARCHIVED] NetTowel Network Unit Testing System
 
 ## Introduction
 

@@ -22,8 +22,10 @@ class NutsContext:
         i.e. the yaml file that is converted to nuts tests
     """
 
+    id_format : str = ""
+
     def __init__(
-        self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None
+            self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None
     ):
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()

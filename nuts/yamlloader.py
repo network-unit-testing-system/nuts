@@ -2,6 +2,8 @@
 Based on https://docs.pytest.org/en/stable/example/nonpython.html#yaml-plugin
 """
 import importlib
+from nuts.helpers.context import load_context
+from nuts.context import NutsContext
 import types
 from importlib import util
 from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
@@ -186,8 +188,11 @@ def get_parametrize_data(
 
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
-    # breakpoint()
-    data = getattr(nuts_test_instance, "test_entry")
+    data = getattr(nuts_test_instance, "params")
+
+    ctx = load_context(nuts_test_instance.module, data)
+    data["test_data"] = ctx.parametrize(data["test_data"])
+
     return (
         ["nuts_test_entry", *fields],
         dict_to_tuple_list(data.get("test_data", []), fields, required_fields),

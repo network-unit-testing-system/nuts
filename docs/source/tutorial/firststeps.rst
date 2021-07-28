@@ -56,12 +56,12 @@ A sample ``nr-config.yaml`` might look like this:
 .. code:: yaml
 
   inventory:
-  plugin: SimpleInventory
-  options:
+    plugin: SimpleInventory
+    options:
       host_file: "inventory/hosts.yaml"
   runner:
-  plugin: threaded
-  options:
+    plugin: threaded
+    options:
       num_workers: 100
 
 If you set up the above folders and files, you are ready to write test bundles.

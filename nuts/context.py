@@ -67,6 +67,16 @@ class NutsContext:
         """
         return self._pytestconfig
 
+    def parametrize(self, test_data: Any) -> Any:
+        """
+        Return granular test_data depending on the Context.
+        If test_data includes a kind of group selct this function should unpack
+        and return test data for every host or entity.
+
+        :return: A dict containing the data vor every entity
+        """
+        return test_data
+
 
 class NornirNutsContext(NutsContext):
     """

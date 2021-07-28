@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from unittest.mock import Mock, ANY
 
 import pytest
@@ -275,3 +276,19 @@ class TestNornirNutsContextIntegration:
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(xpassed=1)
+
+class TestContextParameterization:
+    def test_default_parametrization(self):
+        context = NutsContext()
+        test_data = {"host": "R1", "test": "test"}
+        assert context.parametrize(test_data) == test_data
+    
+    def test_custom_parametrization(self):
+        class CustomContext(NutsContext):
+            def parametrize(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
+                return [data for data in test_data for _ in range(data.get("multiplier", 1))]   
+
+        context = CustomContext()
+        test_data = [{"multiplier": 4, "test": "test"}]
+        new_test_data = context.parametrize(test_data)
+        assert len(new_test_data) == 4

@@ -34,7 +34,6 @@ types-PyYAML = "*"
 types-setuptools = "*"
 types-toml = "*"
 
-
 [tool.poetry.plugins."pytest11"]
 "nuts"="nuts.plugin"
 # why "pytest11": https://github.com/pytest-dev/pytest/commit/ed03eef81b220199a819632a27f9c452b8e1fb81

@@ -195,15 +195,22 @@ def get_parametrize_data(
 
     return (
         ["nuts_test_entry", *fields],
-        dict_to_tuple_list(data["test_data"], fields, required_fields, id_format=ctx.id_format),
+        dict_to_tuple_list(
+            data["test_data"], fields, required_fields, id_format=ctx.id_format
+        ),
     )
 
 
 def dict_to_tuple_list(
-    test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str], id_format: str
+    test_data: List[Dict[str, Any]],
+    fields: List[str],
+    required_fields: Set[str],
+    id_format: str,
 ) -> List[ParameterSet]:
     return [
-        wrap_if_needed(entry, required_fields, dict_to_tuple(entry, fields), id_format=id_format)
+        wrap_if_needed(
+            entry, required_fields, dict_to_tuple(entry, fields), id_format=id_format
+        )
         for entry in test_data
     ]
 

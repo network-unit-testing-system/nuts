@@ -70,3 +70,15 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
     if path.ext == ".yaml" and path.basename.startswith("test"):
         return NutsYamlFile.from_parent(parent, fspath=path)
     return None
+
+
+def pytest_addoption(parser):
+    """Add options to control nuts / NornirContext"""
+
+    group = parser.getgroup('nuts')
+    group.addoption('--nornir-config', '--nornir-configuration',
+                    action='store',
+                    dest='nornir_configuration',
+                    default="nr-config.yaml,
+                    metavar='NORNIR_CONFIG',
+                    help='nuts nornir configuration file. Default is nr-config.yaml')

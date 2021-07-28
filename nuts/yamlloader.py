@@ -195,15 +195,15 @@ def get_parametrize_data(
 
     return (
         ["nuts_test_entry", *fields],
-        dict_to_tuple_list(data.get("test_data", []), fields, required_fields),
+        dict_to_tuple_list(data["test_data"], fields, required_fields, id_format=ctx.id_format),
     )
 
 
 def dict_to_tuple_list(
-    test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str]
+    test_data: List[Dict[str, Any]], fields: List[str], required_fields: Set[str], id_format: str
 ) -> List[ParameterSet]:
     return [
-        wrap_if_needed(entry, required_fields, dict_to_tuple(entry, fields))
+        wrap_if_needed(entry, required_fields, dict_to_tuple(entry, fields), id_format=id_format)
         for entry in test_data
     ]
 
@@ -212,16 +212,18 @@ def wrap_if_needed(
     entry: Dict[str, Any],
     required_fields: Set[str],
     present_fields: Tuple[Optional[Any], ...],
+    id_format: str,
 ) -> ParameterSet:
     missing_fields = required_fields - set(entry)
     if not missing_fields:
-        return pytest.param(entry, *present_fields)
+        return pytest.param(entry, *present_fields, id=id_format.format(**entry))
     return pytest.param(
         entry,
         *present_fields,
         marks=pytest.mark.skip(
             f"required values {missing_fields} not present in test-bundle"
         ),
+        id=id_format.format(**entry),
     )
 
 

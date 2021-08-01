@@ -1,6 +1,7 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
 from typing import Any, Callable, Optional, Dict
+from _pytest.config import Config
 
 from nornir import InitNornir
 from nornir.core import Nornir
@@ -22,6 +23,7 @@ class NutsContext:
     def __init__(self, nuts_parameters: Any = None):
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
+        self._pytestconfig = None
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -52,6 +54,22 @@ class NutsContext:
         """
         raise NotImplementedError
 
+    @property
+    def pytestconfig(self) -> Config:
+        """
+        Set the pytest configuration.
+        
+        Can be overwritten to aggregate the configuration
+        """
+        return self._pytestconfig
+
+    @pytestconfig.setter
+    def pytestconfig(self, config: Config):
+        """
+        :return: pytest configuration
+        """
+        self._pytestconfig = config
+
 
 class NornirNutsContext(NutsContext):
     """
@@ -72,8 +90,12 @@ class NornirNutsContext(NutsContext):
         self.nornir: Optional[Nornir] = None
 
     def initialize(self) -> None:
+        if self.pytestconfig:
+            config_file = self.pytestconfig.getoption("nornir_configuration", self.NORNIR_CONFIG_FILE)
+        else:
+            config_file = self.NORNIR_CONFIG_FILE
         self.nornir = InitNornir(
-            config_file=str(self.NORNIR_CONFIG_FILE),
+            config_file=str(config_file),
             logging={"enabled": False},
         )
 

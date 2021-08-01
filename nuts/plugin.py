@@ -19,6 +19,7 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
     context_class = getattr(request.module, "CONTEXT", NutsContext)
     ctx = context_class(params)
+    ctx.pytestconfig = request.config
     ctx.initialize()
     return ctx
 
@@ -75,10 +76,13 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
 def pytest_addoption(parser):
     """Add options to control nuts / NornirContext"""
 
-    group = parser.getgroup('nuts')
-    group.addoption('--nornir-config', '--nornir-configuration',
-                    action='store',
-                    dest='nornir_configuration',
-                    default="nr-config.yaml,
-                    metavar='NORNIR_CONFIG',
-                    help='nuts nornir configuration file. Default is nr-config.yaml')
+    group = parser.getgroup("nuts")
+    group.addoption(
+        "--nornir-config",
+        "--nornir-configuration",
+        action="store",
+        dest="nornir_configuration",
+        default="nr-config.yaml",
+        metavar="NORNIR_CONFIG",
+        help="nuts nornir configuration file. Default is nr-config.yaml",
+    )

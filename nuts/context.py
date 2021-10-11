@@ -58,7 +58,7 @@ class NutsContext:
     def pytestconfig(self) -> Config:
         """
         Set the pytest configuration.
-        
+
         Can be overwritten to aggregate the configuration
         """
         return self._pytestconfig
@@ -83,7 +83,7 @@ class NornirNutsContext(NutsContext):
 
     #: The path to a nornir configuration file.
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
-    NORNIR_CONFIG_FILE = pathlib.Path("nr-config.yaml")
+    NORNIR_CONFIG_FILE = "nr-config.yaml"
 
     def __init__(self, nuts_parameters: Any = None):
         super().__init__(nuts_parameters)
@@ -91,7 +91,11 @@ class NornirNutsContext(NutsContext):
 
     def initialize(self) -> None:
         if self.pytestconfig:
-            config_file = self.pytestconfig.getoption("nornir_configuration", self.NORNIR_CONFIG_FILE)
+            config_file = pathlib.Path(
+                self.pytestconfig.getoption(
+                    "nornir_configuration", self.NORNIR_CONFIG_FILE
+                )
+            )
         else:
             config_file = self.NORNIR_CONFIG_FILE
         self.nornir = InitNornir(

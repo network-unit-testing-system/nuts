@@ -1,0 +1,18 @@
+name: Run tests against pytest-master
+on:
+  schedule:
+    - cron:  '* 22 * * 0'
+jobs:
+  self-tests:
+    name: test against pytest-main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: install tox
+        run: pip install tox
+      - name: run tox against pytest-main
+        run: tox -e pytest-main

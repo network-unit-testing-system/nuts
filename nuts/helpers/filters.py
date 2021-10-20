@@ -12,6 +12,7 @@ def filter_hosts(test_data: Optional[List[Dict[str, Any]]]) -> F:
     hosts: Set[str] = {entry["host"] for entry in test_data}
     return F(name__any=hosts)
 
+
 def get_string_list(input_list):
     result_list = []
     for item in input_list:

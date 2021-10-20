@@ -1,5 +1,5 @@
 """Query vlans of a device."""
-from typing import Dict, Callable, List, Any, Type
+from typing import Dict, Callable, List, Any
 
 import pytest
 from nornir.core.filter import F
@@ -14,6 +14,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 class VlansExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         return self._simple_extract(single_result)["vlans"]
+
 
 class VlansContext(NornirNutsContext):
     def nuts_task(self) -> Callable[..., Result]:

@@ -1,6 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult
-from nornir_napalm.plugins import tasks
+
+# from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_get_vlans import CONTEXT
 

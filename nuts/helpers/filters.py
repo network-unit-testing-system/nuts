@@ -11,11 +11,3 @@ def filter_hosts(test_data: Optional[List[Dict[str, Any]]]) -> F:
     assert test_data is not None
     hosts: Set[str] = {entry["host"] for entry in test_data}
     return F(name__any=hosts)
-
-
-def get_string_list(input_list):
-    result_list = []
-    for item in input_list:
-        item = str(item) if type(item) != str else item
-        result_list.append(item)
-    return result_list

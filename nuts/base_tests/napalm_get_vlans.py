@@ -16,7 +16,7 @@ class VlansExtractor(AbstractHostResultExtractor):
         return self._cast_to_int(self._simple_extract(single_result)["vlan_tags"])
 
     def _cast_to_int(self, elements: Dict[str, Any]) -> Dict[int, Any]:
-        return {int(key):elements[key] for key in elements}
+        return {int(key): elements[key] for key in elements}
 
 
 class VlansContext(NornirNutsContext):

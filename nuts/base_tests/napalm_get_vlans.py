@@ -12,7 +12,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 
 class VlansExtractor(AbstractHostResultExtractor):
-    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
+    def single_transform(self, single_result: MultiResult) -> Dict[int, Any]:
         return self._cast_to_int(self._simple_extract(single_result)["vlans"])
 
     def _cast_to_int(self, elements: Dict[str, Any]) -> Dict[int, Any]:

@@ -7,16 +7,6 @@ from nuts.base_tests.napalm_get_vlans import CONTEXT
 
 from tests.utils import create_multi_result, SelfTestData
 
-# Check
-# If normal combination works vlan_name, vlan_tag
-# If normal combination fails wrong name, correct tag
-# If normal combination fails correct name, wrong tag
-# If tag only works
-# If wrong tag fails
-# If tag as int works
-# If tag as string works
-# if tag as int work with vlan_name
-
 nornir_raw_result_s1 = {
     "vlans": {
         "1": {
@@ -86,12 +76,17 @@ def single_result(transformed_result, testdata):
     return host_result.result
 
 
+def test_vlan_tag_exists(single_result, testdata):
+    assert testdata["vlan_tag"] in single_result
+
+
 def test_vlan_tag_has_corresponding_vlan_name(single_result, testdata):
     assert single_result[testdata["vlan_tag"]]["name"] == testdata["vlan_name"]
 
 
-# def test_username_has_matching_privilegelevel(single_result, testdata):
-#     assert single_result[testdata["username"]]["level"] == testdata["level"]
+def test_nonexisting_vlans_fail(single_result):
+    assert -1 not in single_result
+    assert 4096 not in single_result
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):
@@ -99,11 +94,12 @@ def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["S3"].exception is not None
 
 
+# NOT WORKING YET
 # def test_integration(selftestdata, integration_tester):
-#    integration_tester(
-#        selftestdata,
-#        test_class="TestNapalmVlans",
-#        task_module=tasks,
-#        task_name="napalm_get",
-#        test_count=3,
-#    )
+#   integration_tester(
+#       selftestdata,
+#       test_class="TestNapalmVlans",
+#       task_module=tasks,
+#       task_name="napalm_get",
+#       test_count=2,
+#   )

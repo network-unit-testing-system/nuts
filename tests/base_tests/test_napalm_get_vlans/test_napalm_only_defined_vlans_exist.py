@@ -78,11 +78,12 @@ def test_host_contains_all_vlans(single_result, testdata):
     assert list(single_result.keys()) == sorted(testdata["vlan_tags"])
 
 
+# NOT WORKING YET
 # def test_integration(selftestdata, integration_tester):
-#    integration_tester(
-#        selftestdata,
-#        test_class="TestNapalmVlans",
-#        task_module=tasks,
-#        task_name="napalm_get",
-#        test_count=3,
-#    )
+#   integration_tester(
+#       selftestdata,
+#       test_class="TestNapalmOnlyDefinedVlansExist",
+#       task_module=tasks,
+#       task_name="napalm_get",
+#       test_count=1,
+#   )

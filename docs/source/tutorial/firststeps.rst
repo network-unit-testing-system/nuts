@@ -19,6 +19,10 @@ Here's an overview on how to organise your files so that NUTS can find everythin
     └── tests               # your test bundles
         └── test-definition-ping.yaml    
 
+NOTE: If you already have an existing nornir configuration including an inventory you do not need to copy it into your NUTS test setup. Instead you can directly refer to it `when executing the tests`__.
+
+__ customInventory_
+
 1. Network Inventory
 --------------------
 
@@ -123,7 +127,13 @@ Notes:
 * ``test_data.max_drop: 1``. Maximum one ping attempt is allowed to fail to still count as SUCCESS ping.
 
 
-We save this file as ``test-definition-ping.yaml`` into the ``tests`` folder. If everything is set up as shown above, run the test from the root folder:
+We save this file as ``test-definition-ping.yaml`` into the ``tests`` folder.
+
+
+3. Running the Tests
+--------------------
+
+If everything is set up as shown above, run the test from the root folder:
 
 .. code:: shell
 
@@ -131,9 +141,21 @@ We save this file as ``test-definition-ping.yaml`` into the ``tests`` folder. If
 
 Pytest's output should then inform you if the test succeeded or not.
 
+.. _customInventory:
 
-Sample Test-Bundle Without a Network
-************************************
+Custom nornir configuration
+***************************
+
+If you already have a nornir configuration and inventory for your network you can reuse it by passing the parameter ``--nornir-config`` to the pytest command:
+
+.. code:: shell
+
+    $ pytest tests/test-definition-ping.yaml --nornir-config path/to/nr-config.yaml
+
+
+
+4. Sample Test-Bundle Without a Network
+---------------------------------------
 
 The sample test bundle above requires a network inventory and a running network in the background. In case you want to learn how nuts works but do not have a network at hand, nuts comes with an offline showcase to display its functionality. Use it as follows:
 

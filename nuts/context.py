@@ -20,10 +20,10 @@ class NutsContext:
         i.e. the yaml file that is converted to nuts tests
     """
 
-    def __init__(self, nuts_parameters: Any = None):
+    def __init__(self, nuts_parameters: Any = None, pytestconfig: Config = None):
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
-        self._pytestconfig = None
+        self._pytestconfig = pytestconfig
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -63,13 +63,6 @@ class NutsContext:
         """
         return self._pytestconfig
 
-    @pytestconfig.setter
-    def pytestconfig(self, config: Config):
-        """
-        :return: pytest configuration
-        """
-        self._pytestconfig = config
-
 
 class NornirNutsContext(NutsContext):
     """
@@ -83,21 +76,20 @@ class NornirNutsContext(NutsContext):
 
     #: The path to a nornir configuration file.
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
-    NORNIR_CONFIG_FILE = "nr-config.yaml"
+    DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
-    def __init__(self, nuts_parameters: Any = None):
-        super().__init__(nuts_parameters)
+    def __init__(self, nuts_parameters: Any = None, pytestconfig: Config = None):
+        super().__init__(nuts_parameters, pytestconfig)
         self.nornir: Optional[Nornir] = None
 
     def initialize(self) -> None:
         if self.pytestconfig:
             config_file = pathlib.Path(
-                self.pytestconfig.getoption(
-                    "nornir_configuration", self.NORNIR_CONFIG_FILE
-                )
+                self.pytestconfig.getoption("nornir_configuration")
             )
         else:
-            config_file = self.NORNIR_CONFIG_FILE
+            config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
+
         self.nornir = InitNornir(
             config_file=str(config_file),
             logging={"enabled": False},

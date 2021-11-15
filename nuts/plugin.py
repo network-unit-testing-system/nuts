@@ -10,6 +10,7 @@ from _pytest.config import Config
 from py._path.local import LocalPath
 
 from nuts.context import NutsContext
+from nuts.context import NornirNutsContext
 from nuts.helpers.result import NutsResult
 from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
@@ -18,8 +19,7 @@ from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
     context_class = getattr(request.module, "CONTEXT", NutsContext)
-    ctx = context_class(params)
-    ctx.pytestconfig = request.config
+    ctx = context_class(params, pytestconfig=request.config)
     ctx.initialize()
     return ctx
 
@@ -74,15 +74,16 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
 
 
 def pytest_addoption(parser):
-    """Add options to control nuts / NornirContext"""
+    """Add pytest command line options to configure nuts"""
 
     group = parser.getgroup("nuts")
+    # Nornir context specific parameters
     group.addoption(
         "--nornir-config",
         "--nornir-configuration",
         action="store",
         dest="nornir_configuration",
-        default="nr-config.yaml",
+        default=NornirNutsContext.DEFAULT_NORNIR_CONFIG_FILE,
         metavar="NORNIR_CONFIG",
         help="nuts nornir configuration file. Default is nr-config.yaml",
     )

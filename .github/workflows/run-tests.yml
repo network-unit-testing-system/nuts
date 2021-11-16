@@ -1,0 +1,57 @@
+name: Run tests with tox
+on: [push]
+jobs:
+  self-tests:
+    name: pytest tests with tox
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.7, 3.8, 3.9]
+        include:
+          - python: 3.7
+            testenv: py
+          - python: 3.8
+            testenv: py  
+          - python: 3.9
+            testenv: py
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            .mypy_cache
+            .tox
+            ~/.cache/pip
+          key: "${{ matrix.testenv }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}"
+      - name: "set up Python ${{ matrix.python }}"
+        uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.python }}"
+      - name: install tox
+        run: pip install tox
+      - name: run tox
+        run: "tox -e ${{ matrix.testenv }}"
+  
+  quality:
+    name: quality tests with tox
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        testenv: [mypy, black, flake8, docs]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            .mypy_cache
+            .tox
+            ~/.cache/pip
+          key: "${{ matrix.testenv }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.python }}"
+      - name: install tox
+        run: pip install tox
+      - name: "Run tox with ${{ matrix.testenv }}"
+        run: "tox -e ${{ matrix.testenv}}"

@@ -226,5 +226,7 @@ class TestNornirNutsContextIntegration:
                 """
         }
         pytester.makefile(YAML_EXTENSION, **arguments)
-        result = pytester.runpytest("test_class_loading.yaml", "--nornir-config", "other-nr-config.yaml")
+        result = pytester.runpytest(
+            "test_class_loading.yaml", "--nornir-config", "other-nr-config.yaml"
+        )
         result.assert_outcomes(passed=4)

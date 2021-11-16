@@ -55,7 +55,7 @@ class NutsContext:
         raise NotImplementedError
 
     @property
-    def pytestconfig(self) -> Config:
+    def pytestconfig(self) -> Optional[Config]:
         """
         Set the pytest configuration.
 

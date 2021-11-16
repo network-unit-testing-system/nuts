@@ -205,14 +205,14 @@ class TestNornirNutsContextIntegration:
 
     class TestOtherConfigFile:
         def test_has_correct_pytestconfig(self, nuts_ctx):
-            assert nuts_ctx.pytestconfig.getoption("nornir_configuration") == "other-nr-config.yaml"
-            
+            assert nuts_ctx.pytestconfig.getoption("nornir_configuration") == "other-nr-config.yaml"  # noqa: E501
+
         def test_overrides_r1(self, nuts_ctx):
             assert nuts_ctx.nornir.inventory.hosts["R1"].hostname == "10.10.10.10"
-            
+
         def test_has_added_r4(self, nuts_ctx):
             assert nuts_ctx.nornir.inventory.hosts["R4"].hostname == "40.40.40.40"
-            
+
         def test_has_removed_l2(self, nuts_ctx):
             assert "L2" not in nuts_ctx.nornir.inventory.hosts.keys()
     """

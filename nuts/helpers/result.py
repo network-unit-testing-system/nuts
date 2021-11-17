@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from nuts.context import NutsContext
 
 
-_TransformedResult = Dict[str, Any]
-
-
 class NutsResult:
     """
     Potentially holds the result or context information if any issues occurred
@@ -59,6 +56,9 @@ class NutsResult:
                 f"Trying to access unvalidated result {self}"
             )
         return self._result
+
+
+_TransformedResult = Dict[str, NutsResult]
 
 
 class AbstractResultExtractor:

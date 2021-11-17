@@ -7,7 +7,7 @@ from nornir.core.task import MultiResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import AbstractHostResultExtractor
+from nuts.helpers.result import AbstractHostResultExtractor, NutsResult
 from nuts.context import NornirNutsContext
 
 
@@ -48,14 +48,14 @@ CONTEXT = NetworkInstancesContext
 class TestNapalmNetworkInstances:
     @pytest.mark.nuts("network_instance,interfaces")
     def test_network_instance_contains_interfaces(
-        self, single_result, network_instance, interfaces
-    ):
+        self, single_result: NutsResult, network_instance: Any, interfaces: Any
+    ) -> None:
         assert single_result.result[network_instance]["interfaces"] == interfaces
 
     @pytest.mark.nuts("network_instance,route_distinguisher")
     def test_route_distinguisher(
-        self, single_result, network_instance, route_distinguisher
-    ):
+        self, single_result: NutsResult, network_instance: Any, route_distinguisher: Any
+    ) -> None:
         assert (
             single_result.result[network_instance]["route_distinguisher"]
             == route_distinguisher

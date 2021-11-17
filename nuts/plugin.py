@@ -1,5 +1,6 @@
 """Fixtures"""
 from typing import Optional, Dict, Any
+import argparse
 
 import pytest
 from _pytest.main import Session
@@ -19,7 +20,7 @@ from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
     context_class = getattr(request.module, "CONTEXT", NutsContext)
-    ctx = context_class(params, pytestconfig=request.config)
+    ctx = context_class(params, pytestconfig=request.config)  # type: NutsContext
     ctx.initialize()
     return ctx
 
@@ -73,7 +74,7 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
     return None
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Any) -> None:
     """Add pytest command line options to configure nuts"""
 
     group = parser.getgroup("nuts")

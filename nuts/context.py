@@ -6,6 +6,7 @@ from _pytest.config import Config
 from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
+from nornir.core.filter import F
 
 from nuts.helpers.errors import NutsSetupError
 from nuts.helpers.result import AbstractResultExtractor
@@ -20,7 +21,7 @@ class NutsContext:
         i.e. the yaml file that is converted to nuts tests
     """
 
-    def __init__(self, nuts_parameters: Any = None, pytestconfig: Config = None):
+    def __init__(self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None):
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
         self._pytestconfig = pytestconfig
@@ -78,7 +79,7 @@ class NornirNutsContext(NutsContext):
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
     DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
-    def __init__(self, nuts_parameters: Any = None, pytestconfig: Config = None):
+    def __init__(self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None):
         super().__init__(nuts_parameters, pytestconfig)
         self.nornir: Optional[Nornir] = None
 
@@ -104,7 +105,7 @@ class NornirNutsContext(NutsContext):
         """
         raise NotImplementedError
 
-    def nornir_filter(self):
+    def nornir_filter(self) -> Optional[F]:
         """
         :return: A nornir filter that is applied to the nornir instance
         """
@@ -134,13 +135,13 @@ class NornirNutsContext(NutsContext):
         self.teardown()
         return overall_results
 
-    def setup(self):
+    def setup(self) -> None:
         """
         Defines code which is executed before the nornir task.
         """
         pass
 
-    def teardown(self):
+    def teardown(self) -> None:
         """
         Defines code which is executed after the nornir task.
         """

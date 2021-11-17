@@ -107,7 +107,7 @@ class PingContext(NornirNutsContext):
         ]
         for destination in destinations_per_hosts:
             result = task.run(task=napalm_ping, dest=destination, **kwargs)
-            result[0].destination = destination  # type: ignore[attr-defined]
+            result[0].destination = destination
         return Result(host=task.host, result="All pings executed")
 
     def nornir_filter(self) -> F:
@@ -122,5 +122,5 @@ CONTEXT = PingContext
 
 class TestNapalmPing:
     @pytest.mark.nuts("expected")
-    def test_ping(self, single_result, expected):
+    def test_ping(self, single_result: NutsResult, expected: Any) -> None:
         assert single_result.result.name == expected

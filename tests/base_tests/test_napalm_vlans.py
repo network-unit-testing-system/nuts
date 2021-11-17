@@ -1,7 +1,7 @@
 import pytest
 from nornir.core.task import AggregatedResult
 
-from nornir_napalm.plugins import tasks
+# from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_get_vlans import CONTEXT
 
@@ -112,6 +112,7 @@ def test_nonexisting_vlan_fails(single_result, nonexisting_tag):
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["S3"].failed
     assert transformed_result["S3"].exception is not None
+
 
 # For Méline: Decision if the second test class also gets unit-tests:
 # def test_host_contains_all_vlans(single_result, testdata):

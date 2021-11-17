@@ -23,27 +23,27 @@ nornir_raw_result_s2 = {
 }
 
 vlans_s1 = SelfTestData(
-    name="s1",
+    name="s1????",
     nornir_raw_result=nornir_raw_result_s1,
     test_data={"host": "S1", "vlan_name": "default", "vlan_tag": 1},
 )
 
 vlans_s2 = SelfTestData(
-    name="s2",
+    name="s2++++",
     nornir_raw_result=nornir_raw_result_s2,
     test_data={"host": "S2", "vlan_name": "vlan2", "vlan_tag": 2},
 )
 
 vlans_s1_taglist = SelfTestData(
-    name="s1",
+    name="S1",
     nornir_raw_result=nornir_raw_result_s1,
-    test_data={"host": "S1", "vlan_tags": {1, 2}},
+    test_data={"host": "S1", "vlan_tags": [1, 2]},
 )
 
 vlans_s2_taglist = SelfTestData(
-    name="s2",
+    name="S2",
     nornir_raw_result=nornir_raw_result_s2,
-    test_data={"host": "S2", "vlan_tags": {2}},
+    test_data={"host": "S2", "vlan_tags": [2]},
 )
 
 
@@ -122,21 +122,21 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 # Integration Test for Class TestNapalmVlans
 # NOT WORKING YET
 # def test_integration(selftestdata, integration_tester):
-#    integration_tester(
-#       selftestdata,
-#       test_class="TestNapalmVlans",
-#       task_module=tasks,
-#       task_name="napalm_get",
-#       test_count=2,
-#    )
+#     integration_tester(
+#         selftestdata,
+#         test_class="TestNapalmVlans",
+#         task_module=tasks,
+#         task_name="napalm_get",
+#         test_count=2,
+#     )
 
 # Integration Test for Class TestNapalmOnlyDefinedVlansExist
 # NOT WORKING YET
 # def test_integration(selftestdata_taglist, integration_tester):
-#   integration_tester(
-#       selftestdata_taglist,
-#       test_class="TestNapalmOnlyDefinedVlansExist",
-#       task_module=tasks,
-#       task_name="napalm_get",
-#       test_count=1,
-#   )
+#     integration_tester(
+#         selftestdata_taglist,
+#         test_class="TestNapalmOnlyDefinedVlansExist",
+#         task_module=tasks,
+#         task_name="napalm_get",
+#         test_count=1,
+#     )

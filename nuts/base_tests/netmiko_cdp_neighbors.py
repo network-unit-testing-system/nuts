@@ -36,23 +36,23 @@ CONTEXT = CdpNeighborsContext
 
 class TestNetmikoCdpNeighbors:
     @pytest.mark.nuts("remote_host")
-    def test_remote_host(self, single_result: NutsResult, remote_host: Any) -> None:
+    def test_remote_host(self, single_result: NutsResult, remote_host: str) -> None:
         assert remote_host in single_result.result
 
     @pytest.mark.nuts("remote_host,local_port")
     def test_local_port(
-        self, single_result: NutsResult, remote_host: Any, local_port: Any
+        self, single_result: NutsResult, remote_host: str, local_port: str
     ) -> None:
         assert single_result.result[remote_host]["local_port"] == local_port
 
     @pytest.mark.nuts("remote_host,remote_port")
     def test_remote_port(
-        self, single_result: NutsResult, remote_host: Any, remote_port: Any
+        self, single_result: NutsResult, remote_host: str, remote_port: str
     ) -> None:
         assert single_result.result[remote_host]["remote_port"] == remote_port
 
     @pytest.mark.nuts("remote_host,management_ip")
     def test_management_ip(
-        self, single_result: NutsResult, remote_host: Any, management_ip: Any
+        self, single_result: NutsResult, remote_host: str, management_ip: str
     ) -> None:
         assert single_result.result[remote_host]["management_ip"] == management_ip

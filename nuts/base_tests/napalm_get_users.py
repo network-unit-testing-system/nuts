@@ -35,23 +35,25 @@ CONTEXT = UsersContext
 
 class TestNapalmUsers:
     @pytest.mark.nuts("username")
-    def test_username(self, single_result: NutsResult, username: Any) -> None:
+    def test_username(self, single_result: NutsResult, username: str) -> None:
         assert username in single_result.result
 
     @pytest.mark.nuts("username,password")
     def test_password(
-        self, single_result: NutsResult, username: Any, password: Any
+        self, single_result: NutsResult, username: str, password: str
     ) -> None:
         assert single_result.result[username]["password"] == password
 
     @pytest.mark.nuts("username,level")
     def test_privilege_level(
-        self, single_result: NutsResult, username: Any, level: Any
+        self, single_result: NutsResult, username: str, level: int
     ) -> None:
         assert single_result.result[username]["level"] == level
 
 
 class TestNapalmOnlyDefinedUsersExist:
     @pytest.mark.nuts("usernames")
-    def test_no_rogue_users(self, single_result: NutsResult, usernames: Any) -> None:
+    def test_no_rogue_users(
+        self, single_result: NutsResult, usernames: List[str]
+    ) -> None:
         assert list(single_result.result) == usernames

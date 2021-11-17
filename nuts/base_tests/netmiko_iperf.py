@@ -116,5 +116,5 @@ class IperfResultError(Error):
 
 class TestNetmikoIperf:
     @pytest.mark.nuts("min_expected")
-    def test_iperf(self, single_result: NutsResult, min_expected: Any) -> None:
+    def test_iperf(self, single_result: NutsResult, min_expected: int) -> None:
         assert single_result.result >= min_expected

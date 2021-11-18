@@ -23,27 +23,27 @@ nornir_raw_result_s2 = {
 }
 
 vlans_s1 = SelfTestData(
-    name="s1????",
+    name="s1",
     nornir_raw_result=nornir_raw_result_s1,
     test_data={"host": "S1", "vlan_name": "default", "vlan_tag": 1},
 )
 
 vlans_s2 = SelfTestData(
-    name="s2++++",
+    name="s2",
     nornir_raw_result=nornir_raw_result_s2,
     test_data={"host": "S2", "vlan_name": "vlan2", "vlan_tag": 2},
 )
 
 vlans_s1_taglist = SelfTestData(
-    name="S1",
+    name="s1",
     nornir_raw_result=nornir_raw_result_s1,
-    test_data={"host": "S1", "vlan_tags": [1, 2]},
+    test_data={"host": "S1", "vlan_tag": [1, 2]},
 )
 
 vlans_s2_taglist = SelfTestData(
-    name="S2",
+    name="s2",
     nornir_raw_result=nornir_raw_result_s2,
-    test_data={"host": "S2", "vlan_tags": [2]},
+    test_data={"host": "S2", "vlan_tag": [2]},
 )
 
 
@@ -116,7 +116,7 @@ def test_marks_as_failed_if_task_failed(transformed_result):
 
 # For Méline: Decision if the second test class also gets unit-tests:
 # def test_host_contains_all_vlans(single_result, testdata):
-#   assert list(single_result.keys()) == sorted(testdata["vlan_tags"])
+#   assert list(single_result.keys()) == sorted(testdata["vlan_tag"])
 
 
 # Integration Test for Class TestNapalmVlans

@@ -125,10 +125,6 @@ def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["S3"].exception is not None
 
 
-# def test_host_contains_all_vlans(single_result, testdata_taglist):
-#   assert list(single_result.keys()) == sorted(testdata_taglist["vlan_tags"])
-
-
 def test_integration(selftestdata, integration_tester):
     integration_tester(
         selftestdata,

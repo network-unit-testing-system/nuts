@@ -140,11 +140,11 @@ def test_integration(selftestdata, integration_tester):
 
 # Integration Test for Class TestNapalmOnlyDefinedVlansExist
 # NOT WORKING YET
-# def test_integration(selftestdata_taglist, integration_tester):
-#     integration_tester(
-#         selftestdata_taglist,
-#         test_class="TestNapalmOnlyDefinedVlansExist",
-#         task_module=tasks,
-#         task_name="napalm_get",
-#         test_count=1,
-#     )
+def test_integration_definedvlans(selftestdata_taglist, integration_tester):
+    integration_tester(
+        selftestdata_taglist,
+        test_class="TestNapalmOnlyDefinedVlansExist",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=1,
+    )

@@ -110,6 +110,11 @@ def test_vlan_tag_has_corresponding_vlan_name(single_result, testdata):
     assert single_result[testdata["vlan_tag"]]["name"] == testdata["vlan_name"]
 
 
+def test_result_key_is_int(single_result):
+    """Nornir returns keys as string, but YAML bundle defines it as int"""
+    assert all([isinstance(key, int) for key in single_result.keys()])
+
+
 @pytest.mark.parametrize("nonexisting_tag", [-1, 17, 4096])
 def test_nonexisting_vlan_fails(single_result, nonexisting_tag):
     assert nonexisting_tag not in single_result

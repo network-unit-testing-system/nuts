@@ -22,10 +22,16 @@ nornir_raw_result_s2 = {
     }
 }
 
-vlans_s1 = SelfTestData(
-    name="s1",
+vlans_s1_1 = SelfTestData(
+    name="s1_1",
     nornir_raw_result=nornir_raw_result_s1,
     test_data={"host": "S1", "vlan_name": "default", "vlan_tag": 1},
+)
+
+vlans_s1_2 = SelfTestData(
+    name="s1_2",
+    nornir_raw_result=nornir_raw_result_s1,
+    test_data={"host": "S1", "vlan_name": "vlan2", "vlan_tag": 2},
 )
 
 vlans_s2 = SelfTestData(
@@ -37,13 +43,13 @@ vlans_s2 = SelfTestData(
 vlans_s1_taglist = SelfTestData(
     name="s1",
     nornir_raw_result=nornir_raw_result_s1,
-    test_data={"host": "S1", "vlan_tag": [1, 2]},
+    test_data={"host": "S1", "vlan_tags": [1, 2]},
 )
 
 vlans_s2_taglist = SelfTestData(
     name="s2",
     nornir_raw_result=nornir_raw_result_s2,
-    test_data={"host": "S2", "vlan_tag": [2]},
+    test_data={"host": "S2", "vlan_tags": [2]},
 )
 
 
@@ -52,7 +58,7 @@ def general_result(timeouted_multiresult):
     task_name = "napalm_get_facts"
     result = AggregatedResult(task_name)
     result["S1"] = create_multi_result(
-        [vlans_s1.create_nornir_result()],
+        [vlans_s1_1.create_nornir_result(), vlans_s1_2.create_nornir_result()],
         task_name,
     )
     result["S2"] = create_multi_result([vlans_s2.create_nornir_result()], task_name)
@@ -61,7 +67,7 @@ def general_result(timeouted_multiresult):
 
 
 @pytest.fixture(
-    params=[vlans_s1, vlans_s2],
+    params=[vlans_s1_1, vlans_s1_2, vlans_s2],
     ids=lambda data: data.name,
 )
 def selftestdata(request):

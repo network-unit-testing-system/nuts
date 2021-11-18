@@ -87,6 +87,11 @@ def selftestdata_taglist(request):
     return request.param
 
 
+@pytest.fixture
+def testdata_taglist(selftestdata_taglist):
+    return selftestdata_taglist.test_data
+
+
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
 
 

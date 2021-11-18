@@ -35,8 +35,7 @@ def default_nr_init(pytester):
             S1:
               hostname: 111.111.111.111
             S2:
-              hostname: 222.222.222.222                 
-        """,
+              hostname: 222.222.222.222""",
     }
     pytester.makefile(YAML_EXTENSION, **arguments)
 

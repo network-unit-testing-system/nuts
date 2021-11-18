@@ -125,21 +125,18 @@ def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["S3"].exception is not None
 
 
-# For Méline: Decision if the second test class also gets unit-tests:
-# def test_host_contains_all_vlans(single_result, testdata):
-#   assert list(single_result.keys()) == sorted(testdata["vlan_tag"])
+# def test_host_contains_all_vlans(single_result, testdata_taglist):
+#   assert list(single_result.keys()) == sorted(testdata_taglist["vlan_tags"])
 
 
-# Integration Test for Class TestNapalmVlans
-# NOT WORKING YET
-# def test_integration(selftestdata, integration_tester):
-#     integration_tester(
-#         selftestdata,
-#         test_class="TestNapalmVlans",
-#         task_module=tasks,
-#         task_name="napalm_get",
-#         test_count=2,
-#     )
+def test_integration(selftestdata, integration_tester):
+    integration_tester(
+        selftestdata,
+        test_class="TestNapalmVlans",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=2,
+    )
 
 # Integration Test for Class TestNapalmOnlyDefinedVlansExist
 # NOT WORKING YET

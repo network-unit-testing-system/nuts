@@ -1,11 +1,11 @@
 import pytest
 from nornir.core.task import AggregatedResult
-
-# from nornir_napalm.plugins import tasks
+from nornir_napalm.plugins import tasks
 
 from nuts.base_tests.napalm_get_vlans import CONTEXT
 
 from tests.utils import create_multi_result, SelfTestData
+
 
 nornir_raw_result_s1 = {
     "vlans": {
@@ -116,7 +116,8 @@ def test_vlan_tag_has_corresponding_vlan_name(single_result, testdata):
 
 
 def test_result_key_is_int(single_result):
-    """Nornir returns keys as string, but YAML bundle defines it as int"""
+    # tests if the string results from nornir (key to results) are
+    # correctly converted to int
     assert all([isinstance(key, int) for key in single_result.keys()])
 
 
@@ -138,6 +139,7 @@ def test_integration(selftestdata, integration_tester):
         task_name="napalm_get",
         test_count=2,
     )
+
 
 # Integration Test for Class TestNapalmOnlyDefinedVlansExist
 # NOT WORKING YET

@@ -1,6 +1,7 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
 from typing import Any, Callable, Optional, Dict
+from _pytest.config import Config
 
 from nornir import InitNornir
 from nornir.core import Nornir
@@ -19,9 +20,10 @@ class NutsContext:
         i.e. the yaml file that is converted to nuts tests
     """
 
-    def __init__(self, nuts_parameters: Any = None):
+    def __init__(self, nuts_parameters: Any = None, pytestconfig: Config = None):
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
+        self._pytestconfig = pytestconfig
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -52,6 +54,15 @@ class NutsContext:
         """
         raise NotImplementedError
 
+    @property
+    def pytestconfig(self) -> Optional[Config]:
+        """
+        Set the pytest configuration.
+
+        Can be overwritten to aggregate the configuration
+        """
+        return self._pytestconfig
+
 
 class NornirNutsContext(NutsContext):
     """
@@ -65,15 +76,22 @@ class NornirNutsContext(NutsContext):
 
     #: The path to a nornir configuration file.
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
-    NORNIR_CONFIG_FILE = pathlib.Path("nr-config.yaml")
+    DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
-    def __init__(self, nuts_parameters: Any = None):
-        super().__init__(nuts_parameters)
+    def __init__(self, nuts_parameters: Any = None, pytestconfig: Config = None):
+        super().__init__(nuts_parameters, pytestconfig)
         self.nornir: Optional[Nornir] = None
 
     def initialize(self) -> None:
+        if self.pytestconfig:
+            config_file = pathlib.Path(
+                self.pytestconfig.getoption("nornir_configuration")
+            )
+        else:
+            config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
+
         self.nornir = InitNornir(
-            config_file=str(self.NORNIR_CONFIG_FILE),
+            config_file=str(config_file),
             logging={"enabled": False},
         )
 

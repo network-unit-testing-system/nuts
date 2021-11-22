@@ -40,13 +40,19 @@ class TestNetmikoCdpNeighbors:
         assert remote_host in single_result.result
 
     @pytest.mark.nuts("remote_host,local_port")
-    def test_local_port(self, single_result: NutsResult, remote_host: Any, local_port: Any) -> None:
+    def test_local_port(
+        self, single_result: NutsResult, remote_host: Any, local_port: Any
+    ) -> None:
         assert single_result.result[remote_host]["local_port"] == local_port
 
     @pytest.mark.nuts("remote_host,remote_port")
-    def test_remote_port(self, single_result: NutsResult, remote_host: Any, remote_port: Any) -> None:
+    def test_remote_port(
+        self, single_result: NutsResult, remote_host: Any, remote_port: Any
+    ) -> None:
         assert single_result.result[remote_host]["remote_port"] == remote_port
 
     @pytest.mark.nuts("remote_host,management_ip")
-    def test_management_ip(self, single_result: NutsResult, remote_host: Any, management_ip: Any) -> None:
+    def test_management_ip(
+        self, single_result: NutsResult, remote_host: Any, management_ip: Any
+    ) -> None:
         assert single_result.result[remote_host]["management_ip"] == management_ip

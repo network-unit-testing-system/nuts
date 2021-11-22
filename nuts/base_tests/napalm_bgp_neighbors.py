@@ -12,7 +12,9 @@ from nuts.helpers.result import AbstractHostResultExtractor, NutsResult
 
 
 class BgpNeighborsExtractor(AbstractHostResultExtractor):
-    def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, NornirNutsContext]]:
+    def single_transform(
+        self, single_result: MultiResult
+    ) -> Dict[str, Dict[str, NornirNutsContext]]:
         neighbors = self._simple_extract(single_result)["bgp_neighbors"]
         if "global" not in neighbors:
             return {}

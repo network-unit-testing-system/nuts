@@ -1,6 +1,5 @@
 """Fixtures"""
 from typing import Optional, Dict, Any
-import argparse
 
 import pytest
 from _pytest.main import Session

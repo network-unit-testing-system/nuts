@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from nuts.context import NutsContext
 
 
+_TransformedResult = Dict[str, Any]
+
+
 class NutsResult:
     """
     Potentially holds the result or context information if any issues occurred
@@ -56,9 +59,6 @@ class NutsResult:
                 f"Trying to access unvalidated result {self}"
             )
         return self._result
-
-
-_TransformedResult = Dict[str, NutsResult]
 
 
 class AbstractResultExtractor:
@@ -187,7 +187,9 @@ class AbstractResultExtractor:
         raise NotImplementedError
 
     @property
-    def transformed_result(self) -> _TransformedResult:
+    def transformed_result(
+        self,
+    ) -> _TransformedResult:
         """
         The (processed) results of the network task, ready to be passed on to a test's
         fixture. The results are cached, so that general_result does not need
@@ -214,9 +216,7 @@ class AbstractResultExtractor:
 
 
 class AbstractHostResultExtractor(AbstractResultExtractor):
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, NutsResult]:
+    def transform_result(self, general_result: AggregatedResult) -> _TransformedResult:
         return self._map_host_to_nutsresult(general_result)
 
     def _simple_extract(self, single_result: MultiResult) -> Dict[Any, Any]:
@@ -225,7 +225,5 @@ class AbstractHostResultExtractor(AbstractResultExtractor):
 
 
 class AbstractHostDestResultExtractor(AbstractResultExtractor):
-    def transform_result(
-        self, general_result: AggregatedResult
-    ) -> Dict[str, Dict[str, NutsResult]]:
+    def transform_result(self, general_result: AggregatedResult) -> _TransformedResult:
         return self._map_host_to_dest_to_nutsresult(general_result)

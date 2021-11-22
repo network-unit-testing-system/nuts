@@ -43,13 +43,13 @@ vlans_s2 = SelfTestData(
 vlans_s1_taglist = SelfTestData(
     name="s1",
     nornir_raw_result=nornir_raw_result_s1,
-    test_data={"host": "S1", "vlan_tags": [1, 2]},
+    test_data={"host": "S1", "vlan_tags": {1, 2}},
 )
 
 vlans_s2_taglist = SelfTestData(
     name="s2",
     nornir_raw_result=nornir_raw_result_s2,
-    test_data={"host": "S2", "vlan_tags": [2]},
+    test_data={"host": "S2", "vlan_tags": {2}},
 )
 
 
@@ -141,8 +141,6 @@ def test_integration(selftestdata, integration_tester):
     )
 
 
-# Integration Test for Class TestNapalmOnlyDefinedVlansExist
-# NOT WORKING YET
 def test_integration_definedvlans(selftestdata_taglist, integration_tester):
     integration_tester(
         selftestdata_taglist,

@@ -35,7 +35,9 @@ CONTEXT = InterfacesContext
 
 class TestNapalmInterfaces:
     @pytest.mark.nuts("name,is_enabled")
-    def test_is_enabled(self, single_result: NutsResult, name: Any, is_enabled: Any) -> None:
+    def test_is_enabled(
+        self, single_result: NutsResult, name: Any, is_enabled: Any
+    ) -> None:
         assert single_result.result[name]["is_enabled"] == is_enabled
 
     @pytest.mark.nuts("name,is_up")
@@ -43,7 +45,9 @@ class TestNapalmInterfaces:
         assert single_result.result[name]["is_up"] == is_up
 
     @pytest.mark.nuts("name,mac_address")
-    def test_mac_address(self, single_result: NutsResult, name: Any, mac_address: Any) -> None:
+    def test_mac_address(
+        self, single_result: NutsResult, name: Any, mac_address: Any
+    ) -> None:
         assert single_result.result[name]["mac_address"] == mac_address
 
     @pytest.mark.nuts("name,mtu")

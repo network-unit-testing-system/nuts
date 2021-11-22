@@ -39,11 +39,15 @@ class TestNapalmUsers:
         assert username in single_result.result
 
     @pytest.mark.nuts("username,password")
-    def test_password(self, single_result: NutsResult, username: Any, password: Any) -> None:
+    def test_password(
+        self, single_result: NutsResult, username: Any, password: Any
+    ) -> None:
         assert single_result.result[username]["password"] == password
 
     @pytest.mark.nuts("username,level")
-    def test_privilege_level(self, single_result: NutsResult, username: Any, level: Any) -> None:
+    def test_privilege_level(
+        self, single_result: NutsResult, username: Any, level: Any
+    ) -> None:
         assert single_result.result[username]["level"] == level
 
 

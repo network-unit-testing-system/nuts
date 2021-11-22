@@ -21,7 +21,9 @@ class NutsContext:
         i.e. the yaml file that is converted to nuts tests
     """
 
-    def __init__(self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None):
+    def __init__(
+        self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None
+    ):
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
         self._pytestconfig = pytestconfig
@@ -79,7 +81,9 @@ class NornirNutsContext(NutsContext):
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
     DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
-    def __init__(self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None):
+    def __init__(
+        self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None
+    ):
         super().__init__(nuts_parameters, pytestconfig)
         self.nornir: Optional[Nornir] = None
 

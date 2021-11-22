@@ -126,7 +126,7 @@ commands = black --check {posargs} .
 [testenv:mypy]
 description = Check typing with mypy
 deps = mypy >= 0.812
-       types-PyYAML
+       types-PyYAML >= 6.0.1
 passenv = TERM
 commands = mypy {posargs} nuts tests
 
@@ -145,7 +145,7 @@ commands = flake8 --max-line-length 88 nuts/ tests/
 description = Run project tests against pytest-main branch
 deps =
     git+https://github.com/pytest-dev/pytest.git#main
-    pytest-cov
+    pytest-cov >= 2.10.1
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 

@@ -2,6 +2,7 @@
 from typing import Optional, Dict, Any
 
 import pytest
+from _pytest.config.argparsing import Parser
 from _pytest.main import Session
 from _pytest.nodes import Collector
 from _pytest.python import Metafunc
@@ -19,7 +20,7 @@ from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
     context_class = getattr(request.module, "CONTEXT", NutsContext)
-    ctx = context_class(params, pytestconfig=request.config)
+    ctx: NutsContext = context_class(params, pytestconfig=request.config)
     ctx.initialize()
     return ctx
 
@@ -73,7 +74,7 @@ def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]
     return None
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser) -> None:
     """Add pytest command line options to configure nuts"""
 
     group = parser.getgroup("nuts")

@@ -122,5 +122,5 @@ CONTEXT = PingContext
 
 class TestNapalmPing:
     @pytest.mark.nuts("expected")
-    def test_ping(self, single_result, expected):
+    def test_ping(self, single_result: NutsResult, expected: str) -> None:
         assert single_result.result.name == expected

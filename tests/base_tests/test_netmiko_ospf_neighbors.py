@@ -247,6 +247,13 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
     assert neighbor_details == expected
 
 
+@pytest.mark.parametrize("host, neighbor_amount", [("R1", 3), ("R2", 3)])
+def test_contains_correct_amount_of_hosts(transformed_result, host, neighbor_amount):
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert len(host_result.result) == neighbor_amount
+
+
 def test_marks_as_failed_if_task_failed(transformed_result):
     assert transformed_result["R3"].failed
     assert transformed_result["R3"].exception is not None

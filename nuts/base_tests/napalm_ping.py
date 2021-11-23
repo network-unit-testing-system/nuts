@@ -106,8 +106,8 @@ class PingContext(NornirNutsContext):
             if entry["host"] == task.host.name
         ]
         for destination in destinations_per_hosts:
-            result = task.run(task=napalm_ping, dest=destination, **kwargs)  # type: Any
-            result[0].destination = destination
+            result = task.run(task=napalm_ping, dest=destination, **kwargs)
+            result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result="All pings executed")
 
     def nornir_filter(self) -> F:

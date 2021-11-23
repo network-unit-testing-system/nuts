@@ -180,7 +180,6 @@ def test_contains_failed_result_at_second_level_if_task_failed(transformed_resul
 
 
 def test_contains_information_about_neighbor(interface_result, testdata, selftestdata):
-    print(testdata)
     expected = {
         "remote_system_description": REMOTE_SYSTEM_DESCRIPTION,
         "remote_system_capab": REMOTE_SYSTEM_CAPAB,

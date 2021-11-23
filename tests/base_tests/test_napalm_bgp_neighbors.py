@@ -204,7 +204,6 @@ def test_contains_peers_at_second_level(transformed_result, host, neighbors):
 
 
 def test_contains_information_about_neighbor(transformed_result, testdata):
-    print(testdata)
     host_result = transformed_result[testdata["host"]]
     host_result.validate()
     neighbor_details = host_result.result[testdata["peer"]]

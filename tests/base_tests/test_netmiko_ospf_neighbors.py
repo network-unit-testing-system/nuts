@@ -235,7 +235,6 @@ def test_contains_neighbors_at_second_level(transformed_result, host, neighbors)
 def test_contains_information_about_neighbor(transformed_result, testdata):
     host_result = transformed_result[testdata["host"]]
     host_result.validate()
-    print(testdata)
     neighbor_details = host_result.result[testdata["neighbor_id"]]
     expected = {
         "neighbor_id": testdata["neighbor_id"],

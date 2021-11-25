@@ -10,6 +10,7 @@ from nornir.core.filter import F
 
 from nuts.helpers.errors import NutsSetupError
 from nuts.helpers.result import AbstractResultExtractor
+from nuts.helpers.filters import filter_hosts
 
 
 class NutsContext:
@@ -109,11 +110,11 @@ class NornirNutsContext(NutsContext):
         """
         raise NotImplementedError
 
-    def nornir_filter(self) -> Optional[F]:
+    def nornir_filter(self) -> F:
         """
         :return: A nornir filter that is applied to the nornir instance
         """
-        return None
+        return filter_hosts(self.nuts_parameters["test_data"])
 
     def general_result(self) -> AggregatedResult:
         """

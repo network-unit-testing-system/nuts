@@ -120,7 +120,9 @@ class TestNornirNutsContextIntegration:
                         ---
                         - test_module: basic_task
                           test_class: TestBasicTask
-                          test_data: ['test1', 'test2']
+                          test_data:
+                            - host: R1
+                            - host: R2
                         """,
         }
         pytester.makefile(YAML_EXTENSION, **arguments)
@@ -151,7 +153,9 @@ class TestNornirNutsContextIntegration:
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
-                  test_data: ['test1', 'test2']
+                  test_data:
+                    - host: R1
+                    - host: R2
                 """
         }
         pytester.makefile(YAML_EXTENSION, **arguments)
@@ -222,7 +226,8 @@ class TestNornirNutsContextIntegration:
                 ---
                 - test_module: basic_task
                   test_class: TestOtherConfigFile
-                  test_data: ['test1']
+                  test_data:
+                    - host: R1
                 """
         }
         pytester.makefile(YAML_EXTENSION, **arguments)

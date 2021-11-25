@@ -4,12 +4,11 @@ import json
 from typing import Dict, Callable, Any
 import shlex
 
-from nornir.core.filter import F
 from nornir.core.task import Task, Result
+from nornir.core.filter import F
 from nornir_netmiko import netmiko_send_command
 
 from nuts.context import NornirNutsContext
-from nuts.helpers.filters import filter_hosts
 from nuts.helpers.errors import Error
 from nuts.helpers.result import NutsResult, AbstractHostDestResultExtractor
 
@@ -69,9 +68,6 @@ class IperfContext(NornirNutsContext):
             )
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result=f"iperf executed for {task.host}")
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
 
     def setup(self) -> None:
         """

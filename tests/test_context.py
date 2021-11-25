@@ -230,3 +230,84 @@ class TestNornirNutsContextIntegration:
             "test_class_loading.yaml", "--nornir-config", "other-nr-config.yaml"
         )
         result.assert_outcomes(passed=4)
+
+    def test_nornir_config_not_found_via_cmdline_option(self, pytester):
+        """
+        Test the command line option to provide another nornir config file
+        than the default one ("nr-config.yaml"). Basically tests whether it
+        really loads the changed configuration, which overwrites the default
+        test configuration.
+        """
+        # Setup other-config files
+        hosts_path = pytester.path / f"other_hosts{YAML_EXTENSION}"
+        config = f"""inventory:
+                              plugin: SimpleInventory
+                              options:
+                                  host_file: {hosts_path}
+        """
+        arguments = {
+            "other-nr-config": config,
+            "other_hosts": """
+                R1:
+                  hostname: 10.10.10.10
+                R2:
+                  hostname: 20.20.20.20
+                R3:
+                  hostname: 30.30.30.30
+                R4:
+                  hostname: 40.40.40.40
+                L1:
+                  hostname: 111.111.111.111
+            """,
+        }
+
+        pytester.makefile(YAML_EXTENSION, **arguments)
+
+        # Now make the real test
+        pytester.makepyfile(
+            basic_task="""
+    from nuts.context import NornirNutsContext
+
+
+    class CustomNornirNutsContext(NornirNutsContext):
+        pass
+
+
+    CONTEXT = CustomNornirNutsContext
+
+
+    class TestOtherConfigFile:
+        def test_has_correct_pytestconfig(self, nuts_ctx):
+            assert nuts_ctx.pytestconfig.getoption("nornir_configuration") == "other-nr-config.yaml"  # noqa: E501
+
+        def test_overrides_r1(self, nuts_ctx):
+            assert nuts_ctx.nornir.inventory.hosts["R1"].hostname == "10.10.10.10"
+
+        def test_has_added_r4(self, nuts_ctx):
+            assert nuts_ctx.nornir.inventory.hosts["R4"].hostname == "40.40.40.40"
+
+        def test_has_removed_l2(self, nuts_ctx):
+            assert "L2" not in nuts_ctx.nornir.inventory.hosts.keys()
+    """
+        )
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestOtherConfigFile
+                  test_data: ['test1']
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest(
+            "test_class_loading.yaml",
+            "--nornir-config",
+            "other-nr-config-with-typo.yaml",
+        )
+        result.stdout.fnmatch_lines(
+            [
+                "*nuts.helpers.errors.NutsSetupError: Nornir configuration file "
+                "not found!*",
+            ]
+        )
+        result.assert_outcomes(errors=4)

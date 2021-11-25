@@ -8,7 +8,7 @@ from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
 from nornir.core.filter import F
 
-from nuts.helpers.errors import NutsSetupError
+from nuts.helpers.errors import NutsSetupError, NutsUsageError
 from nuts.helpers.result import AbstractResultExtractor
 
 
@@ -95,10 +95,15 @@ class NornirNutsContext(NutsContext):
         else:
             config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
 
-        self.nornir = InitNornir(
-            config_file=str(config_file),
-            logging={"enabled": False},
-        )
+        try:
+            self.nornir = InitNornir(
+                config_file=str(config_file),
+                logging={"enabled": False},
+            )
+        except FileNotFoundError as exc:
+            raise NutsUsageError('Nornir configuration file not found! Please provide a correct nornir configuration '
+                                 'at "nr-config.yaml" (default) or by passing the "--nornir-config" parameter to the '
+                                 'test invocation.') from exc
 
     def nuts_task(self) -> Callable[..., Result]:
         """

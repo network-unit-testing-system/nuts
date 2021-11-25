@@ -3,13 +3,20 @@ import pytest
 from nuts import index
 from tests.utils import YAML_EXTENSION
 
-test_index = {"TestFixture": "tests.base_tests.class_loading"}
+test_index = {
+    "TestFixture": "tests.base_tests.class_loading",
+    "TestFixtureNotExistingClass": "tests.base_tests.class_loading_with_typo",
+}
 
 
 @pytest.fixture
 def mock_index(monkeypatch):
     """Mocks index to a module"""
     monkeypatch.setattr(index, "default_index", test_index)
+
+
+##
+# Sunny side tests
 
 
 def test_load_class_and_execute_tests(pytester):
@@ -137,3 +144,70 @@ def test_find_test_module_of_class(mock_index):
     path = index.find_test_module_of_class("TestFixture")
     expected = "tests.base_tests.class_loading"
     assert path == expected
+
+
+##
+# Cloudy side tests
+
+
+def test_try_load_not_existing_class(pytester):
+    arguments = {
+        "test_class_loading": """
+            ---
+            - test_module: tests.base_tests.class_loading_with_typo
+              test_class: TestClass
+              test_data: []
+            """
+    }
+    pytester.makefile(YAML_EXTENSION, **arguments)
+
+    result = pytester.runpytest()
+    result.stdout.fnmatch_lines(
+        [
+            "*nuts.helpers.errors.NutsUsageError: Module path called "
+            "tests.base_tests.class_loading_with_typo not found.*",
+        ]
+    )
+    result.assert_outcomes(errors=1)
+
+
+def test_try_load_class_not_in_index_from_index(pytester, mock_index):
+    arguments = {
+        "test_index_loading_class_not_found": """
+            ---
+            - test_class: TestFixtureWithTypo
+              test_data: ['test1', 'test2']
+        """
+    }
+
+    pytester.makefile(YAML_EXTENSION, **arguments)
+
+    result = pytester.runpytest()
+    result.stdout.fnmatch_lines(
+        [
+            "*nuts.helpers.errors.NutsUsageError: A module that corresponds to the "
+            "test_class called TestFixtureWithTypo could not be found.*",
+        ]
+    )
+    result.assert_outcomes(errors=1)
+
+
+def test_try_load_class_not_existing_from_index(pytester, mock_index):
+    arguments = {
+        "test_index_loading_class_not_found": """
+            ---
+            - test_class: TestFixtureNotExistingClass
+              test_data: ['test1', 'test2']
+        """
+    }
+
+    pytester.makefile(YAML_EXTENSION, **arguments)
+
+    result = pytester.runpytest()
+    result.stdout.fnmatch_lines(
+        [
+            "*nuts.helpers.errors.NutsUsageError: Module path called "
+            "tests.base_tests.class_loading_with_typo not found.*",
+        ]
+    )
+    result.assert_outcomes(errors=1)

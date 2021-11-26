@@ -15,10 +15,6 @@ def mock_index(monkeypatch):
     monkeypatch.setattr(index, "default_index", test_index)
 
 
-##
-# Sunny side tests
-
-
 def test_load_class_and_execute_tests(pytester):
     arguments = {
         "test_class_loading": """
@@ -146,11 +142,7 @@ def test_find_test_module_of_class(mock_index):
     assert path == expected
 
 
-##
-# Cloudy side tests
-
-
-def test_try_load_not_existing_class(pytester):
+def test_load_nonexisting_module(pytester):
     arguments = {
         "test_class_loading": """
             ---
@@ -171,7 +163,7 @@ def test_try_load_not_existing_class(pytester):
     result.assert_outcomes(errors=1)
 
 
-def test_try_load_class_not_in_index_from_index(pytester, mock_index):
+def test_load_nonexisting_index_key(pytester, mock_index):
     arguments = {
         "test_index_loading_class_not_found": """
             ---
@@ -192,7 +184,7 @@ def test_try_load_class_not_in_index_from_index(pytester, mock_index):
     result.assert_outcomes(errors=1)
 
 
-def test_try_load_class_not_existing_from_index(pytester, mock_index):
+def test_load_nonexisting_class_from_index(pytester, mock_index):
     arguments = {
         "test_index_loading_class_not_found": """
             ---

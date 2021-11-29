@@ -235,3 +235,46 @@ class TestNornirNutsContextIntegration:
             "test_class_loading.yaml", "--nornir-config", "other-nr-config.yaml"
         )
         result.assert_outcomes(passed=4)
+
+    def test_wrong_host_in_test(self, pytester):
+        pytester.makepyfile(
+            basic_task="""
+    from nuts.context import NornirNutsContext
+    from nuts.helpers.errors import NutsSetupError
+    from nornir.core.filter import F
+    from nuts.helpers.filters import filter_hosts
+
+    import pytest
+
+
+    class CustomNornirNutsContext(NornirNutsContext):
+
+        def nuts_task(self):
+            return lambda task: task.host.name
+
+        def nornir_filter(self) -> F:
+            return filter_hosts(self.nuts_parameters["test_data"])
+
+
+    CONTEXT = CustomNornirNutsContext
+
+
+    class TestBasicTask:
+        @pytest.mark.xfail(raises=NutsSetupError)
+        def test_basic_task(self, nuts_ctx):
+            pass
+    """
+        )
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestBasicTask
+                  test_data:
+                    - host: S1
+                    - host: S2
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(xpassed=1)

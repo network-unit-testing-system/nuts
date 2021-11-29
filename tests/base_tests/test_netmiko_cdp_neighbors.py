@@ -200,7 +200,6 @@ def test_contains_neighbors_at_second_level(transformed_result, host, neighbors)
 
 
 def test_contains_information_about_neighbor(transformed_result, testdata):
-    print(testdata)
     host = testdata["host"]
     remote_host = testdata["remote_host"]
 

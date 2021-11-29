@@ -204,7 +204,6 @@ def test_contains_peers_at_second_level(transformed_result, host, neighbors):
 
 
 def test_contains_information_about_neighbor(transformed_result, testdata):
-    print(testdata)
     host_result = transformed_result[testdata["host"]]
     host_result.validate()
     neighbor_details = host_result.result[testdata["peer"]]
@@ -226,6 +225,13 @@ def test_contains_information_about_neighbor(transformed_result, testdata):
         "uptime": -1,
     }
     assert neighbor_details == expected
+
+
+@pytest.mark.parametrize("host, neighbor_amount", [("R1", 2), ("R2", 1)])
+def test_contains_correct_amount_of_hosts(transformed_result, host, neighbor_amount):
+    host_result = transformed_result[host]
+    host_result.validate()
+    assert len(host_result.result) == neighbor_amount
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

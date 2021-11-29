@@ -80,7 +80,8 @@ def find_module_path(module_path: Optional[str], class_name: str) -> str:
         if not module_path:
             raise NutsUsageError(
                 "A module that corresponds to the test_class "
-                f"called {class_name} could not be found."
+                f"called {class_name} could not be found. "
+                f"Did you forget to put it into the index (nuts/index.py)?"
             )
     return module_path
 
@@ -88,7 +89,10 @@ def find_module_path(module_path: Optional[str], class_name: str) -> str:
 def load_module(module_path: str) -> types.ModuleType:
     spec = util.find_spec(module_path)
     if spec is None:
-        raise NutsUsageError(f"Module path called {module_path} not found.")
+        raise NutsUsageError(
+            f"Module path called {module_path} not found. "
+            f"Did you spell the module and class name correctly?"
+        )
     module = util.module_from_spec(spec)
     # https://github.com/python/typeshed/issues/2793
     assert isinstance(spec.loader, importlib.abc.Loader)

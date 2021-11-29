@@ -131,15 +131,16 @@ class NornirNutsContext(NutsContext):
         if nornir_filter:
             selected_hosts = self.nornir.filter(nornir_filter)
 
-            if not selected_hosts.inventory.hosts:
+        else:
+            selected_hosts = self.nornir
+
+        if not selected_hosts.inventory.hosts:
+            if nornir_filter:
                 raise NutsSetupError(
                     f'Host(s) "{",".join(nornir_filter.filters["name__any"])}" '
                     f"not found in the inventory."
                 )
-        else:
-            selected_hosts = self.nornir
-
-            if not selected_hosts.inventory.hosts:
+            else:
                 raise NutsSetupError("No Hosts found, is the nornir inventory empty?")
 
         overall_results = selected_hosts.run(

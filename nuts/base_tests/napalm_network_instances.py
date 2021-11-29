@@ -2,11 +2,9 @@
 from typing import Dict, List, Callable, Any
 
 import pytest
-from nornir.core.filter import F
 from nornir.core.task import MultiResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
-from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import AbstractHostResultExtractor, NutsResult
 from nuts.context import NornirNutsContext
 
@@ -34,9 +32,6 @@ class NetworkInstancesContext(NornirNutsContext):
 
     def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["network_instances"]}
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
 
     def nuts_extractor(self) -> NetworkInstancesExtractor:
         return NetworkInstancesExtractor(self)

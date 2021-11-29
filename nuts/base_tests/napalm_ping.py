@@ -4,12 +4,10 @@ from typing import Dict, Callable, Any, List
 
 import pytest
 from nornir.core import Task
-from nornir.core.filter import F
 from nornir.core.task import Result
 from nornir_napalm.plugins.tasks import napalm_ping
 
 from nuts.context import NornirNutsContext
-from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import (
     NutsResult,
     AbstractHostDestResultExtractor,
@@ -109,9 +107,6 @@ class PingContext(NornirNutsContext):
             result = task.run(task=napalm_ping, dest=destination, **kwargs)
             result[0].destination = destination  # type: ignore[attr-defined]
         return Result(host=task.host, result="All pings executed")
-
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
 
     def nuts_extractor(self) -> PingExtractor:
         return PingExtractor(self)

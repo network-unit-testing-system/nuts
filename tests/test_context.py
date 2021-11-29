@@ -252,9 +252,6 @@ class TestNornirNutsContextIntegration:
         def nuts_task(self):
             return lambda task: task.host.name
 
-        def nornir_filter(self) -> F:
-            return filter_hosts(self.nuts_parameters["test_data"])
-
 
     CONTEXT = CustomNornirNutsContext
 

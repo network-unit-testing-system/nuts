@@ -11,6 +11,7 @@ default_index = {
     "TestNapalmUsers": "nuts.base_tests.napalm_get_users",
     "TestNapalmVlans": "nuts.base_tests.napalm_get_vlans",
     "TestNapalmOnlyDefinedVlansExist": "nuts.base_tests.napalm_get_vlans",
+    "TestNapalmInterfaceInVlan": "nuts.base_tests.napalm_get_vlans",
     "TestNetmikoCdpNeighbors": "nuts.base_tests.netmiko_cdp_neighbors",
     "TestNetmikoIperf": "nuts.base_tests.netmiko_iperf",
     "TestNetmikoOspfNeighborsCount": "nuts.base_tests.netmiko_ospf_neighbors",

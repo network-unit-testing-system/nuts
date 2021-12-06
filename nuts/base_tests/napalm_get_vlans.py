@@ -50,3 +50,9 @@ class TestNapalmOnlyDefinedVlansExist:
     @pytest.mark.nuts("vlan_tags")
     def test_no_rogue_vlans(self, single_result, vlan_tags):
         assert list(single_result.result.keys()) == sorted(vlan_tags)
+
+
+class TestNapalmInterfaceInVlan:
+    @pytest.mark.nuts("vlan_tag,interface")
+    def test_interface_port(self, single_result, vlan_tag, interface):
+        assert interface in single_result.result[vlan_tag]["interfaces"]

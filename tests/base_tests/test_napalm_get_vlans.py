@@ -16,6 +16,14 @@ nornir_raw_result_s1 = {
         "2": {"name": "vlan2", "interfaces": []},
     }
 }
+nornir_raw_result_s1_vlan1 = {
+    "vlans": {
+        "1": {
+            "name": "default",
+            "interfaces": ["GigabitEthernet0/0/1", "GigabitEthernet0/0/2"],
+        },
+    }
+}
 nornir_raw_result_s2 = {
     "vlans": {
         "2": {"name": "vlan2", "interfaces": []},
@@ -50,6 +58,12 @@ vlans_s2_taglist = SelfTestData(
     name="s2",
     nornir_raw_result=nornir_raw_result_s2,
     test_data={"host": "S2", "vlan_tags": {2}},
+)
+
+vlans_s1_1_interface = SelfTestData(
+    name="s1",
+    nornir_raw_result=nornir_raw_result_s1_vlan1,
+    test_data={"host": "S1", "interface": "GigabitEthernet0/0/1", "vlan_tag": 1},
 )
 
 
@@ -87,9 +101,22 @@ def selftestdata_taglist(request):
     return request.param
 
 
+@pytest.fixture(
+    params=[vlans_s1_1_interface],
+    ids=lambda data: data.name,
+)
+def selftestdata_interface(request):
+    return request.param
+
+
 @pytest.fixture
 def testdata_taglist(selftestdata_taglist):
     return selftestdata_taglist.test_data
+
+
+@pytest.fixture
+def testdata_interface(selftestdata_interface):
+    return selftestdata_interface.test_data
 
 
 pytestmark = [pytest.mark.nuts_test_ctx(CONTEXT())]
@@ -145,6 +172,16 @@ def test_integration_definedvlans(selftestdata_taglist, integration_tester):
     integration_tester(
         selftestdata_taglist,
         test_class="TestNapalmOnlyDefinedVlansExist",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=1,
+    )
+
+
+def test_integration_interface_in_vlan(selftestdata_interface, integration_tester):
+    integration_tester(
+        selftestdata_interface,
+        test_class="TestNapalmInterfaceInVlan",
         task_module=tasks,
         task_name="napalm_get",
         test_count=1,

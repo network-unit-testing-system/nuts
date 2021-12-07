@@ -36,7 +36,7 @@ Pytest reads in the test bundle (step 2 above) and transforms it into test runs.
 
 .. image:: images/nuts-ablauf-en.drawio.png
     :width: 800
-    :alt: Nuts will take the YAML-test bundles and generate pytest test classes from them. This test classes will run the respective Nornir tasks and get the results from them in form of Nornir 'MultiResult's or 'AggregatedResult's respectively. NUTS will provide these test results to the pytest test functions in form of 'NutsResult' instances.
+    :alt: Nuts will take the YAML-test bundles and generate pytest test classes from them. These test classes will run the respective Nornir tasks and get the results from them in form of a Nornir 'MultiResult' or 'AggregatedResult' respectively. NUTS will provide these test results to the pytest test functions in form of 'NutsResult' instances.
 
 Enhance nuts
 ------------

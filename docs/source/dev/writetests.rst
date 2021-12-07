@@ -78,4 +78,13 @@ Both extractors wrap the processed results in a new ``NutsResult``: This must be
 The test class is written very similarly to the simple case above: Set the pytest custom marker with the required arguments, use them as fixture and write the test.
 
 
+Class Diagram of How Tests are Embedded into NUTS
+-------------------------------------------------
+
+The following diagram provides a detailed overview of the class structure of NUTS relative to test class implementation.
+
+.. image:: ../images/nuts-needed-classes-for-tests.drawio.png
+    :width: 911
+    :alt: Class diagram of the test environment. The original 'Diagrams.net'-diagram is stored inside the 'docs/diagrams' directory in the GitHub repo.
+
 

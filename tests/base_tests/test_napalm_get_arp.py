@@ -8,7 +8,7 @@ from tests.utils import create_multi_result, SelfTestData
 
 
 nornir_raw_result_s1 = {
-    'arp_table': [
+    "arp_table": [
         {
             "interface": "Vlan1",
             "mac": "52:54:00:74:9B:D2",
@@ -20,11 +20,11 @@ nornir_raw_result_s1 = {
             "mac": "00:00:0C:9F:F0:C8",
             "ip": "10.0.200.1",
             "age": 230.0,
-        }
+        },
     ]
 }
 nornir_raw_result_s2 = {
-    'arp_table': [
+    "arp_table": [
         {
             "interface": "Vlan1",
             "mac": "52:54:00:54:92:C3",
@@ -120,7 +120,7 @@ def single_result(transformed_result, testdata):
 
 
 def test_arp_entry(single_result, testdata):
-    assert {'interface': testdata["interface"], 'ip': testdata["ip"]} in single_result
+    assert {"interface": testdata["interface"], "ip": testdata["ip"]} in single_result
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

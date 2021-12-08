@@ -14,8 +14,8 @@ from nuts.helpers.result import AbstractHostResultExtractor
 class ArpExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> List[Dict[Text, Any]]:
         result = []
-        for entry in self._simple_extract(single_result)['arp_table']:
-            result.append({'interface': entry['interface'], 'ip': entry['ip']})
+        for entry in self._simple_extract(single_result)["arp_table"]:
+            result.append({"interface": entry["interface"], "ip": entry["ip"]})
         return result
 
 
@@ -39,7 +39,7 @@ CONTEXT = ArpContext
 class TestNapalmArp:
     @pytest.mark.nuts("interface,ip")
     def test_arp_entry(self, single_result, interface, ip):
-        assert {'interface': interface, 'ip': ip} in single_result.result
+        assert {"interface": interface, "ip": ip} in single_result.result
 
 
 class TestNapalmArpRange:

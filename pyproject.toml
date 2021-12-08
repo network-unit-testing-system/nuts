@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nuts"
-version = "3.0.1"
+version = "3.0.2"
 description = "Network Unit Testing System Component of NetTowel"
 authors = ["Lukas Murer, Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin"]
 maintainers = ["Lukas Murer <lukas.murer@ost.ch>", "Méline Sieber <meline.sieber@ost.ch>", "Florian Bruhin <florian.bruhin@ost.ch>"]

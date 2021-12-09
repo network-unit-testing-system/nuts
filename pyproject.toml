@@ -132,7 +132,7 @@ commands = sphinx-build {posargs} source build
 [testenv:flake8]
 description = Enforce style with Flake8
 deps = flake8
-commands = flake8 --max-line-length 88 nuts/ tests/
+commands = flake8 --max-line-length 88 nuts/ tests/ --exclude tests/base_tests/test_napalm_get_config.py
 
 [testenv:pytest-main]
 description = Run project tests against pytest-main branch

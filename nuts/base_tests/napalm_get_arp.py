@@ -1,4 +1,4 @@
-"""Query vlans of a device."""
+"""Query arp table of a device."""
 from typing import Dict, Callable, List, Any, Text
 
 import pytest

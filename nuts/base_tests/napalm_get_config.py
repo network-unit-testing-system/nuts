@@ -13,7 +13,7 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 class ConfigExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[int, Any]:
-        return self._simple_extract(single_result)["config"]
+        return self._simple_extract(single_result)
 
 
 class ConfigContext(NornirNutsContext):
@@ -39,7 +39,6 @@ class TestNapalmConfig:
         self, single_result, startup_equals_running_config
     ):
         assert (
-            single_result.result["startup"]
-            == single_result.result["running"]
+            bool(single_result.result["startup"] == single_result.result["running"])
             == startup_equals_running_config
         )

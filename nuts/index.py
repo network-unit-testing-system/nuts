@@ -16,6 +16,7 @@ default_index = {
     "TestNetmikoIperf": "nuts.base_tests.netmiko_iperf",
     "TestNetmikoOspfNeighborsCount": "nuts.base_tests.netmiko_ospf_neighbors",
     "TestNetmikoOspfNeighbors": "nuts.base_tests.netmiko_ospf_neighbors",
+    "TestNapalmVrf": "nuts.base_tests.napalm_get_vrf",
 }
 
 

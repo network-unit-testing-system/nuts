@@ -12,9 +12,7 @@ nornir_raw_result_s1 = {
         "default": {
             "name": "default",
             "type": "DEFAULT_INSTANCE",
-            "state": {
-                "route_distinguisher": ""
-            },
+            "state": {"route_distinguisher": ""},
             "interfaces": {
                 "interface": {
                     "GigabitEthernet0/1": {},
@@ -26,9 +24,7 @@ nornir_raw_result_s1 = {
         "mgmt": {
             "name": "mgmt",
             "type": "L3VRF",
-            "state": {
-                "route_distinguisher": ""
-            },
+            "state": {"route_distinguisher": ""},
             "interfaces": {
                 "interface": {
                     "GigabitEthernet0/0": {},
@@ -42,15 +38,13 @@ nornir_raw_result_s2 = {
         "default": {
             "name": "default",
             "type": "DEFAULT_INSTANCE",
-            "state": {
-                "route_distinguisher": ""
-            },
+            "state": {"route_distinguisher": ""},
             "interfaces": {
                 "interface": {
                     "GigabitEthernet0/1": {},
                     "GigabitEthernet0/2": {},
                     "GigabitEthernet0/3": {},
-                    "Vlan1": {}
+                    "Vlan1": {},
                 }
             },
         },
@@ -60,11 +54,7 @@ nornir_raw_result_s2 = {
 vrf_s1_1 = SelfTestData(
     name="s1_1",
     nornir_raw_result=nornir_raw_result_s1,
-    test_data={
-        "host": "S1",
-        "name": "mgmt",
-        "interfaces": ["GigabitEthernet0/0"]
-    },
+    test_data={"host": "S1", "name": "mgmt", "interfaces": ["GigabitEthernet0/0"]},
 )
 
 vrf_s1_2 = SelfTestData(
@@ -73,7 +63,7 @@ vrf_s1_2 = SelfTestData(
     test_data={
         "host": "S1",
         "name": "default",
-        "interfaces": ["GigabitEthernet0/1", "GigabitEthernet0/2"]
+        "interfaces": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
     },
 )
 
@@ -83,7 +73,7 @@ vrf_s2 = SelfTestData(
     test_data={
         "host": "S2",
         "name": "default",
-        "interfaces": ["GigabitEthernet0/1", "Vlan1"]
+        "interfaces": ["GigabitEthernet0/1", "Vlan1"],
     },
 )
 
@@ -134,7 +124,10 @@ def test_vrf_exists(single_result, testdata):
 
 
 def test_vrf_and_interfaces(single_result, testdata):
-    assert all(item in single_result[testdata["name"]]["interfaces"] for item in testdata["interfaces"])
+    assert all(
+        item in single_result[testdata["name"]]["interfaces"]
+        for item in testdata["interfaces"]
+    )
 
 
 def test_marks_as_failed_if_task_failed(transformed_result):

@@ -12,7 +12,9 @@ from nuts.helpers.result import AbstractHostResultExtractor
 
 
 class VrfExtractor(AbstractHostResultExtractor):
-    def single_transform(self, single_result: MultiResult) -> Dict[Text, Dict[Any, Any]]:
+    def single_transform(
+        self, single_result: MultiResult
+    ) -> Dict[Text, Dict[Any, Any]]:
         network_instances = self._simple_extract(single_result)["network_instances"]
         result = {}
         for entry in network_instances:
@@ -46,4 +48,6 @@ class TestNapalmVrf:
 
     @pytest.mark.nuts("name,interfaces")
     def test_vrf_and_interfaces(self, single_result, name, interfaces):
-        assert all(item in single_result.result[name]["interfaces"] for item in interfaces)
+        assert all(
+            item in single_result.result[name]["interfaces"] for item in interfaces
+        )

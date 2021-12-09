@@ -21,6 +21,7 @@ default_index = {
     "TestNetmikoOspfNeighbors": "nuts.base_tests.netmiko_ospf_neighbors",
     "TestNapalmArp": "nuts.base_tests.napalm_get_arp",
     "TestNapalmArpRange": "nuts.base_tests.napalm_get_arp",
+    "TestNapalmVrf": "nuts.base_tests.napalm_get_vrf",
 }
 
 

@@ -50,3 +50,9 @@ class TestNetmikoCdpNeighbors:
     @pytest.mark.nuts("remote_host,management_ip")
     def test_management_ip(self, single_result, remote_host, management_ip):
         assert single_result.result[remote_host]["management_ip"] == management_ip
+
+
+class TestNetmikoCdpNeighborsAmount:
+    @pytest.mark.nuts("amount")
+    def test_amount_remote_hosts(self, single_result, amount):
+        assert amount == len(single_result.result)

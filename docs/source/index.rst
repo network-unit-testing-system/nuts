@@ -34,6 +34,10 @@ tests. Nuts itself is written as a custom pytest plugin. In the background, `nor
 
 Pytest reads in the test bundle (step 2 above) and transforms it into test runs. In the background, nornir uses the network information provided in the inventory (step 1 above), queries the network based on the specific test bundle and passes the results of those queries to pytest. Pytest then evaluates if the expectations defined in the test bundle match those results.
 
+.. image:: images/nuts-ablauf-en.drawio.png
+    :width: 800
+    :alt: Nuts will take the YAML-test bundles and generate pytest test classes from them. These test classes will run the respective Nornir tasks and get the results from them in form of a Nornir 'MultiResult' or 'AggregatedResult' respectively. NUTS will provide these test results to the pytest test functions in form of 'NutsResult' instances.
+
 Enhance nuts
 ------------
 Nuts is written in python and designed as a pytest plugin. It provides some base tests described in :doc:`the section about all test bundles <testbundles/alltestbundles>`, but since it's a plugin, you can write your own, self-written test classes for your custom tests. 

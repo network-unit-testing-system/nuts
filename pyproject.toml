@@ -4,10 +4,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nuts"
-version = "3.0.1"
+version = "3.0.2"
 description = "Network Unit Testing System Component of NetTowel"
-authors = ["Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin"]
-maintainers = ["Méline Sieber <meline.sieber@ost.ch>", "Florian Bruhin <florian.bruhin@ost.ch>"]
+authors = ["Lukas Murer, Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin"]
+maintainers = ["Lukas Murer <lukas.murer@ost.ch>", "Méline Sieber <meline.sieber@ost.ch>", "Florian Bruhin <florian.bruhin@ost.ch>"]
 classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
 homepage = "https://github.com/INSRapperswil/Nuts"
 repository = "https://github.com/INSRapperswil/Nuts"
@@ -24,9 +24,16 @@ nornir-netmiko = "^0.1.1"
 nornir-utils = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
+tox = "^3.24.4"
 pytest-cov = "^2.10.1"
 black = "^20.8b1"
+sphinx = "^1.8.5"
+mypy = "^0.812"
 flake8 = "^3.9.2"
+types-PyYAML = "^6.0.1"
+types-setuptools = "^57.4.2"
+types-toml = "^0.10.1"
+
 
 [tool.poetry.plugins."pytest11"]
 "nuts"="nuts.plugin"
@@ -104,8 +111,8 @@ testpaths = "tests"
 [testenv]
 description = Run pytest and generate report
 deps =
-    pytest
-    pytest-cov
+    pytest >= 6.1.1
+    pytest-cov >= 2.10.1
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 
@@ -113,32 +120,32 @@ commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepa
 [testenv:black]
 description = Check formatting with black
 skip_install = true
-deps = black
+deps = black >= 20.8b1
 commands = black --check {posargs} .
 
 [testenv:mypy]
 description = Check typing with mypy
-deps = mypy
-       types-PyYAML
+deps = mypy >= 0.812
+       types-PyYAML >= 6.0.1
 passenv = TERM
 commands = mypy {posargs} nuts tests
 
 [testenv:docs]
 description = Build docs with sphinx
-deps = sphinx
+deps = sphinx >= 4.3.0
 changedir = docs/
 commands = sphinx-build {posargs} source build
 
 [testenv:flake8]
 description = Enforce style with Flake8
-deps = flake8
-commands = flake8 --max-line-length 88 nuts/ tests/ --exclude tests/base_tests/test_napalm_get_config.py
+deps = flake8 >= 3.9.2
+commands = flake8 --max-line-length 88 nuts/ tests/
 
 [testenv:pytest-main]
 description = Run project tests against pytest-main branch
 deps =
     git+https://github.com/pytest-dev/pytest.git#main
-    pytest-cov
+    pytest-cov >= 2.10.1
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 

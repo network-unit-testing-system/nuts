@@ -2,14 +2,12 @@
 from typing import Dict, Callable, List, Any
 
 import pytest
-from nornir.core.filter import F
 from nornir.core.task import MultiResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
 from nuts.helpers.converters import InterfaceNameConverter
-from nuts.helpers.filters import filter_hosts
-from nuts.helpers.result import AbstractHostResultExtractor
+from nuts.helpers.result import AbstractHostResultExtractor, NutsResult
 
 
 class LldpNeighborsExtractor(AbstractHostResultExtractor):
@@ -43,9 +41,6 @@ class LldpNeighborsContext(NornirNutsContext):
     def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["lldp_neighbors_detail"]}
 
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
-
     def nuts_extractor(self) -> LldpNeighborsExtractor:
         return LldpNeighborsExtractor(self)
 
@@ -55,12 +50,16 @@ CONTEXT = LldpNeighborsContext
 
 class TestNapalmLldpNeighbors:
     @pytest.mark.nuts("local_port,remote_host")
-    def test_remote_host(self, single_result, local_port, remote_host):
+    def test_remote_host(
+        self, single_result: NutsResult, local_port: str, remote_host: str
+    ) -> None:
         lldp_neighbor_entry = single_result.result[local_port]
         assert lldp_neighbor_entry["remote_host"] == remote_host
 
     @pytest.mark.nuts("local_port,remote_port")
-    def test_remote_port(self, single_result, local_port, remote_port):
+    def test_remote_port(
+        self, single_result: NutsResult, local_port: str, remote_port: str
+    ) -> None:
         lldp_neighbor_entry = single_result.result[local_port]
         assert (
             lldp_neighbor_entry["remote_port"] == remote_port

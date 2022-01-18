@@ -10,6 +10,58 @@ Note that you need an inventory of network devices for the tests to work. Please
 In some test bundles you can directly pass arguments to the nornir task, i.e. the network query that is executed in the background. For those test bundles we indicate the specific task which is used to query the devices, so that you can look up all available arguments. 
 
 
+ARP Table
+---------
+
+**Test Bundle:** Tests if the desired ARP table entries exist on a device. It is checked whether predefined entries consisting of interface and ip are available in the arp table on the device.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmArp
+      test_data:
+        - host: <host name, required>
+          interface: <interface name, required>
+          ip: <IP address, required>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmArp
+      test_data:
+        - host: S1
+          interface: Vlan1
+          ip: 10.0.0.30
+
+
+ARP Table - Entries Count
+-------------------------
+
+**Test Bundle:** Tests if the number of ARP table entries on the device is in a specific range.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmArpRange
+      test_data:
+        - host: <host name, required>
+          min: <minimum expected ARP table entries, required>
+          max: <maximum expected ARP table entries, required>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmArpRange
+      test_data:
+        - host: S1
+          min: 13
+          max: 20
+
+
 BGP Neighbors - Information
 ---------------------------
 
@@ -124,8 +176,56 @@ Required fields for specific tests in this bundle:
           remote_port: GigabitEthernet2
 
 
+CDP Neighbors - Count
+----------------------
+
+**Test Bundle:** Tests the amount of CDP neighbors a host should have.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNetmikoCdpNeighborsAmount
+      test_data:
+        - host: <host name, required>
+          amount: <number, required>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNetmikoCdpNeighborsAmount
+      test_data:
+        - host: S1
+          amount: 3
+
+
+Configuration - Startup vs. Running
+-----------------------------------
+
+**Test Bundle:** Tests if the running configuration matches the startup configuration of the device. With this test "configuration drifts" can be found.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmConfig
+      test_data:
+        - host: <host name, required>
+          startup_equals_running_config: <True|False, required>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmConfig
+      test_data:
+        - host: S1
+          startup_equals_running_config: True
+
+
 Interfaces
---------------
+----------
 
 **Test Bundle:** Tests if an interface exists on a host and has the required attributes.
 
@@ -165,6 +265,7 @@ Required fields for specific tests in this bundle:
           mtu: 1500
           speed: 1000
 
+
 iperf - Bandwidth Test
 ----------------------
 
@@ -200,6 +301,7 @@ iperf - Bandwidth Test
         destination: 10.20.2.12
         min_expected: 10000000
 
+
 LLDP Neighbors
 --------------
 
@@ -231,6 +333,30 @@ Required fields for specific tests in this bundle:
           local_port: GigabitEthernet3
           remote_host: R2
           remote_port: GigabitEthernet2
+
+
+LLDP Neighbors - Count
+----------------------
+
+**Test Bundle:** Tests the amount of LLDP neighbors a host should have.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmLldpNeighborsAmount
+      test_data:
+        - host: <host name, required>
+          amount: <number, required>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmLldpNeighborsAmount
+      test_data:
+        - host: S1
+          amount: 3
 
 
 Network Instances
@@ -269,6 +395,7 @@ Required fields for specific tests in this bundle:
             - GigabitEthernet3
             - Loopback0
           route_distinguisher: "1:1"
+
 
 OSPF Neighbors - Information
 ----------------------------
@@ -311,7 +438,7 @@ Required fields for specific tests in this bundle:
 
 
 OSPF Neighbors - Count
-----------------------------
+----------------------
 
 **Test Bundle:** Tests the amount of OSPF neighbors a host should have.
 
@@ -391,7 +518,6 @@ There is only one test in this bundle, i.e. ping another host. All fields are th
 Users - Information
 -------------------
 
-
 **Test Bundle:** Tests pre-defined users of a device.
 
 **Test Bundle Structure:**
@@ -422,6 +548,7 @@ Required fields for specific tests in this bundle:
           password: stark
           level: 15
 
+
 Users - No Rogue Users
 ----------------------
 
@@ -447,3 +574,127 @@ Users - No Rogue Users
           usernames:
             - cisco
             - arya
+
+
+VLAN - Information
+------------------
+
+**Test Bundle:** Test if the defined VLAN's are available on a device. Additionally the assignment of VLAN-tags to VLAN-names can be checked.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmVlans
+      test_data:
+        - host: <host name, required>
+          vlan_tag: <vlan tag, required>
+          vlan_name: <vlan name>
+
+Required fields for specific tests in this bundle:
+
+    * Test VLAN is defined: ``host, vlan_tag``
+    * Test VLAN tag -> name assignment: ``host, vlan_tag, vlan_name``
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmVlans
+      test_data:
+        - host: S1
+          vlan_tag: 1
+          vlan_name: default
+        - host: S2
+          vlan_tag: 200
+
+
+VLAN - Interface Assignment
+---------------------------
+
+**Test Bundle:** Tests if an interface is assigned to the correct VLAN.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmInterfaceInVlan
+      test_data:
+        - host: <host name, required>
+          vlan_tag: <vlan tag, required>
+          interface: <interface name, required>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmInterfaceInVlan
+      test_data:
+        - host: S2
+          vlan_tag: 200
+          interface: GigabitEthernet0/3
+
+
+VLAN - No Rogue VLANs
+---------------------
+
+**Test Bundle:** Tests that only pre-defined VLAN's exist on a device, i.e. there are no rogue VLAN's.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmOnlyDefinedVlansExist
+      test_data:
+        - host: <host name, required>
+          vlan_tags: <vlan tag list, required>
+            - <tag>
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmOnlyDefinedVlansExist
+      test_data:
+        - host: S2
+          vlan_tags:
+            - 1
+            - 200
+            - 1002
+            - 1003
+
+
+VRF - Information
+-----------------
+
+**Test Bundle:** Tests if the expected VRF's are configured on a device and if the assignment of the VRF's to the interfaces is correct.
+
+**Test Bundle Structure:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmVrf
+      test_data:
+        - host: <host name, required>
+          name: <vrf name, required>
+          interfaces: <interface list>
+            - <interface name>
+
+Required fields for specific tests in this bundle:
+
+    * Test VRF is configured: ``host, name``
+    * Test VRF assignment: ``host, name, interfaces``
+
+**Test Bundle Example:**
+
+.. code:: yaml
+
+    - test_class: TestNapalmVrf
+      test_data:
+        - host: S1
+          name: default
+          interfaces:
+            - GigabitEthernet0/1
+            - GigabitEthernet0/2
+            - GigabitEthernet0/3
+            - Vlan1

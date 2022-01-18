@@ -109,12 +109,12 @@ r1_r4 = SelfTestData(
     },
 )
 
-r1_amount = SelfTestData(
-    name="r1_amount",
+r1_count = SelfTestData(
+    name="r1_count",
     nornir_raw_result=raw_nornir_result_r1,
     test_data={
         "host": "R1",
-        "amount": 3,
+        "neighbor_count": 3,
     },
 )
 
@@ -154,12 +154,12 @@ r2_r5 = SelfTestData(
     },
 )
 
-r2_amount = SelfTestData(
-    name="r2_amount",
+r2_count = SelfTestData(
+    name="r2_count",
     nornir_raw_result=raw_nornir_result_r2,
     test_data={
         "host": "R2",
-        "amount": 3,
+        "neighbor_count": 3,
     },
 )
 
@@ -200,12 +200,12 @@ def testdata(selftestdata):
 
 @pytest.fixture(
     params=[
-        r1_amount,
-        r2_amount,
+        r1_count,
+        r2_count,
     ],
     ids=lambda data: data.name,
 )
-def selftestdata_amount(request):
+def selftestdata_count(request):
     return request.param
 
 
@@ -262,10 +262,10 @@ def test_integration(selftestdata, integration_tester):
     )
 
 
-def test_integration_amount(selftestdata_amount, integration_tester):
+def test_integration_count(selftestdata_count, integration_tester):
     integration_tester(
-        selftestdata_amount,
-        test_class="TestNetmikoCdpNeighborsAmount",
+        selftestdata_count,
+        test_class="TestNetmikoCdpNeighborsCount",
         task_module=nornir_netmiko,
         task_name="netmiko_send_command",
         test_count=1,

@@ -185,19 +185,19 @@ CDP Neighbors - Count
 
 .. code:: yaml
 
-    - test_class: TestNetmikoCdpNeighborsAmount
+    - test_class: TestNetmikoCdpNeighborsCount
       test_data:
         - host: <host name, required>
-          amount: <number, required>
+          neighbor_count: <number of neighbors, required>
 
 **Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_class: TestNetmikoCdpNeighborsAmount
+    - test_class: TestNetmikoCdpNeighborsCount
       test_data:
         - host: S1
-          amount: 3
+          neighbor_count: 3
 
 
 Configuration - Startup vs. Running
@@ -344,19 +344,19 @@ LLDP Neighbors - Count
 
 .. code:: yaml
 
-    - test_class: TestNapalmLldpNeighborsAmount
+    - test_class: TestNapalmLldpNeighborsCount
       test_data:
         - host: <host name, required>
-          amount: <number, required>
+          neighbor_count: <number of neighbors, required>
 
 **Test Bundle Example:**
 
 .. code:: yaml
 
-    - test_class: TestNapalmLldpNeighborsAmount
+    - test_class: TestNapalmLldpNeighborsCount
       test_data:
         - host: S1
-          amount: 3
+          neighbor_count: 3
 
 
 Network Instances

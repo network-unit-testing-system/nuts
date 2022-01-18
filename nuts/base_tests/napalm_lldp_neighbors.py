@@ -67,7 +67,7 @@ class TestNapalmLldpNeighbors:
         )
 
 
-class TestNapalmLldpNeighborsAmount:
-    @pytest.mark.nuts("amount")
-    def test_remote_host(self, single_result, amount):
-        assert amount == len(single_result.result)
+class TestNapalmLldpNeighborsCount:
+    @pytest.mark.nuts("neighbor_count")
+    def test_neighbor_count(self, single_result, neighbor_count):
+        assert neighbor_count == len(single_result.result)

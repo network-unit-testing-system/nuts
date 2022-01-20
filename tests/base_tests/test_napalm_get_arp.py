@@ -58,7 +58,7 @@ arp_s1_range = SelfTestData(
     test_data={"host": "S1", "min": 2, "max": 4},
 )
 
-arp_s1_range = SelfTestData(
+arp_s2_range = SelfTestData(
     name="s2",
     nornir_raw_result=nornir_raw_result_s2,
     test_data={"host": "S2", "min": 0, "max": 2},
@@ -92,7 +92,7 @@ def testdata(selftestdata):
 
 
 @pytest.fixture(
-    params=[arp_s1_range, arp_s1_range],
+    params=[arp_s1_range, arp_s2_range],
     ids=lambda data: data.name,
 )
 def selftestdata_range(request):

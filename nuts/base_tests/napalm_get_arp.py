@@ -26,9 +26,6 @@ class ArpContext(NornirNutsContext):
     def nuts_arguments(self) -> Dict[str, List[str]]:
         return {"getters": ["arp_table"]}
 
-    def nornir_filter(self) -> F:
-        return filter_hosts(self.nuts_parameters["test_data"])
-
     def nuts_extractor(self) -> ArpExtractor:
         return ArpExtractor(self)
 
@@ -39,7 +36,7 @@ CONTEXT = ArpContext
 class TestNapalmArp:
     @pytest.mark.nuts("interface,ip")
     def test_arp_entry(self, single_result, interface, ip):
-        assert {"interface": interface, "ip": ip} in single_result.result
+        assert single_result.result.count({"interface": interface, "ip": ip}) >= 1
 
 
 class TestNapalmArpRange:

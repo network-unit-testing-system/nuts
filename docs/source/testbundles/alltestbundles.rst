@@ -378,6 +378,7 @@ Network Instances
 
 Required fields for specific tests in this bundle:
 
+    * Test network instance is configured: ``host, network_instance``
     * Test interfaces that belong to a VRF: ``host, network_instance, interfaces``
     * Test route-distinguisher: ``host, network_instance, route_distinguisher``  
 
@@ -662,39 +663,3 @@ VLAN - No Rogue VLANs
             - 200
             - 1002
             - 1003
-
-
-VRF - Information
------------------
-
-**Test Bundle:** Tests if the expected VRF's are configured on a device and if the assignment of the VRF's to the interfaces is correct.
-
-**Test Bundle Structure:**
-
-.. code:: yaml
-
-    - test_class: TestNapalmVrf
-      test_data:
-        - host: <host name, required>
-          name: <vrf name, required>
-          interfaces: <interface list>
-            - <interface name>
-
-Required fields for specific tests in this bundle:
-
-    * Test VRF is configured: ``host, name``
-    * Test VRF assignment: ``host, name, interfaces``
-
-**Test Bundle Example:**
-
-.. code:: yaml
-
-    - test_class: TestNapalmVrf
-      test_data:
-        - host: S1
-          name: default
-          interfaces:
-            - GigabitEthernet0/1
-            - GigabitEthernet0/2
-            - GigabitEthernet0/3
-            - Vlan1

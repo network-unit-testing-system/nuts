@@ -2,12 +2,10 @@
 from typing import Dict, Callable, List, Any, Text
 
 import pytest
-from nornir.core.filter import F
 from nornir.core.task import MultiResult, Result
 from nornir_napalm.plugins.tasks import napalm_get
 
 from nuts.context import NornirNutsContext
-from nuts.helpers.filters import filter_hosts
 from nuts.helpers.result import AbstractHostResultExtractor
 
 

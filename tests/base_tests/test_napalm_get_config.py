@@ -8,6 +8,7 @@ from tests.utils import create_multi_result, SelfTestData
 
 
 nornir_raw_result_s1 = {
+    "config": {
     "startup": "!\n"
     "\n"
     "!\n"
@@ -299,6 +300,7 @@ nornir_raw_result_s1 = {
     "!\n"
     "end",
     "candidate": "",
+    }
 }
 
 

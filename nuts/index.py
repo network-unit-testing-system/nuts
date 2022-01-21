@@ -6,13 +6,22 @@ default_index = {
     "TestNapalmBgpNeighborsCount": "nuts.base_tests.napalm_bgp_neighbors",
     "TestNapalmInterfaces": "nuts.base_tests.napalm_interfaces",
     "TestNapalmLldpNeighbors": "nuts.base_tests.napalm_lldp_neighbors",
+    "TestNapalmLldpNeighborsCount": "nuts.base_tests.napalm_lldp_neighbors",
     "TestNapalmNetworkInstances": "nuts.base_tests.napalm_network_instances",
     "TestNapalmPing": "nuts.base_tests.napalm_ping",
     "TestNapalmUsers": "nuts.base_tests.napalm_get_users",
+    "TestNapalmConfig": "nuts.base_tests.napalm_get_config",
+    "TestNapalmVlans": "nuts.base_tests.napalm_get_vlans",
+    "TestNapalmOnlyDefinedVlansExist": "nuts.base_tests.napalm_get_vlans",
+    "TestNapalmInterfaceInVlan": "nuts.base_tests.napalm_get_vlans",
     "TestNetmikoCdpNeighbors": "nuts.base_tests.netmiko_cdp_neighbors",
+    "TestNetmikoCdpNeighborsCount": "nuts.base_tests.netmiko_cdp_neighbors",
     "TestNetmikoIperf": "nuts.base_tests.netmiko_iperf",
     "TestNetmikoOspfNeighborsCount": "nuts.base_tests.netmiko_ospf_neighbors",
     "TestNetmikoOspfNeighbors": "nuts.base_tests.netmiko_ospf_neighbors",
+    "TestNapalmArp": "nuts.base_tests.napalm_get_arp",
+    "TestNapalmArpRange": "nuts.base_tests.napalm_get_arp",
+    "TestNapalmVrf": "nuts.base_tests.napalm_get_vrf",
 }
 
 

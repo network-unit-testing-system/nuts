@@ -3,10 +3,11 @@ venv/
 .venv/
 pytest_nuts.egg-info/
 __pycache__
-
+.vscode/
 docs/build/
-
-.pytest-cache/
+inventory/
+nr-config.yaml
+.pytest_cache/
 .tox/
 
 test-reports/

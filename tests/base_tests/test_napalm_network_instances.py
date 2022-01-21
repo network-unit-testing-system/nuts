@@ -237,5 +237,5 @@ def test_integration(selftestdata, integration_tester):
         test_class="TestNapalmNetworkInstances",
         task_module=tasks,
         task_name="napalm_get",
-        test_count=2,
+        test_count=3,
     )

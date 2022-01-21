@@ -41,6 +41,10 @@ CONTEXT = NetworkInstancesContext
 
 
 class TestNapalmNetworkInstances:
+    @pytest.mark.nuts("network_instance")
+    def test_network_instance_exists(self, single_result, network_instance):
+        assert network_instance in single_result.result
+
     @pytest.mark.nuts("network_instance,interfaces")
     def test_network_instance_contains_interfaces(
         self, single_result: NutsResult, network_instance: str, interfaces: List[str]

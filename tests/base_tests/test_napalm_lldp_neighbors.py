@@ -97,6 +97,15 @@ lldp_r1_2 = SelfTestData(
     additional_data={"remote_chassis_id": R2_CHASSIS_ID, "short_remote_port": "Gi2"},
 )
 
+lldp_r1_count = SelfTestData(
+    name="r1_count",
+    nornir_raw_result=nornir_raw_result_r1,
+    test_data={
+        "host": "R1",
+        "neighbor_count": 2,
+    },
+)
+
 lldp_r2_1 = SelfTestData(
     name="r2_1",
     nornir_raw_result=nornir_raw_result_r2,
@@ -119,6 +128,15 @@ lldp_r2_2 = SelfTestData(
         "remote_port": "GigabitEthernet3",
     },
     additional_data={"remote_chassis_id": R1_CHASSIS_ID, "short_remote_port": "Gi3"},
+)
+
+lldp_r2_count = SelfTestData(
+    name="r2_count",
+    nornir_raw_result=nornir_raw_result_r2,
+    test_data={
+        "host": "R2",
+        "neighbor_count": 2,
+    },
 )
 
 
@@ -152,6 +170,17 @@ def selftestdata(request):
 @pytest.fixture
 def testdata(selftestdata):
     return selftestdata.test_data
+
+
+@pytest.fixture(
+    params=[
+        lldp_r1_count,
+        lldp_r2_count,
+    ],
+    ids=lambda data: data.name,
+)
+def selftestdata_count(request):
+    return request.param
 
 
 @pytest.fixture
@@ -210,4 +239,14 @@ def test_integration(selftestdata, integration_tester):
         task_module=tasks,
         task_name="napalm_get",
         test_count=2,
+    )
+
+
+def test_integration_count(selftestdata_count, integration_tester):
+    integration_tester(
+        selftestdata_count,
+        test_class="TestNapalmLldpNeighborsCount",
+        task_module=tasks,
+        task_name="napalm_get",
+        test_count=1,
     )

@@ -65,3 +65,9 @@ class TestNapalmLldpNeighbors:
             lldp_neighbor_entry["remote_port"] == remote_port
             or lldp_neighbor_entry["remote_port_expanded"] == remote_port
         )
+
+
+class TestNapalmLldpNeighborsCount:
+    @pytest.mark.nuts("neighbor_count")
+    def test_neighbor_count(self, single_result, neighbor_count):
+        assert neighbor_count == len(single_result.result)

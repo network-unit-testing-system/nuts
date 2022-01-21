@@ -34,6 +34,9 @@ class TestNapalmConfig:
         self, single_result, startup_equals_running_config
     ):
         assert (
-            bool(single_result.result["config"]["startup"] == single_result.result["config"]["running"])
+            bool(
+                single_result.result["config"]["startup"]
+                == single_result.result["config"]["running"]
+            )
             == startup_equals_running_config
         )

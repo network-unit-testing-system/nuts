@@ -9,7 +9,8 @@ R1_CHASSIS_ID = "001e.e547.df00"
 R2_CHASSIS_ID = "001e.f62f.a600"
 R3_CHASSIS_ID = "001e.e611.3500"
 REMOTE_SYSTEM_DESCRIPTION = (
-    "Cisco IOS Software [Gibraltar], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M),\
+    "Cisco IOS Software [Gibraltar], Virtual XE Software "
+    "(X86_64_LINUX_IOSD-UNIVERSALK9-M),\
         Version 16.11.1a, RELEASE SOFTWARE (fc1)",
 )
 REMOTE_SYSTEM_CAPAB = ["bridge", "router"]

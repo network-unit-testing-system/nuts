@@ -8,7 +8,7 @@ from _pytest.nodes import Collector
 from _pytest.python import Metafunc
 from _pytest.fixtures import FixtureRequest
 from _pytest.config import Config
-from py._path.local import LocalPath
+from _pytest._py.path import LocalPath
 
 from nuts.context import NutsContext
 from nuts.context import NornirNutsContext

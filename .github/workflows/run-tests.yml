@@ -6,10 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7, 3.8, 3.9]
+        python: [3.8, 3.9]
         include:
-          - python: 3.7
-            testenv: py
           - python: 3.8
             testenv: py  
           - python: 3.9

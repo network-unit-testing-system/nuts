@@ -25,14 +25,7 @@ class NutsYamlFile(pytest.File):
     """
 
     def collect(self) -> Iterable[Union[Item, Collector]]:
-        # path uses pathlib.Path and is meant to replace fspath, which uses
-        # py.path.local. Both variants will be used for some time in parallel within
-        # pytest. If fspath is used in a newer pytest version, it triggers a deprecation
-        # warning. We therefore use a wrapper that can use both path types
-        if hasattr(self, "path"):
-            yield from self._collect_path()
-        else:
-            yield from self._collect_fspath()
+        yield from self._collect_path()
 
     def _collect_path(self) -> Iterable[Union[Item, Collector]]:
         try:
@@ -50,21 +43,6 @@ class NutsYamlFile(pytest.File):
                 path=self.path,
                 obj=module,
                 test_entry=test_entry,
-            )
-
-    def _collect_fspath(self) -> Iterable[Union[Item, Collector]]:
-        try:
-            with self.fspath.open() as f:  # type: ignore[union-attr]
-                raw = yaml.safe_load(f)
-        except OSError as e:
-            raise NutsSetupError(
-                f"Could not open YAML file containing test bundle:\n{e}"
-            )
-
-        for test_entry in raw:
-            module = find_and_load_module(test_entry)
-            yield NutsTestFile.from_parent(
-                self, fspath=self.fspath, obj=module, test_entry=test_entry
             )
 
 

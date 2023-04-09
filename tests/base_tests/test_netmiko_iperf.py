@@ -32,7 +32,8 @@ iperf_l2_1 = SelfTestData(
 
 iperf_l2_2 = SelfTestData(
     name="l2_2",
-    nornir_raw_result='{"start":{"connected":[],"version":"iperf 3.1.3","system_info":"Linux"},\
+    nornir_raw_result='{"start":{"connected":[],"version":"iperf 3.1.3",\
+        "system_info":"Linux"},\
         "intervals":[],"end":{},\
         "error":"error - unable to connect to server: No route to host"}',
     test_data={"host": "L2", "destination": "10.0.0.220", "min_expected": 10000000},

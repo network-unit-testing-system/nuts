@@ -8,10 +8,12 @@ from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
 
 import pytest
 import yaml
-from _pytest import nodes
 from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
+from _pytest.nodes import Item, Collector
 from _pytest.python import Metafunc
+
+# from pytest import Metafunc, Item, Collector
 
 from nuts.helpers.errors import NutsUsageError, NutsSetupError
 from nuts import index
@@ -22,7 +24,7 @@ class NutsYamlFile(pytest.File):
     Collect tests from a yaml file.
     """
 
-    def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+    def collect(self) -> Iterable[Union[Item, Collector]]:
         # path uses pathlib.Path and is meant to replace fspath, which uses
         # py.path.local. Both variants will be used for some time in parallel within
         # pytest. If fspath is used in a newer pytest version, it triggers a deprecation
@@ -32,9 +34,9 @@ class NutsYamlFile(pytest.File):
         else:
             yield from self._collect_fspath()
 
-    def _collect_path(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+    def _collect_path(self) -> Iterable[Union[Item, Collector]]:
         try:
-            with self.path.open() as fo:  # type: ignore[attr-defined]
+            with self.path.open() as fo:
                 raw = yaml.safe_load(fo)
         except OSError as ex:
             raise NutsSetupError(
@@ -45,12 +47,12 @@ class NutsYamlFile(pytest.File):
             module = find_and_load_module(test_entry)
             yield NutsTestFile.from_parent(
                 self,
-                path=self.path,  # type: ignore[attr-defined, call-arg]
+                path=self.path,
                 obj=module,
                 test_entry=test_entry,
             )
 
-    def _collect_fspath(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+    def _collect_fspath(self) -> Iterable[Union[Item, Collector]]:
         try:
             with self.fspath.open() as f:  # type: ignore[union-attr]
                 raw = yaml.safe_load(f)
@@ -110,7 +112,7 @@ class NutsTestFile(pytest.Module):
         self.obj = obj
         self.test_entry = test_entry
 
-    def collect(self) -> Iterable[Union[nodes.Item, nodes.Collector]]:
+    def collect(self) -> Iterable[Union[Item, Collector]]:
         """
         Collects a single NutsTestClass instance from this NutsTestFile.
         At the start inject setup_module fixture and parse all fixtures from the module.
@@ -208,10 +210,11 @@ def get_parametrize_data(
 
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "params")
+    # breakpoint()
+    data = getattr(nuts_test_instance, "test_entry")
     return (
         ["nuts_test_entry", *fields],
-        dict_to_tuple_list(data["test_data"], fields, required_fields),
+        dict_to_tuple_list(data.get("test_data", []), fields, required_fields),
     )
 
 

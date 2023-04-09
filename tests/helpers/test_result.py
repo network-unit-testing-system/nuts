@@ -31,7 +31,6 @@ def test_check_result(pytester):
 
 
 class MockResultExtractor(AbstractResultExtractor):
-
     single_transform = Mock()
 
 

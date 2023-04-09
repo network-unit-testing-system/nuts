@@ -169,7 +169,6 @@ class AbstractResultExtractor:
         if nornir_result.failed:
             return NutsResult(failed=True, exception=nornir_result.exception)
         try:
-
             return NutsResult(self.single_transform(nornir_result))
         except Exception as exception:
             tb = traceback.format_exc()

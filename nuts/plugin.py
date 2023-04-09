@@ -1,5 +1,6 @@
 """Fixtures"""
 from typing import Optional, Dict, Any
+from pathlib import Path
 
 import pytest
 from _pytest.config.argparsing import Parser
@@ -8,7 +9,6 @@ from _pytest.nodes import Collector
 from _pytest.python import Metafunc
 from _pytest.fixtures import FixtureRequest
 from _pytest.config import Config
-from _pytest._py.path import LocalPath
 
 from nuts.context import NutsContext
 from nuts.context import NornirNutsContext
@@ -48,11 +48,12 @@ def pytest_configure(config: Config) -> None:
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
     """
-    Checks if the the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
+    Checks if the nuts pytest parametrization scheme exists (@pytest.mark.nuts)
     to generate tests based on that information.
     """
     nuts = metafunc.definition.get_closest_marker("nuts")
     if nuts:
+        # breakpoint()
         parametrize_args, parametrize_data = get_parametrize_data(
             metafunc, *nuts.args, **nuts.kwargs
         )
@@ -60,17 +61,17 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
 
 # https://docs.pytest.org/en/latest/example/nonpython.html#yaml-plugin
-def pytest_collect_file(parent: Session, path: LocalPath) -> Optional[Collector]:
+def pytest_collect_file(parent: Session, file_path: Path) -> Optional[Collector]:
     """
     Performs the collection phase for the given pytest session.
     Collects all test bundles if available, i.e. files starting
     with 'test' and ending in .yaml.
     :param parent: pytest session object
-    :param path: path to test file(s)
+    :param file_path: path to test file(s)
     :return: The pytest collector if found
     """
-    if path.ext == ".yaml" and path.basename.startswith("test"):
-        return NutsYamlFile.from_parent(parent, fspath=path)
+    if file_path.suffix == ".yaml" and file_path.name.startswith("test"):
+        return NutsYamlFile.from_parent(parent, path=file_path)
     return None
 
 

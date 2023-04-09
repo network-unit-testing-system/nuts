@@ -26,7 +26,7 @@ iperf_l2_1 = SelfTestData(
     nornir_raw_result='{"start":{"connected":[{"remote_host":"10.0.0.1"}]},\
         "end":{"sum_received":{"bits_per_second": 5000}}}',
     test_data={"host": "L2", "destination": "10.0.0.1", "min_expected": 10000000},
-    expected_output=["E * assert 5000 >= 10000000"],
+    expected_output=["> * assert single_result.result >= min_expected"],
     expected_outcome="failed",
 )
 

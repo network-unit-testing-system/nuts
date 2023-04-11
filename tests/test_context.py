@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 from unittest.mock import Mock, ANY
 
 import pytest
@@ -285,8 +285,12 @@ class TestContextParameterization:
     
     def test_custom_parametrization(self):
         class CustomContext(NutsContext):
-            def parametrize(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
-                return [data for data in test_data for _ in range(data.get("multiplier", 1))]   
+            def parametrize(
+                self, test_data: List[Dict[str, Any]]
+            ) -> List[Dict[str, Any]]:
+                return [
+                    data for data in test_data for _ in range(data.get("multiplier", 1))
+                ]
 
         context = CustomContext()
         test_data = [{"multiplier": 4, "test": "test"}]

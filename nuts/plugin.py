@@ -13,7 +13,6 @@ from pytest import Config
 from nuts.context import NutsContext
 from nuts.context import NornirNutsContext
 from nuts.helpers.result import NutsResult
-from nuts.helpers.context import load_context
 from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 

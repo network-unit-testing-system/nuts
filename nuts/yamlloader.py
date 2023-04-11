@@ -188,15 +188,20 @@ def get_parametrize_data(
 
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
-    data = getattr(nuts_test_instance, "params")
+    if not isinstance(nuts_test_instance, NutsTestFile):
+        raise NutsSetupError(
+            f"Pytest Node is not from type 'NutsTestFile:\n{nuts_test_instance}"
+        )
+
+    data = getattr(nuts_test_instance, "test_entry")
 
     ctx = load_context(nuts_test_instance.module, data)
-    data["test_data"] = ctx.parametrize(data["test_data"])
+    data["test_data"] = ctx.parametrize(data.get("test_data", []))
 
     return (
         ["nuts_test_entry", *fields],
         dict_to_tuple_list(
-            data["test_data"], fields, required_fields, id_format=ctx.id_format
+            data.get("test_data", []), fields, required_fields, id_format=ctx.id_format
         ),
     )
 

@@ -13,8 +13,6 @@ from pytest import Metafunc
 from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
 
-# from pytest import Metafunc, Item, Collector
-
 from nuts.helpers.errors import NutsUsageError, NutsSetupError
 from nuts import index
 

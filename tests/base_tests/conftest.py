@@ -2,7 +2,7 @@ from typing import Dict, Any
 
 import yaml
 import pytest
-from _pytest.fixtures import FixtureRequest
+from pytest import FixtureRequest
 from napalm.base.exceptions import ConnectionException
 from nornir.core.task import AggregatedResult
 

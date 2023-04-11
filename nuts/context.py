@@ -1,7 +1,7 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
 from typing import Any, Callable, Optional, Dict
-from _pytest.config import Config
+from pytest import Config
 
 from nornir import InitNornir
 from nornir.core import Nornir

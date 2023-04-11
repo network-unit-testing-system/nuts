@@ -3,12 +3,12 @@ from typing import Optional, Dict, Any
 from pathlib import Path
 
 import pytest
-from _pytest.config.argparsing import Parser
-from _pytest.main import Session
-from _pytest.nodes import Collector
-from _pytest.python import Metafunc
-from _pytest.fixtures import FixtureRequest
-from _pytest.config import Config
+from pytest import Parser
+from pytest import Session
+from pytest import Collector
+from pytest import Metafunc
+from pytest import FixtureRequest
+from pytest import Config
 
 from nuts.context import NutsContext
 from nuts.context import NornirNutsContext

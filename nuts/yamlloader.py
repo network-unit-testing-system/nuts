@@ -6,12 +6,12 @@ import types
 from importlib import util
 from typing import Iterable, Union, Any, Optional, List, Set, Dict, Tuple
 
-import pytest
 import yaml
+import pytest
+from pytest import Item, Collector
+from pytest import Metafunc
 from _pytest.mark import ParameterSet
 from _pytest.nodes import Node
-from _pytest.nodes import Item, Collector
-from _pytest.python import Metafunc
 
 # from pytest import Metafunc, Item, Collector
 

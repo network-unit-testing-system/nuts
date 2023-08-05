@@ -187,6 +187,7 @@ def get_parametrize_data(
 
     assert metafunc.definition.parent is not None
     nuts_test_instance = metafunc.definition.parent.parent
+    # breakpoint()
     if not isinstance(nuts_test_instance, NutsTestFile):
         raise NutsSetupError(
             f"Pytest Node is not from type 'NutsTestFile:\n{nuts_test_instance}"

@@ -1,6 +1,6 @@
 """Provide necessary information that is needed for a specific test."""
 import pathlib
-from typing import Any, Callable, Optional, Dict
+from typing import Any, Callable, Optional, Dict, List
 from pytest import Config
 
 from nornir import InitNornir
@@ -10,7 +10,7 @@ from nornir.core.filter import F
 
 from nuts.helpers.errors import NutsSetupError
 from nuts.helpers.result import AbstractResultExtractor
-from nuts.helpers.filters import filter_hosts
+from nuts.helpers.filters import filter_hosts, get_filter_object
 
 
 class NutsContext:
@@ -94,6 +94,8 @@ class NornirNutsContext(NutsContext):
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
     DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
+    id_format = "{host}_"
+
     def __init__(
         self, nuts_parameters: Any = None, pytestconfig: Optional[Config] = None
     ):
@@ -127,6 +129,34 @@ class NornirNutsContext(NutsContext):
         :return: A nornir filter that is applied to the nornir instance
         """
         return filter_hosts(self.nuts_parameters["test_data"])
+
+    def parametrize(self, test_data: Any) -> Any:
+        """
+        Parametrize test_data with hosts.
+        This is needed because of the support of `tags` and `groups`.
+
+        :param test_data: test_data from YAML file
+
+        :return: Parametrized test_data
+        """
+        if not self.nornir:
+            raise NutsSetupError("First Nornir has to be loaded. Call `initialize`.")
+        tests = []
+        for data in test_data:
+            nr = self.nornir.filter(get_filter_object(data))
+
+            # keep explicit hosts in test_data
+            def get_explicit_hosts(data: Any) -> List[str]:
+                host = data.get("host", [])
+                if isinstance(host, list):
+                    return host
+                return [host]
+
+            explicit_hosts = get_explicit_hosts(data)
+            inventory_hosts = list(nr.inventory.hosts.keys())
+            for host in set(explicit_hosts + inventory_hosts):
+                tests.append({**data, "host": host})
+        return tests
 
     def general_result(self) -> AggregatedResult:
         """

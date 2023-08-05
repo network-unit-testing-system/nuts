@@ -3,7 +3,7 @@ Functions to filter the nornir inventory and used in conjunction with
 a context's nornir_filter function.
 """
 from typing import Optional, Dict, Any, List, Set, Union
-from nornir.core.filter import F, OR, F_BASE
+from nornir.core.filter import F, OR
 
 from nuts.helpers.errors import NutsSetupError
 
@@ -32,7 +32,10 @@ def get_filter_object(test_data_entry: Dict[str, Any]) -> Union[F, OR]:
     for inventory_property, test_data_property in properties.items():
         if test_data_property in test_data_entry:
             filter_data = test_data_entry[test_data_property]
-            filters.append(F(**{f"{inventory_property}_any": filter_data}))
+            if not isinstance(filter_data, list):
+                filter_data = [filter_data]
+
+            filters.append(F(**{f"{inventory_property}__any": filter_data}))
 
     if len(filters) == 0:
         raise NutsSetupError(

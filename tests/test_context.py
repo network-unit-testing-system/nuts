@@ -1,5 +1,5 @@
 from typing import Any, Dict, List
-from unittest.mock import Mock, ANY
+from unittest.mock import Mock, PropertyMock, ANY
 
 import pytest
 
@@ -26,7 +26,29 @@ class CustomNornirNutsContext(NornirNutsContext):
 
 @pytest.fixture
 def nornir_instance():
-    return Mock()
+    inventory_data = {
+        "R1": {"name": "R1", "tags": ["router", "tag1"], "groups": ["router", "site1"]},
+        "R2": {"name": "R2", "tags": ["router", "tag2"], "groups": ["router", "site2"]},
+    }
+
+    def nornir_mock(f=None):
+        if f:
+            data = {}
+            for host in inventory_data.values():
+                if f(host):
+                    data[host["name"]] = host
+        else:
+            data = inventory_data
+
+        m = Mock()
+        m.inventory.hosts.keys.return_value = data.keys()
+        return m
+
+    mock = nornir_mock()
+
+    # No nested filters supported
+    mock.filter.side_effect = nornir_mock
+    return mock
 
 
 @pytest.fixture
@@ -68,6 +90,7 @@ class TestNornirNutsContextGeneralResult:
 
     def test_calls_run_on_filtered_inventory(self, nornir_nuts_ctx, nornir_instance):
         filtered_inventory = Mock()
+        nornir_instance.filter = Mock()
         nornir_instance.filter.return_value = filtered_inventory
         nornir_nuts_ctx.test_filter = Mock()
 
@@ -296,3 +319,117 @@ class TestContextParameterization:
         test_data = [{"multiplier": 4, "test": "test"}]
         new_test_data = context.parametrize(test_data)
         assert len(new_test_data) == 4
+
+
+class TestNornirContextParametrization:
+    def test_raises_nuts_setup_error_if_nornir_is_not_defined(self):
+        with pytest.raises(NutsSetupError):
+            context = NornirNutsContext()
+            test_data = [{"host": "R1", "test": "test"}]
+            context.parametrize(test_data) == test_data
+
+    @pytest.mark.parametrize(
+        "test_data, expected",
+        [
+            # host tests
+            ([{"host": "R1", "test": "test"}], [{"host": "R1", "test": "test"}]),
+            ([{"host": "R2", "test": "test"}], [{"host": "R2", "test": "test"}]),
+            (
+                [{"host": ["R1", "R2"], "test": "test"}],
+                [{"host": "R1", "test": "test"}, {"host": "R2", "test": "test"}],
+            ),
+            (
+                [{"host": "R1", "tags": [], "groups": [], "test": "test"}],
+                [{"host": "R1", "tags": [], "groups": [], "test": "test"}],
+            ),
+            # tags tests
+            (
+                [{"tags": ["tag1"], "test": "test"}],
+                [{"host": "R1", "tags": ["tag1"], "test": "test"}],
+            ),
+            (
+                [{"tags": ["tag2"], "test": "test"}],
+                [{"host": "R2", "tags": ["tag2"], "test": "test"}],
+            ),
+            (
+                [{"tags": ["router"], "test": "test"}],
+                [
+                    {"host": "R1", "tags": ["router"], "test": "test"},
+                    {"host": "R2", "tags": ["router"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R1", "tags": ["router"], "test": "test"}],
+                [
+                    {"host": "R1", "tags": ["router"], "test": "test"},
+                    {"host": "R2", "tags": ["router"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R1", "tags": ["tag2"], "test": "test"}],
+                [
+                    {"host": "R1", "tags": ["tag2"], "test": "test"},
+                    {"host": "R2", "tags": ["tag2"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R1", "tags": ["tag1"], "test": "test"}],
+                [
+                    {"host": "R1", "tags": ["tag1"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R1", "tags": ["notFound"], "test": "test"}],
+                [
+                    {"host": "R1", "tags": ["notFound"], "test": "test"},
+                ],
+            ),
+            # groups tests
+            (
+                [{"groups": ["site1"], "test": "test"}],
+                [{"host": "R1", "groups": ["site1"], "test": "test"}],
+            ),
+            (
+                [{"groups": ["site2"], "test": "test"}],
+                [{"host": "R2", "groups": ["site2"], "test": "test"}],
+            ),
+            (
+                [{"groups": ["router"], "test": "test"}],
+                [
+                    {"host": "R1", "groups": ["router"], "test": "test"},
+                    {"host": "R2", "groups": ["router"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R2", "groups": ["router"], "test": "test"}],
+                [
+                    {"host": "R1", "groups": ["router"], "test": "test"},
+                    {"host": "R2", "groups": ["router"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R2", "groups": ["site1"], "test": "test"}],
+                [
+                    {"host": "R1", "groups": ["site1"], "test": "test"},
+                    {"host": "R2", "groups": ["site1"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R2", "groups": ["site2"], "test": "test"}],
+                [
+                    {"host": "R2", "groups": ["site2"], "test": "test"},
+                ],
+            ),
+            (
+                [{"host": "R2", "groups": ["notFound"], "test": "test"}],
+                [
+                    {"host": "R2", "groups": ["notFound"], "test": "test"},
+                ],
+            ),
+        ],
+    )
+    def test_parametrization_single_host(self, nornir_nuts_ctx, test_data, expected):
+        new_data = nornir_nuts_ctx.parametrize(test_data)
+        assert len(new_data) == len(expected)
+        for d in expected:
+            assert d in new_data

@@ -7,12 +7,13 @@ from nuts.helpers.filters import filter_hosts, get_filter_object
 @pytest.mark.parametrize(
     "test_data, expected",
     [
-        ([{"host": "R1"}, {"host": "R2"}], F(name__any=["R1", "R2"])),
-        ([{"host": "R1"}, {"host": "R1"}], F(name__any=["R1"])),
+        ([{"host": "R1"}, {"host": "R2"}], ["R1", "R2"]),
+        ([{"host": "R1"}, {"host": "R1"}], ["R1"]),
     ],
 )
 def test_filter_host(test_data, expected):
-    assert filter_hosts(test_data).__dict__ == expected.__dict__
+    hosts = filter_hosts(test_data).filters["name__any"]
+    assert sorted(hosts) == sorted(expected)
 
 
 @pytest.mark.parametrize(

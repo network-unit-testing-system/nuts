@@ -1,14 +1,15 @@
 First Steps with NUTS
 =====================
 
-This tutorial guides you through a minimal setup of the NetTowel Unit Testing System (NUTS, or nuts). A showcase is included in nuts' code that allows you to learn the basic mechanics of nuts without the need of an actual network -- find those details at the end of this tutorial.
+This tutorial guides you through a minimal setup of the NetTowel Unit Testing System (NUTS, or nuts). A showcase is included in nuts' code that allows you to learn the basic mechanics of nuts without the need for an actual network -- find those details at the end of this tutorial.
 
 Two major components are needed for nuts:
 
     #. A network inventory
     #. Test bundles
 
-Here's an overview on how to organise your files so that NUTS can find everything it needs. The root folder also contains the virtual environment with the :doc:`nuts installation <../installation/install>`.
+Here's an overview of how to organize your files so that NUTS can find everything it needs. The root folder also contains the virtual environment with the :doc:`nuts installation <../installation/install>`.
+This example uses the Nornir SimpleInventory, but all inventory plugins are supported.
 
 .. code:: shell
 
@@ -19,16 +20,17 @@ Here's an overview on how to organise your files so that NUTS can find everythin
     └── tests               # your test bundles
         └── test-definition-ping.yaml    
 
-NOTE: If you already have an existing nornir configuration including an inventory you do not need to copy it into your NUTS test setup. Instead you can directly refer to it `when executing the tests`__.
+NOTE: If you already have an existing nornir configuration including an inventory you do not need to copy it into your NUTS test setup. Instead, you can directly refer to it `when executing the tests`__.
 
 __ customInventory_
 
 1. Network Inventory
 --------------------
 
-You must provide information on your network configuration so that nuts can actually interact with it. Currently, NUTS uses a `nornir inventory <https://nornir.readthedocs.io/en/latest/tutorial/inventory.html>`__ and ``nr-config.yaml`` which uses that inventory.
+You must provide information on your network configuration so that nuts can interact with it. 
+Currently, the implemented test cases in NUTS use `nornir <https://nornir.readthedocs.io/en/latest/>`__ and a config file ``nr-config.yaml`` (default) which provides the inventory.
 
-A sample ``hosts.yaml`` might look like this:
+A sample ``hosts.yaml`` (Nornir SampleInventory) might look like this:
 
 .. code:: yaml
 
@@ -73,9 +75,9 @@ If you set up the above folders and files, you are ready to write test bundles.
 2. Test Bundle
 --------------
 
-A test bundle is a collection of tests that are logically related to each other, for example tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
+A test bundle is a collection of tests that are logically related to each other, for example, tests that all revolve around "information on BGP neighbors". The test bundle describes which test definition should be collected and executed and provides data for those tests. The bundles are written as individual entries in a YAML file.
 
-Currently only YAML files are supported as test bundle format, but other data sources could be integrated in later versions of nuts. 
+Currently, only YAML files are supported as test bundle format, but other data sources could be integrated with later versions of nuts. 
 
 Structure of a Test Bundle
 **************************
@@ -90,11 +92,11 @@ Each test bundle contains the following structure:
     test_execution: <additional data used to execute the test> # optional
     test_data: <data used to generate the test instances>
 
-``test_module``: Optional. The full path of the python module that contains the test class to be used. This value is optional if the test class is registered in ``index.py`` of the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started if local test modules are used. Using ``test_modules`` allows you to write your own test classes. **Note: We currently do not support self-written test modules, since upcoming refactorings might introduce breaking changes.**
+``test_module``: Optional. The full path of the Python module that contains the test class to be used. This value is optional if the test class is registered in ``index.py`` of the pytest-nuts plugin. Note that it can be relevant in which directory ``pytest`` is started if local test modules are used. Using ``test_modules`` allows you to write your own test classes. **Note: We currently do not support self-written test modules, since upcoming refactorings might introduce breaking changes.**
 
-``test_class``: Required. The name of the python class which contains the tests that should be executed. Note that currently every test in this class is executed.
+``test_class``: Required. The name of the Python class which contains the tests that should be executed. Note that currently every test in this class is executed.
 
-``label``: Optional. Additional identifier that can be used to distinguish between multiple occurrences of the same test class in a test bundle.
+``label``: Optional. An additional identifier that can be used to distinguish between multiple occurrences of the same test class in a test bundle.
 
 ``test_execution``: Optional. Nuts uses nornir tasks to automatically interact with the network. This field contains additional information that is directly passed to the nornir task in the background. Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
 As an example, the test definition ``TestNapalmPing`` calls a nornir task to execute napalm's ping-command. 
@@ -173,7 +175,7 @@ The sample test bundle above requires a network inventory and a running network 
 
 How it works: Each test module implements a context class to provide module-specific functionality to its tests. This context class is a  ``NutsContext`` or a subclass of it. This guarantees a consistent interface across all tests for test setup and execution. 
 
-The predefined test classes which depend on a network all use `nornir <https://nornir.readthedocs.io/en/latest/>`__ in order to communicate with the network devices. Those test classes all derive all from a more specific ``NornirNutsContext``, which provides a nornir instance and nornir-specific helpers. 
+The predefined test classes which depend on a network all use `nornir <https://nornir.readthedocs.io/en/latest/>`__ in order to communicate with the network devices. Those test classes all derive from a more specific ``NornirNutsContext``, which provides a nornir instance and nornir-specific helpers. 
 
 In order for the offline showcase to work, the test class derives from ``NutsContext`` and implements its own context class. See the code in ``nuts/tests/showcase/showcase_expanse.py`` to see the structure of this offline context class.
 

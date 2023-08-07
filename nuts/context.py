@@ -143,7 +143,8 @@ class NornirNutsContext(NutsContext):
             raise NutsSetupError("First Nornir has to be loaded. Call `initialize`.")
         tests = []
         for data in test_data:
-            nr = self.nornir.filter(get_filter_object(data))
+            filter_object = get_filter_object(data)
+            nr = self.nornir.filter(filter_object)
 
             # keep explicit hosts in test_data
             def get_explicit_hosts(data: Any) -> List[str]:
@@ -154,6 +155,10 @@ class NornirNutsContext(NutsContext):
 
             explicit_hosts = get_explicit_hosts(data)
             inventory_hosts = list(nr.inventory.hosts.keys())
+            if not inventory_hosts:
+                raise NutsSetupError(
+                    f"No hosts found for filter {filter_object} in Nornir inventory."
+                )
             for host in set(explicit_hosts + inventory_hosts):
                 tests.append({**data, "host": host})
         return tests

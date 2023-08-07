@@ -1,19 +1,19 @@
 Test Bundles
 ============
 
-A test bundle contains one ore more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc. These tests are defined by the individual fields for each entry in ``test_data``. If all fields are present, all tests are executed. If the field is missing, the test will be shown as "skipped" in the results. In the example on BGP neighbors below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). 
+A test bundle contains one or more tests that are logically related to each other. For example, a test bundle about BGP neighbors has a test that checks the correctness of the local ID, another test checks if a peer is up etc. These tests are defined by the individual fields for each entry in ``test_data``. If all fields are present, all tests are executed. If the field is missing, the test will be shown as "skipped" in the results. In the example on BGP neighbors below, ``R2`` only has a test that checks if its neighbor is down (``is_up: false``). 
 
 This section contains all test bundles which have been implemented in NUTS, you can incorporate them in your own bundles. They can be executed with the command ``$ pytest <test bundle name>.yaml`` from your project root. 
 
 Note that you need an inventory of network devices for the tests to work. Please see :doc:`First Steps with NUTS <../tutorial/firststeps>` for more information.
 
-In some test bundles you can directly pass arguments to the nornir task, i.e. the network query that is executed in the background. For those test bundles we indicate the specific task which is used to query the devices, so that you can look up all available arguments. 
+In some test bundles, you can directly pass arguments to the nornir task, i.e. the network query that is executed in the background. For those test bundles, we indicate the specific task which is used to query the devices, so that you can look up all available arguments. 
 
 
 ARP Table
 ---------
 
-**Test Bundle:** Tests if the desired ARP table entries exist on a device. It is checked whether predefined entries consisting of interface and ip are available in the arp table on the device.
+**Test Bundle:** Tests if the desired ARP table entries exist on a device. It is checked whether predefined entries consisting of interface and IP are available in the arp table on the device.
 
 **Test Bundle Structure:**
 
@@ -490,7 +490,7 @@ Ping Hosts
 
 There is only one test in this bundle, i.e. ping another host. All fields are therefore required: ``host, destination, expected, max_drop``. 
 
-``max_drop``:  Defines how many ping attemps are allowed to fail to still be counted as ``SUCCESS``. ``FAIL`` means every packet was lost. ``FLAPPING`` is everything else in-between.
+``max_drop``:  Defines how many ping attempts are allowed to fail to still be counted as ``SUCCESS``. ``FAIL`` means every packet was lost. ``FLAPPING`` is everything else in-between.
 
 ``test_execution``: These fields directly control how the ping is executed. Their values are passed on to nornir, which executes the actual network requests in the background. `Nornir uses napalm's ping <https://github.com/nornir-automation/nornir_napalm/blob/master/nornir_napalm/plugins/tasks/napalm_ping.py>`__, which supports the following fields:
 
@@ -580,7 +580,7 @@ Users - No Rogue Users
 VLAN - Information
 ------------------
 
-**Test Bundle:** Test if the defined VLAN's are available on a device. Additionally the assignment of VLAN-tags to VLAN-names can be checked.
+**Test Bundle:** Test if the defined VLANs are available on a device. Additionally, the assignment of VLAN tags to VLAN names can be checked.
 
 **Test Bundle Structure:**
 
@@ -639,7 +639,7 @@ VLAN - Interface Assignment
 VLAN - No Rogue VLANs
 ---------------------
 
-**Test Bundle:** Tests that only pre-defined VLAN's exist on a device, i.e. there are no rogue VLAN's.
+**Test Bundle:** Tests that only pre-defined VLANs exist on a device, i.e. there are no rogue VLANs.
 
 **Test Bundle Structure:**
 

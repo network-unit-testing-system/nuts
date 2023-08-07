@@ -300,12 +300,13 @@ class TestNornirNutsContextIntegration:
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(xpassed=1)
 
+
 class TestContextParameterization:
     def test_default_parametrization(self):
         context = NutsContext()
         test_data = {"host": "R1", "test": "test"}
         assert context.parametrize(test_data) == test_data
-    
+
     def test_custom_parametrization(self):
         class CustomContext(NutsContext):
             def parametrize(

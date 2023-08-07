@@ -433,3 +433,49 @@ class TestNornirContextParametrization:
         assert len(new_data) == len(expected)
         for d in expected:
             assert d in new_data
+
+    @pytest.mark.usefixtures("default_nr_init")
+    def test_executes_task_with_tags(self, pytester):
+        pytester.makepyfile(
+            basic_task="""
+    import pytest
+    from nornir.core.task import Result
+    from nuts.context import NornirNutsContext
+    from nuts.helpers.result import AbstractHostResultExtractor
+
+    class ExpanseExtractor(AbstractHostResultExtractor):
+        def single_transform(self, single_result):
+            return self._simple_extract(single_result)
+
+    class CustomNornirNutsContext(NornirNutsContext):
+        def nuts_task(self):
+            return lambda task: Result(host=task.host, result=task.host.name)
+        
+        def nuts_extractor(self) -> ExpanseExtractor:
+            return ExpanseExtractor(self)
+
+
+    CONTEXT = CustomNornirNutsContext
+
+
+    class TestBasicTask:
+        @pytest.mark.nuts("host")
+        def test_basic_task(self, single_result, host):
+            assert single_result.result == host
+    """
+        )
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestBasicTask
+                  test_data:
+                    - tags: tag1
+                      # host: R1
+                    - tags: tag2
+                      # host: R2
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(passed=2)

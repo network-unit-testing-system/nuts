@@ -94,7 +94,7 @@ class NornirNutsContext(NutsContext):
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
     DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
-    # `_` to sepperate hostname from pytest number used for multiple test with the same name
+    # `_` to sepperate hostname from pytest number used for test with same name
     id_format = "{host}_"
 
     def __init__(

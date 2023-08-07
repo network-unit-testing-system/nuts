@@ -434,10 +434,10 @@ class TestNornirContextParametrization:
         for d in expected:
             assert d in new_data
 
-    @pytest.mark.usefixtures("default_nr_init")
-    def test_executes_task_with_tags(self, pytester):
-        pytester.makepyfile(
-            basic_task="""
+
+@pytest.mark.usefixtures("default_nr_init")
+class TestNornirNutsContextParametrizationIntegration:
+    BASIC_TASK = """
     import pytest
     from nornir.core.task import Result
     from nuts.context import NornirNutsContext
@@ -463,7 +463,9 @@ class TestNornirContextParametrization:
         def test_basic_task(self, single_result, host):
             assert single_result.result == host
     """
-        )
+
+    def test_executes_task_with_tags(self, pytester):
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
         arguments = {
             "test_class_loading": """
                 ---
@@ -471,11 +473,69 @@ class TestNornirContextParametrization:
                   test_class: TestBasicTask
                   test_data:
                     - tags: tag1
-                      # host: R1
                     - tags: tag2
-                      # host: R2
                 """
         }
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=2)
+
+    def test_executes_task_with_tag_routers(self, pytester):
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestBasicTask
+                  test_data:
+                    - tags: router
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(passed=2)
+
+    def test_executes_task_with_group_site1(self, pytester):
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestBasicTask
+                  test_data:
+                    - groups: site1
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(passed=1)
+
+    def test_executes_task_with_group_routers(self, pytester):
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestBasicTask
+                  test_data:
+                    - groups: routers
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(passed=3)
+
+    def test_executes_task_fail_no_host_found(self, pytester):
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_module: basic_task
+                  test_class: TestBasicTask
+                  test_data:
+                    - groups: notExisting
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(errors=1)

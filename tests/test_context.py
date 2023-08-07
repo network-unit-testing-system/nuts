@@ -33,10 +33,10 @@ def nornir_instance():
 
     def nornir_mock(f=None):
         if f:
-            data = {}
+            data: Dict[str, Dict[str, Any]] = {}
             for host in inventory_data.values():
                 if f(host):
-                    data[host["name"]] = host
+                    data[str(host["name"])] = host
         else:
             data = inventory_data
 

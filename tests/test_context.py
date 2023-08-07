@@ -1,5 +1,5 @@
 from typing import Any, Dict, List
-from unittest.mock import Mock, PropertyMock, ANY
+from unittest.mock import Mock, ANY
 
 import pytest
 
@@ -450,7 +450,7 @@ class TestNornirNutsContextParametrizationIntegration:
     class CustomNornirNutsContext(NornirNutsContext):
         def nuts_task(self):
             return lambda task: Result(host=task.host, result=task.host.name)
-        
+
         def nuts_extractor(self) -> ExpanseExtractor:
             return ExpanseExtractor(self)
 

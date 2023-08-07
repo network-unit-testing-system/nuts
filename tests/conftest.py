@@ -24,8 +24,16 @@ def default_nr_init(pytester):
         "hosts": """
             R1:
               hostname: 1.1.1.1
+              data:
+                tags:
+                  - tag1
+                  - router
             R2:
               hostname: 2.2.2.2
+              data:
+                tags:
+                  - tag2
+                  - router
             R3:
               hostname: 3.3.3.3
             L1:

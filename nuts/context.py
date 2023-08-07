@@ -128,7 +128,7 @@ class NornirNutsContext(NutsContext):
         """
         :return: A nornir filter that is applied to the nornir instance
         """
-        return filter_hosts(self.nuts_parameters["test_data"])
+        return filter_hosts(self.parametrize(self.nuts_parameters["test_data"]))
 
     def parametrize(self, test_data: Any) -> Any:
         """

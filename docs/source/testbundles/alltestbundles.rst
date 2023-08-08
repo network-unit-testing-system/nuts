@@ -10,6 +10,33 @@ Note that you need an inventory of network devices for the tests to work. Please
 In some test bundles, you can directly pass arguments to the nornir task, i.e. the network query that is executed in the background. For those test bundles, we indicate the specific task which is used to query the devices, so that you can look up all available arguments. 
 
 
+Unpacking Grouped Tests
+-----------------------
+
+The easiest way is to define the hosts specifically for the test. With this approach, it can be sure the test will fail if the host is unavailable (for Nornir test, for example, not in the inventory anymore).
+For convenience, the NornirNutsContext (at the moment, all Test Bundles are based on this context) has a feature to use Nornir inventory groups or tags to select the hosts.  
+
+**Important:** ``groups`` and ``tags`` can also be a list and combined. The Nornir in the background used will do a logical ``OR``. This means if two tags are specified all hosts from both tags will be used. 
+
+.. code:: yaml
+
+    - test_class: TestNapalmPing
+      test_data:
+        - groups: clients 
+          destination: 192.168.0.1
+          expected: SUCCESS
+          max_drop: 1
+
+
+.. code:: yaml
+
+    - test_class: TestNetmikoOspfNeighbors
+      test_data:
+        - tags: ospf-core
+          neighbor_count: 4
+
+
+
 ARP Table
 ---------
 

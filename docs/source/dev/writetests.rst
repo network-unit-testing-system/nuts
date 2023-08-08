@@ -1,9 +1,7 @@
 How To Write Your Own Test
 ==========================
 
-Nuts is written as a `pytest plugin <https://docs.pytest.org/en/6.2.x/writing_plugins.html>`__ and allows you to write your own tests, apart from the existing ones in ``nuts/base_tests``. The short introduction here shows you the required ingredients to cook up your own tests.
-
-**IMPORTANT NOTE**: If you plan on writing your own tests, please be aware that nuts 4.0 will probably introduce major breaking changes. This means: The code you write for nuts version 3 will most probably NOT work for version 4. We briefly provide here the necessary steps for the curious ones and those who are willing to experiment.
+Nuts is written as a `Pytest plugin <https://docs.pytest.org/en/6.2.x/writing_plugins.html>`__ and allow you to write your own tests, apart from the existing ones in ``nuts/base_tests``. The short introduction here shows you the required ingredients to cook up your own tests.
 
 Three classes are needed for a test - they define the context in which a test is run, process raw data and then run the tests:
 

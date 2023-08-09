@@ -129,7 +129,8 @@ class NornirNutsContext(NutsContext):
         """
         :return: A nornir filter that is applied to the nornir instance
         """
-        return filter_hosts(self.parametrize(self.nuts_parameters["test_data"]))
+        data = self.parametrize(self.nuts_parameters["test_data"])
+        return filter_hosts(data)
 
     def parametrize(self, test_data: Any) -> Any:
         """
@@ -161,7 +162,11 @@ class NornirNutsContext(NutsContext):
                     f"No hosts found for filter {filter_object} in Nornir inventory."
                 )
             for host in set(explicit_hosts + inventory_hosts):
-                tests.append({**data, "host": host})
+                new_data = data.copy()
+                new_data.pop("groups", None)
+                new_data.pop("tags", None)
+                tests.append({**new_data, "host": host})
+
         return tests
 
     def general_result(self) -> AggregatedResult:

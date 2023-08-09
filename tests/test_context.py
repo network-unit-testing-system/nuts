@@ -341,90 +341,90 @@ class TestNornirContextParametrization:
             ),
             (
                 [{"host": "R1", "tags": [], "groups": [], "test": "test"}],
-                [{"host": "R1", "tags": [], "groups": [], "test": "test"}],
+                [{"host": "R1", "test": "test"}],
             ),
             # tags tests
             (
                 [{"tags": ["tag1"], "test": "test"}],
-                [{"host": "R1", "tags": ["tag1"], "test": "test"}],
+                [{"host": "R1", "test": "test"}],
             ),
             (
                 [{"tags": ["tag2"], "test": "test"}],
-                [{"host": "R2", "tags": ["tag2"], "test": "test"}],
+                [{"host": "R2", "test": "test"}],
             ),
             (
                 [{"tags": ["router"], "test": "test"}],
                 [
-                    {"host": "R1", "tags": ["router"], "test": "test"},
-                    {"host": "R2", "tags": ["router"], "test": "test"},
+                    {"host": "R1", "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R1", "tags": ["router"], "test": "test"}],
                 [
-                    {"host": "R1", "tags": ["router"], "test": "test"},
-                    {"host": "R2", "tags": ["router"], "test": "test"},
+                    {"host": "R1", "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R1", "tags": ["tag2"], "test": "test"}],
                 [
-                    {"host": "R1", "tags": ["tag2"], "test": "test"},
-                    {"host": "R2", "tags": ["tag2"], "test": "test"},
+                    {"host": "R1", "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R1", "tags": ["tag1"], "test": "test"}],
                 [
-                    {"host": "R1", "tags": ["tag1"], "test": "test"},
+                    {"host": "R1", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R1", "tags": ["notFound"], "test": "test"}],
                 [
-                    {"host": "R1", "tags": ["notFound"], "test": "test"},
+                    {"host": "R1", "test": "test"},
                 ],
             ),
             # groups tests
             (
                 [{"groups": ["site1"], "test": "test"}],
-                [{"host": "R1", "groups": ["site1"], "test": "test"}],
+                [{"host": "R1", "test": "test"}],
             ),
             (
                 [{"groups": ["site2"], "test": "test"}],
-                [{"host": "R2", "groups": ["site2"], "test": "test"}],
+                [{"host": "R2", "test": "test"}],
             ),
             (
                 [{"groups": ["router"], "test": "test"}],
                 [
-                    {"host": "R1", "groups": ["router"], "test": "test"},
-                    {"host": "R2", "groups": ["router"], "test": "test"},
+                    {"host": "R1", "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R2", "groups": ["router"], "test": "test"}],
                 [
-                    {"host": "R1", "groups": ["router"], "test": "test"},
-                    {"host": "R2", "groups": ["router"], "test": "test"},
+                    {"host": "R1", "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R2", "groups": ["site1"], "test": "test"}],
                 [
-                    {"host": "R1", "groups": ["site1"], "test": "test"},
-                    {"host": "R2", "groups": ["site1"], "test": "test"},
+                    {"host": "R1", "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R2", "groups": ["site2"], "test": "test"}],
                 [
-                    {"host": "R2", "groups": ["site2"], "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
             (
                 [{"host": "R2", "groups": ["notFound"], "test": "test"}],
                 [
-                    {"host": "R2", "groups": ["notFound"], "test": "test"},
+                    {"host": "R2", "test": "test"},
                 ],
             ),
         ],
@@ -540,3 +540,26 @@ class TestNornirNutsContextParametrizationIntegration:
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(errors=1)
+
+    def test_executes_napalm_interface_count_tests(self, pytester):
+        arguments = {
+            "test_class_loading": """
+                ---
+                - test_class: TestNapalmInterfaces
+                  test_data:
+                    - tags:
+                        - router
+                      name: eth-0/1
+                      is_enabled: true
+                      is_up: true
+                      # mac_address: <MAC address>
+                      # mtu: <int value>
+                      # speed: <int value>
+                """
+        }
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        # Router R1 and R2 have the tag "router"
+        # 3*2 tests should be skipped
+        # 2*2 tests should faile with an error (No napalm driver provided)
+        result.assert_outcomes(skipped=6, errors=4)

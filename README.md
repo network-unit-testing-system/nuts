@@ -1,14 +1,11 @@
-# NetTowel Network Unit Testing System
+# Network Unit Testing System
 
 ## Introduction
 
-The NetTowel Network Unit Testing System or "nuts" in short is the testing component of the NetTowel Project, which is developed at the Institute of Networked Solutions in Rapperswil, Switzerland.
-It draws on the concept of unit tests, known from the domain of programming, and applies it to the domain of networking.
+The Network Unit Testing System or "nuts" in short draws on the concept of unit tests, known from the domain of programming, and applies it to the domain of networking.
 
-One major difference between unit tests in programming and 
-network tests is the definition of what a test actually is. 
-In programming, unit tests normally focus on testing edge cases, 
-since the amount of non-edge cases is not definable.
+One major difference between unit tests in programming and network tests is the definition of what a test actually is. 
+In programming, unit tests normally focus on testing edge cases, since the amount of non-edge cases is not definable.
 In the network testing domain, tests are less about edge cases, but more about testing existing network states with 
 pre-defined test cases. Such a single test case might be "can host A reach neighbors X, Y, Z?" on many different devices. 
 This is what nuts tries to achieve:
@@ -32,7 +29,7 @@ Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
 
 The project relies on the [pytest framework](https://docs.pytest.org/) to setup and execute the tests. 
 Nuts itself is written as a custom pytest plugin. In the background, [nornir](https://nornir.readthedocs.io/) 
-executes specific network tasks for the actual tests.
+executes specific network tasks for the actual tests. This can be extended to use other Context as well in the future.
 
 Nuts treats the test definition and the so-called test bundle as separate entities. The *test definition* is modeled as a custom `pytest.Class`, and a predefined set of test definitions can be found in the nuts module `base_tests`. New test definitions can be added easily by the user of the plugin.
 
@@ -56,18 +53,18 @@ Each test bundle contains the following structure:
   test_data: <data used to generate the test cases>
 ...
 ```
-`test_module`: The full path of the python module that contains the test class to be used.
+`test_module`: The full path of the Python module that contains the test class to be used.
 This value is optional if the test class is registered in `index.py` of the pytest-nuts plugin.
 Note that it can be relevant in which directory `pytest` is started if local test modules are used. Using `test_modules` allows you to write your own test classes. **Note: We currently do not support self-written test modules, since upcoming refactorings might introduce breaking changes.**
 
-`test_class`: The name of the python class which contains the tests that should be executed.
+`test_class`: The name of the Python class which contains the tests that should be executed.
 Note that currently every test in this class will be executed.
 
 `label`: Additional identifier that can be used to distinguish between multiple occurrences of the same 
  test class in a test bundle.
 
 `test_execution`: Data that is exposed as part of the `nuts_parameters` property. 
-By convention this contains additional information that is passed directly to the nornir task in the background. 
+By convention, this contains additional information that is passed directly to the nornir task in the background. 
 Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
 As an example, the test definition `napalm_ping.py` calls a nornir task to execute napalm's ping-command. 
 This allows the additional `max_drop` parameter in `test_execution`, since it is in turn pre-defined by napalm.
@@ -137,15 +134,20 @@ If you want to learn more how nuts works but do not have a running network in th
 
 ## Develop Your Own Test Classes
 
-Nuts is essentially designed as a pytest-plugin and it is possible to add your own, self-written test classes. 
-A dev documentation on how to write your own test classes is planned for a future release.
-Still, it is possible to write your own test classes nevertheless, even if we cannot guarantee that upcoming planned refactorings  do not introduce breaking changes.
+Nuts is essentially designed as a pytest-plugin and it is possible to add your own, self-written test classes. Dev documentation on how to write your own test classes is planned for a future release.
+Still, it is possible to write your own test classes nevertheless, even if we cannot guarantee that upcoming planned refactorings do not introduce breaking changes.
 
 ## Community-provided test classes
 
 * [Cisco IOSXE Test Class](https://github.com/briantsaunders/nuts-cisco-iosxe-tests) by [briantsaunders](https://github.com/briantsaunders)
+* [nuts-experiments](https://github.com/ubaumann/nuts-experiments) by [ubaumann](https://github.com/ubaumann/)
 
 # Thanks
 
-* [Matthias Gabriel](https://github.com/MatthiasGabriel), who laid the foundations of nuts.
+* [Urs Baumann](https://github.com/ubaumann/), for originating the idea, supervising the development, and serving as the project owner
+* Andreas Stalder and David Meister, for developing the first version based on SaltStack in their term project
+* Mike Schmid and Janik Schlatter, implemented the first version using Nornir in their term project.
+* [Matthias Gabriel](https://github.com/MatthiasGabriel), who laid the foundations of nuts as a pytest plugin.
+* [Marco Martinez](https://github.com/marcom4rtinez) and [Severin Grimm](https://github.com/Sevitama), added more test cases and interviewed companies in their term project.
+* [Méline Sieber](https://github.com/bytinbit), [Lukas Murer](https://github.com/lucmurer), for maintenance during your working hours at the INS
 * [Florian Bruhin (The Compiler)](https://github.com/The-Compiler) for invaluable feedback and advice.

@@ -63,7 +63,7 @@ html_theme = "alabaster"
 # html_static_path = ["_static"]
 
 html_theme_options = {
-    "description": "NetTowel Network Unit Testing System",
+    "description": "Network Unit Testing System",
     "body_max_width": "auto",
     "page_width": "90%",
 }

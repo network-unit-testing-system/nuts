@@ -1,4 +1,4 @@
-.. NUTS - NetTowel Network Unit Testing System documentation master file
+.. NUTS - Network Unit Testing System documentation master file
 
 Documentation of NUTS
 =====================
@@ -6,17 +6,15 @@ Documentation of NUTS
 Introduction
 ------------
 
-The NetTowel Network Unit Testing System or "nuts" in short is the testing component of the NetTowel Project, which is developed at the Institute of Networked Solutions in Rapperswil, Switzerland.
-It draws on the concept of unit tests, known from the domain of programming, and applies it to the domain of networking.
+The Network Unit Testing System or "nuts" in short draws on the concept of unit tests, known from the domain of programming, and applies it to the domain of networking.
 
-One major difference between unit tests in programming and 
-network tests is the definition of what a test actually is. 
-In programming, unit tests normally focus on testing edge cases, 
-since the amount of non-edge cases is not definable.
-In the network testing domain, tests are less about edge cases and more about testing existing network states with 
-pre-defined test cases. Such a single test case might be "Can host A reach neighbors X, Y, Z?" on many different devices. 
+One major difference between unit tests in programming and network tests is the definition of what a test actually is. 
+In programming, unit tests normally focus on testing edge cases, since the amount of non-edge cases is not definable.
+In the network testing domain, tests are less about edge cases, but more about testing existing network states with 
+pre-defined test cases. Such a single test case might be "can host A reach neighbors X, Y, Z?" on many different devices. 
 This is what nuts tries to achieve:
 Apply test cases based on your pre-defined network topology to your actual network and have the tests confirm the correct state.
+
 
 How nuts works
 --------------

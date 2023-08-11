@@ -4,13 +4,13 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nuts"
-version = "3.1.0"
-description = "Network Unit Testing System Component of NetTowel"
+version = "3.2.0"
+description = "Network Unit Testing System"
 authors = ["Lukas Murer, Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin", "Marco Martinez", "Severin Grimm"]
-maintainers = ["Lukas Murer <lukas.murer@ost.ch>", "Florian Bruhin <florian.bruhin@ost.ch>"]
+maintainers = ["Marco Martinez <marco.maritnez@ost.ch>", "Urs Baumann <github@m.ubaumann.ch>"]
 classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
-homepage = "https://github.com/INSRapperswil/Nuts"
-repository = "https://github.com/INSRapperswil/Nuts"
+homepage = "https://github.com/network-unit-testing-system/nuts"
+repository = "https://github.com/network-unit-testing-system/nuts"
 license = "MIT"
 readme = "README.md"
 

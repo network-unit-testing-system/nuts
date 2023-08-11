@@ -1,5 +1,5 @@
 # Test bundle that shows basic nuts functionality without the need of a network connection
-# make sure nettowel-nuts is installed with `pip install nettowel-nuts`
+# make sure nuts is installed with `pip install nuts`
 # run from the project folder root: $ pytest tests/showcase_test/test-expanse.yaml
 ---
 - test_module: tests.showcase.showcase_expanse

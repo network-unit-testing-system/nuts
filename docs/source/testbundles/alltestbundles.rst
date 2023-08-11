@@ -485,7 +485,7 @@ OSPF Neighbors - Count
 
 .. code:: yaml
 
-    - test_class: TestNetmikoOspfNeighbors
+    - test_class: TestNetmikoOspfNeighborsCount
       test_data:
         - host: R1
           neighbor_count: 3

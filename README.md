@@ -29,7 +29,7 @@ Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
 
 The project relies on the [pytest framework](https://docs.pytest.org/) to setup and execute the tests. 
 Nuts itself is written as a custom pytest plugin. In the background, [nornir](https://nornir.readthedocs.io/) 
-executes specific network tasks for the actual tests. This can be extended to use other Context as well in the future.
+executes specific network tasks for the actual tests. This can be extended to use other context as well in the future.
 
 Nuts treats the test definition and the so-called test bundle as separate entities. The *test definition* is modeled as a custom `pytest.Class`, and a predefined set of test definitions can be found in the nuts module `base_tests`. New test definitions can be added easily by the user of the plugin.
 

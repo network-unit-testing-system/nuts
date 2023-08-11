@@ -10,6 +10,7 @@ default_index = {
     "TestNapalmNetworkInstances": "nuts.base_tests.napalm_network_instances",
     "TestNapalmPing": "nuts.base_tests.napalm_ping",
     "TestNapalmUsers": "nuts.base_tests.napalm_get_users",
+    "TestNapalmOnlyDefinedUsersExist": "nuts.base_tests.napalm_get_users",
     "TestNapalmConfig": "nuts.base_tests.napalm_get_config",
     "TestNapalmVlans": "nuts.base_tests.napalm_get_vlans",
     "TestNapalmOnlyDefinedVlansExist": "nuts.base_tests.napalm_get_vlans",

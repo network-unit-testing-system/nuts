@@ -1,4 +1,5 @@
 """Fixtures"""
+
 from typing import Optional, Dict, Any
 from pathlib import Path
 

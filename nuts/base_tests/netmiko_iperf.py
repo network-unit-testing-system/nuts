@@ -1,4 +1,5 @@
 """Query bandwidth performance between two devices."""
+
 import pytest
 import json
 from typing import Dict, Callable, Any
@@ -106,7 +107,6 @@ CONTEXT = IperfContext
 
 
 class IperfResultError(Error):
-
     """Error in iperf result JSON."""
 
 

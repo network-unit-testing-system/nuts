@@ -1,6 +1,7 @@
 """Converts a test bundle (YAML file) into a test class for pytest.
 Based on https://docs.pytest.org/en/stable/example/nonpython.html#yaml-plugin
 """
+
 import importlib
 from nuts.helpers.context import load_context
 import types

@@ -1,4 +1,5 @@
 """Query interfaces and their information of a device."""
+
 from typing import Dict, Callable, List, Any
 
 import pytest

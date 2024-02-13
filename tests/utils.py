@@ -1,6 +1,7 @@
 """
 Helper module with data used by all tests.
 """
+
 from dataclasses import dataclass
 from typing import Any, Optional, List, Dict
 

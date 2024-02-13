@@ -2,6 +2,7 @@
 Functions to filter the nornir inventory and used in conjunction with
 a context's nornir_filter function.
 """
+
 from typing import Optional, Dict, Any, List, Union
 from nornir.core.filter import F, OR
 

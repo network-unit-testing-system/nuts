@@ -1,4 +1,5 @@
 """Query BGP neighbors of a device or count them."""
+
 from typing import Dict, Callable, List, Any
 
 import pytest

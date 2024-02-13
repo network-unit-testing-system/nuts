@@ -1,6 +1,7 @@
 """
 Context helper functions
 """
+
 import types
 from nuts.context import NutsContext
 from typing import Dict, List, Any

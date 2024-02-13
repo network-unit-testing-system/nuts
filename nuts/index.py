@@ -1,4 +1,5 @@
 """Allows to indicate only the test class name in a test bundle."""
+
 from typing import Optional
 
 default_index = {

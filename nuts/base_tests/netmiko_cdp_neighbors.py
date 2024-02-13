@@ -1,4 +1,5 @@
 """Query CDP neighbors of a device."""
+
 from typing import Callable, Dict, Any
 
 import pytest

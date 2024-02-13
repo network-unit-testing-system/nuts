@@ -1,4 +1,5 @@
 """Query LLDP neighbors of a device."""
+
 from typing import Dict, Callable, List, Any
 
 import pytest
@@ -28,9 +29,9 @@ class LldpNeighborsExtractor(AbstractHostResultExtractor):
         return element
 
     def _add_expanded_remote_port(self, element: Dict[str, Any]) -> Dict[str, Any]:
-        element[
-            "remote_port_expanded"
-        ] = InterfaceNameConverter().expand_interface_name(element["remote_port"])
+        element["remote_port_expanded"] = (
+            InterfaceNameConverter().expand_interface_name(element["remote_port"])
+        )
         return element
 
 

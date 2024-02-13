@@ -1,4 +1,5 @@
 """Query vlans of a device."""
+
 from typing import Dict, Callable, List, Any
 
 import pytest

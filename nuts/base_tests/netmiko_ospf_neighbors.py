@@ -1,4 +1,5 @@
 """Query OSPF neighbors of a device or count them."""
+
 from typing import Callable, Dict, Any
 
 import pytest

@@ -46,7 +46,7 @@ class NutsResult:
                 f"An exception has occurred while executing nornir:\n"
                 f"{header}\n"
                 f"{self._result}"
-            )
+            ) from self.exception
         if self.failed:
             raise NutsNornirError(f"Nornir execution has failed:\n" f"{self._result}")
 

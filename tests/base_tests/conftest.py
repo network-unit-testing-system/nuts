@@ -114,7 +114,15 @@ def transformed_result(
 
 @pytest.fixture
 def integration_tester(monkeypatch, pytester, default_nr_init):
-    def _run(selftestdata, *, test_class, task_module, task_name, test_count, test_execution = None):
+    def _run(
+        selftestdata,
+        *,
+        test_class,
+        task_module,
+        task_name,
+        test_count,
+        test_execution=None,
+    ):
         yaml_data = [
             {
                 "test_class": test_class,

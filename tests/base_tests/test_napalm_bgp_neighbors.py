@@ -84,6 +84,13 @@ nornir_raw_r2 = {
     }
 }
 
+nornir_raw_r1_vrf = {
+    "bgp_neighbors": {"CustA": nornir_raw_r1["bgp_neighbors"]["global"]}
+}
+
+nornir_raw_r2_vrf = {
+    "bgp_neighbors": {"CustA": nornir_raw_r2["bgp_neighbors"]["global"]}
+}
 
 bgp_r1_1 = SelfTestData(
     name="r1_1",
@@ -130,6 +137,21 @@ bgp_r2 = SelfTestData(
     },
 )
 
+bgp_r2_vrf = SelfTestData(
+    name="r2",
+    nornir_raw_result=nornir_raw_r2_vrf,
+    test_data={
+        "host": "R2",
+        "local_id": R2_IP,
+        "peer": R1_IP,
+        "is_enabled": True,
+        "remote_as": AS1,
+        "remote_id": AS_ID,
+        "local_as": AS2,
+        "is_up": False,
+    },
+)
+
 bgp_r1_count = SelfTestData(
     name="r1_count",
     nornir_raw_result=nornir_raw_r1,
@@ -142,6 +164,24 @@ bgp_r1_count = SelfTestData(
 bgp_r2_count = SelfTestData(
     name="r2_count",
     nornir_raw_result=nornir_raw_r2,
+    test_data={
+        "host": "R2",
+        "neighbor_count": 1,
+    },
+)
+
+bgp_r1_count_vrf = SelfTestData(
+    name="r1_count",
+    nornir_raw_result=nornir_raw_r1_vrf,
+    test_data={
+        "host": "R1",
+        "neighbor_count": 2,
+    },
+)
+
+bgp_r2_count_vrf = SelfTestData(
+    name="r2_count",
+    nornir_raw_result=nornir_raw_r2_vrf,
     test_data={
         "host": "R2",
         "neighbor_count": 1,
@@ -176,6 +216,16 @@ def selftestdata(request):
     return request.param
 
 
+@pytest.fixture(
+    params=[
+        bgp_r2_vrf,
+    ],
+    ids=lambda data: data.name,
+)
+def selftestdata_vrf(request):
+    return request.param
+
+
 @pytest.fixture
 def testdata(selftestdata):
     return selftestdata.test_data
@@ -186,6 +236,14 @@ def testdata(selftestdata):
     ids=lambda data: data.name,
 )
 def selftestdata_countneighbors(request):
+    return request.param
+
+
+@pytest.fixture(
+    params=[bgp_r1_count_vrf, bgp_r2_count_vrf],
+    ids=lambda data: data.name,
+)
+def selftestdata_countneighbors_vrf(request):
     return request.param
 
 
@@ -249,11 +307,33 @@ def test_integration(selftestdata, integration_tester):
     )
 
 
+def test_integration_vrf(selftestdata_vrf, integration_tester):
+    integration_tester(
+        selftestdata_vrf,
+        test_class="TestNapalmBgpNeighbors",
+        task_module=tasks,
+        test_execution={"vrf": "CustA"},
+        task_name="napalm_get",
+        test_count=6,
+    )
+
+
 def test_integration_count(selftestdata_countneighbors, integration_tester):
     integration_tester(
         selftestdata_countneighbors,
         test_class="TestNapalmBgpNeighborsCount",
         task_module=tasks,
+        task_name="napalm_get",
+        test_count=1,
+    )
+
+
+def test_integration_count_vrf(selftestdata_countneighbors_vrf, integration_tester):
+    integration_tester(
+        selftestdata_countneighbors_vrf,
+        test_class="TestNapalmBgpNeighborsCount",
+        task_module=tasks,
+        test_execution={"vrf": "CustA"},
         task_name="napalm_get",
         test_count=1,
     )

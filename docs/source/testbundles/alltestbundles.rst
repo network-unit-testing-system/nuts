@@ -99,6 +99,8 @@ BGP Neighbors - Information
 .. code:: yaml
 
     - test_class: TestNapalmBgpNeighbors
+      test_execution: 
+        vrf: <string, optional>
       test_data:
         - host: <host name, required>
           local_id: <ID>
@@ -117,6 +119,9 @@ Required fields for specific tests in this bundle:
     * Test remote ID: ``host, peer, remote_id``
     * Test if the peer is enabled: ``host, peer, is_enabled``
     * Test if the peer is up: ``host, peer, is_up``
+
+``test_execution`` ``vrf``: This field is used to select the scope. Default is the "global" VRF. 
+
 
 **Test Bundle Example:**
 
@@ -147,10 +152,13 @@ BGP Neighbors - Count
 .. code:: yaml
 
     - test_class: TestNapalmBgpNeighborsCount
+      test_execution: 
+        vrf: <string, optional>
       test_data:
         - host: <host name, required>
           neighbor_count: <number of neighbors, required>
 
+``test_execution`` ``vrf``: This field is used to select the scope. Default is the "global" VRF. 
 
 **Test Bundle Example:**
 

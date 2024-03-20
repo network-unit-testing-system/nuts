@@ -1,6 +1,6 @@
 """Query BGP neighbors of a device or count them."""
 
-from typing import Dict, Callable, List, Any
+from typing import Dict, Callable, List, Any, Tuple
 
 import pytest
 from nornir.core.task import MultiResult, Result
@@ -13,15 +13,23 @@ from nuts.helpers.result import AbstractHostResultExtractor, NutsResult
 class BgpNeighborsExtractor(AbstractHostResultExtractor):
     def single_transform(
         self, single_result: MultiResult
-    ) -> Dict[str, Dict[str, NutsResult]]:
+    ) -> Dict[Tuple[str, str], Dict[str, NutsResult]]:
+        test_exectuion = self._nuts_ctx.nuts_parameters.get("test_execution")
+        if test_exectuion:
+            vrf = test_exectuion.get("vrf", "global")
+            if not vrf:
+                vrf = "global"
+        else:
+            vrf = "global"
+
         neighbors = self._simple_extract(single_result)["bgp_neighbors"]
-        if "global" not in neighbors:
+        if vrf not in neighbors:
             return {}
-        global_scope = neighbors["global"]
-        router_id = global_scope["router_id"]
+        scope = neighbors[vrf]
+        router_id = scope["router_id"]
         return {
             peer: self._add_local_id(details, router_id)
-            for peer, details in global_scope["peers"].items()
+            for peer, details in scope["peers"].items()
         }
 
     def _add_local_id(self, element: Dict[str, Any], router_id: str) -> Dict[str, Any]:
@@ -34,6 +42,8 @@ class BgpNeighborsContext(NornirNutsContext):
         return napalm_get
 
     def nuts_arguments(self) -> Dict[str, List[str]]:
+        # Overrides nuts_arguments.nuts_arguments
+        # "test_execution" is not passed to the nuts_task
         return {"getters": ["bgp_neighbors"]}
 
     def nuts_extractor(self) -> BgpNeighborsExtractor:
@@ -49,7 +59,9 @@ class TestNapalmBgpNeighborsCount:
         self, single_result: NutsResult, neighbor_count: int
     ) -> None:
         assert single_result.result is not None
-        assert len(single_result.result) == neighbor_count
+        assert (
+            len(single_result.result) == neighbor_count
+        ), f"Expected {neighbor_count}; got {len(single_result.result)}"
 
 
 class TestNapalmBgpNeighbors:

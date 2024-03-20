@@ -203,6 +203,7 @@ class NornirNutsContext(NutsContext):
         )
 
         self.teardown()
+        selected_hosts.close_connections(on_good=True, on_failed=True)
         return overall_results
 
     def setup(self) -> None:

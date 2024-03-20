@@ -203,3 +203,19 @@ def test_load_nonexisting_class_from_index(pytester, mock_index):
         ]
     )
     result.assert_outcomes(errors=1)
+
+
+@pytest.mark.parametrize("file_extension", [(".yaml"), (".yml")])
+def test_load_file_extension(pytester, file_extension):
+    arguments = {
+        "test_class_loading": """
+            ---
+            - test_module: tests.base_tests.class_loading
+              test_class: TestClass
+              test_data: []
+            """
+    }
+    pytester.makefile(file_extension, **arguments)
+
+    result = pytester.runpytest()
+    result.assert_outcomes(passed=2)

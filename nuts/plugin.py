@@ -65,12 +65,12 @@ def pytest_collect_file(parent: Session, file_path: Path) -> Optional[Collector]
     """
     Performs the collection phase for the given pytest session.
     Collects all test bundles if available, i.e. files starting
-    with 'test' and ending in .yaml.
+    with 'test' and ending in .yaml or .yml.
     :param parent: pytest session object
     :param file_path: path to test file(s)
     :return: The pytest collector if found
     """
-    if file_path.suffix == ".yaml" and file_path.name.startswith("test"):
+    if file_path.suffix in [".yaml", ".yml"] and file_path.name.startswith("test"):
         return NutsYamlFile.from_parent(parent, path=file_path)
     return None
 

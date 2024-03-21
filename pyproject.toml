@@ -6,8 +6,15 @@ build-backend = "poetry.core.masonry.api"
 name = "nuts"
 version = "3.2.0"
 description = "Network Unit Testing System"
-authors = ["Lukas Murer, Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin", "Marco Martinez", "Severin Grimm"]
-maintainers = ["Marco Martinez <marco.maritnez@ost.ch>", "Urs Baumann <github@m.ubaumann.ch>"]
+authors = [
+    "Lukas Murer, Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin",
+    "Marco Martinez",
+    "Severin Grimm",
+]
+maintainers = [
+    "Marco Martinez <marco.maritnez@ost.ch>",
+    "Urs Baumann <github@m.ubaumann.ch>",
+]
 classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
 homepage = "https://github.com/network-unit-testing-system/nuts"
 repository = "https://github.com/network-unit-testing-system/nuts"
@@ -35,7 +42,7 @@ types-setuptools = "*"
 types-toml = "*"
 
 [tool.poetry.plugins."pytest11"]
-"nuts"="nuts.plugin"
+"nuts" = "nuts.plugin"
 # why "pytest11": https://github.com/pytest-dev/pytest/commit/ed03eef81b220199a819632a27f9c452b8e1fb81
 # https://docs.pytest.org/en/latest/how-to/writing_plugins.html#making-your-plugin-installable-by-others
 
@@ -50,12 +57,10 @@ filterwarnings = [
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
     "ignore:NutsYamlFile\\.fspath is deprecated and will be replaced by NutsYamlFile\\.path\\.",
 ]
-markers = [
-    "nuts_test_ctx: A NutsContext to be used in tests."
-]
+markers = ["nuts_test_ctx: A NutsContext to be used in tests."]
 
 [tool.mypy]
-python_version = 3.8
+python_version = "3.8"
 
 ### --strict
 warn_unused_configs = true
@@ -149,4 +154,3 @@ commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepa
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 
 """
-

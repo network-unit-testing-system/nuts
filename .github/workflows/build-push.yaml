@@ -1,0 +1,32 @@
+name: Build and Push Container
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to github container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and tag latest docker image
+        run: |
+          make container -e REGISTRY_NAME=ghcr.io/${{ github.repository_owner }} IMAGE_VERSION=$GITHUB_SHA
+
+      - name: Tag versioned image
+        run: docker tag ghcr.io/${{ github.repository_owner }}/nuts:$GITHUB_SHA ghcr.io/${{ github.repository_owner }}/nuts:latest
+
+      - name: Push the images
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/nuts:latest
+          docker push ghcr.io/${{ github.repository_owner }}/nuts:$GITHUB_SHA

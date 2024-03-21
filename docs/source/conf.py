@@ -20,11 +20,11 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = "NUTS"
-copyright = f"{datetime.date.today().year}, Méline Sieber, Urs Baumann"
-author = "Méline Sieber"
+copyright = f"{datetime.date.today().year}, Urs Baumann, Marco Martinez"
+author = "Urs Baumann"
 
 # The full version, including alpha/beta/rc tags
-release = "1.1.0"
+release = "1.1.1"
 
 
 # -- General configuration ---------------------------------------------------

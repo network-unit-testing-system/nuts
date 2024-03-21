@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and tag latest docker image
         run: |
-          make container -e REGISTRY_NAME=ghcr.io/${{ github.repository_owner }} IMAGE_VERSION=$GITHUB_SHA
+          docker build -f Dockerfile -t ghcr.io/${{ github.repository_owner }}/nuts:$GITHUB_SHA .
 
       - name: Tag versioned image
         run: docker tag ghcr.io/${{ github.repository_owner }}/nuts:$GITHUB_SHA ghcr.io/${{ github.repository_owner }}/nuts:latest

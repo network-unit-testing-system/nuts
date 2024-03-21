@@ -4,7 +4,7 @@ Installation of NUTS
 Installation Instructions
 -------------------------
 
-Nuts requires Python 3.7 or higher.
+Nuts requires Python 3.8 or higher.
 
 Installation via pip
 ....................
@@ -24,6 +24,17 @@ Nuts uses `poetry <https://python-poetry.org/>`__ as a dependency manager.
 #. Clone the `nuts repository <https://github.com/INSRapperswil/Nuts.git>`__
 #. Change into the cloned folder, then install all necessary dependencies: ``$ poetry install``
 #. Install nuts: ``$ pip install .``
+
+Installation via container
+..........................
+
+Nuts is also available in a dockerized version. It uses the GitHub registry.
+
+.. code:: shell
+
+    docker pull ghcr.io/network-unit-testing-system/nuts:latest
+    docker run -it ghcr.io/network-unit-testing-system/nuts
+
 
 Parsing with ntc-templates
 --------------------------

@@ -1,10 +1,13 @@
 # https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
 # https://www.ianwootten.co.uk/2020/10/23/publishing-to-pypi-using-github-actions/
 name: Publish nuts to PyPI and release on GitHub
-on: [push]
+on:
+  push:
+    tags:
+      - "*"
+
 jobs:
   build-and-publish-to-pypi:
-    if: startsWith(github.ref, 'refs/tags')
     name: Build and publish nuts to PyPI
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +23,6 @@ jobs:
       - name: Build and then publish nuts to PyPI
         run: poetry publish --build
   relase-on-github:
-    if: startsWith(github.ref, 'refs/tags')
     name: Release on GitHub
     runs-on: ubuntu-latest
     steps:
@@ -29,4 +31,3 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           body_path: ${{ github.workspace }}/release_notes/${{ github.ref_name }}.md
-

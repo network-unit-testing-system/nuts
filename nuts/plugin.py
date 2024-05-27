@@ -17,6 +17,12 @@ from nuts.helpers.result import NutsResult
 from nuts.yamlloader import NutsYamlFile, get_parametrize_data
 
 
+def pytest_addhooks(pluginmanager):
+    from nuts import hooks
+
+    pluginmanager.add_hookspecs(hooks)
+
+
 @pytest.fixture(scope="class")
 def nuts_ctx(request: FixtureRequest) -> NutsContext:
     params = request.node.params
@@ -27,7 +33,9 @@ def nuts_ctx(request: FixtureRequest) -> NutsContext:
 
 
 @pytest.fixture
-def single_result(nuts_ctx: NutsContext, nuts_test_entry: Dict[str, Any]) -> NutsResult:
+def single_result(
+    nuts_ctx: NutsContext, nuts_test_entry: Dict[str, Any], request: FixtureRequest
+) -> NutsResult:
     """
     Returns the result which belongs to a specific host
     out of the overall set of results that has been returned by nornir's task.
@@ -40,6 +48,12 @@ def single_result(nuts_ctx: NutsContext, nuts_test_entry: Dict[str, Any]) -> Nut
     """
     res = nuts_ctx.extractor.single_result(nuts_test_entry)
     res.validate()
+
+    # Invoke the pytest_nuts_single_result hook to extend result reports or implement custom functions.
+    request.config.hook.pytest_nuts_single_result(
+        request=request, nuts_ctx=nuts_ctx, result=res
+    )
+
     return res
 
 

@@ -54,6 +54,7 @@ Contents
    Tutorial <tutorial/firststeps>
    Test Bundles <testbundles/alltestbundles>
    Writing Custom Tests <dev/writetests>
+   Test Reports <reports/reports>
 
 
 Indices and tables

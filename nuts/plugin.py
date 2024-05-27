@@ -49,7 +49,7 @@ def single_result(
     res = nuts_ctx.extractor.single_result(nuts_test_entry)
     res.validate()
 
-    # Invoke the pytest_nuts_single_result hook to extend result reports or implement custom functions.
+    # Invoke the pytest_nuts_single_result hook to extend result reports.
     request.config.hook.pytest_nuts_single_result(
         request=request, nuts_ctx=nuts_ctx, result=res
     )

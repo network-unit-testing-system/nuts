@@ -107,12 +107,14 @@ class NutsTestFile(pytest.Module):
 
         test_data = self.test_entry.get("test_data", [])
         test_execution = self.test_entry.get("test_execution")
+        test_extras = self.test_entry.get("test_extras")
         yield NutsTestClass.from_parent(
             self,
             name=name,
             class_name=class_name,
             test_data=test_data,
             test_execution=test_execution,
+            test_extras=test_extras,
         )
 
 

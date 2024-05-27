@@ -50,6 +50,7 @@ Each test bundle contains the following structure:
   test_class: <name of the test class>
   label: <label to uniquely identify the test> # optional 
   test_execution: <additional data used to execute the test> # optional
+  test_extras: <additional data can be provided to the context for custom usage> # optional
   test_data: <data used to generate the test cases>
 ...
 ```
@@ -68,6 +69,9 @@ By convention, this contains additional information that is passed directly to t
 Therefore the key-value pairs must be consistent with the key-value pairs of the specific nornir task. 
 As an example, the test definition `napalm_ping.py` calls a nornir task to execute napalm's ping-command. 
 This allows the additional `max_drop` parameter in `test_execution`, since it is in turn pre-defined by napalm.
+
+`test_extras`: Additional data that can be accessed through the `nuts_parameters` property.
+These data are not internally utilized and can be passed for use in custom code.
 
 `test_data`: Data that is used to parametrize the tests in the test class which have the `pytest.mark.nuts` annotation. It is additionally part of the `nuts_parameters` property.
 

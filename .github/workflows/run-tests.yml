@@ -1,5 +1,5 @@
 name: Run tests with tox
-on: [push]
+on: [push, workflow_dispatch]
 jobs:
   self-tests:
     name: pytest tests with tox
@@ -15,7 +15,7 @@ jobs:
           - python: "3.10"
             testenv: py
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/cache@v2
         with:
           path: |
@@ -39,7 +39,7 @@ jobs:
       matrix:
         testenv: [mypy, black, flake8, docs]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/cache@v2
         with:
           path: |

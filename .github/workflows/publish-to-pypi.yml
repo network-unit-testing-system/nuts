@@ -11,7 +11,7 @@ jobs:
     name: Build and publish nuts to PyPI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -26,8 +26,8 @@ jobs:
     name: Release on GitHub
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Release on Github
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v2
         with:
           body_path: ${{ github.workspace }}/release_notes/${{ github.ref_name }}.md

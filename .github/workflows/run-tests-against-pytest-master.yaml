@@ -2,12 +2,14 @@ name: Run tests against pytest-master
 on:
   schedule:
     - cron:  '* 22 * * 0'
+  workflow_dispatch:
+
 jobs:
   self-tests:
     name: test against pytest-main
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v2
         with:

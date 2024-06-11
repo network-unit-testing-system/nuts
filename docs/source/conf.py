@@ -24,7 +24,7 @@ copyright = f"{datetime.date.today().year}, Urs Baumann, Marco Martinez"
 author = "Urs Baumann"
 
 # The full version, including alpha/beta/rc tags
-release = "1.1.1"
+release = "3.3.0"
 
 
 # -- General configuration ---------------------------------------------------

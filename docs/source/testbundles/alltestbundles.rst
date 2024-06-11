@@ -291,7 +291,7 @@ Required fields for specific tests in this bundle:
 .. code:: yaml
 
     - test_class: TestNapalmInterfaces
-        test_data:
+      test_data:
         - host: R1
           name: GigabitEthernet1
           is_enabled: true

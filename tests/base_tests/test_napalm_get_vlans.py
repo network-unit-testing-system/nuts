@@ -69,7 +69,7 @@ vlans_s1_taglist_mixed = SelfTestData(
     test_data={"host": "S1", "vlan_tags": {2, 1}},
 )
 
-vlans_s1_taglist_mixed = SelfTestData(
+vlans_s1_taglist_nornir_mixed = SelfTestData(
     name="s1",
     nornir_raw_result=nornir_raw_result_s1_mixed,
     test_data={"host": "S1", "vlan_tags": {1, 2}},

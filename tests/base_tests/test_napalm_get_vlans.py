@@ -16,6 +16,15 @@ nornir_raw_result_s1 = {
         "2": {"name": "vlan2", "interfaces": []},
     }
 }
+nornir_raw_result_s1_mixed = {
+    "vlans": {
+        "2": {"name": "vlan2", "interfaces": []},
+        "1": {
+            "name": "default",
+            "interfaces": ["GigabitEthernet0/0/1", "GigabitEthernet0/0/2"],
+        },
+    }
+}
 nornir_raw_result_s1_vlan1 = {
     "vlans": {
         "1": {
@@ -51,6 +60,18 @@ vlans_s2 = SelfTestData(
 vlans_s1_taglist = SelfTestData(
     name="s1",
     nornir_raw_result=nornir_raw_result_s1,
+    test_data={"host": "S1", "vlan_tags": {1, 2}},
+)
+
+vlans_s1_taglist_mixed = SelfTestData(
+    name="s1",
+    nornir_raw_result=nornir_raw_result_s1,
+    test_data={"host": "S1", "vlan_tags": {2, 1}},
+)
+
+vlans_s1_taglist_mixed = SelfTestData(
+    name="s1",
+    nornir_raw_result=nornir_raw_result_s1_mixed,
     test_data={"host": "S1", "vlan_tags": {1, 2}},
 )
 
@@ -94,7 +115,7 @@ def testdata(selftestdata):
 
 
 @pytest.fixture(
-    params=[vlans_s1_taglist, vlans_s2_taglist],
+    params=[vlans_s1_taglist, vlans_s1_taglist_mixed, vlans_s2_taglist],
     ids=lambda data: data.name,
 )
 def selftestdata_taglist(request):

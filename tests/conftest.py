@@ -11,7 +11,20 @@ pytest_plugins = ["pytester", "nuts"]
 
 
 @pytest.fixture
-def default_nr_init(pytester):
+def deregister_nornir_plugin():
+    # Cleanup Nornir's PluginRegisters.
+    # This is necessary as InitNornir is initiated for every test case, but the
+    # PluginRegisters are (somehow) shared. This results in a
+    # PluginAlreadyRegistered Exception as the plugins are registered multiple
+    # times.
+    yield
+    ConnectionPluginRegister.deregister_all()
+    InventoryPluginRegister.deregister_all()
+    RunnersPluginRegister.deregister_all()
+
+
+@pytest.fixture
+def default_nr_init(pytester, deregister_nornir_plugin):
     """Create initial Nornir files and expose the location
     as nornir_config_file fixture."""
     hosts_path = pytester.path / f"hosts{YAML_EXTENSION}"
@@ -67,12 +80,3 @@ def default_nr_init(pytester):
     pytester.syspathinsert()
 
     yield
-
-    # Cleanup Nornir's PluginRegisters.
-    # This is necessary as InitNornir is initiated for every test case, but the
-    # PluginRegisters are (somehow) shared. This results in a
-    # PluginAlreadyRegistered Exception as the plugins are registered multiple
-    # times.
-    ConnectionPluginRegister.deregister_all()
-    InventoryPluginRegister.deregister_all()
-    RunnersPluginRegister.deregister_all()

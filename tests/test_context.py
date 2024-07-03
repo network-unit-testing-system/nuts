@@ -216,8 +216,8 @@ class TestNornirNutsContextIntegration:
             "test_class_loading": """
                     ---
                     - test_module: basic_task
-                    test_class: TestBasicTask
-                    test_data:
+                      test_class: TestBasicTask
+                      test_data:
                         - host: S1
                         - host: S2
                     """
@@ -228,7 +228,7 @@ class TestNornirNutsContextIntegration:
 
 
 class TestNornirNutsContextIntegrationWithoutFiles:
-    def test_nornir_config_cmdline_option(self, pytester):
+    def test_nornir_config_cmdline_option(self, pytester, deregister_nornir_plugin):
         """
         Test the command line option to provide another nornir config file
         than the default one ("nr-config.yaml"). Basically tests whether it

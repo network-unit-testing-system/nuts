@@ -198,7 +198,7 @@ def get_parametrize_data(
 
     data = getattr(nuts_test_instance, "test_entry")
 
-    ctx = load_context(nuts_test_instance.module, data)
+    ctx = load_context(nuts_test_instance.module, data, metafunc.config)
     data["test_data"] = ctx.parametrize(data.get("test_data", []))
 
     return (

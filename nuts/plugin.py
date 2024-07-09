@@ -103,3 +103,12 @@ def pytest_addoption(parser: Parser) -> None:
         metavar="NORNIR_CONFIG",
         help="nuts nornir configuration file. Default is nr-config.yaml",
     )
+
+    group.addoption(
+        "--nornir-no-cache-inventory",
+        action="store",
+        dest="nornir_no_cache_inventory",
+        default=True,
+        metavar="NORNIR_NO_CACHE_INV",
+        help="disable thats nuts will cache the nornir inventory between executions. Default is True",
+    )

@@ -31,6 +31,7 @@ class NutsContext:
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
         self._pytestconfig = pytestconfig
+        self.inventory = {}
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -105,17 +106,27 @@ class NornirNutsContext(NutsContext):
         self.nornir: Optional[Nornir] = None
 
     def initialize(self) -> None:
+        """
+        Checks if inventory should be cached, then use global inventory otherwise regenerate it continuously.
+        """
         if self.pytestconfig:
+            if (
+                self.pytestconfig.getoption("nornir_no_cache_inventory")
+                and self.inventory is not {}
+            ):
+                return
+
             config_file = pathlib.Path(
                 self.pytestconfig.getoption("nornir_configuration")
             )
         else:
             config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
 
-        self.nornir = InitNornir(
+        self.inventory = InitNornir(
             config_file=str(config_file),
             logging={"enabled": False},
         )
+        self.nornir = self.inventory
 
     def nuts_task(self) -> Callable[..., Result]:
         """

@@ -112,8 +112,8 @@ class NornirNutsContext(NutsContext):
         """
         if self.pytestconfig:
             if (
-                self.pytestconfig.getoption("nornir_no_cache_inventory")
-                and self.inventory is not {}
+                self.pytestconfig.getoption("nornir_cache_inventory")
+                and not self.inventory
             ):
                 return
 

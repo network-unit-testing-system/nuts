@@ -31,7 +31,7 @@ class NutsContext:
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
         self._pytestconfig = pytestconfig
-        self.inventory = {}
+        self.inventory: Nornir
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -107,7 +107,8 @@ class NornirNutsContext(NutsContext):
 
     def initialize(self) -> None:
         """
-        Checks if inventory should be cached, then use global inventory otherwise regenerate it continuously.
+        Checks if inventory should be cached, then use global inventory otherwise
+        regenerate it continuously.
         """
         if self.pytestconfig:
             if (

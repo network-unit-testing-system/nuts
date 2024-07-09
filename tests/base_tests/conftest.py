@@ -142,7 +142,7 @@ def integration_tester(monkeypatch, pytester, default_nr_init):
             lambda *args, **kwargs: selftestdata.nornir_raw_result,
         )
 
-        res = pytester.runpytest_inprocess()
+        res = pytester.runpytest_inprocess("--nornir-cache-disable")
 
         if selftestdata.expected_output is not None:
             res.stdout.fnmatch_lines(selftestdata.expected_output)

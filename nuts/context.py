@@ -2,6 +2,7 @@
 
 import pathlib
 from typing import Any, Callable, Optional, Dict, List
+from copy import deepcopy
 from pytest import Config
 
 from nornir import InitNornir
@@ -31,7 +32,6 @@ class NutsContext:
         self.nuts_parameters = nuts_parameters or {}
         self.extractor = self.nuts_extractor()
         self._pytestconfig = pytestconfig
-        self.inventory: Nornir
 
     def initialize(self) -> None:
         """Initialize dependencies for this context after it has been created."""
@@ -96,6 +96,8 @@ class NornirNutsContext(NutsContext):
     #: https://nornir.readthedocs.io/en/stable/configuration/index.html
     DEFAULT_NORNIR_CONFIG_FILE = "nr-config.yaml"
 
+    NORNIR_CACH: Optional[Nornir] = None
+
     # `_` to sepperate hostname from pytest number used for test with same name
     id_format = "{host}_"
 
@@ -111,23 +113,25 @@ class NornirNutsContext(NutsContext):
         regenerate it continuously.
         """
         if self.pytestconfig:
-            if (
-                self.pytestconfig.getoption("nornir_cache_inventory")
-                and not self.inventory
-            ):
-                return
-
             config_file = pathlib.Path(
                 self.pytestconfig.getoption("nornir_configuration")
             )
         else:
             config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
 
-        self.inventory = InitNornir(
+        if self.NORNIR_CACH:
+            self.nornir = self.NORNIR_CACH
+            self.nornir.inventory.hosts = deepcopy(self.nornir.inventory.hosts)
+            self.nornir.inventory.groups = deepcopy(self.nornir.inventory.groups)
+            self.nornir.inventory.defaults = deepcopy(self.nornir.inventory.defaults)
+            return
+
+        self.nornir = InitNornir(
             config_file=str(config_file),
             logging={"enabled": False},
         )
-        self.nornir = self.inventory
+        if not self.pytestconfig.getoption("nornir_cache_disabled"):
+            self.NORNIR_CACH = self.nornir
 
     def nuts_task(self) -> Callable[..., Result]:
         """

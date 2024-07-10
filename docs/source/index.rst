@@ -55,6 +55,7 @@ Contents
    Test Bundles <testbundles/alltestbundles>
    Writing Custom Tests <dev/writetests>
    Test Reports <reports/reports>
+   Advanced Options <advanced/cli>
 
 
 Indices and tables

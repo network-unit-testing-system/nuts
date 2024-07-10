@@ -227,6 +227,109 @@ class TestNornirNutsContextIntegration:
         result.assert_outcomes(xpassed=1)
 
 
+@pytest.mark.usefixtures("default_nr_init")
+class TestNornirNutsContextCaching:
+    BASIC_TASK = """
+            import pytest
+            from nornir.core.task import Result
+            from nuts.context import NornirNutsContext
+            from nuts.helpers.result import AbstractHostResultExtractor
+
+
+            class ExpanseExtractor(AbstractHostResultExtractor):
+                def single_transform(self, single_result):
+                    return self._simple_extract(single_result)
+
+            class CustomNornirNutsContext(NornirNutsContext):
+                def nuts_task(self):
+                    return lambda task: Result(host=task.host, result=task.host.name)
+
+                def nuts_extractor(self) -> ExpanseExtractor:
+                    return ExpanseExtractor(self)
+
+                def teardown(self) -> None:
+                    # Manipulate the cashe, will be executed by 
+                    if self.pytestconfig and self.pytestconfig.cache:
+                        if nornir_cache := self.pytestconfig.cache.get("NORNIR_CACHE", None):
+                            nornir_cache["hosts"]["R1"]["data"]["new"] = "manipulate cashe"
+                            self.pytestconfig.cache.set("NORNIR_CACHE", nornir_cache)
+
+            CONTEXT = CustomNornirNutsContext
+
+            class TestBasicTaskFirst:
+                def test_config_has_cache(self, nuts_ctx):
+                    nornir_cache = nuts_ctx.pytestconfig.cache.get("NORNIR_CACHE", {})
+                    assert "hosts" in nornir_cache
+                    assert "groups" in nornir_cache
+                    assert "defaults" in nornir_cache
+                    assert "R1" in nornir_cache["hosts"]
+
+                    assert "new" not in nornir_cache["hosts"]["R1"]["data"]
+                
+                def test_has_correct_pytestconfig(self, nuts_ctx):
+                    assert not nuts_ctx.pytestconfig.getoption("nornir_cache_disabled")
+                    
+                @pytest.mark.nuts("host")
+                def test_trigger_teardown(self, nuts_ctx, single_result, host):
+                    assert host == "R1"
+                
+            
+            class TestBasicTaskSecond:
+                def test_config_has_cache(self, nuts_ctx):
+                    nornir_cache = nuts_ctx.pytestconfig.cache.get("NORNIR_CACHE", {})
+                    assert "hosts" in nornir_cache
+                    assert "groups" in nornir_cache
+                    assert "defaults" in nornir_cache
+                    assert "R1" in nornir_cache["hosts"]
+
+                    print(nornir_cache["hosts"]["R1"]["data"])
+
+                    assert "new" in nornir_cache["hosts"]["R1"]["data"]
+                    assert nornir_cache["hosts"]["R1"]["data"]["new"] == "manipulate cashe"
+                """
+    ARGUMENTS = {
+        "test_class_loading": """
+                        ---
+                        - test_module: basic_task
+                          test_class: TestBasicTaskFirst
+                          test_data:
+                            - host: R1
+                        - test_module: basic_task
+                          test_class: TestBasicTaskSecond
+                          test_data:
+                            - host: R1
+                        """,
+    }
+
+    def test_cached_nornir_inventory(self, pytester, deregister_nornir_plugin):
+        result = pytester.runpytest("--cache-show", "NORNIR_CACHE")
+        result.assert_outcomes()
+        assert "cache is empty" in result.stdout.str()
+
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
+        arguments = self.ARGUMENTS
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("test_class_loading.yaml")
+        result.assert_outcomes(passed=4)
+
+        result = pytester.runpytest("--cache-show", "NORNIR_CACHE")
+        result.assert_outcomes()
+        assert "hosts" in result.stdout.str()
+
+    def test_no_cached_nornir_inventory(self, pytester, deregister_nornir_plugin):
+        pytester.makepyfile(basic_task=self.BASIC_TASK)
+        arguments = self.ARGUMENTS
+        pytester.makefile(YAML_EXTENSION, **arguments)
+        result = pytester.runpytest("--nornir-cache-disable", "-v")
+
+        result.assert_outcomes(passed=1, failed=3)
+        output = result.stdout.str()
+        assert "test_config_has_cache FAILED" in output
+        assert "test_has_correct_pytestconfig FAILED" in output
+        assert "test_trigger_teardown[R1_] PASSED" in output
+        assert "test_config_has_cache FAILED" in output
+
+
 class TestNornirNutsContextIntegrationWithoutFiles:
     def test_nornir_config_cmdline_option(self, pytester, deregister_nornir_plugin):
         """

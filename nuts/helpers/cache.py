@@ -5,7 +5,7 @@ from nornir.core.inventory import Group, Groups, Host, Hosts, Inventory, ParentG
 from nornir.plugins.inventory.simple import _get_defaults, _get_inventory_element
 
 
-def serializ_inventory(inventory: Inventory) -> Dict[str, Dict[str, Any]]:
+def serialize_inventory(inventory: Inventory) -> Dict[str, Dict[str, Any]]:
     data = {
         "hosts": {host: data.dict() for host, data in inventory.hosts.items()},
         "groups": {group: data.dict() for group, data in inventory.groups.items()},
@@ -14,7 +14,7 @@ def serializ_inventory(inventory: Inventory) -> Dict[str, Dict[str, Any]]:
     return data
 
 
-class CachInventory:
+class CacheInventory:
     def __init__(
         self,
         hosts: Dict[str, Dict[str, Any]],
@@ -22,7 +22,7 @@ class CachInventory:
         defaults: Dict[str, Any],
     ) -> None:
         """
-        CachInventory inspired by the SimpleInventory.
+        CacheInventory inspired by the SimpleInventory.
 
         Args:
 

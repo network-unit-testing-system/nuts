@@ -49,10 +49,10 @@ class CacheInventory:
         for n, g in self.groups_dict.items():
             groups[n] = _get_inventory_element(Group, g, n, defaults)
 
-        for g in groups.values():
-            g.groups = ParentGroups([groups[g] for g in g.groups])
+        for group in groups.values():
+            group.groups = ParentGroups([groups[str(g)] for g in group.groups])
 
-        for h in hosts.values():
-            h.groups = ParentGroups([groups[g] for g in h.groups])
+        for host in hosts.values():
+            host.groups = ParentGroups([groups[str(g)] for g in host.groups])
 
         return Inventory(hosts=hosts, groups=groups, defaults=defaults)

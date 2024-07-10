@@ -119,18 +119,18 @@ class NornirNutsContext(NutsContext):
             config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
 
         if self.pytestconfig and self.pytestconfig.cache:
-            nornir_inventory = self.pytestconfig.cache.get("NORNIR_CACHE", None)
-            InventoryPluginRegister.register("NutsCacheInventory", CacheInventory)
+            if nornir_inventory := self.pytestconfig.cache.get("NORNIR_CACHE", None):
+                InventoryPluginRegister.register("NutsCacheInventory", CacheInventory)
 
-            self.nornir = InitNornir(
-                config_file=str(config_file),
-                logging={"enabled": False},
-                inventory={
-                    "plugin": "NutsCacheInventory",
-                    "options": nornir_inventory,
-                },
-            )
-            return
+                self.nornir = InitNornir(
+                    config_file=str(config_file),
+                    logging={"enabled": False},
+                    inventory={
+                        "plugin": "NutsCacheInventory",
+                        "options": nornir_inventory,
+                    },
+                )
+                return
 
         self.nornir = InitNornir(
             config_file=str(config_file),

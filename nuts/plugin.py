@@ -109,6 +109,5 @@ def pytest_addoption(parser: Parser) -> None:
         action="store_true",
         dest="nornir_cache_disabled",
         default=False,
-        # metavar="NORNIR_CACHE_INV",
         help="disable caching of nornir inventory between executions",
     )

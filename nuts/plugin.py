@@ -127,5 +127,5 @@ def pytest_sessionstart(session: Session) -> None:
 
     :param pytest.Session session: The pytest session object.
     """
-    if not session.config.getoption("nornir_cached_inventory"):
+    if not session.config.getoption("nornir_cached_inventory") and session.config.cache:
         session.config.cache.set("nuts/NORNIR_CACHE", None)

@@ -111,3 +111,20 @@ def pytest_addoption(parser: Parser) -> None:
         default=False,
         help="disable caching of nornir inventory between executions",
     )
+
+    group.addoption(
+        "--nornir-cached-inventory",
+        action="store_true",
+        dest="nornir_cached_inventory",
+        default=False,
+        help="Uses the chache from the last executions; No inventory update if it is cached",
+    )
+
+def pytest_sessionstart(session: Session) -> None:
+    """Called after the ``Session`` object has been created and before performing collection
+    and entering the run test loop.
+
+    :param pytest.Session session: The pytest session object.
+    """
+    if not session.config.getoption("nornir_cached_inventory"):
+        session.config.cache.set("nuts/NORNIR_CACHE", None)

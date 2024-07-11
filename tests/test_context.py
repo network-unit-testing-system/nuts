@@ -250,9 +250,9 @@ class TestNornirNutsContextCaching:
         def teardown(self) -> None:
             # Manipulate the cashe, will be executed by
             if self.pytestconfig and self.pytestconfig.cache:
-                if nornir_cache := self.pytestconfig.cache.get("nuts/NORNIR_CACHE", None):
-                    nornir_cache["hosts"]["R1"]["data"]["new"] = "manipulate cashe"
-                    self.pytestconfig.cache.set("nuts/NORNIR_CACHE", nornir_cache)
+                if nc := self.pytestconfig.cache.get("nuts/NORNIR_CACHE", None):
+                    nc["hosts"]["R1"]["data"]["new"] = "manipulate cashe"
+                    self.pytestconfig.cache.set("nuts/NORNIR_CACHE", nc)
 
     CONTEXT = CustomNornirNutsContext
 
@@ -308,7 +308,9 @@ class TestNornirNutsContextCaching:
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=4)
 
-        result = pytester.runpytest("--nornir-cached-inventory", "--cache-show", "nuts/NORNIR_CACHE")
+        result = pytester.runpytest(
+            "--nornir-cached-inventory", "--cache-show", "nuts/NORNIR_CACHE"
+        )
         result.assert_outcomes()
         assert "hosts" in result.stdout.str()
 

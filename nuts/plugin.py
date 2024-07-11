@@ -117,12 +117,13 @@ def pytest_addoption(parser: Parser) -> None:
         action="store_true",
         dest="nornir_cached_inventory",
         default=False,
-        help="Uses the chache from the last executions; No inventory update if it is cached",
+        help="Uses the chached inventory from the last executions if possible",
     )
 
+
 def pytest_sessionstart(session: Session) -> None:
-    """Called after the ``Session`` object has been created and before performing collection
-    and entering the run test loop.
+    """Called after the ``Session`` object has been created
+    and before performing collection and entering the run test loop.
 
     :param pytest.Session session: The pytest session object.
     """

@@ -305,8 +305,17 @@ nornir_raw_result_s1 = {
 
 nornir_raw_result_s2 = {
     "config": {
-        "startup": "! Command: show startup-config\n! Startup-config last modified at Fri Jul 12 15:59:25 2024 by root\n! device: fra05-pod1-leaf1 (cEOSLab, EOS-4.28.9M-33818481.4289M (engineering build))\n!\nno aaa root\n!\nusername admin privilege 15 role redistribute connected\n   network 0.0.0.0/0 area 0.0.0.0\n   max-lsa 12000\n!\nend\n'",
-        "running": "! Command: show running-config\n! device: fra05-pod1-leaf1 (cEOSLab, EOS-4.28.9M-33818481.4289M (engineering build))\n!\nno aaa root\n!\nusername admin privilege 15 role redistribute connected\n   network 0.0.0.0/0 area 0.0.0.0\n   max-lsa 12000\n!\nend\n'",
+        "startup": "! Command: show startup-config\n"
+        "! Startup-config last modified at Fri Jul 12 15:59:25 2024 by root\n"
+        "! device: fra05-pod1-leaf1 (cEOSLab, EOS-4.28.9M-33818481.4289M"
+        "(engineering build))\n"
+        "!\nno aaa root\n!\nusername admin privilege 15 role redistribute connected\n"
+        "   network 0.0.0.0/0 area 0.0.0.0\n   max-lsa 12000\n!\nend\n'",
+        "running": "! Command: show running-config\n"
+        "! device: fra05-pod1-leaf1 (cEOSLab, EOS-4.28.9M-33818481.4289M"
+        "(engineering build))\n"
+        "!\nno aaa root\n!\nusername admin privilege 15 role redistribute connected\n"
+        "   network 0.0.0.0/0 area 0.0.0.0\n   max-lsa 12000\n!\nend\n'",
     }
 }
 

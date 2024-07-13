@@ -303,11 +303,24 @@ nornir_raw_result_s1 = {
     }
 }
 
+nornir_raw_result_s2 = {
+    "config": {
+        "startup": "! Command: show startup-config\n! Startup-config last modified at Fri Jul 12 15:59:25 2024 by root\n! device: fra05-pod1-leaf1 (cEOSLab, EOS-4.28.9M-33818481.4289M (engineering build))\n!\nno aaa root\n!\nusername admin privilege 15 role redistribute connected\n   network 0.0.0.0/0 area 0.0.0.0\n   max-lsa 12000\n!\nend\n'",
+        "running": "! Command: show startup-config\n! device: fra05-pod1-leaf1 (cEOSLab, EOS-4.28.9M-33818481.4289M (engineering build))\n!\nno aaa root\n!\nusername admin privilege 15 role redistribute connected\n   network 0.0.0.0/0 area 0.0.0.0\n   max-lsa 12000\n!\nend\n'",
+    }
+}
+
 
 config_s1 = SelfTestData(
     name="s1",
     nornir_raw_result=nornir_raw_result_s1,
     test_data={"host": "S1", "startup_equals_running_config": True},
+)
+
+config_s2 = SelfTestData(
+    name="s2",
+    nornir_raw_result=nornir_raw_result_s2,
+    test_data={"host": "S2", "startup_equals_running_config": True},
 )
 
 
@@ -324,7 +337,7 @@ def general_result(timeouted_multiresult):
 
 
 @pytest.fixture(
-    params=[config_s1],
+    params=[config_s1, config_s2],
     ids=lambda data: data.name,
 )
 def selftestdata(request):

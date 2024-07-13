@@ -1,5 +1,6 @@
 """Query config of a device."""
 
+import re
 from typing import Dict, Callable, List, Any
 
 import pytest
@@ -34,10 +35,7 @@ class TestNapalmConfig:
     def test_startup_equals_running_config(
         self, single_result, startup_equals_running_config
     ):
-        assert (
-            bool(
-                single_result.result["config"]["startup"]
-                == single_result.result["config"]["running"]
-            )
-            == startup_equals_running_config
-        )
+        pattern = r"! Command: show (startup|running)-config\n(! Startup-config last modified at .* by .*\n)?"
+        startup = re.sub(pattern, "", single_result.result["config"]["startup"])
+        running = re.sub(pattern, "", single_result.result["config"]["running"])
+        assert bool(startup == running) == startup_equals_running_config

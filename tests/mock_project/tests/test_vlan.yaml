@@ -1,0 +1,15 @@
+- test_class: TestNapalmVlans
+  test_data:
+    - host: sw01
+      vlan_tag: 1
+      vlan_name: default
+    - host: sw01
+      vlan_tag: 2
+      vlan_name: vlan2
+
+
+- test_class: TestNapalmInterfaceInVlan
+  test_data:
+    - host: sw01
+      vlan_tag: 1
+      interface: "GigabitEthernet0/0/1"

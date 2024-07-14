@@ -1,0 +1,5 @@
+# default config name is nr-config.yaml
+inventory:
+  plugin: SimpleInventory
+  options:
+    host_file: "inventory_data/hosts.yaml"

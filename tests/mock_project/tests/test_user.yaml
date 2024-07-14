@@ -1,0 +1,5 @@
+- test_class: TestNapalmOnlyDefinedUsersExist
+  test_data:
+    - host: sw01
+      usernames:
+        - admin

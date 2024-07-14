@@ -1,3 +1,5 @@
+import copy
+import re
 import pytest
 from nornir.core.task import AggregatedResult
 from nornir_napalm.plugins import tasks
@@ -137,6 +139,34 @@ r2_default = SelfTestData(
     },
 )
 
+r2_default_range = SelfTestData(
+    name="r2_default",
+    nornir_raw_result=nornir_raw_result_r2,
+    test_data={
+        "host": "R2",
+        "network_instance": "default",
+        "interfaces": [
+            "GigabitEthernet[2-4]",
+            "Loopback0",
+        ],
+        "route_distinguisher": "",
+    },
+)
+
+r2_default_digit = SelfTestData(
+    name="r2_default",
+    nornir_raw_result=nornir_raw_result_r2,
+    test_data={
+        "host": "R2",
+        "network_instance": "default",
+        "interfaces": [
+            "GigabitEthernet\\d{1}",
+            "Loopback0",
+        ],
+        "route_distinguisher": "",
+    },
+)
+
 
 r2_mgmt = SelfTestData(
     name="r2_mgmt",
@@ -171,6 +201,8 @@ def general_result(timeouted_multiresult):
         r1_space,
         r1_ship,
         r2_default,
+        r2_default_range,
+        r2_default_digit,
         r2_mgmt,
     ],
     ids=lambda data: data.name,
@@ -213,7 +245,20 @@ def test_contains_interfaces_at_network_instance(transformed_result, testdata):
 
     host_result = transformed_result[host]
     host_result.validate()
-    assert host_result.result[network_instance]["interfaces"] == expected
+    patterns = len(expected)
+    matches = 0
+    result = copy.deepcopy(host_result.result[network_instance]["interfaces"])
+    for interface in expected:
+        pattern = re.compile(interface)
+        for i in result:
+            if pattern.match(i):
+                host_result.result[network_instance]["interfaces"].remove(i)
+        if len(result) != len(host_result.result[network_instance]["interfaces"]):
+            result = copy.deepcopy(host_result.result[network_instance]["interfaces"])
+            matches += 1
+    assert patterns == matches
+    assert result == []
+    # assert host_result.result[network_instance]["interfaces"] == expected
 
 
 def test_contains_route_distinguisher_at_network_instance(transformed_result, testdata):

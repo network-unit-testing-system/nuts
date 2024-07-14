@@ -408,7 +408,7 @@ Network Instances
         - host: <host name, required>
           network_instance: <VRF name, required>
           interfaces:
-            - <interface name>
+            - <interface name, regex allowed>
           route_distinguisher: "<number>:<number>"
 
 Required fields for specific tests in this bundle:
@@ -429,6 +429,7 @@ Required fields for specific tests in this bundle:
           interfaces:
             - GigabitEthernet2
             - GigabitEthernet3
+            - GigabitEthernet\d{1}
             - Loopback0
           route_distinguisher: "1:1"
 

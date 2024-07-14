@@ -1,0 +1,32 @@
+# https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+# https://www.ianwootten.co.uk/2020/10/23/publishing-to-pypi-using-github-actions/
+name: Publish nuts to PyPI and release on GitHub
+on: [push, workflow_dispatch]
+
+jobs:
+  run-mock_project:
+    name: Install NUTS from wheel and run mock project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install poetry
+        run: pip install poetry
+      - name: Build package
+        run: poetry build
+      
+
+      - name: Create and start virtual environment
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+        working-directory: tests/mock_project
+      - name: Build and then publish nuts to PyPI
+        run: pip install ../../dist/nuts*.whl
+        working-directory: tests/mock_project
+      - name: Run pytest in mock_project
+        run: pytest --nornir-config nuts_config.yaml -v
+        working-directory: tests/mock_project

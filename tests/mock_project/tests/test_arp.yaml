@@ -1,0 +1,5 @@
+- test_class: TestNapalmArp
+  test_data:
+    - host: sw01
+      interface: MgmtEth0/RSP0/CPU0/0
+      ip: 172.17.17.1

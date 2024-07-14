@@ -1,0 +1,14 @@
+---
+sw01:
+    hostname: sw01
+    platform: mock
+    connection_options:
+        napalm:
+            platform: mock
+            hostname:
+            port:
+            username:
+            password:
+            extras:
+                optional_args:
+                    path: mocked_napalm_data

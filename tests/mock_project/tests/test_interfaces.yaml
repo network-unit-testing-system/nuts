@@ -1,0 +1,17 @@
+- test_class: TestNapalmInterfaces
+  test_data:
+    - host: sw01
+      name: Management0
+      is_enabled: true
+      is_up: true
+      speed: 1000
+    - host: sw01
+      name: Eth0
+      is_enabled: true
+      is_up: true
+      speed: 1000
+    - host: sw01
+      name: Eth1
+      is_enabled: true
+      is_up: true
+      speed: 1000

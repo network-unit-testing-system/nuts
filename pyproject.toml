@@ -58,6 +58,7 @@ filterwarnings = [
     "ignore:NutsYamlFile\\.fspath is deprecated and will be replaced by NutsYamlFile\\.path\\.",
 ]
 markers = ["nuts_test_ctx: A NutsContext to be used in tests."]
+norecursedirs = "mock_project"
 
 [tool.mypy]
 python_version = "3.8"

@@ -1,5 +1,7 @@
 """Query network instances of a device."""
 
+import copy
+import re
 from typing import Dict, List, Callable, Any
 
 import pytest
@@ -50,7 +52,21 @@ class TestNapalmNetworkInstances:
     def test_network_instance_contains_interfaces(
         self, single_result: NutsResult, network_instance: str, interfaces: List[str]
     ) -> None:
-        assert single_result.result[network_instance]["interfaces"] == interfaces
+        result = copy.deepcopy(single_result.result[network_instance]["interfaces"])
+        patterns = len(interfaces)
+        matches = 0
+        for interface in interfaces:
+            pattern = re.compile(interface)
+            for i in result:
+                if pattern.match(i):
+                    single_result.result[network_instance]["interfaces"].remove(i)
+            if len(result) != len(single_result.result[network_instance]["interfaces"]):
+                result = copy.deepcopy(
+                    single_result.result[network_instance]["interfaces"]
+                )
+                matches += 1
+        assert patterns == matches
+        assert result == []
 
     @pytest.mark.nuts("network_instance,route_distinguisher")
     def test_route_distinguisher(

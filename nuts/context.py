@@ -8,10 +8,12 @@ from nornir import InitNornir
 from nornir.core import Nornir
 from nornir.core.task import AggregatedResult, Result
 from nornir.core.filter import F
+from nornir.core.plugins.inventory import InventoryPluginRegister
 
 from nuts.helpers.errors import NutsSetupError
 from nuts.helpers.result import AbstractResultExtractor
 from nuts.helpers.filters import filter_hosts, get_filter_object
+from nuts.helpers.cache import serialize_inventory, CacheInventory
 
 
 class NutsContext:
@@ -105,6 +107,10 @@ class NornirNutsContext(NutsContext):
         self.nornir: Optional[Nornir] = None
 
     def initialize(self) -> None:
+        """
+        Checks if inventory should be cached, then use global inventory otherwise
+        regenerate it continuously.
+        """
         if self.pytestconfig:
             config_file = pathlib.Path(
                 self.pytestconfig.getoption("nornir_configuration")
@@ -112,10 +118,33 @@ class NornirNutsContext(NutsContext):
         else:
             config_file = pathlib.Path(self.DEFAULT_NORNIR_CONFIG_FILE)
 
+        if self.pytestconfig and self.pytestconfig.cache:
+            if nornir_inventory := self.pytestconfig.cache.get(
+                "nuts/NORNIR_CACHE", None
+            ):
+                InventoryPluginRegister.register("NutsCacheInventory", CacheInventory)
+
+                self.nornir = InitNornir(
+                    config_file=str(config_file),
+                    logging={"enabled": False},
+                    inventory={
+                        "plugin": "NutsCacheInventory",
+                        "options": nornir_inventory,
+                    },
+                )
+                return
+
         self.nornir = InitNornir(
             config_file=str(config_file),
             logging={"enabled": False},
         )
+        if self.pytestconfig and not self.pytestconfig.getoption(
+            "nornir_cache_disabled"
+        ):
+            # pytest cash needs json encodable values
+            inventory = serialize_inventory(self.nornir.inventory)
+            if self.pytestconfig and self.pytestconfig.cache:
+                self.pytestconfig.cache.set("nuts/NORNIR_CACHE", inventory)
 
     def nuts_task(self) -> Callable[..., Result]:
         """

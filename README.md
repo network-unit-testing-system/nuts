@@ -143,8 +143,16 @@ Still, it is possible to write your own test classes nevertheless, even if we ca
 
 ## Community-provided test classes
 
+* [nuts-clinet-tests](https://github.com/network-unit-testing-system/nuts-clinet-tests) by [network-unit-testing-system](https://github.com/network-unit-testing-system) 
 * [Cisco IOSXE Test Class](https://github.com/briantsaunders/nuts-cisco-iosxe-tests) by [briantsaunders](https://github.com/briantsaunders)
 * [nuts-experiments](https://github.com/ubaumann/nuts-experiments) by [ubaumann](https://github.com/ubaumann/)
+
+## Publications
+
+* 2024 - [INPG Stack: An automated way of maintaining and testing a network](https://www.linkedin.com/posts/marco-martinez-364461243_ipng-activity-7233737885349220352-OaMu?utm_source=share&utm_medium=member_desktop) paper
+* 2023 - [Going NUTS for Network Testing](https://netcraftsmen.com/going-nuts-for-network-testing/) blog post
+* 2023 - [assertEqual(IntendedState, ActualState)](https://campusnetworkengineering.com/posts/intended_vs_actual/) blog post.
+* 2017 - [Network Unit Testing](https://www.swinog.ch/wp-content/uploads/2018/07/Urs_Baumann_Network_Unit_Testing_with_SaltStack.pdf) presentation at SwiNOG 32 - *This presentation covers the older version, which uses SaltStack.*
 
 # Thanks
 

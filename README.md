@@ -149,6 +149,7 @@ Still, it is possible to write your own test classes nevertheless, even if we ca
 
 ## Publications
 
+* 2024 - [INPG Stack: An automated way of maintaining and testing a network](https://youtu.be/ZVl0GnYMUEo) Swinog39 presentation
 * 2024 - [Going NUTS for Network Testing - Tim Raphael](https://www.youtube.com/watch?v=2onA_PxkG10) AusNOG 2024 presentation
 * 2024 - [INPG Stack: An automated way of maintaining and testing a network](https://www.linkedin.com/posts/marco-martinez-364461243_ipng-activity-7233737885349220352-OaMu?utm_source=share&utm_medium=member_desktop) paper
 * 2023 - [Going NUTS for Network Testing](https://netcraftsmen.com/going-nuts-for-network-testing/) blog post

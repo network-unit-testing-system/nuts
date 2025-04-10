@@ -57,7 +57,7 @@ If you run these test classes, please make sure to configure access to ntc-templ
 `More on Netmiko and TextFSM <https://pynet.twb-tech.com/blog/automation/netmiko-textfsm.html>`__
 
 
-Deinstallation
+Uninstallation
 --------------
 
 .. code:: shell

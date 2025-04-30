@@ -22,7 +22,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.9"
 pytest = "^7"
 PyYAML = "^6.0"
 nornir = "^3.3.0"
@@ -31,11 +31,12 @@ nornir-netmiko = "^1.0.0"
 nornir-utils = "^0.2.0"
 rich = "^14.0.0"
 typer = "^0.15.3"
+ruamel-yaml = "^0.18.10"
 
 [tool.poetry.dev-dependencies]
 tox = "^4.4.11"
 pytest-cov = "^4.0.0"
-black = "^24.2.0"
+black = "^25.1.0"
 sphinx = "^7"
 mypy = "^1.0.1"
 flake8 = "^7.0.0"
@@ -68,7 +69,7 @@ markers = ["nuts_test_ctx: A NutsContext to be used in tests."]
 norecursedirs = "mock_project"
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 
 ### --strict
 warn_unused_configs = true

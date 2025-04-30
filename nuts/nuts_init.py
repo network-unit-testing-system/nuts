@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Dict, List, Literal
 from pathlib import Path
 
 import typer
@@ -7,7 +7,7 @@ from ruamel.yaml import YAML, CommentedMap
 
 def get_host_data(
     platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"]
-) -> dict[str, str]:
+) -> Dict[str, Any]:
 
     # connection_options = CommentedMap(
     #     {
@@ -32,7 +32,7 @@ def get_host_data(
 
 def get_group_data(
     platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"]
-) -> dict[str, str]:
+) -> CommentedMap:
 
     connection_options = CommentedMap(
         {
@@ -63,7 +63,7 @@ def get_group_data(
     return group
 
 
-def get_nornir_config(inventory_dir: Path) -> dict[str, str]:
+def get_nornir_config(inventory_dir: Path) -> CommentedMap:
     inventory = CommentedMap(
         {
             "plugin": "SimpleInventory",
@@ -99,7 +99,7 @@ def get_nornir_config(inventory_dir: Path) -> dict[str, str]:
     return config
 
 
-def get_lldp_neighbors_count_test(hosts: list[str]) -> dict[str, str]:
+def get_lldp_neighbors_count_test(hosts: List[str]) -> List[Dict[str, Any]]:
     lldp_neighbors_data = []
     for host in hosts:
         test_data = CommentedMap(
@@ -187,7 +187,7 @@ def nuts_init(
         show_default=True,
         default=False,
     ),
-):
+) -> None:
     yaml = YAML()
     yaml.indent(mapping=2, sequence=4, offset=2)
 
@@ -232,7 +232,7 @@ def nuts_init(
         yaml.dump(lldp_neighbors, f)
 
 
-def run():
+def run() -> None:
     typer.run(nuts_init)
 
 

@@ -24,7 +24,7 @@ def get_host_data(
 
     return {
         # "platform": platform,
-        "hostname": f"127.0.0.1",
+        "hostname": "127.0.0.1",
         "groups": [platform],
         # "connection_options": connection_options,
     }
@@ -58,7 +58,8 @@ def get_group_data(
         1,
         "password",
         "admin",
-        comment="Consider using a transform_function: e.g. https://github.com/nornir-automation/nornir_utils/blob/master/docs/html/tutorials/load_credentials.ipynb",
+        comment="Consider using a transform_function: e.g. "
+        "https://github.com/nornir-automation/nornir_utils/blob/master/docs/html/tutorials/load_credentials.ipynb",  # noqa: E501
     )
     return group
 
@@ -193,15 +194,15 @@ def nuts_init(
 
     hosts = CommentedMap()
     if cisco_xe:
-        hosts[f"cisco-xe-demo-01"] = get_host_data("ios")
+        hosts["cisco-xe-demo-01"] = get_host_data("ios")
     if arista_eos:
-        hosts[f"arista-eos-demo-01"] = get_host_data("eos")
+        hosts["arista-eos-demo-01"] = get_host_data("eos")
     if juniper_junos:
-        hosts[f"juniper-junos-demo-01"] = get_host_data("junos")
+        hosts["juniper-junos-demo-01"] = get_host_data("junos")
     if cisco_nxos:
-        hosts[f"cisco-nx-demo-01"] = get_host_data("nxos_ssh")
+        hosts["cisco-nx-demo-01"] = get_host_data("nxos_ssh")
     if cisco_xr:
-        hosts[f"cisco-xr-demo-01"] = get_host_data("iosxr")
+        hosts["cisco-xr-demo-01"] = get_host_data("iosxr")
 
     groups = CommentedMap()
     if cisco_xe:

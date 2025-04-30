@@ -232,5 +232,9 @@ def nuts_init(
         yaml.dump(lldp_neighbors, f)
 
 
-if __name__ == "__main__":
+def run():
     typer.run(nuts_init)
+
+
+if __name__ == "__main__":
+    run()

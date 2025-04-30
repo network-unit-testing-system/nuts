@@ -4,7 +4,7 @@ Installation of NUTS
 Installation Instructions
 -------------------------
 
-Nuts requires Python 3.8 or higher.
+Nuts requires Python 3.9 or higher.
 
 Installation via pip
 ....................

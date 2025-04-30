@@ -6,7 +6,7 @@ from ruamel.yaml import YAML, CommentedMap
 
 
 def get_host_data(
-    platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"]
+    platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"],
 ) -> Dict[str, Any]:
 
     # connection_options = CommentedMap(
@@ -31,7 +31,7 @@ def get_host_data(
 
 
 def get_group_data(
-    platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"]
+    platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"],
 ) -> CommentedMap:
 
     connection_options = CommentedMap(

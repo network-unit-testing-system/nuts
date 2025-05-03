@@ -5,6 +5,9 @@ import typer
 from ruamel.yaml import YAML, CommentedMap
 
 
+app = typer.Typer()
+
+
 def get_host_data(
     platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"],
 ) -> Dict[str, Any]:
@@ -70,8 +73,8 @@ def get_nornir_config(inventory_dir: Path) -> CommentedMap:
             "plugin": "SimpleInventory",
             "options": CommentedMap(
                 {
-                    "hosts_file": str(inventory_dir / "hosts.yaml"),
-                    "groups_file": str(inventory_dir / "groups.yaml"),
+                    "host_file": str(inventory_dir / "hosts.yaml"),
+                    "group_file": str(inventory_dir / "groups.yaml"),
                 }
             ),
         }
@@ -95,6 +98,9 @@ def get_nornir_config(inventory_dir: Path) -> CommentedMap:
                     ),
                 }
             ),
+            "logging": {
+                "enabled": False,
+            },
         },
     )
     return config
@@ -124,6 +130,7 @@ def get_lldp_neighbors_count_test(hosts: List[str]) -> List[Dict[str, Any]]:
     return lldp_neighbors
 
 
+@app.command()
 def nuts_init(
     test_dir: Path = typer.Option(
         help="Location for test files.",
@@ -234,7 +241,7 @@ def nuts_init(
 
 
 def run() -> None:
-    typer.run(nuts_init)
+    app()
 
 
 if __name__ == "__main__":

@@ -10,27 +10,34 @@ app = typer.Typer()
 
 def get_host_data(
     platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"],
+    name: str,
+    netmiko_session_logs: bool = False,
 ) -> Dict[str, Any]:
-
-    # connection_options = CommentedMap(
-    #     {
-    #         "napalm": CommentedMap({"extras": CommentedMap()}),
-    #         "netmiko": CommentedMap({"extras": CommentedMap()}),
-    #     }
-    # )
-
-    # if platform == "iosxr":
-    #     connection_options["napalm"]["platform"] = "iosxr_netconf"
-    #     option_args = CommentedMap()
-    #     option_args.yaml_add_eol_comment("Workaround for ncclient")
-    #     connection_options["napalm"]["extras"]["optional_args"] = option_args
-
-    return {
-        # "platform": platform,
+    host_data = {
         "hostname": "127.0.0.1",
         "groups": [platform],
-        # "connection_options": connection_options,
+        "connection_options": CommentedMap(),
     }
+    if netmiko_session_logs:
+        netmiko_session_config = CommentedMap(
+            {
+                "session_log": f"{name}.log",
+                "session_log_file_mode": "append",
+            }
+        )
+        connection_options = CommentedMap(
+            {
+                "netmiko": CommentedMap({"extras": netmiko_session_config}),
+            }
+        )
+        if platform in ["ios", "nxos_ssh"]:
+            connection_options["napalm"] = CommentedMap(
+                {"extras": CommentedMap({"optional_args": netmiko_session_config})}
+            )
+
+        host_data["connection_options"] = connection_options
+
+    return host_data
 
 
 def get_group_data(
@@ -143,7 +150,7 @@ def nuts_init(
     ),
     nornir_config: Path = typer.Option(
         help="Location for nornir config file.",
-        prompt="nornir config file",
+        prompt="Nornir config file",
         show_default=True,
         default="./nr_config.yaml",
         writable=True,
@@ -152,7 +159,7 @@ def nuts_init(
     ),
     inventory_dir: Path = typer.Option(
         help="Location for inventory files.",
-        prompt="inventory directory",
+        prompt="Inventory directory",
         show_default=True,
         default="./inventory",
         writable=True,
@@ -161,37 +168,43 @@ def nuts_init(
     ),
     create_simple_inventory: bool = typer.Option(
         help="Create a simple inventory.",
-        prompt="create simple inventory",
+        prompt="Create simple inventory",
         show_default=True,
         default=False,
     ),
     cisco_xe: bool = typer.Option(
         help="Add a Cisco XE host to the inventory",
-        prompt="add cisco xe host",
+        prompt="Add Cisco XE host",
         show_default=True,
         default=False,
     ),
     juniper_junos: bool = typer.Option(
         help="Add a Juniper Junos host to the inventory",
-        prompt="add Juniper Junos host",
+        prompt="Add Juniper Junos host",
         show_default=True,
         default=False,
     ),
     arista_eos: bool = typer.Option(
         help="Add a Arista EOS host to the inventory",
-        prompt="add Arista EOS host",
+        prompt="Add Arista EOS host",
         show_default=True,
         default=False,
     ),
     cisco_nxos: bool = typer.Option(
         help="Add a Cisco NX host to the inventory",
-        prompt="add Cisco NX host",
+        prompt="Add Cisco NX host",
         show_default=True,
         default=False,
     ),
     cisco_xr: bool = typer.Option(
         help="Add a Cisco XR host to the inventory",
-        prompt="add Cisco XR host",
+        prompt="Add Cisco XR host",
+        show_default=True,
+        default=False,
+    ),
+    netmiko_session_logs: bool = typer.Option(
+        help="Add netmiko session logs to the inventory",
+        prompt="Use netmiko session logs",
         show_default=True,
         default=False,
     ),
@@ -201,15 +214,25 @@ def nuts_init(
 
     hosts = CommentedMap()
     if cisco_xe:
-        hosts["cisco-xe-demo-01"] = get_host_data("ios")
+        hosts["cisco-xe-demo-01"] = get_host_data(
+            "ios", "cisco-xe-demo-01", netmiko_session_logs
+        )
     if arista_eos:
-        hosts["arista-eos-demo-01"] = get_host_data("eos")
+        hosts["arista-eos-demo-01"] = get_host_data(
+            "eos", "arista-eos-demo-01", netmiko_session_logs
+        )
     if juniper_junos:
-        hosts["juniper-junos-demo-01"] = get_host_data("junos")
+        hosts["juniper-junos-demo-01"] = get_host_data(
+            "junos", "juniper-junos-demo-01", netmiko_session_logs
+        )
     if cisco_nxos:
-        hosts["cisco-nx-demo-01"] = get_host_data("nxos_ssh")
+        hosts["cisco-nx-demo-01"] = get_host_data(
+            "nxos_ssh", "cisco-nx-demo-01", netmiko_session_logs
+        )
     if cisco_xr:
-        hosts["cisco-xr-demo-01"] = get_host_data("iosxr")
+        hosts["cisco-xr-demo-01"] = get_host_data(
+            "iosxr", "cisco-xr-demo-01", netmiko_session_logs
+        )
 
     groups = CommentedMap()
     if cisco_xe:
@@ -224,7 +247,6 @@ def nuts_init(
         groups["iosxr"] = get_group_data("iosxr")
 
     if create_simple_inventory:
-        inventory_dir = Path("inventory")
         inventory_dir.mkdir(parents=True, exist_ok=True)
         with (inventory_dir / "hosts.yaml").open("w") as f:
             yaml.dump(hosts, f)

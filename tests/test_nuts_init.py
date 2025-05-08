@@ -22,6 +22,7 @@ def test_app(tmp_path: Path) -> None:
             "--arista-eos",
             "--cisco-nxos",
             "--cisco-xr",
+            "--netmiko-session-logs",
         ],
     )
     assert result.exit_code == 0

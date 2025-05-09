@@ -36,6 +36,15 @@ Nuts is also available in a dockerized version. It uses the GitHub registry.
     docker run -it ghcr.io/network-unit-testing-system/nuts
 
 
+Bootstrap NUTS
+----------------
+After installing NUTS, you can bootstrap the project. ``nuts-init`` will create the necessary folder structure and files.
+
+.. code:: shell
+
+    nuts-init
+
+
 Parsing with ntc-templates
 --------------------------
 

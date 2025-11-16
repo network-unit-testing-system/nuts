@@ -152,7 +152,7 @@ def nuts_init(
         help="Location for nornir config file.",
         prompt="Nornir config file",
         show_default=True,
-        default="./nr_config.yaml",
+        default="./nr-config.yaml",
         writable=True,
         file_okay=True,
         dir_okay=False,

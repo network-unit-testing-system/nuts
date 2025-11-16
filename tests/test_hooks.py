@@ -45,7 +45,11 @@ def test_record_property(pytester: Pytester) -> None:
     assert len(testcases) == 3
     for testcase in testcases:
         properties = testcase.getElementsByTagName("property")
-        assert properties[0].getAttributeNode("name").value == "test"
-        assert properties[0].getAttributeNode("value").value == "pytest"
-        assert properties[1].getAttributeNode("name").value == "test_nr"
-        assert properties[1].getAttributeNode("value").value == "123"
+        assert properties[0].getAttributeNode("name")
+        assert properties[0].getAttributeNode("name").value == "test"  # type: ignore
+        assert properties[0].getAttributeNode("value")
+        assert properties[0].getAttributeNode("value").value == "pytest"  # type: ignore
+        assert properties[1].getAttributeNode("name")
+        assert properties[1].getAttributeNode("name").value == "test_nr"  # type: ignore
+        assert properties[1].getAttributeNode("value")
+        assert properties[1].getAttributeNode("value").value == "123"  # type: ignore

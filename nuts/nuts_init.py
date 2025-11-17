@@ -3,10 +3,10 @@ from pathlib import Path
 
 import typer
 from ruamel.yaml import YAML, CommentedMap
-
+from rich.console import Console
 
 app = typer.Typer()
-
+console = Console()
 
 def get_host_data(
     platform: Literal["ios", "nxos_ssh", "eos", "junos", "iosxr"],
@@ -261,6 +261,12 @@ def nuts_init(
     with (test_dir / "test_lldp_neighbors_demo.yaml").open("w") as f:
         yaml.dump(lldp_neighbors, f)
 
+    console.print("\n[bold]Next steps:[/bold]")
+    console.print(f"- Review and update the nornir config file in [green]{nornir_config}[/green]")
+    console.print(f"- Review and update the inventory files in [green]{inventory_dir}[/green]")
+    console.print(f"- Review and update the test file in [green]{test_dir / 'test_lldp_neighbors_demo.yaml'}[/green]")
+    if str(nornir_config) != "nr-config.yaml":
+        console.print(f"- When running pytest, use the option [green]--nornir-config {nornir_config}[/green] to point to the nornir config file.")
 
 def run() -> None:
     app()

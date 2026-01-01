@@ -39,19 +39,19 @@ class TestNetmikoCdpNeighbors:
     def test_local_port(
         self, single_result: NutsResult, remote_host: str, local_port: str
     ) -> None:
-        assert single_result.result[remote_host]["local_port"] == local_port
+        assert single_result.result[remote_host]["local_interface"] == local_port
 
     @pytest.mark.nuts("remote_host,remote_port")
     def test_remote_port(
         self, single_result: NutsResult, remote_host: str, remote_port: str
     ) -> None:
-        assert single_result.result[remote_host]["remote_port"] == remote_port
+        assert single_result.result[remote_host]["neighbor_interface"] == remote_port
 
     @pytest.mark.nuts("remote_host,management_ip")
     def test_management_ip(
         self, single_result: NutsResult, remote_host: str, management_ip: str
     ) -> None:
-        assert single_result.result[remote_host]["management_ip"] == management_ip
+        assert single_result.result[remote_host]["mgmt_address"] == management_ip
 
 
 class TestNetmikoCdpNeighborsCount:

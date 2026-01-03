@@ -13,7 +13,7 @@ from nuts.context import NornirNutsContext
 class CdpNeighborsExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         neighbors = self._simple_extract(single_result)
-        return {neighbor["destination_host"]: neighbor for neighbor in neighbors}
+        return {neighbor["neighbor_name"]: neighbor for neighbor in neighbors}
 
 
 class CdpNeighborsContext(NornirNutsContext):

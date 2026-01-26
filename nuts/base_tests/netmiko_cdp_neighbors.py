@@ -13,7 +13,7 @@ from nuts.context import NornirNutsContext
 class CdpNeighborsExtractor(AbstractHostResultExtractor):
     def single_transform(self, single_result: MultiResult) -> Dict[str, Dict[str, Any]]:
         neighbors = self._simple_extract(single_result)
-        return {neighbor["neighbor_name"]: neighbor for neighbor in neighbors}
+        return {neighbor["local_interface"]: neighbor for neighbor in neighbors}
 
 
 class CdpNeighborsContext(NornirNutsContext):
@@ -33,25 +33,25 @@ CONTEXT = CdpNeighborsContext
 class TestNetmikoCdpNeighbors:
     @pytest.mark.nuts("remote_host")
     def test_remote_host(self, single_result: NutsResult, remote_host: str) -> None:
-        assert remote_host in single_result.result
+        assert any(v.get("neighbor_name") for k, v in single_result.result.items())
 
     @pytest.mark.nuts("remote_host,local_port")
     def test_local_port(
         self, single_result: NutsResult, remote_host: str, local_port: str
     ) -> None:
-        assert single_result.result[remote_host]["local_interface"] == local_port
+        assert single_result.result[local_port]["neighbor_name"] == remote_host
 
     @pytest.mark.nuts("remote_host,remote_port")
     def test_remote_port(
         self, single_result: NutsResult, remote_host: str, remote_port: str
     ) -> None:
-        assert single_result.result[remote_host]["neighbor_interface"] == remote_port
+        assert any(v.get("neighbor_name") == remote_host and v.get("neighbor_interface") == remote_port for k, v in single_result.result.items())
 
     @pytest.mark.nuts("remote_host,management_ip")
     def test_management_ip(
         self, single_result: NutsResult, remote_host: str, management_ip: str
     ) -> None:
-        assert single_result.result[remote_host]["mgmt_address"] == management_ip
+        assert any(v.get("neighbor_name") == remote_host and v.get("mgmt_address") == management_ip for k, v in single_result.result.items())
 
 
 class TestNetmikoCdpNeighborsCount:

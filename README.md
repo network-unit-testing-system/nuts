@@ -17,13 +17,13 @@ Apply test cases based on your pre-defined network topology to your actual netwo
 
 Run `pip install nuts` 
 
-### Using poetry
+### Using UV
 
-Nuts uses [poetry](https://python-poetry.org/) as a dependency manager.
+Nuts uses [uv](https://docs.astral.sh/uv/) as a dependency manager.
 
-1. [Install poetry](https://python-poetry.org/docs/#installation).
+1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/).
 2. Clone this repository.
-3. Run `$ poetry install`
+3. Run `$ uv sync`
 
 ## How It Works: Test Bundles and Test Definitions
 

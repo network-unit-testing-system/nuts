@@ -1,5 +1,3 @@
-# https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
-# https://www.ianwootten.co.uk/2020/10/23/publishing-to-pypi-using-github-actions/
 name: Publish nuts to PyPI and release on GitHub
 on:
   push:
@@ -12,16 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v6
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: 3.9
-      - name: Install poetry
-        run: pip install poetry
-      - name: Configure API token
-        run: poetry config pypi-token.pypi "${{ secrets.PYPI_API_TOKEN }}"
-      - name: Build and then publish nuts to PyPI
-        run: poetry publish --build
+          enable-cache: true
+          python-version: "3.13"
+
+      - name: build release
+        run: uv build
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
   relase-on-github:
     name: Release on GitHub
     runs-on: ubuntu-latest

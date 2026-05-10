@@ -1,19 +1,14 @@
-FROM python:3.10-slim as builder
+FROM python:3.13-slim
 
-RUN pip install poetry
-RUN mkdir -p /app
-COPY . /app
+WORKDIR /workspace
 
-WORKDIR /app
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-RUN python3 -m venv .venv && poetry install --without dev
+COPY . .
 
-FROM python:3.10-slim as base
-
-COPY --from=builder /app /app
-
-WORKDIR /app
-ENV PATH="/app/.venv/bin:$PATH"
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+RUN uv sync --frozen --no-cache --all-extras
 
 # line below due to import bug
 RUN python3 -c "from napalm.base.exceptions import ConnectionException"

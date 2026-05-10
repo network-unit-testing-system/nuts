@@ -10,7 +10,6 @@ from nuts.context import NornirNutsContext, NutsContext
 
 from tests.utils import create_multi_result, create_result, YAML_EXTENSION
 
-
 TIMEOUT_MESSAGE = r"""Traceback (most recent call last):
   File "C:\somepath\lib\site-packages\netmiko\base_connection.py", line 920, in establish_connection
     self.remote_conn_pre.connect(**ssh_connect_params)

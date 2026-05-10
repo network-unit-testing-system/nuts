@@ -12,8 +12,7 @@ from nuts.helpers.result import AbstractResultExtractor
 
 
 def test_check_result(pytester):
-    arguments = {
-        "test_check_result": """
+    arguments = {"test_check_result": """
 ---
 - test_module: tests.helpers.check_result
   test_class: TestCheckResult
@@ -22,8 +21,7 @@ def test_check_result(pytester):
     - kind: exception
     - kind: failed_exception
     - kind: ok
-"""
-    }
+"""}
     pytester.makefile(YAML_EXTENSION, **arguments)
 
     result = pytester.runpytest()

@@ -5,8 +5,7 @@ from tests.utils import YAML_EXTENSION
 
 
 def test_record_property(pytester: Pytester) -> None:
-    pytester.makeconftest(
-        """
+    pytester.makeconftest("""
             import pytest
 
             @pytest.hookimpl(tryfirst=True)
@@ -14,8 +13,7 @@ def test_record_property(pytester: Pytester) -> None:
                 test_extras = nuts_ctx.nuts_parameters.get("test_extras", {})
                 for p_name, p_value in test_extras.get("properties", {}).items():
                     request.node.user_properties.append((p_name, p_value))
-            """
-    )
+            """)
     arguments = {
         "test_class_property": """
                         ---

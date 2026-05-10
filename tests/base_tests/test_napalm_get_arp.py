@@ -6,7 +6,6 @@ from nuts.base_tests.napalm_get_arp import CONTEXT
 
 from tests.utils import create_multi_result, SelfTestData
 
-
 nornir_raw_result_s1 = {
     "arp_table": [
         {

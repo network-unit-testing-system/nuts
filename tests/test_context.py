@@ -124,8 +124,7 @@ class TestNornirNutsContextGeneralResult:
 @pytest.mark.usefixtures("default_nr_init")
 class TestNornirNutsContextIntegration:
     def test_fails_if_no_task_is_defined(self, pytester):
-        pytester.makepyfile(
-            basic_task="""
+        pytester.makepyfile(basic_task="""
             from nuts.context import NornirNutsContext
 
 
@@ -137,8 +136,7 @@ class TestNornirNutsContextIntegration:
             class TestBasicTask:
                 def test_basic_task(self, nuts_ctx):
                     assert nuts_ctx.general_result()["R1"].result == "R1"
-            """
-        )
+            """)
         arguments = {
             "test_class_loading": """
                         ---
@@ -154,8 +152,7 @@ class TestNornirNutsContextIntegration:
         result.assert_outcomes(failed=1)
 
     def test_executes_specified_task(self, pytester):
-        pytester.makepyfile(
-            basic_task="""
+        pytester.makepyfile(basic_task="""
     from nuts.context import NornirNutsContext
 
 
@@ -170,25 +167,21 @@ class TestNornirNutsContextIntegration:
     class TestBasicTask:
         def test_basic_task(self, nuts_ctx):
             assert nuts_ctx.general_result()["R1"].result == "R1"
-    """
-        )
-        arguments = {
-            "test_class_loading": """
+    """)
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
                   test_data:
                     - host: R1
                     - host: R2
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=1)
 
     def test_wrong_host_in_test(self, pytester):
-        pytester.makepyfile(
-            basic_task="""
+        pytester.makepyfile(basic_task="""
         from nuts.context import NornirNutsContext
         from nuts.helpers.errors import NutsSetupError
         from nornir.core.filter import F
@@ -210,18 +203,15 @@ class TestNornirNutsContextIntegration:
             @pytest.mark.xfail(raises=NutsSetupError)
             def test_basic_task(self, nuts_ctx):
                 pass
-        """
-        )
-        arguments = {
-            "test_class_loading": """
+        """)
+        arguments = {"test_class_loading": """
                     ---
                     - test_module: basic_task
                       test_class: TestBasicTask
                       test_data:
                         - host: S1
                         - host: S2
-                    """
-        }
+                    """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(xpassed=1)
@@ -362,8 +352,7 @@ class TestNornirNutsContextIntegrationWithoutFiles:
         pytester.makefile(YAML_EXTENSION, **arguments)
 
         # Now make the real test
-        pytester.makepyfile(
-            basic_task="""
+        pytester.makepyfile(basic_task="""
     from nuts.context import NornirNutsContext
 
 
@@ -386,18 +375,15 @@ class TestNornirNutsContextIntegrationWithoutFiles:
 
         def test_has_removed_l2(self, nuts_ctx):
             assert "L2" not in nuts_ctx.nornir.inventory.hosts.keys()
-    """
-        )
+    """)
         pytester.syspathinsert()
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestOtherConfigFile
                   test_data:
                     - host: R1
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest(
             "test_class_loading.yaml", "--nornir-config", "other-nr-config.yaml"
@@ -571,83 +557,72 @@ class TestNornirNutsContextParametrizationIntegration:
 
     def test_executes_task_with_tags(self, pytester):
         pytester.makepyfile(basic_task=self.BASIC_TASK)
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
                   test_data:
                     - tags: tag1
                     - tags: tag2
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=2)
 
     def test_executes_task_with_tag_routers(self, pytester):
         pytester.makepyfile(basic_task=self.BASIC_TASK)
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
                   test_data:
                     - tags: router
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=2)
 
     def test_executes_task_with_group_site1(self, pytester):
         pytester.makepyfile(basic_task=self.BASIC_TASK)
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
                   test_data:
                     - groups: site1
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=1)
 
     def test_executes_task_with_group_routers(self, pytester):
         pytester.makepyfile(basic_task=self.BASIC_TASK)
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
                   test_data:
                     - groups: routers
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(passed=3)
 
     def test_executes_task_fail_no_host_found(self, pytester):
         pytester.makepyfile(basic_task=self.BASIC_TASK)
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_module: basic_task
                   test_class: TestBasicTask
                   test_data:
                     - groups: notExisting
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         result.assert_outcomes(errors=1)
 
     def test_executes_napalm_interface_count_tests(self, pytester):
-        arguments = {
-            "test_class_loading": """
+        arguments = {"test_class_loading": """
                 ---
                 - test_class: TestNapalmInterfaces
                   test_data:
@@ -659,8 +634,7 @@ class TestNornirNutsContextParametrizationIntegration:
                       # mac_address: <MAC address>
                       # mtu: <int value>
                       # speed: <int value>
-                """
-        }
+                """}
         pytester.makefile(YAML_EXTENSION, **arguments)
         result = pytester.runpytest("test_class_loading.yaml")
         # Router R1 and R2 have the tag "router"

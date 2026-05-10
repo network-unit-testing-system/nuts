@@ -6,7 +6,6 @@ from nornir.core.plugins.runners import RunnersPluginRegister
 
 from tests.utils import YAML_EXTENSION
 
-
 pytest_plugins = ["pytester", "nuts"]
 
 

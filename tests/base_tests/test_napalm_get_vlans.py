@@ -6,7 +6,6 @@ from nuts.base_tests.napalm_get_vlans import CONTEXT
 
 from tests.utils import create_multi_result, SelfTestData
 
-
 nornir_raw_result_s1 = {
     "vlans": {
         "1": {

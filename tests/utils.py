@@ -63,7 +63,7 @@ def create_result(
     destination: Optional[str] = None,
     failed: bool = False,
     exception: Optional[BaseException] = None,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> Result:
     result = Result(host=Host(name=host), destination=destination, **kwargs)
     result.result = result_content

@@ -6,7 +6,6 @@ from nuts.base_tests.napalm_get_users import CONTEXT
 
 from tests.utils import create_multi_result, SelfTestData
 
-
 nornir_raw_result_r1 = {
     "users": {
         "arya": {"level": 11, "password": "stark", "sshkeys": []},

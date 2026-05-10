@@ -15,15 +15,14 @@ NUTS is published on the Python Package Index (`PyPI <https://pypi.org/>`_), the
 
     pip install nuts
 
-Installation via poetry
+Installation via uv
 .......................
 
-Nuts uses `poetry <https://python-poetry.org/>`__ as a dependency manager.
+Nuts uses `uv <https://docs.astral.sh/uv/>`__ as a dependency manager.
 
-#. `Install poetry <https://python-poetry.org/docs/#installation>`__.
+#. `Install uv <https://docs.astral.sh/uv/getting-started/installation/>`__.
 #. Clone the `nuts repository <https://github.com/INSRapperswil/Nuts.git>`__
-#. Change into the cloned folder, then install all necessary dependencies: ``$ poetry install``
-#. Install nuts: ``$ pip install .``
+#. Change into the cloned folder, then install all necessary dependencies: ``$ uv sync``
 
 Installation via container
 ..........................

@@ -16,3 +16,9 @@ test-reports/
 
 # ignore dists
 dist/
+
+tests/
+.git/
+.github/
+Dockerfile
+.dockerignore

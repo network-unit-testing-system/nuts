@@ -4,21 +4,24 @@ on: [push, workflow_dispatch]
 jobs:
   run-mock_project:
     name: Install NUTS from wheel and run mock project
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.13' ]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v6
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: 3.9
-      - name: Install poetry
-        run: pip install poetry
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
       - name: Build package
-        run: poetry build
+        run: uv build
       
       - name: Create and start virtual environment
         run: |
-          python3 -m venv .venv
+          uv run python3 -m venv .venv
           source .venv/bin/activate
         working-directory: tests/mock_project
       - name: Install NUTS using wheel

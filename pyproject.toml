@@ -1,56 +1,51 @@
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
+[project]
 name = "nuts"
 version = "3.5.1"
 description = "Network Unit Testing System"
 authors = [
-    "Lukas Murer, Méline Sieber, Urs Baumann, Matthias Gabriel, Florian Bruhin",
-    "Marco Martinez",
-    "Severin Grimm",
+    {name = "Lukas Murer"},
+    {name = "Méline Sieber"},
+    {name = "Urs Baumann"},
+    {name = "Matthias Gabriel"},
+    {name = "Florian Bruhin"},
+    {name = "Marco Martinez"},
+    {name = "Severin Grimm"},
 ]
 maintainers = [
-    "Marco Martinez <marco.maritnez@ost.ch>",
-    "Urs Baumann <github@m.ubaumann.ch>",
+    {name = "Marco Martinez", email = "marco.maritnez@ost.ch"},
+    {name = "Urs Baumann", email = "github@m.ubaumann.ch"},
 ]
-classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
-homepage = "https://github.com/network-unit-testing-system/nuts"
-repository = "https://github.com/network-unit-testing-system/nuts"
-license = "MIT"
+license = {text = "MIT"}
 readme = "README.md"
+requires-python = ">=3.10"
+classifiers = ["Framework :: Pytest", "Topic :: System :: Networking"]
+dependencies = [
+    "pytest>=9.0",
+    "PyYAML>=6.0",
+    "nornir>=3.5.0",
+    "nornir-napalm>=0.5.0",
+    "nornir-netmiko>=1.0.1",
+    "nornir-utils>=0.2.0",
+    "rich>=15.0.0",
+    "typer>=0.25.1",
+    "ruamel-yaml>=0.19.1",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-pytest = "^7"
-PyYAML = "^6.0"
-nornir = "^3.3.0"
-nornir-napalm = "^0.5.0"
-nornir-netmiko = "^1.0.0"
-nornir-utils = "^0.2.0"
-rich = "^14.0.0"
-typer = "^0.15.3"
-ruamel-yaml = "^0.18.10"
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9.0"]
+build-backend = "uv_build"
 
-[tool.poetry.dev-dependencies]
-tox = "^4.4.11"
-pytest-cov = "^4.0.0"
-black = "^25.1.0"
-sphinx = "^7"
-mypy = "^1.0.1"
-flake8 = "^7.0.0"
-types-PyYAML = "*"
-types-setuptools = "*"
-types-toml = "*"
-
-[tool.poetry.scripts]
+[project.scripts]
 nuts-init = 'nuts.nuts_init:run'
 
-[tool.poetry.plugins."pytest11"]
+[project.entry-points.pytest11]
 "nuts" = "nuts.plugin"
 # why "pytest11": https://github.com/pytest-dev/pytest/commit/ed03eef81b220199a819632a27f9c452b8e1fb81
 # https://docs.pytest.org/en/latest/how-to/writing_plugins.html#making-your-plugin-installable-by-others
+
+
+[dependency-groups]
+dev = ["tox>=4.53.1", "pytest-cov>=7.1.0", "black>=26.3.1", "sphinx>=8", "mypy>=2.0.0", "flake8>=7.3.0", "types-PyYAML", "types-setuptools", "types-toml"]
 
 [tool.black]
 line-length = 88
@@ -63,13 +58,15 @@ filterwarnings = [
     "ignore:Using or importing the ABCs from 'collections':DeprecationWarning:jnpr\\.junos\\.factcache",
     "ignore:NutsYamlFile\\.fspath is deprecated and will be replaced by NutsYamlFile\\.path\\.",
     "ignore:.*pkg_resources.*:DeprecationWarning",
-    "ignore:.*telnetlib.*:DeprecationWarning"
+    "ignore:.*telnetlib.*:DeprecationWarning",
+    "ignore:'setParseAction' deprecated - use 'set_parse_action':DeprecationWarning",  # https://github.com/Juniper/py-junos-eznc/pull/1406
 ]
 markers = ["nuts_test_ctx: A NutsContext to be used in tests."]
 norecursedirs = "mock_project"
 
+
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 
 ### --strict
 warn_unused_configs = true
@@ -114,6 +111,7 @@ module = "napalm.*"
 ignore_missing_imports = true
 
 
+
 [tool.tox]
 legacy_tox_ini = """
 [tox]
@@ -124,8 +122,8 @@ testpaths = "tests"
 [testenv]
 description = Run pytest and generate report
 deps =
-    pytest >= 7.3.0
-    pytest-cov >= 4.0.0
+    pytest >= 9.0.0
+    pytest-cov >= 7.1.0
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 
@@ -133,32 +131,32 @@ commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepa
 [testenv:black]
 description = Check formatting with black
 skip_install = true
-deps = black >= 23.3.0
+deps = black >= 26.3.1
 commands = black --check {posargs} .
 
 [testenv:mypy]
 description = Check typing with mypy
-deps = mypy >= 1.0.1
+deps = mypy >= 2.0.0
        types-PyYAML >= 6.0.12.9
 passenv = TERM
 commands = mypy {posargs} nuts tests
 
 [testenv:docs]
 description = Build docs with sphinx
-deps = sphinx >= 6.1.3
+deps = sphinx >= 8.0.0
 changedir = docs/
 commands = sphinx-build {posargs} source build
 
 [testenv:flake8]
 description = Enforce style with Flake8
-deps = flake8 >= 6.0.0
+deps = flake8 >= 7.3.0
 commands = flake8 --max-line-length 88 nuts/ tests/
 
 [testenv:pytest-main]
 description = Run project tests against pytest-main branch
 deps =
     git+https://github.com/pytest-dev/pytest.git#main
-    pytest-cov >= 4.0.0
+    pytest-cov >= 7.1.0
 commands = pytest {posargs} --junitxml=test-reports/pytest.xml --cov="{envsitepackagesdir}/nuts" --cov=tests --cov-report xml:test-reports/coverage.xml
 # envsitepackagesdir see: https://tox.readthedocs.io/en/latest/example/pytest.html
 

@@ -97,8 +97,8 @@ class NutsTestFile(pytest.Module):
         This is directly adopted from pytest.Module.
         """
 
-        self._inject_setup_module_fixture()
-        self._inject_setup_function_fixture()
+        self._register_setup_module_fixture()
+        self._register_setup_function_fixture()
         self.session._fixturemanager.parsefactories(self)
 
         class_name = self.test_entry["test_class"]

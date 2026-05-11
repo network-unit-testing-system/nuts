@@ -12,7 +12,7 @@ authors = [
     {name = "Severin Grimm"},
 ]
 maintainers = [
-    {name = "Marco Martinez", email = "marco.maritnez@ost.ch"},
+    {name = "Marco Martinez", email = "marco.martinez@swisscom.com"},
     {name = "Urs Baumann", email = "github@m.ubaumann.ch"},
 ]
 license = {text = "MIT"}

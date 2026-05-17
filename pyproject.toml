@@ -1,6 +1,6 @@
 [project]
 name = "nuts"
-version = "3.5.1"
+version = "3.6.0"
 description = "Network Unit Testing System"
 authors = [
     {name = "Lukas Murer"},

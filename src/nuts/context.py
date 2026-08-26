@@ -106,7 +106,7 @@ class NornirNutsContext(NutsContext):
         super().__init__(nuts_parameters, pytestconfig)
         self.nornir: Optional[Nornir] = None
 
-    def initialize(self) -> None:
+    def initialize(self, nornir_args: Any = {}) -> None:
         """
         Checks if inventory should be cached, then use global inventory otherwise
         regenerate it continuously.
@@ -137,6 +137,7 @@ class NornirNutsContext(NutsContext):
         self.nornir = InitNornir(
             config_file=str(config_file),
             logging={"enabled": False},
+            **nornir_args,
         )
         if self.pytestconfig and not self.pytestconfig.getoption(
             "nornir_cache_disabled"
